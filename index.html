@@ -668,6 +668,60 @@
                     <label for="transaction-id">UPI Transaction ID</label>
                     <input type="text" id="transaction-id" placeholder="Enter transaction ID">
                 </div>
+        <!-- Services Section -->
+        <section id="services">
+            <h2>Buy Worldwide Services</h2>
+            <div class="service-calculator">
+                <div class="form-group">
+                    <label for="platform">Select Platform</label>
+                    <select id="platform" onchange="updateServices()">
+                        <option value="">-- Choose Platform --</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="telegram">Telegram</option>
+                        <option value="twitter">Twitter</option>
+                        <option value="facebook">Facebook</option>
+                    </select>
+                </div>
+
+                <div id="service-group" class="form-group hidden">
+                    <label for="service">Select Service</label>
+                    <select id="service" onchange="showDetails()">
+                        <option value="">-- Select Service --</option>
+                    </select>
+                </div>
+
+                <div id="details-group" class="hidden">
+                    <div class="form-group">
+                        <label for="username">Username/Link</label>
+                        <input type="text" id="username" placeholder="Enter your profile link or username">
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantity</label>
+                        <input type="number" id="quantity" min="1" value="100" onchange="calculatePrice()">
+                    </div>
+                    <div class="price-display">
+                        Total Price: ₹<span id="total-price">0</span>
+                    </div>
+                    <button class="btn btn-block" onclick="proceedToPayment()">Proceed to Payment</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Payment Section -->
+        <section id="payment-section" class="hidden">
+            <h2>Complete Payment</h2>
+            <div class="card">
+                <p>Send payment to: <strong>nextune@upi</strong></p>
+                <div class="text-center mb-2">
+                    <!-- Yahan QR code dynamically generate hoga -->
+                    <img id="qr-code" alt="UPI QR Code" width="200" style="border-radius: 8px; display: none;">
+                </div>
+                <div class="form-group">
+                    <label for="transaction-id">UPI Transaction ID</label>
+                    <input type="text" id="transaction-id" placeholder="Enter transaction ID">
+                </div>
                 <button class="btn btn-block" onclick="confirmPayment()">Confirm Payment</button>
                 <p class="text-center" style="margin-top: 1rem;">Time left: <span id="countdown" style="color: var(--danger); font-weight: 600;">120</span> seconds</p>
                 <p id="payment-status"></p>
@@ -753,6 +807,7 @@
             </div>
         </section>
     </div> <!-- Main Content End -->
+            
         <!-- Footer -->
     <footer>
         <div class="footer-content">
