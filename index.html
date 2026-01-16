@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worldwide Collab - Global Talent Platform</title>
+    <style>
+        /* ===== MODERN CSS VARIABLES ===== */
+        :root {
+            --primary: #0066FF;
+            --primary-dark: #0051E6;
+            --secondary: #00D1FF;
+            --accent: #FF6B00;
+            --dark: #0A0A0B;
+            --light: #F8F9FA;
+            --gray: #6C757D;
+            --success: #28A745;
+            --danger: #DC3545;
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.18);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+        }
+
+        /* ===== MODERN HEADER WITH GLASSMORPHISM ===== */
+        header {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            color: var(--dark);
+            padding: 1rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        /* ===== MODERN NAVIGATION ===== */
+        nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            height: 100vh;
+            padding: 2rem;
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1001;
+            overflow-y: auto;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--danger);
+        }
+
+        .sidebar a, .collapsible {
+            display: block;
+            padding: 0.8rem 0;
+            color: var(--dark);
+            text-decoration: none;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .collapsible {
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .collapsible:hover, .sidebar a:hover {
+            color: var(--primary);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding-left: 1rem;
+        }
+
+        .collapsible-content.active {
+            max-height: 300px;
+            padding: 1rem;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            margin-top: 80px;
+            padding: 2rem 5%;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        section {
+            margin-bottom: 4rem;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        /* ===== MODERN CARD COMPONENTS ===== */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        /* ===== Ticker ===== */
+        .ticker {
+            background: linear-gradient(90deg, var(--danger), var(--accent));
+            color: white;
+            padding: 0.8rem;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        .ticker-content {
+            display: inline-block;
+            animation: scroll-ticker 20s linear infinite;
+            font-weight: 600;
+        }
+
+        @keyframes scroll-ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* ===== SERVICE CALCULATOR ===== */
+        .service-calculator {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        select, input, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e1e5eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .price-display {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 0.9rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,102,255,0.3);
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* ===== GRID LAYOUTS ===== */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ===== FAQ ACCORDION ===== */
+        .faq-item {
+            margin-bottom: 1rem;
+        }
+
+        .faq-question {
+            background: white;
+            padding: 1.2rem;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .faq-question:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 1.2rem;
+            background: #f8f9fa;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .faq-answer.active {
+            max-height: 200px;
+            padding: 1.2rem;
+        }
+
+        /* ===== MODAL ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 12px;
+            position: relative;
+            animation: modalFadeIn 0.4s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--gray);
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--danger);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 5%;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .partners {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .partners img {
+            height: 50px;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .partners img:hover {
+            opacity: 1;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .social-links a {
+            display: inline-block;
+            transition: transform 0.3s;
+        }
+
+        .social-links a:hover {
+            transform: translateY(-3px);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== UTILITIES ===== */
+        .hidden {
+            display: none;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-2 {
+            margin-bottom: 1rem;
+        }
+
+        /* ===== TOAST NOTIFICATION ===== */
+        .toast {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 3000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <img src="logo.png" alt="WW Collab Logo">
+                <span>Worldwide Collab</span>
+            </div>
+            <nav>
+                <a href="#home">Home</a>
+                <a href="#about">About Us</a>
+                <a href="#services">Services</a>
+                <a href="#collaborate">Collaborate</a>
+                <a href="#contact">Contact</a>
+                <a href="#faqs">FAQs</a>
+                <a href="https://docs.google.com/forms/d/e/.../viewform" target="_blank">Feedback</a>
+            </nav>
+            <button class="mobile-menu-toggle" onclick="toggleSidebar()">☰</button>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-close" onclick="toggleSidebar()">✖</button>
+        <a href="#home">Home</a>
+        <a href="#about">About Us</a>
+        <a href="#services">Services</a>
+        <a href="#collaborate">Collaborate</a>
+        <a href="#contact">Contact</a>
+        <a href="#faqs">FAQs</a>
+        <button class="collapsible" onclick="toggleCollapsible(this)">Privacy Policy</button>
+        <div class="collapsible-content">
+            <p>Your privacy is our priority. We collect minimal data only to improve services. We never share your personal information with third parties. By using our platform, you consent to our privacy practices.</p>
+        </div>
+        <button class="collapsible" onclick="toggleCollapsible(this)">Terms & Conditions</button>
+        <div class="collapsible-content">
+            <p>By accessing WW Collab, you agree to our terms. All content is copyrighted. Users must not engage in harmful activities. We reserve rights to modify terms anytime.</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Home Section -->
+        <section id="home">
+            <div class="ticker">
+                <div class="ticker-content">
+                    🔥 Grow your Instagram instantly with @ww_collab! Real followers, likes & views at best prices. Don't miss out!
+                </div>
+            </div>
+            <div class="card">
+                <h2>Connecting Global Talent</h2>
+                <p>Worldwide Collab bridges the gap between exceptional talent and global opportunities. We showcase emerging & established models, artists, and creators on a worldwide stage.</p>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about">
+            <h2>About Worldwide Collab</h2>
+            <div class="services-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <h3>Global Reach</h3>
+                    <p>Connect with talent and brands from every corner of the world.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤝</div>
+                    <h3>Meaningful Collaborations</h3>
+                    <p>We foster partnerships that elevate creativity and drive success.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3>Spotlight on Talent</h3>
+                    <p>We showcase artists, models, and creators who inspire.</p>
+                </div>
+            </div>
+            <div class="card" style="margin-top: 2rem;">
+                <p>Welcome to Worldwide Collab, a platform dedicated to connecting exceptional talent from across the world with the right opportunities, collaborators, and audiences. Our mission is to showcase both emerging and established models, artists, and creators on a global stage — allowing them to express their creativity, tell their stories, and reach new heights in their careers.</p>
+                <p>At Worldwide Collab, we believe that creativity knows no borders.</p>
+            </div>
+        </section>
+
+        <!-- Instagram Feed -->
+        <section id="instagram">
+            <h2 class="text-center">Our Instagram Feed</h2>
+            <div class="card">
+                <script src="https://static.elfsight.com/platform/platform.js" async></script>
+                <div class="elfsight-app-4d293aed-a3e5-473a-a200-df801a67898d" data-elfsight-app-lazy></div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services">
+            <h2>Buy Worldwide Services</h2>
+            <div class="service-calculator">
+                <div class="form-group">
+                    <label for="platform">Select Platform</label>
+                    <select id="platform" onchange="updateServices()">
+                        <option value="">-- Choose Platform --</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="telegram">Telegram</option>
+                        <option value="twitter">Twitter</option>
+                        <option value="facebook">Facebook</option>
+                    </select>
+                </div>
+
+                <div id="service-group" class="form-group hidden">
+                    <label for="service">Select Service</label>
+                    <select id="service" onchange="showDetails()">
+                        <option value="">-- Choose Service --</option>
+                    </select>
+                </div>
+
+                <div id="details-group" class="hidden">
+                    <div class="form-group">
+                        <label for="username">Username/Link</label>
+                        <input type="text" id="username" placeholder="Enter your profile link or username">
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantity</label>
+                        <input type="number" id="quantity" min="1" value="100" onchange="calculatePrice()">
+                    </div>
+                    <div class="price-display">
+                        Total Price: ₹<span id="total-price">0</span>
+                    </div>
+                    <button class="btn btn-block" onclick="proceedToPayment()">Proceed to Payment</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Payment Section -->
+        <section id="payment-section" class="hidden">
+            <h2>Complete Payment</h2>
+            <div class="card">
+                <p>Send payment to: <strong>nextune@upi</strong></p>
+                <div class="text-center mb-2">
+                    <img 
