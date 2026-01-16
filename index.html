@@ -615,8 +615,7 @@
                 <div class="elfsight-app-4d293aed-a3e5-473a-a200-df801a67898d" data-elfsight-app-lazy></div>
             </div>
         </section>
-
-        <!-- Services Section -->
+                <!-- Services Section -->
         <section id="services">
             <h2>Buy Worldwide Services</h2>
             <div class="service-calculator">
@@ -636,7 +635,7 @@
                 <div id="service-group" class="form-group hidden">
                     <label for="service">Select Service</label>
                     <select id="service" onchange="showDetails()">
-                        <option value="">-- Choose Service --</option>
+                        <option value="">-- Select Service --</option>
                     </select>
                 </div>
 
@@ -663,4 +662,298 @@
             <div class="card">
                 <p>Send payment to: <strong>nextune@upi</strong></p>
                 <div class="text-center mb-2">
-                    <img 
+                    <img src="qrcode.png" alt="UPI QR Code" width="200" style="border-radius: 8px;">
+                </div>
+                <div class="form-group">
+                    <label for="transaction-id">UPI Transaction ID</label>
+                    <input type="text" id="transaction-id" placeholder="Enter transaction ID">
+                </div>
+                <button class="btn btn-block" onclick="confirmPayment()">Confirm Payment</button>
+                <p class="text-center" style="margin-top: 1rem;">Time left: <span id="countdown" style="color: var(--danger); font-weight: 600;">120</span> seconds</p>
+                <p id="payment-status"></p>
+            </div>
+        </section>
+
+        <!-- Collaborate Section -->
+        <section id="collaborate">
+            <h2>How to Collaborate</h2>
+            <div class="card text-center">
+                <img src="InShot_20250616_223444590.jpg" alt="Collaboration Guide" style="width: 100%; max-width: 600px; border-radius: 12px; margin: 1rem 0;">
+                <p>Follow these simple steps to start collaborating with us today!</p>
+                <button class="btn" onclick="showToast('Application sent! We will contact you soon.')">Apply Now</button>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact">
+            <h2>Contact Us</h2>
+            <div class="card">
+                <form id="contact-form" onsubmit="handleContact(event)">
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea name="message" placeholder="Your Message" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-block">Send Message</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Analytics Dashboard -->
+        <section id="analytics">
+            <h2>Live Analytics</h2>
+            <div class="services-grid">
+                <div class="card">
+                    <h3>Total Orders</h3>
+                    <p style="font-size: 2rem; color: var(--primary); font-weight: 700;">1,247</p>
+                </div>
+                <div class="card">
+                    <h3>Happy Clients</h3>
+                    <p style="font-size: 2rem; color: var(--success); font-weight: 700;">892</p>
+                </div>
+                <div class="card">
+                    <h3>Success Rate</h3>
+                    <p style="font-size: 2rem; color: var(--accent); font-weight: 700;">98%</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQs Section -->
+        <section id="faqs">
+            <h2>Frequently Asked Questions</h2>
+            <div class="card">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">What does WW Collab stand for?</button>
+                    <div class="faq-answer">WW stands for Worldwide. It highlights collaboration across the globe.</div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">Can brands or designers work with Worldwide Collab?</button>
+                    <div class="faq-answer">Yes, we collaborate with brands, designers, artists, and innovators from all over the world.</div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">Who can join Worldwide Collab?</button>
+                    <div class="faq-answer">Anyone with creativity, a unique style, or a passion to collaborate can be a part of us.</div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">How can I be featured on Worldwide Collab?</button>
+                    <div class="faq-answer">Follow @ww_collab on Instagram and YouTube, tag us in your post, use #wwcollab, and we may feature you.</div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">Who is the admin?</button>
+                    <div class="faq-answer">Name: Haroon<br>Location: Srinagar (J&K), India</div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">How can I stay updated?</button>
+                    <div class="faq-answer">Follow us on Instagram, subscribe to our YouTube, and watch our stories regularly.</div>
+                </div>
+            </div>
+        </section>
+    </div> <!-- Main Content End -->
+        <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <h3>Our Partners</h3>
+            <div class="partners">
+                <img src="logo2.png" alt="Partner 1">
+                <img src="logo4.png" alt="Partner 2">
+                <img src="logo3.png" alt="Partner 3">
+            </div>
+            <p>&copy; 2025 WW Collab. All Rights Reserved.</p>
+            <div class="social-links">
+                <a href="https://youtube.com/@ww_collab" target="_blank">
+                    <img src="YT.png" alt="YouTube" style="height: 35px;">
+                </a>
+                <a href="https://www.instagram.com/ww_collab" target="_blank">
+                    <img src="IG.png" alt="Instagram" style="height: 35px;">
+                </a>
+            </div>
+            <p>Contact: <a href="mailto:nextune.inbox@yahoo.com" style="color: white;">nextune.inbox@yahoo.com</a></p>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ===== MODERN JAVASCRIPT =====
+
+        // Service Database
+        const services = {
+            instagram: [
+                { name: 'Real Followers', price: 0.5, min: 100, max: 50000 },
+                { name: 'Likes', price: 0.3, min: 100, max: 100000 },
+                { name: 'Views', price: 0.1, min: 500, max: 1000000 }
+            ],
+            youtube: [
+                { name: 'Subscribers', price: 2, min: 100, max: 10000 },
+                { name: 'Views', price: 0.5, min: 1000, max: 1000000 },
+                { name: 'Likes', price: 0.4, min: 100, max: 50000 }
+            ],
+            tiktok: [
+                { name: 'Followers', price: 0.4, min: 100, max: 30000 },
+                { name: 'Likes', price: 0.2, min: 100, max: 100000 },
+                { name: 'Views', price: 0.05, min: 1000, max: 2000000 }
+            ],
+            telegram: [
+                { name: 'Channel Members', price: 1, min: 500, max: 50000 },
+                { name: 'Post Views', price: 0.2, min: 1000, max: 100000 }
+            ],
+            twitter: [
+                { name: 'Followers', price: 0.8, min: 100, max: 50000 },
+                { name: 'Likes', price: 0.3, min: 100, max: 100000 },
+                { name: 'Retweets', price: 0.5, min: 100, max: 50000 }
+            ],
+            facebook: [
+                { name: 'Page Likes', price: 0.6, min: 100, max: 50000 },
+                { name: 'Post Likes', price: 0.2, min: 100, max: 100000 }
+            ]
+        };
+
+        // Toggle Sidebar
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Toggle Collapsible
+        function toggleCollapsible(button) {
+            const content = button.nextElementSibling;
+            content.classList.toggle('active');
+        }
+
+        // Update Services based on Platform
+        function updateServices() {
+            const platform = document.getElementById('platform').value;
+            const serviceSelect = document.getElementById('service');
+            const serviceGroup = document.getElementById('service-group');
+            
+            if (!platform) {
+                serviceGroup.classList.add('hidden');
+                return;
+            }
+            
+            serviceGroup.classList.remove('hidden');
+            serviceSelect.innerHTML = '<option value="">-- Select Service --</option>';
+            
+            services[platform].forEach(s => {
+                const option = document.createElement('option');
+                option.value = s.name;
+                option.textContent = `${s.name} (₹${s.price} per unit)`;
+                option.dataset.price = s.price;
+                option.dataset.min = s.min;
+                option.dataset.max = s.max;
+                serviceSelect.appendChild(option);
+            });
+            
+            document.getElementById('details-group').classList.add('hidden');
+        }
+
+        // Show Details
+        function showDetails() {
+            const service = document.getElementById('service').selectedOptions[0];
+            if (!service.value) {
+                document.getElementById('details-group').classList.add('hidden');
+                return;
+            }
+            
+            document.getElementById('details-group').classList.remove('hidden');
+            const quantity = document.getElementById('quantity');
+            quantity.min = service.dataset.min;
+            quantity.max = service.dataset.max;
+            quantity.value = service.dataset.min;
+            calculatePrice();
+        }
+
+        // Calculate Price
+        function calculatePrice() {
+            const service = document.getElementById('service').selectedOptions[0];
+            const quantity = document.getElementById('quantity').value;
+            const price = service.dataset.price;
+            const total = (price * quantity).toFixed(2);
+            document.getElementById('total-price').textContent = total;
+        }
+
+        // Proceed to Payment
+        function proceedToPayment() {
+            document.getElementById('services').classList.add('hidden');
+            document.getElementById('payment-section').classList.remove('hidden');
+            startCountdown();
+        }
+
+        // Countdown Timer
+        function startCountdown() {
+            let timeLeft = 120;
+            const timer = setInterval(() => {
+                document.getElementById('countdown').textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    showToast('Payment session expired!', 'error');
+                    cancelPayment();
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        // Confirm Payment
+        function confirmPayment() {
+            const transactionId = document.getElementById('transaction-id').value;
+            if (!transactionId) {
+                showToast('Please enter transaction ID', 'error');
+                return;
+            }
+            showToast('Payment confirmed! We will process your order within 24 hours.');
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        }
+
+        // Toggle FAQ
+        function toggleFAQ(button) {
+            const answer = button.nextElementSibling;
+            answer.classList.toggle('active');
+        }
+
+        // Contact Form
+        function handleContact(e) {
+            e.preventDefault();
+            showToast('Message sent successfully! We will get back to you soon.');
+            e.target.reset();
+        }
+
+        // Toast Notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast show ${type}`;
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                    toggleSidebar();
+                }
+            });
+        });
+
+        // Header Scroll Effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.1)';
+            } else {
+                header.style.boxShadow = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
