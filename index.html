@@ -897,41 +897,46 @@
   }
   
   // ===== SERVICES & PAYMENT FUNCTIONS =====
-  const services = {
-    instagram: {
-      'Followers (Real)': { price: 0.13, min: 100, step: 100 },
-      'Likes (Real)': { price: 0.10, min: 50, step: 50 },
-      'Views (Real)': { price: 0.09, min: 1000, step: 1000 },
-      'Comments (Real)': { price: 2.00, min: 10, step: 10 }
-    },
-    youtube: {
-      'Subscribers (Real)': { price: 0.10, min: 50, step: 50 },
-      'Views (Real)': { price: 0.02, min: 1000, step: 1000 },
-      'Likes (Real)': { price: 0.10, min: 50, step: 50 },
-      'Watch Hours': { price: 5.00, min: 10, step: 10 }
-    },
-    tiktok: {
-      'Followers (Real)': { price: 0.08, min: 100, step: 100 },
-      'Likes (Real)': { price: 0.04, min: 50, step: 50 },
-      'Views (Real)': { price: 0.008, min: 1000, step: 1000 },
-      'Shares (Real)': { price: 0.50, min: 20, step: 20 }
-    },
-    telegram: {
-      'Channel Members': { price: 0.15, min: 100, step: 100 },
-      'Group Members': { price: 0.12, min: 100, step: 100 },
-      'Post Views': { price: 0.02, min: 500, step: 500 }
-    },
-    twitter: {
-      'Followers (Real)': { price: 0.20, min: 50, step: 50 },
-      'Likes (Real)': { price: 0.08, min: 50, step: 50 },
-      'Retweets (Real)': { price: 0.15, min: 25, step: 25 }
-    },
-    facebook: {
-      'Page Likes': { price: 0.25, min: 50, step: 50 },
-      'Post Likes': { price: 0.06, min: 50, step: 50 },
-      'Followers (Real)': { price: 0.30, min: 100, step: 100 }
-    }
-  };
+          const services = {
+  instagram: {
+    'Followers (Real)': { price: 0.13, min: 100, step: 100 },
+    'Likes (Real)': { price: 0.02, min: 100, step: 100 },
+    'Views (Real)': { price: 0.003, min: 1000, step: 1000 },
+    'Comments (Real)': { price: 2.00, min: 10, step: 10 }
+  },
+
+  youtube: {
+    'Subscribers (Real)': { price: 0.15, min: 1000, step: 100 },
+    'Views (Real)': { price: 0.07, min: 1000, step: 1000 },
+    'Likes (Real)': { price: 0.15, min: 1000, step: 100 },
+    'Watch Hours': { price: 5.50, min: 10, step: 10 }
+  },
+
+  tiktok: {
+    'Followers (Real)': { price: 0.13, min: 1000, step: 100 },
+    'Likes (Real)': { price: 0.09, min: 1000, step: 100 },
+    'Views (Real)': { price: 0.058, min: 10000, step: 1000 },
+    'Shares (Real)': { price: 0.55, min: 20, step: 20 }
+  },
+
+  telegram: {
+    'Channel Members': { price: 0.20, min: 1000, step: 100 },
+    'Group Members': { price: 0.17, min: 1000, step: 100 },
+    'Post Views': { price: 0.07, min: 1000, step: 500 }
+  },
+
+  twitter: {
+    'Followers (Real)': { price: 0.25, min: 1000, step: 100 },
+    'Likes (Real)': { price: 0.13, min: 1000, step: 100 },
+    'Retweets (Real)': { price: 0.20, min: 500, step: 50 }
+  },
+
+  facebook: {
+    'Page Likes': { price: 0.30, min: 1000, step: 100 },
+    'Post Likes': { price: 0.11, min: 1000, step: 100 },
+    'Followers (Real)': { price: 0.35, min: 1000, step: 100 }
+  }
+};
   
   function updateServices() {
     const platform = document.getElementById('platform').value;
@@ -953,7 +958,7 @@
       serviceSelect.appendChild(option);
     });
   }
-  
+          
   function updateQuantity() {
     const platform = document.getElementById('platform').value;
     const service = document.getElementById('service').value;
@@ -1006,8 +1011,8 @@
     document.getElementById('service-selection').style.display = 'none';
     document.getElementById('payment-section').style.display = 'block';
     
-    // Start 10-minute countdown
-    let timeLeft = 600;
+    // Start 2-minute countdown
+    let timeLeft = 120;
     const countdown = setInterval(() => {
       const minutes = Math.floor(timeLeft / 60);
       const seconds = timeLeft % 60;
