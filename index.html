@@ -864,7 +864,7 @@
     
     details.innerHTML = `
       <div style="text-align: center;">
-        <img src="https://via.placeholder.com/150?text=${name.split(' ')[0]}" alt="${name}" 
+        <img src="ramsha.png=${name.split(' ')[0]}" alt="${name}" 
              style="width: 150px; height: 150px; border-radius: 50%; border: 5px solid #667eea; margin-bottom: 20px;">
         <h2 style="color: #667eea; margin-bottom: 10px;">${name}</h2>
         <p style="font-size: 18px; color: #666; margin-bottom: 5px;">📍 ${location}</p>
@@ -899,10 +899,10 @@
   // ===== SERVICES & PAYMENT FUNCTIONS =====
           const services = {
   instagram: {
-    'Followers (Real)': { price: 0.13, min: 100, step: 100 },
-    'Likes (Real)': { price: 0.02, min: 100, step: 100 },
-    'Views (Real)': { price: 0.003, min: 1000, step: 1000 },
-    'Comments (Real)': { price: 2.00, min: 10, step: 10 }
+    'Followers (Real)': { price: 0.13, min: 0, step: 100 },
+    'Likes (Real)': { price: 0.02, min: 0, step: 100 },
+    'Views (Real)': { price: 0.003, min: 0, step: 1000 },
+    'Comments (Real)': { price: 2.00, min: 0, step: 10 }
   },
 
   youtube: {
