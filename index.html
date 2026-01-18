@@ -844,57 +844,78 @@
     }
   }
   
-  // ===== TOP CREATORS CAROUSEL =====
-  let currentSlide = 0;
-  const totalSlides = 4;
+// ===== TOP CREATORS CAROUSEL =====
+let currentSlide = 0;
+const totalSlides = 4;
+
+function autoSlideCreators() {
+  currentSlide = (currentSlide + 1) % totalSlides;
+  const container = document.getElementById('creatorsContainer');
+  container.style.transform = `translateX(-${currentSlide * 330}px)`;
+}
+
+// Auto-slide every 7 seconds
+setInterval(autoSlideCreators, 7000);
+
+// Show creator details in modal
+function showCreatorDetails(name, location, niche, followers, engagement, image) {
+  const modal = document.getElementById('creatorModal');
+  const details = document.getElementById('creatorDetails');
   
-  function autoSlideCreators() {
-    currentSlide = (currentSlide + 1) % totalSlides;
-    const container = document.getElementById('creatorsContainer');
-    container.style.transform = `translateX(-${currentSlide * 330}px)`;
-  }
+  // Use actual image parameter with fallback
+  const imageSrc = image && image.trim() !== '' ? image : `https://via.placeholder.com/150?text=${name.split(' ')[0]}`;
   
-  // Auto-slide every 7 seconds
-  setInterval(autoSlideCreators, 7000);
-  
-  // Show creator details in modal
-  function showCreatorDetails(name, location, niche, followers, engagement, image) {
-    const modal = document.getElementById('creatorModal');
-    const details = document.getElementById('creatorDetails');
-    
-    details.innerHTML = `
-      <div style="text-align: center;">
-        <img src="https://via.placeholder.com/150?text=${name.split(' ')[0]}" alt="${name}" 
-             style="width: 150px; height: 150px; border-radius: 50%; border: 5px solid #667eea; margin-bottom: 20px;">
-        <h2 style="color: #667eea; margin-bottom: 10px;">${name}</h2>
-        <p style="font-size: 18px; color: #666; margin-bottom: 5px;">📍 ${location}</p>
-        <p style="font-size: 18px; color: #666; margin-bottom: 20px;">🎨 ${niche}</p>
+  details.innerHTML = `
+    <div style="text-align: center;">
+      <img src="${imageSrc}" alt="${name}" 
+           style="width: 150px; height: 150px; border-radius: 50%; border: 5px solid #667eea; margin-bottom: 20px; object-fit: cover;">
+      <h2 style="color: #667eea; margin-bottom: 10px;">${name}</h2>
+      <p style="font-size: 18px; color: #666; margin-bottom: 5px;">📍 ${location}</p>
+      <p style="font-size: 18px; color: #666; margin-bottom: 20px;">🎨 ${niche}</p>
+    </div>
+    <div style="display: flex; justify-content: space-around; margin: 20px 0;">
+      <div style="text-align: center; background: #f0f0f0; padding: 15px; border-radius: 10px; width: 45%;">
+        <div style="font-size: 28px; font-weight: bold; color: #667eea;">${followers}</div>
+        <div style="color: #666;">Followers</div>
       </div>
-      <div style="display: flex; justify-content: space-around; margin: 20px 0;">
-        <div style="text-align: center; background: #f0f0f0; padding: 15px; border-radius: 10px; width: 45%;">
-          <div style="font-size: 28px; font-weight: bold; color: #667eea;">${followers}</div>
-          <div style="color: #666;">Followers</div>
-        </div>
-        <div style="text-align: center; background: #f0f0f0; padding: 15px; border-radius: 10px; width: 45%;">
-          <div style="font-size: 28px; font-weight: bold; color: #27ae60;">${engagement}</div>
-          <div style="color: #666;">Engagement</div>
-        </div>
+      <div style="text-align: center; background: #f0f0f0; padding: 15px; border-radius: 10px; width: 45%;">
+        <div style="font-size: 28px; font-weight: bold; color: #27ae60;">${engagement}</div>
+        <div style="color: #666;">Engagement</div>
       </div>
-      <div style="background: #f9f9f9; padding: 20px; border-radius: 10px; margin: 20px 0;">
-        <h3 style="color: #667eea; margin-bottom: 10px;">About</h3>
-        <p>This creator is verified by Worldwide Collab and has a proven track record of successful collaborations with top brands.</p>
-      </div>
-      <button onclick="alert('Collaboration request feature coming soon!')" style="width: 100%;">
-        Send Collaboration Request
-      </button>
-    `;
-    
-    modal.style.display = 'block';
-  }
+    </div>
+    <div style="background: #f9f9f9; padding: 20px; border-radius: 10px; margin: 20px 0;">
+      <h3 style="color: #667eea; margin-bottom: 10px;">About</h3>
+      <p>This creator is verified by Worldwide Collab and has a proven track record of successful collaborations with top brands.</p>
+    </div>
+    <button onclick="alert('Collaboration request feature coming soon!')" style="width: 100%; background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 12px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: 600;">
+      Send Collaboration Request
+    </button>
+  `;
   
-  function closeCreatorModal() {
-    document.getElementById('creatorModal').style.display = 'none';
+  modal.style.display = 'block';
+  document.body.style.overflow = 'hidden'; // Prevent background scroll
+}
+
+function closeCreatorModal() {
+  document.getElementById('creatorModal').style.display = 'none';
+  document.body.style.overflow = 'auto'; // Restore scroll
+}
+
+// Close modal when clicking outside the content
+window.onclick = function(event) {
+  const modal = document.getElementById('creatorModal');
+  if (event.target === modal) {
+    closeCreatorModal();
   }
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    closeCreatorModal();
+  }
+});
+          
   
   // ===== SERVICES & PAYMENT FUNCTIONS =====
           const services = {
