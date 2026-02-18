@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Payment - Worldwide Collab</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --primary: #667eea;
+      --secondary: #764ba2;
+      --accent: #1e90ff;
+      --dark: #1e1e2f;
+      --light: #f8f9fa;
+      --success: #27ae60;
+      --warning: #f39c12;
+      --danger: #e74c3c;
+      --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-2: linear-gradient(135deg, #1e90ff 0%, #4169e1 100%);
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .payment-container {
+      background: white;
+      border-radius: 30px;
+      padding: 40px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .payment-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: var(--gradient);
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .header img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 15px;
+      border: 4px solid rgba(102, 126, 234, 0.2);
+    }
+    
+    .header h1 {
+      color: var(--primary);
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+    
+    .header p {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .order-summary {
+      background: linear-gradient(135deg, #f8f9ff 0%, #e8eaff 100%);
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 25px;
+      border: 2px solid rgba(102, 126, 234, 0.1);
+    }
+    
+    .order-id {
+      background: var(--gradient);
+      color: white;
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+    
+    .detail-label {
+      font-weight: 600;
+      color: #555;
+    }
+    
+    .detail-value {
+      color: var(--primary);
+      font-weight: 600;
+    }
+    
+    .amount-highlight {
+      background: var(--gradient);
+      color: white;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      margin: 25px 0;
+    }
+    
+    .amount-highlight h3 {
+      font-size: 16px;
+      margin-bottom: 10px;
+      opacity: 0.9;
+    }
+    
+    .amount-highlight .amount {
+      font-size: 42px;
+      font-weight: 800;
+    }
+    
+    .payment-methods {
+      margin: 25px 0;
+    }
+    
+    .payment-methods h3 {
+      margin-bottom: 15px;
+      color: #333;
+      font-size: 18px;
+    }
+    
+    .upi-box {
+      background: #f0f0f0;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+      border: 2px dashed #ccc;
+    }
+    
+    .upi-id-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    
+    .upi-id {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 1px;
+    }
+    
+    .copy-btn {
+      background: var(--gradient);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .copy-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .copy-btn.copied {
+      background: var(--success);
+    }
+    
+    .qr-container {
+      position: relative;
+      display: inline-block;
+      margin: 20px 0;
+    }
+    
+    .qr-code {
+      width: 200px;
+      height: 200px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      display: block;
+    }
+    
+    .download-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.95);
+      border: none;
+      padding: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .download-btn:hover {
+      background: white;
+      transform: scale(1.1);
+    }
+    
+    .download-btn svg {
+      width: 20px;
+      height: 20px;
+      color: var(--primary);
+    }
+    
+    .timer-box {
+      background: #fff3cd;
+      border: 2px solid #ffc107;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    .timer-box .timer {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--danger);
+      font-family: monospace;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #444;
+      font-size: 14px;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: all 0.3s;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    input:focus, select:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .btn-primary {
+      background: var(--gradient);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s;
+      width: 100%;
+      margin-top: 10px;
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 40px;
+    }
+    
+    .success-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+    }
+    
+    .success-message h2 {
+      color: var(--success);
+      font-size: 32px;
+      margin-bottom: 15px;
+    }
+    
+    .success-message p {
+      color: #666;
+      margin-bottom: 10px;
+    }
+    
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    .note {
+      background: #e3f2fd;
+      border-left: 4px solid var(--accent);
+      padding: 15px;
+      border-radius: 0 10px 10px 0;
+      margin: 20px 0;
+      font-size: 13px;
+      color: #555;
+      line-height: 1.6;
+    }
+    
+    .spinner {
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top: 3px solid white;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 480px) {
+      .payment-container {
+        padding: 25px;
+      }
+      
+      .header h1 {
+        font-size: 24px;
+      }
+      
+      .amount-highlight .amount {
+        font-size: 32px;
+      }
+      
+      .timer-box .timer {
+        font-size: 24px;
+      }
+      
+      .upi-id {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="payment-container" id="paymentContainer">
+  <div class="header">
+    <img src="logo.png" alt="Worldwide Collab">
+    <h1>Complete Your Payment</h1>
+    <p>Secure Payment Gateway</p>
+  </div>
+  
+  <div id="paymentForm">
+    <div class="order-summary">
+      <div class="order-id" id="displayOrderId">
+        Order ID: Loading...
+      </div>
+      
+      <div class="detail-row">
+        <span class="detail-label">Platform:</span>
+        <span class="detail-value" id="displayPlatform">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Service:</span>
+        <span class="detail-value" id="displayService">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Quantity:</span>
+        <span class="detail-value" id="displayQuantity">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Profile URL:</span>
+        <span class="detail-value" style="font-size: 12px; word-break: break-all;" id="displayLink">-</span>
+      </div>
+    </div>
+    
+    <div class="amount-highlight">
+      <h3>Total Amount to Pay</h3>
+      <div class="amount">₹<span id="displayAmount">0</span></div>
+    </div>
+    
+    <div class="timer-box">
+      <p style="margin-bottom: 5px; font-weight: 600;">⏱️ Payment expires in:</p>
+      <div class="timer" id="countdown">05:00</div>
+    </div>
+    
+    <div class="payment-methods">
+      <h3>💳 Payment Method</h3>
+      <div class="upi-box">
+        <p style="margin-bottom: 10px; color: #666;">Send payment to UPI ID:</p>
+        <div class="upi-id-container">
+          <div class="upi-id" id="upiIdText">nextune@upi</div>
+          <button class="copy-btn" onclick="copyUPI()" id="copyBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span id="copyBtnText">Copy</span>
+          </button>
+        </div>
+        <div class="qr-container">
+          <img src="qrcode.png" alt="UPI QR Code" class="qr-code" id="qrCode">
+          <button class="download-btn" onclick="downloadQR()" title="Download QR Code">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </button>
+        </div>
+        <p style="font-size: 12px; color: #999; margin-top: 10px;">Scan QR code or use UPI ID above</p>
+      </div>
+    </div>
+    
+    <div class="note">
+      <strong>⚠️ Important:</strong> After making payment, please enter your UPI Transaction ID below. This helps us verify your payment and process your order faster.
+    </div>
+    
+    <form id="confirmPaymentForm" onsubmit="confirmPayment(event)">
+      <div class="form-group">
+        <label for="customerEmail">Your Email (for confirmation):</label>
+        <input type="email" id="customerEmail" placeholder="your@email.com" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="transactionId">UPI Transaction ID / Reference Number:</label>
+        <input type="text" id="transactionId" placeholder="e.g., 123456789012" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="paymentScreenshot">Transaction Screenshot (Optional):</label>
+        <input type="file" id="paymentScreenshot" accept="image/*">
+      </div>
+      
+      <button type="submit" class="btn-primary" id="submitBtn">
+        Confirm Payment & Submit Order
+      </button>
+    </form>
+  </div>
+  
+  <div class="success-message" id="successMessage">
+    <div class="success-icon">✅</div>
+    <h2>Payment Confirmed!</h2>
+    <p>Your order has been submitted successfully.</p>
+    <p>Order ID: <strong id="successOrderId"></strong></p>
+    <p>A confirmation email has been sent to your email address.</p>
+    <a href="index.html" class="back-link">← Back to Home</a>
+  </div>
+</div>
+
+<script>
+  // ===== CONFIGURATION =====
+  const CONFIG = {
+    adminEmail: 'team.wwc@hotmail.com',
+    emailjsUserId: '5Gvu19EQdBGPu9fXt',
+    emailjsServiceId: 'service_xctfgme',
+    emailjsTemplateId: 'template_9lzbn59'
+  };
+  
+  // Initialize EmailJS
+  (function() {
+    emailjs.init(CONFIG.emailjsUserId);
+  })();
+  
+  let orderData = null;
+  let timeLeft = 300; // 5 minutes
+  
+  // Load order data from sessionStorage
+  window.onload = function() {
+    const stored = sessionStorage.getItem('wwc_order');
+    
+    if (!stored) {
+      alert('No order found. Please place an order first.');
+      window.location.href = 'index.html';
+      return;
+    }
+    
+    orderData = JSON.parse(stored);
+    
+    // Display order details
+    document.getElementById('displayOrderId').textContent = 'Order ID: ' + orderData.orderId;
+    document.getElementById('displayPlatform').textContent = orderData.platform.charAt(0).toUpperCase() + orderData.platform.slice(1);
+    document.getElementById('displayService').textContent = orderData.service;
+    document.getElementById('displayQuantity').textContent = orderData.quantity;
+    document.getElementById('displayLink').textContent = orderData.link;
+    document.getElementById('displayAmount').textContent = orderData.amount;
+    
+    // Start countdown
+    startTimer();
+  };
+  
+  function startTimer() {
+    const timer = setInterval(() => {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      document.getElementById('countdown').textContent = 
+        minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
+      
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        alert('Payment window expired. Please place your order again.');
+        sessionStorage.removeItem('wwc_order');
+        window.location.href = 'index.html';
+      }
+      timeLeft--;
+    }, 1000);
+  }
+  
+  function copyUPI() {
+    const upiId = document.getElementById('upiIdText').textContent;
+    const copyBtn = document.getElementById('copyBtn');
+    const copyBtnText = document.getElementById('copyBtnText');
+    
+    navigator.clipboard.writeText(upiId).then(() => {
+      copyBtn.classList.add('copied');
+      copyBtnText.textContent = 'Copied!';
+      
+      setTimeout(() => {
+        copyBtn.classList.remove('copied');
+        copyBtnText.textContent = 'Copy';
+      }, 2000);
+    }).catch(err => {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = upiId;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      
+      copyBtn.classList.add('copied');
+      copyBtnText.textContent = 'Copied!';
+      
+      setTimeout(() => {
+        copyBtn.classList.remove('copied');
+        copyBtnText.textContent = 'Copy';
+      }, 2000);
+    });
+  }
+  
+  function downloadQR() {
+    const qrImage = document.getElementById('qrCode');
+    const link = document.createElement('a');
+    link.href = qrImage.src;
+    link.download = 'wwc-upi-qr-code.png';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+  
+  function confirmPayment(event) {
+    event.preventDefault();
+    
+    const btn = document.getElementById('submitBtn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = 'Processing... <span class="spinner"></span>';
+    btn.disabled = true;
+    
+    const customerEmail = document.getElementById('customerEmail').value;
+    const transactionId = document.getElementById('transactionId').value;
+    const screenshot = document.getElementById('paymentScreenshot').files[0];
+    
+    // Prepare payment data
+    const paymentData = {
+      ...orderData,
+      customerEmail: customerEmail,
+      transactionId: transactionId,
+      paymentDate: new Date().toLocaleString()
+    };
+    
+    // 1. Send confirmation email to customer via EmailJS
+    const customerTemplateParams = {
+      to_email: customerEmail,
+      to_name: customerEmail.split('@')[0],
+      order_id: orderData.orderId,
+      platform: orderData.platform,
+      service: orderData.service,
+      quantity: orderData.quantity,
+      amount: orderData.amount,
+      transaction_id: transactionId,
+      reply_to: CONFIG.adminEmail
+    };
+    
+    // 2. Send notification to admin via FormSubmit
+    const adminFormData = {
+      ...paymentData,
+      _subject: 'New Payment Received - Order ID: ' + orderData.orderId,
+      _template: 'table',
+      _captcha: false
+    };
+    
+    // Send EmailJS email to customer
+    emailjs.send(CONFIG.emailjsServiceId, CONFIG.emailjsTemplateId, customerTemplateParams)
+      .then(function(response) {
+        console.log('Customer email sent:', response);
+      })
+      .catch(function(error) {
+        console.error('EmailJS error:', error);
+      });
+    
+    // Send FormSubmit to admin
+    fetch('https://formsubmit.co/ajax/' + CONFIG.adminEmail, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(adminFormData)
+    })
+    .then(response => response.json())
+    .then(result => {
+      console.log('Admin notification sent:', result);
+      
+      // Show success message
+      document.getElementById('paymentForm').style.display = 'none';
+      document.getElementById('successMessage').style.display = 'block';
+      document.getElementById('successOrderId').textContent = orderData.orderId;
+      
+      // Clear sessionStorage
+      sessionStorage.removeItem('wwc_order');
+      
+      // Reset button
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    })
+    .catch(error => {
+      console.error('FormSubmit error:', error);
+      alert('There was an error processing your payment. Please contact support with your Order ID: ' + orderData.orderId);
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    });
+  }
+</script>
+
+</body>
+</html>
