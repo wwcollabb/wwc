@@ -1037,7 +1037,7 @@
   
   <!-- SMM SERVICES SECTION - TOP PRIORITY -->
   <section id="worldwideservices">
-    <h2>🚀 SMM Services</h2>
+    <h2>🚀 Buy WWC Services</h2>
     <p style="margin-bottom: 25px; color: #666; font-size: 16px;">Boost your social media presence with our premium services. Select a platform below to get started.</p>
     
     <!-- Platform Selection with Logos -->
@@ -1489,7 +1489,7 @@
     Object.keys(services[platform]).forEach(service => {
       const option = document.createElement('option');
       option.value = service;
-      option.textContent = service + ' (₹' + services[platform][service].price + '/unit)';
+      option.textContent = service + ' (₹' + services[platform])';
       serviceSelect.appendChild(option);
     });
     
