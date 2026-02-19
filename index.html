@@ -1489,7 +1489,7 @@
     Object.keys(services[platform]).forEach(service => {
       const option = document.createElement('option');
       option.value = service;
-      option.textContent = service + ' (₹' + services[platform][service].price + '/unit)';
+      option.textContent = service;
       serviceSelect.appendChild(option);
     });
     
