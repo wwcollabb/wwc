@@ -1249,21 +1249,122 @@
     <div class="elfsight-app-4d293aed-a3e5-473a-a200-df801a67898d" data-elfsight-app-lazy></div>
   </section>
 
-  <section class="testimonials" style="padding: 40px 20px; background: #f8f9ff;">
-  <h2 style="text-align: center; color: #667eea; margin-bottom: 30px;">What Our Customers Say</h2>
+  <section class="testimonials" style="padding: 40px 20px; background: linear-gradient(135deg, #f8f9ff 0%, #e8eaff 100%);">
+  <h2 style="text-align: center; color: #667eea; margin-bottom: 10px; font-size: 28px;">What Our Customers Say</h2>
+  <p style="text-align: center; color: #888; margin-bottom: 30px;">Trusted by 10,000+ creators worldwide</p>
   
-  <div class="testimonial-card" style="background: white; padding: 20px; border-radius: 15px; margin: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-    <div style="color: #ffc107; font-size: 20px;">⭐⭐⭐⭐⭐</div>
-    <p style="color: #555; margin: 10px 0;">"Got 10K followers in 6 hours! Real and active profiles. Highly recommended!"</p>
-    <p style="color: #667eea; font-weight: 600;">- Rahul S., Mumbai</p>
+  <!-- Slider Container -->
+  <div class="testimonial-slider" style="position: relative; max-width: 600px; margin: 0 auto; overflow: hidden;">
+    
+    <!-- Slide 1 -->
+    <div class="testimonial-slide active" style="display: block; animation: fadeIn 0.5s;">
+      <div class="testimonial-card" style="background: white; padding: 30px; border-radius: 20px; margin: 15px; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.15); text-align: center;">
+        
+        <!-- Profile Pic Top Center -->
+        <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Rahul" 
+               alt="Rahul" 
+               style="width: 80px; height: 80px; border-radius: 50%; border: 4px solid #667eea; box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);">
+        </div>
+        
+        <div style="color: #ffc107; font-size: 24px; margin-bottom: 10px;">⭐⭐⭐⭐⭐</div>
+        <p style="color: #555; margin: 15px 0; font-size: 16px; line-height: 1.6; font-style: italic;">"Got 10K followers in 6 hours! Real and active profiles. Highly recommended!"</p>
+        <p style="color: #667eea; font-weight: 700; font-size: 16px;">- Rahul S., Mumbai</p>
+        <p style="color: #999; font-size: 12px; margin-top: 5px;">Instagram Influencer</p>
+      </div>
+    </div>
+    
+    <!-- Slide 2 -->
+    <div class="testimonial-slide" style="display: none; animation: fadeIn 0.5s;">
+      <div class="testimonial-card" style="background: white; padding: 30px; border-radius: 20px; margin: 15px; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.15); text-align: center;">
+        
+        <!-- Profile Pic Top Center -->
+        <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Priya" 
+               alt="Priya" 
+               style="width: 80px; height: 80px; border-radius: 50%; border: 4px solid #764ba2; box-shadow: 0 5px 15px rgba(118, 75, 162, 0.3);">
+        </div>
+        
+        <div style="color: #ffc107; font-size: 24px; margin-bottom: 10px;">⭐⭐⭐⭐⭐</div>
+        <p style="color: #555; margin: 15px 0; font-size: 16px; line-height: 1.6; font-style: italic;">"Best prices in market. My YouTube channel grew 5x in one month."</p>
+        <p style="color: #667eea; font-weight: 700; font-size: 16px;">- Priya K., Delhi</p>
+        <p style="color: #999; font-size: 12px; margin-top: 5px;">YouTuber</p>
+      </div>
+    </div>
+    
+    <!-- Slide 3 -->
+    <div class="testimonial-slide" style="display: none; animation: fadeIn 0.5s;">
+      <div class="testimonial-card" style="background: white; padding: 30px; border-radius: 20px; margin: 15px; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.15); text-align: center;">
+        
+        <!-- Profile Pic Top Center -->
+        <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Amit" 
+               alt="Amit" 
+               style="width: 80px; height: 80px; border-radius: 50%; border: 4px solid #1e90ff; box-shadow: 0 5px 15px rgba(30, 144, 255, 0.3);">
+        </div>
+        
+        <div style="color: #ffc107; font-size: 24px; margin-bottom: 10px;">⭐⭐⭐⭐⭐</div>
+        <p style="color: #555; margin: 15px 0; font-size: 16px; line-height: 1.6; font-style: italic;">"Super fast delivery! My Telegram group reached 50K members in 2 days."</p>
+        <p style="color: #667eea; font-weight: 700; font-size: 16px;">- Amit R., Bangalore</p>
+        <p style="color: #999; font-size: 12px; margin-top: 5px;">Business Owner</p>
+      </div>
+    </div>
+    
+    <!-- Navigation Dots -->
+    <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
+      <button onclick="showSlide(0)" class="dot active" style="width: 12px; height: 12px; border-radius: 50%; border: none; background: #667eea; cursor: pointer; transition: all 0.3s;"></button>
+      <button onclick="showSlide(1)" class="dot" style="width: 12px; height: 12px; border-radius: 50%; border: none; background: #ccc; cursor: pointer; transition: all 0.3s;"></button>
+      <button onclick="showSlide(2)" class="dot" style="width: 12px; height: 12px; border-radius: 50%; border: none; background: #ccc; cursor: pointer; transition: all 0.3s;"></button>
+    </div>
+    
+    <!-- Auto-slide indicator -->
+    <p style="text-align: center; color: #aaa; font-size: 12px; margin-top: 15px;">
+      <span id="slideNumber">1</span> / 3
+    </p>
+    
   </div>
+</section>
+
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
   
-  <div class="testimonial-card" style="background: white; padding: 20px; border-radius: 15px; margin: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-    <div style="color: #ffc107; font-size: 20px;">⭐⭐⭐⭐⭐</div>
-    <p style="color: #555; margin: 10px 0;">"Best prices in market. My YouTube channel grew 5x in one month."</p>
-    <p style="color: #667eea; font-weight: 600;">- Priya K., Delhi</p>
-  </div>
-  </section>
+  .dot.active {
+    background: #667eea !important;
+    transform: scale(1.2);
+  }
+</style>
+
+<script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.testimonial-slide');
+  const dots = document.querySelectorAll('.dot');
+  const slideNumber = document.getElementById('slideNumber');
+  
+  function showSlide(index) {
+    // Hide all slides
+    slides.forEach(slide => slide.style.display = 'none');
+    dots.forEach(dot => {
+      dot.style.background = '#ccc';
+      dot.classList.remove('active');
+    });
+    
+    // Show selected slide
+    slides[index].style.display = 'block';
+    dots[index].style.background = '#667eea';
+    dots[index].classList.add('active');
+    slideNumber.textContent = index + 1;
+    currentSlide = index;
+  }
+  
+  // Auto slide every 4 seconds
+  setInterval(() => {
+    currentSlide = (currentSlide + 1) % slides.length;
+    showSlide(currentSlide);
+  }, 5000);
+</script>
   
   <!-- Contact Section -->
   <section id="contact">
