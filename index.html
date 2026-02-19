@@ -1088,12 +1088,12 @@
       </div>
       
       <div class="form-group" id="linkGroup" style="display: none;">
-        <label for="profileLink">Enter Profile URL:</label>
-        <input type="url" id="profileLink" placeholder="https://instagram.com/username" required>
+        <label for="profileLink">Enter URL/Username 👇</label>
+        <input type="url" id="profileLink" placeholder="https://platform.com/username" required>
       </div>
       
       <div class="form-group" id="quantityGroup" style="display: none;">
-        <label for="quantity">Enter Quantity (Manual Entry Only):</label>
+        <label for="quantity">Enter Quantity 👇</label>
         <div class="quantity-wrapper">
           <input type="number" id="quantity" class="quantity-input" min="1" placeholder="Enter quantity manually" oninput="calculatePrice()">
         </div>
@@ -1311,7 +1311,7 @@
     <div class="faq-item">
       <button class="faq-question" onclick="toggleFaq(this)">How can I be featured on Worldwide Collab?</button>
       <div class="faq-answer">
-        <p>Follow @ww_collab on Instagram and YouTube, tag us in your post, use #wwcollab, and we may feature you.</p>
+        <p>Follow @ww_collab on Instagram, tag us in your post, use #wwcollab, and we may feature you.</p>
       </div>
     </div>
 
@@ -1416,21 +1416,21 @@
   // ===== SERVICES DATA =====
   const services = {
     instagram: {
-      'Followers (Real)': { price: 0.13, min: 100, step: 100 },
+      'Followers (Real)': { price: 0.09, min: 100, step: 100 },
       'Likes (Real)': { price: 0.02, min: 100, step: 100 },
-      'Views (Real)': { price: 0.003, min: 1000, step: 1000 },
-      'Comments (Real)': { price: 2.00, min: 10, step: 10 }
+      'Views (Real)': { price: 0.010, min: 1000, step: 1000 },
+      'Comments (Real)': { price: 1.50, min: 10, step: 10 }
     },
     youtube: {
-      'Subscribers (Real)': { price: 0.15, min: 1000, step: 100 },
-      'Views (Real)': { price: 0.07, min: 1000, step: 1000 },
+      'Subscribers (Real)': { price: 0.17, min: 1000, step: 100 },
+      'Views (Real)': { price: 0.10, min: 1000, step: 1000 },
       'Likes (Real)': { price: 0.15, min: 1000, step: 100 },
-      'Watch Hours': { price: 5.50, min: 10, step: 10 }
+      'Watch Hours': { price: 10.50, min: 10, step: 10 }
     },
     tiktok: {
-      'Followers (Real)': { price: 0.13, min: 1000, step: 100 },
-      'Likes (Real)': { price: 0.09, min: 1000, step: 100 },
-      'Views (Real)': { price: 0.058, min: 10000, step: 1000 },
+      'Followers (Real)': { price: 0.14, min: 1000, step: 100 },
+      'Likes (Real)': { price: 0.07, min: 1000, step: 100 },
+      'Views (Real)': { price: 0.60, min: 10000, step: 1000 },
       'Shares (Real)': { price: 0.55, min: 20, step: 20 }
     },
     telegram: {
