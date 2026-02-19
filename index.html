@@ -1010,7 +1010,6 @@
   <a href="#worldwideservices" onclick="toggleSidebar()">SMM Services</a>
   <a href="#home" onclick="toggleSidebar()">Home</a>
   <a href="#about" onclick="toggleSidebar()">About Us</a>
-  <a href="#testimonials" onclick="toggleSidebar()">WWC REVIEWS</a>
   <a href="#topcreators" onclick="toggleSidebar()">Top Creators</a>
   <a href="#collaborate" onclick="toggleSidebar()">Collaborate</a>
   <a href="#contact" onclick="toggleSidebar()">Contact Us</a>
@@ -1370,104 +1369,6 @@
 </section>
 
 <script>
-  const slider = document.getElementById('testimonialSlider');
-  const wrapper = document.getElementById('slidesWrapper');
-  const dots = document.querySelectorAll('.slide-dot');
-  let currentIndex = 0;
-  const totalSlides = 5;
-  let startX = 0;
-  let currentX = 0;
-  let isDragging = false;
-
-  function updateSlider() {
-    wrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
-    dots.forEach((dot, index) => {
-      if (index === currentIndex) {
-        dot.style.background = '#667eea';
-        dot.style.transform = 'scale(1.2)';
-      } else {
-        dot.style.background = '#ddd';
-        dot.style.transform = 'scale(1)';
-      }
-    });
-  }
-
-  function goToSlide(index) {
-    currentIndex = index;
-    updateSlider();
-    resetAutoSlide();
-  }
-
-  function nextSlide() {
-    currentIndex = (currentIndex + 1) % totalSlides;
-    updateSlider();
-  }
-
-  function prevSlide() {
-    currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
-    updateSlider();
-  }
-
-  // Touch Events for Swipe
-  slider.addEventListener('touchstart', (e) => {
-    startX = e.touches[0].clientX;
-    isDragging = true;
-    slider.style.cursor = 'grabbing';
-  });
-
-  slider.addEventListener('touchmove', (e) => {
-    if (!isDragging) return;
-    currentX = e.touches[0].clientX;
-  });
-
-  slider.addEventListener('touchend', () => {
-    if (!isDragging) return;
-    isDragging = false;
-    slider.style.cursor = 'grab';
-    
-    const diff = startX - currentX;
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) {
-        nextSlide();
-      } else {
-        prevSlide();
-      }
-      resetAutoSlide();
-    }
-  });
-
-  // Mouse Events for Desktop Swipe
-  slider.addEventListener('mousedown', (e) => {
-    startX = e.clientX;
-    isDragging = true;
-    slider.style.cursor = 'grabbing';
-  });
-
-  slider.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    currentX = e.clientX;
-  });
-
-  slider.addEventListener('mouseup', () => {
-    if (!isDragging) return;
-    isDragging = false;
-    slider.style.cursor = 'grab';
-    
-    const diff = startX - currentX;
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) {
-        nextSlide();
-      } else {
-        prevSlide();
-      }
-      resetAutoSlide();
-    }
-  });
-
-  slider.addEventListener('mouseleave', () => {
-    isDragging = false;
-    slider.style.cursor = 'grab';
-  });
 
   // Auto Slide
   let autoSlideInterval = setInterval(nextSlide, 4000);
