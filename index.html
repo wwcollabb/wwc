@@ -1000,7 +1000,18 @@
         font-size: 14px;
       }
     }
-      </style>
+  /* Logout Button in Menu */
+.menu-item.logout {
+    color: #e74c3c;
+    border-top: 2px solid #f0f0f0;
+    margin-top: 10px;
+    padding-top: 15px;
+}
+
+.menu-item.logout:hover {
+    background: #fdf2f2;
+}
+  </style>
       <!-- Header -->
 <header>
   <div class="logo">
@@ -1056,6 +1067,9 @@
   <a href="#collaborate" onclick="toggleSidebar()">Collaborate</a>
   <a href="#contact" onclick="toggleSidebar()">Contact Us</a>
   <a href="#faqs" onclick="toggleSidebar()">FAQs</a>
+  <a href="#logout" class="menu-item logout" onclick="logout()">
+    <span>🚪</span> Logout
+</a>
   
   <button class="collapsible" onclick="toggleCollapsible(this)">Privacy Policy</button>
   <div class="collapsible-content">
@@ -1938,6 +1952,14 @@
       document.body.style.overflow = 'auto';
     }
   }
+  // Logout Function
+function logout() {
+    firebase.auth().signOut().then(function() {
+        window.location.href = 'login.html';
+    }).catch(function(error) {
+        console.log('Logout error:', error);
+    });
+}
 </script>
   
 </body>
