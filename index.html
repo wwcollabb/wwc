@@ -1073,8 +1073,6 @@
     <p style="margin-bottom: 15px;">Need help with your order? Contact our support team:</p>
     <button onclick="openSupportModal(); toggleSidebar();" style="background: var(--danger); color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-family: 'Poppins', sans-serif; font-weight: 600;">Open Support Form</button>
   </div>
-  <a href="#logout" class="menu-item logout" onclick="logout()">
-    <span>🚪</span> Logout
 </div>
 
 <!-- Main Content -->
@@ -1941,15 +1939,6 @@
       document.body.style.overflow = 'auto';
     }
   }
-  // Logout Function
-function logout() {
-    firebase.auth().signOut().then(function() {
-        window.location.href = 'login.html';
-    }).catch(function(error) {
-        console.log('Logout error:', error);
-    });
-}
-</script>
   
 </body>
 </html>
