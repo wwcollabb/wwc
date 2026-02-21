@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Worldwide Collab</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* WWC Logo Styles */
+        .logo-container {
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .brand-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            letter-spacing: 1px;
+        }
+
+        .brand-tagline {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 22px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .toggle-form {
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .toggle-form a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .toggle-form a:hover {
+            text-decoration: underline;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+            padding: 10px;
+            background: #fdf2f2;
+            border-radius: 5px;
+        }
+
+        .success {
+            color: #27ae60;
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+            padding: 10px;
+            background: #f0fdf4;
+            border-radius: 5px;
+        }
+
+        .loading {
+            display: none;
+            margin-top: 15px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 15px;
+        }
+
+        .forgot-password a {
+            color: #667eea;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .divider {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #999;
+            font-size: 13px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .divider span {
+            padding: 0 10px;
+        }
+
+        .google-btn {
+            width: 100%;
+            padding: 12px;
+            background: white;
+            color: #333;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .google-btn:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+            
+            .logo {
+                width: 70px;
+                height: 70px;
+                font-size: 24px;
+            }
+            
+            .brand-name {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- WWC Logo -->
+        <div class="logo-container">
+            <div class="logo">WWC</div>
+            <div class="brand-name">Worldwide Collab</div>
+            <div class="brand-tagline">Global Talent Platform</div>
+        </div>
+
+        <h2 id="formTitle">Welcome Back</h2>
+
+        <form id="authForm">
+            <div class="input-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="input-group" id="nameGroup" style="display: none;">
+                <label for="displayName">Full Name</label>
+                <input type="text" id="displayName" placeholder="Enter your full name">
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+
+            <div class="forgot-password" id="forgotPasswordDiv">
+                <a href="#" onclick="resetPassword()">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn" id="submitBtn">Login</button>
+            
+            <div class="loading" id="loadingDiv">
+                <div class="spinner"></div>
+                <p style="margin-top: 10px; color: #666; font-size: 14px;">Please wait...</p>
+            </div>
+
+            <div class="error" id="errorDiv"></div>
+            <div class="success" id="successDiv"></div>
+        </form>
+
+        <div class="divider">
+            <span>OR</span>
+        </div>
+
+        <button class="google-btn" onclick="signInWithGoogle()">
+            <svg width="20" height="20" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            Continue with Google
+        </button>
+
+        <div class="toggle-form">
+            <span id="toggleText">Don't have an account?</span>
+            <a onclick="toggleForm()" id="toggleLink">Sign Up</a>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+    <script>
+        // 🔥 AAPKA FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyDcvUZkjQYvUFMmS2FC8k0E9XKNXuzPA4k",
+            authDomain: "ww-c-5c5c1.firebaseapp.com",
+            projectId: "ww-c-5c5c1",
+            storageBucket: "ww-c-5c5c1.firebasestorage.app",
+            messagingSenderId: "200600278915",
+            appId: "1:200600278915:web:654a42ec7f71e9386e08b6"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        
+        // Google Auth Provider
+        const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+        let isLogin = true;
+
+        // Check if already logged in
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is logged in, redirect to index
+                window.location.href = 'index.html';
+            }
+        });
+
+        function toggleForm() {
+            isLogin = !isLogin;
+            const formTitle = document.getElementById('formTitle');
+            const submitBtn = document.getElementById('submitBtn');
+            const toggleText = document.getElementById('toggleText');
+            const toggleLink = document.getElementById('toggleLink');
+            const nameGroup = document.getElementById('nameGroup');
+            const forgotPasswordDiv = document.getElementById('forgotPasswordDiv');
+
+            if (isLogin) {
+                formTitle.textContent = 'Welcome Back';
+                submitBtn.textContent = 'Login';
+                toggleText.textContent = "Don't have an account?";
+                toggleLink.textContent = 'Sign Up';
+                nameGroup.style.display = 'none';
+                forgotPasswordDiv.style.display = 'block';
+            } else {
+                formTitle.textContent = 'Create Account';
+                submitBtn.textContent = 'Sign Up';
+                toggleText.textContent = 'Already have an account?';
+                toggleLink.textContent = 'Login';
+                nameGroup.style.display = 'block';
+                forgotPasswordDiv.style.display = 'none';
+            }
+        }
+
+        // Email/Password Auth
+        document.getElementById('authForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const displayName = document.getElementById('displayName').value;
+            
+            const errorDiv = document.getElementById('errorDiv');
+            const successDiv = document.getElementById('successDiv');
+            const loadingDiv = document.getElementById('loadingDiv');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Hide previous messages
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            
+            // Show loading
+            loadingDiv.style.display = 'block';
+            submitBtn.disabled = true;
+
+            try {
+                if (isLogin) {
+                    // Login
+                    await auth.signInWithEmailAndPassword(email, password);
+                    successDiv.textContent = 'Login successful! Redirecting...';
+                    successDiv.style.display = 'block';
+                    
+                    // Redirect to index.html after 1 second
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                    
+                } else {
+                    // Sign Up
+                    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                    
+                    // Update display name
+                    if (displayName) {
+                        await userCredential.user.updateProfile({
+                            displayName: displayName
+                        });
+                    }
+                    
+                    successDiv.textContent = 'Account created successfully! Redirecting...';
+                    successDiv.style.display = 'block';
+                    
+                    // Redirect to index.html after 1 second
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                }
+            } catch (error) {
+                errorDiv.textContent = getErrorMessage(error.code);
+                errorDiv.style.display = 'block';
+                loadingDiv.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Google Sign In
+        function signInWithGoogle() {
+            const errorDiv = document.getElementById('errorDiv');
+            const loadingDiv = document.getElementById('loadingDiv');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            errorDiv.style.display = 'none';
+            loadingDiv.style.display = 'block';
+            submitBtn.disabled = true;
+
+            auth.signInWithPopup(googleProvider)
+                .then((result) => {
+                    // Google sign in successful
+                    window.location.href = 'index.html';
+                })
+                .catch((error) => {
+                    errorDiv.textContent = getErrorMessage(error.code);
+                    errorDiv.style.display = 'block';
+                    loadingDiv.style.display = 'none';
+                    submitBtn.disabled = false;
+                });
+        }
+
+        // Reset Password
+        function resetPassword() {
+            const email = document.getElementById('email').value;
+            const errorDiv = document.getElementById('errorDiv');
+            const successDiv = document.getElementById('successDiv');
+
+            if (!email) {
+                errorDiv.textContent = 'Please enter your email address first';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    successDiv.textContent = 'Password reset email sent! Check your inbox.';
+                    successDiv.style.display = 'block';
+                })
+                .catch((error) => {
+                    errorDiv.textContent = getErrorMessage(error.code);
+                    errorDiv.style.display = 'block';
+                });
+        }
+
+        // Error Messages
+        function getErrorMessage(code) {
+            const messages = {
+                'auth/invalid-email': 'Invalid email address',
+                'auth/user-disabled': 'This account has been disabled',
+                'auth/user-not-found': 'No account found with this email',
+                'auth/wrong-password': 'Incorrect password',
+                'auth/email-already-in-use': 'An account already exists with this email',
+                'auth/weak-password': 'Password should be at least 6 characters',
+                'auth/invalid-credential': 'Invalid email or password',
+                'auth/too-many-requests': 'Too many attempts. Please try again later',
+                'auth/popup-closed-by-user': 'Sign in popup was closed',
+                'auth/cancelled-popup-request': 'Sign in cancelled'
+            };
+            return messages[code] || 'An error occurred. Please try again.';
+        }
+    </script>
+</body>
+</html>
+
