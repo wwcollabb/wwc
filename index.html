@@ -1017,6 +1017,196 @@
     <a href="#contact">Contact</a>
     <a href="#faqs">FAQs</a>
   </nav>
+  <!-- Top Navbar User Menu -->
+<div class="user-menu" id="userMenu">
+    <div class="user-info" onclick="toggleDropdown()">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <span id="userDisplayName">User</span>
+        <span class="dropdown-arrow">▼</span>
+    </div>
+    
+    <div class="dropdown-menu" id="dropdownMenu">
+        <div class="dropdown-header">
+            <span id="dropdownEmail">user@email.com</span>
+        </div>
+        <div class="dropdown-divider"></div>
+        <a href="#" class="dropdown-item">
+            <span>👤</span> Profile
+        </a>
+        <a href="#" class="dropdown-item">
+            <span>⚙️</span> Settings
+        </a>
+        <div class="dropdown-divider"></div>
+        <a href="#" class="dropdown-item logout" onclick="logout()">
+            <span>🚪</span> Logout
+        </a>
+    </div>
+</div>
+
+<style>
+    /* User Menu Styles */
+    .user-menu {
+        position: relative;
+        margin-left: auto;
+    }
+    
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 15px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s;
+        color: white;
+    }
+    
+    .user-info:hover {
+        background: rgba(255,255,255,0.2);
+    }
+    
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 14px;
+        color: white;
+    }
+    
+    .dropdown-arrow {
+        font-size: 10px;
+        transition: transform 0.3s;
+    }
+    
+    .dropdown-arrow.rotate {
+        transform: rotate(180deg);
+    }
+    
+    /* Dropdown Menu */
+    .dropdown-menu {
+        position: absolute;
+        top: 120%;
+        right: 0;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        min-width: 200px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s;
+        z-index: 1000;
+    }
+    
+    .dropdown-menu.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    
+    .dropdown-header {
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 12px 12px 0 0;
+    }
+    
+    #dropdownEmail {
+        font-size: 13px;
+        color: #666;
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .dropdown-divider {
+        height: 1px;
+        background: #e1e1e1;
+        margin: 5px 0;
+    }
+    
+    .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 15px;
+        color: #333;
+        text-decoration: none;
+        font-size: 14px;
+        transition: background 0.2s;
+    }
+    
+    .dropdown-item:hover {
+        background: #f8f9fa;
+    }
+    
+    .dropdown-item.logout {
+        color: #e74c3c;
+    }
+    
+    .dropdown-item.logout:hover {
+        background: #fdf2f2;
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .user-info span:not(.dropdown-arrow) {
+            display: none;
+        }
+        
+        .dropdown-menu {
+            right: -50px;
+        }
+    }
+</style>
+
+<script>
+    // Toggle Dropdown
+    function toggleDropdown() {
+        const menu = document.getElementById('dropdownMenu');
+        const arrow = document.querySelector('.dropdown-arrow');
+        menu.classList.toggle('show');
+        arrow.classList.toggle('rotate');
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        const userMenu = document.getElementById('userMenu');
+        if (!userMenu.contains(e.target)) {
+            document.getElementById('dropdownMenu').classList.remove('show');
+            document.querySelector('.dropdown-arrow').classList.remove('rotate');
+        }
+    });
+    
+    // Logout Function
+    function logout() {
+        firebase.auth().signOut().then(() => {
+            window.location.href = 'login.html';
+        }).catch((error) => {
+            console.error('Logout error:', error);
+        });
+    }
+    
+    // Update User Info
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            const displayName = user.displayName || user.email.split('@')[0];
+            const email = user.email;
+            const initial = displayName.charAt(0).toUpperCase();
+            
+            document.getElementById('userDisplayName').textContent = displayName;
+            document.getElementById('userAvatar').textContent = initial;
+            document.getElementById('dropdownEmail').textContent = email;
+        }
+    });
+</script>
+  
 </header>
 
   <!-- Firebase Auth Check -->
