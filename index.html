@@ -1558,6 +1558,115 @@ footer a {
       <a href="#collaborate">Collaborate</a>
       <a href="#contact">Contact</a>
       <a href="#faqs">FAQs</a>
+          /* Collab Request Section */
+    .collab-request-section {
+      background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+      border: 2px solid rgba(99, 102, 241, 0.1);
+    }
+
+    .collab-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+
+    .collab-card {
+      background: white;
+      border-radius: 20px;
+      padding: 35px 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid #e2e8f0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .collab-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--gradient);
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 0;
+    }
+
+    .collab-card:hover::before {
+      opacity: 1;
+    }
+
+    .collab-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+      border-color: var(--primary);
+    }
+
+    .collab-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .collab-card:hover .collab-icon,
+    .collab-card:hover h3,
+    .collab-card:hover p,
+    .collab-card:hover .collab-btn {
+      color: white;
+    }
+
+    .collab-card:hover .collab-btn {
+      background: white;
+      color: var(--primary);
+    }
+
+    .collab-icon {
+      font-size: 56px;
+      margin-bottom: 20px;
+      transition: all 0.3s;
+    }
+
+    .collab-card h3 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 12px;
+      transition: color 0.3s;
+    }
+
+    .collab-card p {
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 25px;
+      transition: color 0.3s;
+    }
+
+    .collab-btn {
+      display: inline-block;
+      padding: 12px 30px;
+      background: var(--gradient);
+      color: white;
+      border-radius: 25px;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .collab-cards {
+        grid-template-columns: 1fr;
+      }
+      
+      .collab-card {
+        padding: 30px 25px;
+      }
+    }
     </nav>
   </header>
 
@@ -1935,6 +2044,30 @@ footer a {
         </div>
         <button type="submit" class="btn-primary">Send Message</button>
       </form>
+    </section>
+
+        <!-- Collab Request Section -->
+    <section id="collab-request" class="collab-request-section">
+      <h2>🤝 Work With Us</h2>
+      <p style="margin-bottom: 10px; color: #64748b; font-size: 16px; font-weight: 500;">Are you a Creator or Brand? Let's collaborate and grow together!</p>
+      
+      <div class="collab-cards">
+        <!-- For Creators -->
+        <div class="collab-card" onclick="window.location.href='collab-creator.html'">
+          <div class="collab-icon">🎨</div>
+          <h3>I'm a Creator</h3>
+          <p>Join our network of talented creators. Get featured, collaborate with brands, and grow your audience with Worldwide Collab.</p>
+          <span class="collab-btn">Apply as Creator →</span>
+        </div>
+        
+        <!-- For Brands -->
+        <div class="collab-card" onclick="window.location.href='collab-brand.html'">
+          <div class="collab-icon">🏢</div>
+          <h3>I'm a Brand</h3>
+          <p>Connect with top creators for your marketing campaigns. Find the perfect influencers to promote your products.</p>
+          <span class="collab-btn">Partner as Brand →</span>
+        </div>
+      </div>
     </section>
 
     <!-- FAQ Section -->
