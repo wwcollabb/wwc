@@ -1553,8 +1553,9 @@ footer a {
     <nav>
       <a href="#worldwideservices">WWC Services</a>
       <a href="#home">Home</a>
+  <a href="#register" style="background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%); color: white; padding: 10px 20px; border-radius: 25px; font-weight: 700;">Register</a>
+  <a href="#worldwideservices">WWC Services</a>
       <a href="#about">About</a>
-  <a href="register.html">Register</a>
       <a href="#topcreators">Creators</a>
       <a href="#collaborate">Collaborate</a>
       <a href="#contact">Contact</a>
@@ -1608,9 +1609,9 @@ footer a {
       <div class="sidebar-nav">
         <a href="#worldwideservices" onclick="toggleSidebar()">🛒 Buy WWC Services</a>
         <a href="#home" onclick="toggleSidebar()">🏠 Home</a>
+  <a href="#register" onclick="toggleSidebar()" style="background: rgba(244,63,94,0.2); color: #f43f5e; border: 1px solid rgba(244,63,94,0.3);">📝 Register Now</a>
         <a href="#about" onclick="toggleSidebar()">ℹ️ About Us</a>
         <a href="#topcreators" onclick="toggleSidebar()">⭐ Top Creators</a>
-  <a href="register.html" onclick="toggleSidebar()">📝 Register (Brand/Creator)</a>
         <a href="#collaborate" onclick="toggleSidebar()">🤝 Collaborate</a>
         <a href="#contact" onclick="toggleSidebar()">📧 Contact Us</a>
         <a href="#faqs" onclick="toggleSidebar()">❓ FAQs</a>
@@ -1739,6 +1740,267 @@ footer a {
       <p>Connecting the Best Talents in the World with Brands, Audiences & Opportunities.</p>
     </section>
 
+    <!-- Register Section - Ultra Modern Floating Design (Part 1) -->
+<section id="register" style="position: relative; padding: 100px 30px; margin-bottom: 40px; overflow: visible;">
+  
+  <!-- Animated Background -->
+  <div style="position: absolute; inset: 0; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%); border-radius: 40px; overflow: hidden;">
+    <!-- Floating Orbs -->
+    <div style="position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, rgba(244,63,94,0.4) 0%, transparent 70%); border-radius: 50%; top: -100px; left: -100px; filter: blur(60px); animation: float1 8s ease-in-out infinite;"></div>
+    <div style="position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(99,102,241,0.4) 0%, transparent 70%); border-radius: 50%; bottom: -50px; right: -50px; filter: blur(60px); animation: float2 10s ease-in-out infinite;"></div>
+    <div style="position: absolute; width: 200px; height: 200px; background: radial-gradient(circle, rgba(139,92,246,0.3) 0%, transparent 70%); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); filter: blur(80px); animation: pulse 6s ease-in-out infinite;"></div>
+  </div>
+
+  <style>
+    @keyframes float1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, 30px) scale(1.1); }
+    }
+    @keyframes float2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-20px, -30px) scale(1.05); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.2); }
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .register-card:hover {
+      transform: translateY(-12px) rotateX(5deg) !important;
+      border-color: rgba(244,63,94,0.5) !important;
+      box-shadow: 0 40px 80px -20px rgba(244,63,94,0.3), 0 0 0 1px rgba(244,63,94,0.2) !important;
+    }
+    .register-card:hover > div:first-of-type {
+      opacity: 1 !important;
+    }
+    .register-card:hover > div:nth-of-type(2) {
+      opacity: 1 !important;
+    }
+    .register-card:hover [style*="display: inline-flex"] svg {
+      transform: translateX(4px);
+    }
+    .register-card:hover [style*="display: inline-flex"] > div:last-of-type {
+      opacity: 1 !important;
+    }
+    .register-card:hover [style*="display: inline-flex"] {
+      color: white !important;
+      border-color: transparent !important;
+    }
+    .register-card-creator:hover {
+      transform: translateY(-12px) rotateX(5deg) !important;
+      border-color: rgba(102,126,234,0.5) !important;
+      box-shadow: 0 40px 80px -20px rgba(102,126,234,0.3), 0 0 0 1px rgba(102,126,234,0.2) !important;
+    }
+    .register-card-creator:hover > div:first-of-type {
+      opacity: 1 !important;
+    }
+    .register-card-creator:hover > div:nth-of-type(2) {
+      opacity: 1 !important;
+    }
+    .register-card-creator:hover [style*="display: inline-flex"] svg {
+      transform: translateX(4px);
+    }
+    .register-card-creator:hover [style*="display: inline-flex"] > div:last-of-type {
+      opacity: 1 !important;
+    }
+    .register-card-creator:hover [style*="display: inline-flex"] {
+      color: white !important;
+      border-color: transparent !important;
+    }
+  </style>
+
+  <!-- Content -->
+  <div style="position: relative; z-index: 10; max-width: 1200px; margin: 0 auto;">
+    
+    <!-- Header -->
+    <div style="text-align: center; margin-bottom: 60px; animation: slideUp 0.6s ease-out;">
+      <div style="display: inline-block; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 50px; margin-bottom: 20px;">
+        <span style="color: #a5b4fc; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">Get Started Today</span>
+      </div>
+      <h2 style="font-size: 52px; font-weight: 800; color: white; margin-bottom: 20px; line-height: 1.1; letter-spacing: -1px;">
+        Join Our <span style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #ef4444 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Global Network</span>
+      </h2>
+      <p style="color: #94a3b8; font-size: 20px; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+        Connect with top brands and creators worldwide. Your next big collaboration starts here.
+      </p>
+    </div>
+
+    <!-- Floating Cards Container -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 40px; perspective: 1000px;">
+      
+      <!-- Brand Card -->
+      <div style="position: relative; animation: slideUp 0.6s ease-out 0.1s both;">
+        <a href="register.html#brand" style="text-decoration: none; display: block; height: 100%;">
+          <div class="register-card" style="position: relative; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 32px; padding: 50px 40px; height: 100%; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1); overflow: hidden;">
+            
+            <!-- Card Glow -->
+            <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(244,63,94,0.3) 0%, transparent 70%); opacity: 0; transition: opacity 0.4s; pointer-events: none;"></div>
+            
+            <!-- Shimmer Border -->
+            <div style="position: absolute; inset: 0; border-radius: 32px; padding: 1px; background: linear-gradient(135deg, rgba(244,63,94,0.5), rgba(255,255,255,0.1), rgba(244,63,94,0.5)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0.5; transition: opacity 0.4s;"></div>
+
+            <!-- Floating Icon -->
+            <div style="position: relative; width: 100px; height: 100px; margin-bottom: 30px;">
+              <div style="position: absolute; inset: 0; background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%); border-radius: 24px; transform: rotate(-6deg); opacity: 0.3; filter: blur(20px); transition: all 0.4s;"></div>
+              <div style="position: relative; width: 100%; height: 100%; background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 48px; box-shadow: 0 20px 40px rgba(244,63,94,0.4); border: 1px solid rgba(255,255,255,0.2);">
+                🏢
+              </div>
+              <!-- Floating Badge -->
+              <div style="position: absolute; top: -10px; right: -10px; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #1e293b; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; box-shadow: 0 4px 15px rgba(251,191,36,0.4); border: 2px solid rgba(255,255,255,0.2);">
+                B
+              </div>
+            </div>
+
+            <!-- Content -->
+            <h3 style="font-size: 32px; font-weight: 700; color: white; margin-bottom: 12px; position: relative;">For Brands</h3>
+            <p style="color: #f43f5e; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; position: relative;">Business Account</p>
+            
+            <p style="color: #94a3b8; font-size: 16px; line-height: 1.7; margin-bottom: 30px; position: relative;">
+              Launch global campaigns, connect with verified creators, and scale your brand presence worldwide.
+            </p>
+
+            <!-- Features List -->
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 35px; position: relative;">
+              <div style="display: flex; align-items: center; gap: 12px; color: #e2e8f0; font-size: 14px;">
+                <div style="width: 24px; height: 24px; background: rgba(244,63,94,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #f43f5e; font-size: 12px;">✓</div>
+                Access 10,000+ verified creators
+              </div>
+              <div style="display: flex; align-items: center; gap: 12px; color: #e2e8f0; font-size: 14px;">
+                <div style="width: 24px; height: 24px; background: rgba(244,63,94,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #f43f5e; font-size: 12px;">✓</div>
+                Advanced campaign analytics
+              </div>
+              <div style="display: flex; align-items: center; gap: 12px; color: #e2e8f0; font-size: 14px;">
+                <div style="width: 24px; height: 24px; background: rgba(244,63,94,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #f43f5e; font-size: 12px;">✓</div>
+                Dedicated account manager
+              </div>
+            </div>
+
+            <!-- CTA Button -->
+            <div style="position: relative; display: inline-flex; align-items: center; gap: 12px; background: linear-gradient(135deg, rgba(244,63,94,0.2) 0%, rgba(225,29,72,0.1) 100%); border: 1px solid rgba(244,63,94,0.3); color: #f43f5e; padding: 16px 32px; border-radius: 16px; font-weight: 700; font-size: 15px; transition: all 0.3s; overflow: hidden; width: 100%; justify-content: center;">
+              <span style="position: relative; z-index: 1;">Register as Brand</span>
+              <svg style="position: relative; z-index: 1; transition: transform 0.3s;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+              <!-- Button Hover Fill -->
+              <div style="position: absolute; inset: 0; background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%); opacity: 0; transition: opacity 0.3s;"></div>
+            </div>
+
+            <!-- Price Tag -->
+            <div style="position: absolute; top: 30px; right: 30px; background: rgba(15,23,42,0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 12px;">
+              <span style="color: #94a3b8; font-size: 12px;">Starting at</span>
+              <div style="color: white; font-weight: 700; font-size: 18px;">499</div>
+            </div>
+          </div>
+        </a>
+      </div>
+            <!-- Creator Card -->
+      <div style="position: relative; animation: slideUp 0.6s ease-out 0.2s both;">
+        <a href="register.html#creator" style="text-decoration: none; display: block; height: 100%;">
+          <div class="register-card-creator" style="position: relative; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 32px; padding: 50px 40px; height: 100%; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1); overflow: hidden;">
+            
+            <!-- Card Glow -->
+            <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(102,126,234,0.3) 0%, transparent 70%); opacity: 0; transition: opacity 0.4s; pointer-events: none;"></div>
+            
+            <!-- Shimmer Border -->
+            <div style="position: absolute; inset: 0; border-radius: 32px; padding: 1px; background: linear-gradient(135deg, rgba(102,126,234,0.5), rgba(255,255,255,0.1), rgba(102,126,234,0.5)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0.5; transition: opacity 0.4s;"></div>
+
+            <!-- Floating Icon -->
+            <div style="position: relative; width: 100px; height: 100px; margin-bottom: 30px;">
+              <div style="position: absolute; inset: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 24px; transform: rotate(6deg); opacity: 0.3; filter: blur(20px); transition: all 0.4s;"></div>
+              <div style="position: relative; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 48px; box-shadow: 0 20px 40px rgba(102,126,234,0.4); border: 1px solid rgba(255,255,255,0.2);">
+                🎨
+              </div>
+              <!-- Floating Badge -->
+              <div style="position: absolute; top: -10px; right: -10px; background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; box-shadow: 0 4px 15px rgba(59,130,246,0.4); border: 2px solid rgba(255,255,255,0.2);">
+                C
+              </div>
+            </div>
+
+            <!-- Content -->
+            <h3 style="font-size: 32px; font-weight: 700; color: white; margin-bottom: 12px; position: relative;">For Creators</h3>
+            <p style="color: #667eea; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; position: relative;">Creator Account</p>
+            
+            <p style="color: #94a3b8; font-size: 16px; line-height: 1.7; margin-bottom: 30px; position: relative;">
+              Get discovered by global brands, monetize your content, and grow your influence worldwide.
+            </p>
+
+            <!-- Features List -->
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 35px; position: relative;">
+              <div style="display: flex; align-items: center; gap: 12px; color: #e2e8f0; font-size: 14px;">
+                <div style="width: 24px; height: 24px; background: rgba(102,126,234,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #667eea; font-size: 12px;">✓</div>
+                Access to 500+ brand campaigns
+              </div>
+              <div style="display: flex; align-items: center; gap: 12px; color: #e2e8f0; font-size: 14px;">
+                <div style="width: 24px; height: 24px; background: rgba(102,126,234,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #667eea; font-size: 12px;">✓</div>
+                Secure payment protection
+              </div>
+              <div style="display: flex; align-items: center; gap: 12px; color: #e2e8f0; font-size: 14px;">
+                <div style="width: 24px; height: 24px; background: rgba(102,126,234,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #667eea; font-size: 12px;">✓</div>
+                Growth analytics & insights
+              </div>
+            </div>
+
+            <!-- CTA Button -->
+            <div style="position: relative; display: inline-flex; align-items: center; gap: 12px; background: linear-gradient(135deg, rgba(102,126,234,0.2) 0%, rgba(118,75,162,0.1) 100%); border: 1px solid rgba(102,126,234,0.3); color: #667eea; padding: 16px 32px; border-radius: 16px; font-weight: 700; font-size: 15px; transition: all 0.3s; overflow: hidden; width: 100%; justify-content: center;">
+              <span style="position: relative; z-index: 1;">Register as Creator</span>
+              <svg style="position: relative; z-index: 1; transition: transform 0.3s;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+              <!-- Button Hover Fill -->
+              <div style="position: absolute; inset: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); opacity: 0; transition: opacity 0.3s;"></div>
+            </div>
+
+            <!-- Price Tag -->
+            <div style="position: absolute; top: 30px; right: 30px; background: rgba(15,23,42,0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 12px;">
+              <span style="color: #94a3b8; font-size: 12px;">Starting at</span>
+              <div style="color: white; font-weight: 700; font-size: 18px;">299</div>
+            </div>
+          </div>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Bottom Floating Stats -->
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 60px; margin-top: 70px; position: relative; animation: slideUp 0.6s ease-out 0.3s both;">
+      <div style="text-align: center; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 25px 40px; border-radius: 20px;">
+        <div style="font-size: 36px; font-weight: 800; background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 5px;">10K+</div>
+        <div style="color: #94a3b8; font-size: 14px; font-weight: 500;">Verified Creators</div>
+      </div>
+      <div style="text-align: center; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 25px 40px; border-radius: 20px;">
+        <div style="font-size: 36px; font-weight: 800; background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 5px;">500+</div>
+        <div style="color: #94a3b8; font-size: 14px; font-weight: 500;">Global Brands</div>
+      </div>
+      <div style="text-align: center; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 25px 40px; border-radius: 20px;">
+        <div style="font-size: 36px; font-weight: 800; background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 5px;">50+</div>
+        <div style="color: #94a3b8; font-size: 14px; font-weight: 500;">Countries</div>
+      </div>
+    </div>
+
+    <!-- Trust Badges -->
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; margin-top: 50px; opacity: 0.6;">
+      <div style="display: flex; align-items: center; gap: 8px; color: #64748b; font-size: 13px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        Secure SSL Encryption
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; color: #64748b; font-size: 13px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        Verified Profiles Only
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; color: #64748b; font-size: 13px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+        24/7 Support
+      </div>
+    </div>
+
+  </div>
+</section>
+    
     <!-- About Section -->
     <section id="about">
       <h2>About Us</h2>
