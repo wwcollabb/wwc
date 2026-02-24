@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Payment - Worldwide Collab</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --primary: #6366f1;
+      --secondary: #8b5cf6;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --brand-gradient: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+      --creator-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .payment-container {
+      background: white;
+      border-radius: 30px;
+      padding: 40px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .payment-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: var(--brand-gradient);
+    }
+    
+    .payment-container.creator::before {
+      background: var(--creator-gradient);
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .header img {
+      width: 70px;
+      height: 70px;
+      border-radius: 16px;
+      margin-bottom: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .header h1 {
+      font-size: 24px;
+      color: #1e293b;
+      margin-bottom: 5px;
+    }
+    
+    .header p {
+      color: #64748b;
+      font-size: 14px;
+    }
+    
+    .order-summary {
+      background: #f8fafc;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 25px;
+      border: 2px solid #e2e8f0;
+    }
+    
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .detail-row:last-child {
+      border-bottom: none;
+      font-weight: 700;
+      color: #1e293b;
+      font-size: 16px;
+    }
+    
+    .amount-box {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      margin: 25px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .amount-box::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: shimmer 3s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .amount-box h3 {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .amount {
+      font-size: 48px;
+      font-weight: 800;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .upi-section {
+      margin: 25px 0;
+    }
+    
+    .upi-section h3 {
+      font-size: 16px;
+      margin-bottom: 15px;
+      color: #334155;
+    }
+    
+    .upi-id-box {
+      background: #f0f9ff;
+      border: 2px dashed #3b82f6;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .upi-label {
+      font-size: 12px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    
+    .upi-id {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1e40af;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+    
+    .copy-btn {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .copy-btn:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+    }
+    
+    .copy-btn.copied {
+      background: var(--success);
+    }
+    
+    .qr-section {
+      text-align: center;
+      margin: 25px 0;
+    }
+    
+    .qr-code {
+      width: 200px;
+      height: 200px;
+      background: white;
+      border-radius: 16px;
+      padding: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      border: 2px solid #e2e8f0;
+    }
+    
+    .timer-box {
+      background: #fef3c7;
+      border: 2px solid #f59e0b;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    .timer {
+      font-size: 32px;
+      font-weight: 700;
+      color: #92400e;
+      font-family: monospace;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #334155;
+      font-size: 14px;
+    }
+    
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 15px;
+      transition: all 0.3s;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .btn-primary {
+      background: var(--brand-gradient);
+      color: white;
+      box-shadow: 0 10px 25px rgba(244, 63, 94, 0.3);
+    }
+    
+    .btn-primary.creator {
+      background: var(--creator-gradient);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(244, 63, 94, 0.4);
+    }
+    
+    .btn-primary.creator:hover {
+      box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .note {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      padding: 15px;
+      border-radius: 0 10px 10px 0;
+      margin: 20px 0;
+      font-size: 13px;
+      color: #1e40af;
+      line-height: 1.6;
+    }
+    
+    .spinner {
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top: 3px solid white;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 30px;
+    }
+    
+    .success-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+    }
+    
+    .success-message h2 {
+      color: var(--success);
+      font-size: 28px;
+      margin-bottom: 15px;
+    }
+    
+    .success-message p {
+      color: #64748b;
+      margin-bottom: 10px;
+    }
+    
+    .redirect-timer {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-top: 15px;
+    }
+    
+    @media (max-width: 480px) {
+      .payment-container {
+        padding: 25px;
+      }
+      
+      .amount {
+        font-size: 36px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="payment-container" id="paymentContainer">
+  <div class="header">
+    <img src="logo.png" alt="Worldwide Collab">
+    <h1>Complete Registration</h1>
+    <p>Secure Payment Gateway</p>
+  </div>
+  
+  <div id="paymentForm">
+    <div class="order-summary">
+      <div class="detail-row">
+        <span>Registration Type:</span>
+        <span id="regType" style="font-weight: 600;">-</span>
+      </div>
+      <div class="detail-row">
+        <span>Description:</span>
+        <span id="description">-</span>
+      </div>
+      <div class="detail-row">
+        <span>Total Amount:</span>
+        <span id="displayAmount" style="color: #e11d48; font-weight: 700;">₹0</span>
+      </div>
+    </div>
+    
+    <div class="amount-box">
+      <h3>Amount to Pay</h3>
+      <div class="amount">₹<span id="amountValue">0</span></div>
+    </div>
+    
+    <div class="timer-box">
+      <p style="margin-bottom: 5px; font-weight: 600; color: #92400e;">⏱️ Payment expires in:</p>
+      <div class="timer" id="countdown">10:00</div>
+    </div>
+    
+    <div class="upi-section">
+      <h3>💳 Payment Method</h3>
+      <div class="upi-id-box">
+        <div class="upi-label">Pay via UPI</div>
+        <div class="upi-id" id="upiId">nextune@upi</div>
+        <button class="copy-btn" onclick="copyUPI()" id="copyBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span id="copyText">Copy UPI ID</span>
+        </button>
+      </div>
+      
+      <div class="qr-section">
+        <p style="margin-bottom: 10px; color: #64748b; font-size: 14px;">Scan QR Code to Pay</p>
+        <img src="qrcode.png" alt="UPI QR Code" class="qr-code" id="qrCode">
+      </div>
+    </div>
+    
+    <div class="note">
+      <strong>⚠️ Important:</strong> After making payment, please enter your UPI Transaction ID below. This helps us verify your payment instantly.
+    </div>
+    
+    <form id="confirmForm" onsubmit="confirmPayment(event)">
+      <div class="form-group">
+        <label>Your Email (for receipt):</label>
+        <input type="email" id="customerEmail" placeholder="your@email.com" required>
+      </div>
+      
+      <div class="form-group">
+        <label>UPI Transaction ID / Reference Number:</label>
+        <input type="text" id="transactionId" placeholder="e.g., 123456789012" required>
+      </div>
+      
+      <button type="submit" class="btn btn-primary" id="submitBtn">
+        Confirm Payment & Complete Registration
+      </button>
+    </form>
+  </div>
+  
+  <div class="success-message" id="successMessage">
+    <div class="success-icon">✅</div>
+    <h2>Payment Confirmed!</h2>
+    <p>Your registration fee has been received.</p>
+    <p>Redirecting you back to complete your application...</p>
+    <div class="redirect-timer">Redirecting in <span id="redirectSeconds">3</span> seconds</div>
+  </div>
+</div>
+
+<script>
+  // Get URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const type = urlParams.get('type') || 'brand';
+  const fee = urlParams.get('fee') || 499;
+  
+  // Update UI based on type
+  document.getElementById('regType').textContent = type === 'brand' ? '🏢 Brand Registration' : '🎨 Creator Registration';
+  document.getElementById('description').textContent = type === 'brand' ? 'Brand Verification Fee' : 'Creator Verification Fee';
+  document.getElementById('displayAmount').textContent = '₹' + fee;
+  document.getElementById('amountValue').textContent = fee;
+  
+  if (type === 'creator') {
+    document.getElementById('paymentContainer').classList.add('creator');
+    document.getElementById('submitBtn').classList.add('creator');
+  }
+  
+  // Timer
+  let timeLeft = 600; // 10 minutes
+  const timer = setInterval(() => {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    document.getElementById('countdown').textContent = 
+      minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
+    
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      alert('Payment window expired. Please try again.');
+      window.location.href = 'register.html';
+    }
+    timeLeft--;
+  }, 1000);
+  
+  // Copy UPI ID
+  function copyUPI() {
+    const upiId = document.getElementById('upiId').textContent;
+    const btn = document.getElementById('copyBtn');
+    const text = document.getElementById('copyText');
+    
+    navigator.clipboard.writeText(upiId).then(() => {
+      btn.classList.add('copied');
+      text.textContent = 'Copied!';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        text.textContent = 'Copy UPI ID';
+      }, 2000);
+    });
+  }
+  
+  // Confirm payment
+  function confirmPayment(event) {
+    event.preventDefault();
+    
+    const btn = document.getElementById('submitBtn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = 'Processing... <span class="spinner"></span>';
+    btn.disabled = true;
+    
+    const email = document.getElementById('customerEmail').value;
+    const transactionId = document.getElementById('transactionId').value;
+    
+    // Prepare data
+    const paymentData = {
+      type: type,
+      amount: fee,
+      email: email,
+      transactionId: transactionId,
+      timestamp: new Date().toLocaleString(),
+      _subject: `Payment Received - ${type === 'brand' ? 'Brand' : 'Creator'} Registration ₹${fee}`,
+      _template: 'table'
+    };
+    
+    // Send to admin
+    fetch('https://formsubmit.co/ajax/team.wwcollab@gmail.com', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(paymentData)
+    })
+    .then(response => response.json())
+    .then(result => {
+      // Show success
+      document.getElementById('paymentForm').style.display = 'none';
+      document.getElementById('successMessage').style.display = 'block';
+      
+      // Countdown and redirect
+      let seconds = 3;
+      const redirectTimer = setInterval(() => {
+        seconds--;
+        document.getElementById('redirectSeconds').textContent = seconds;
+        if (seconds <= 0) {
+          clearInterval(redirectTimer);
+          window.location.href = `register.html?payment=success&type=${type}#${type}`;
+        }
+      }, 1000);
+    })
+    .catch(error => {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+      alert('Error processing payment. Please try again or contact support.');
+    });
+  }
+</script>
+
+</body>
+</html>
