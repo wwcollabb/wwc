@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WWC Women's Day 2026 - Certificate</title>
+  <title>WWC Women's Day 2026 - Submissions Closed</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     * {
@@ -22,6 +22,8 @@
       --light: #f8fafc;
       --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #f43f5e 100%);
       --rose-gradient: linear-gradient(135deg, #f43f5e 0%, #ec4899 100%);
+      --gold: #fbbf24;
+      --silver: #94a3b8;
     }
     
     body {
@@ -88,7 +90,7 @@
     
     .shape-3 {
       width: 150px;
-      height: 150px;
+ height: 150px;
       background: var(--accent);
       bottom: 20%;
       left: 30%;
@@ -103,7 +105,7 @@
     
     /* Container */
     .container {
-      max-width: 800px;
+      max-width: 1000px;
       margin: 0 auto;
       position: relative;
       z-index: 1;
@@ -156,247 +158,455 @@
       line-height: 1.6;
     }
     
-    .badge {
+    /* CLOSED Badge */
+    .closed-badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: var(--rose-gradient);
+      gap: 10px;
+      background: linear-gradient(135deg, #374151, #1f2937);
       color: white;
-      padding: 10px 24px;
+      padding: 16px 32px;
       border-radius: 50px;
-      font-weight: 600;
-      font-size: 14px;
-      margin-top: 20px;
-      box-shadow: 0 10px 25px rgba(244, 63, 94, 0.3);
+      font-weight: 700;
+      font-size: 18px;
+      margin-top: 25px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      animation: pulse 2s infinite;
+      border: 3px solid var(--gold);
     }
     
-    /* Form Section */
-    .form-section {
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); }
+      50% { transform: scale(1.05); box-shadow: 0 15px 35px rgba(251, 191, 36, 0.3); }
+    }
+    
+    .closed-badge::before {
+      content: '🔒';
+      font-size: 24px;
+    }
+    
+    /* Stats Section */
+    .stats-section {
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(20px);
-      border-radius: 30px;
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    
+    .stats-section h3 {
+      font-size: 20px;
+      color: var(--dark);
+      margin-bottom: 25px;
+      font-weight: 700;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+    }
+    
+    .stat-card {
+      background: linear-gradient(135deg, #fff5f5 0%, #f0f9ff 100%);
+      border-radius: 16px;
+      padding: 25px 15px;
+     ;
+      margin-top: 25px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      animation: pulse 2s infinite;
+      border: 3px solid var(--gold);
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); }
+      50% { transform: scale(1.05); box-shadow: 0 15px 35px rgba(251, 191, 36, 0.3); }
+    }
+    
+    .closed-badge::before {
+      content: '🔒';
+      font-size: 24px;
+    }
+    
+    /* Stats Section */
+    .stats-section {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    
+    .stats-section h3 {
+      font-size: 20px;
+      color: var(--dark);
+      margin-bottom: 25px;
+      font-weight: 700;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+    }
+    
+    .stat-card {
+      background: linear-gradient(135deg, #fff5f5 0%, #f0f9ff 100%);
+      border-radius: 16px;
+      padding: 25px 15px;
+      border: 2px solid transparent;
+      transition: all 0.3s;
+    }
+    
+    .stat-card:hover {
+      border-color: var(--rose);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(244, 63, 94, 0.15);
+    }
+    
+    .stat-number {
+      font-size: 36px;
+      font-weight: 800;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    
+    .stat-label {
+      font-size: 14px;
+      color: #64748b;
+      font-weight: 600;
+    }
+    
+    /* Success Stories */
+    .success-stories {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
       padding: 40px;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.5);
       margin-bottom: 30px;
     }
     
-    .form-section h3 {
+    .success-stories h3 {
       font-size: 24px;
       color: var(--dark);
       margin-bottom: 30px;
       text-align: center;
       font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
     
-    .form-grid {
+    .testimonial-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 20px;
     }
     
-    .form-group {
-      margin-bottom: 20px;
+    .testimonial-card {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border-radius: 20px;
+      padding: 25px;
+      border: 2px solid #e2e8f0;
+      transition: all 0.3s;
+      position: relative;
     }
     
-    .form-group.full-width {
-      grid-column: 1 / -1;
+    .testimonial-card::before {
+      content: '"';
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      font-size: 60px;
+      color: rgba(244, 63, 94, 0.1);
+      font-family: 'Playfair Display', serif;
+      line-height: 1;
     }
     
-    label {
-      display: block;
+    .testimonial-card:hover {
+      border-color: var(--rose);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(244, 63, 94, 0.1);
+    }
+    
+    .testimonial-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    
+    .testimonial-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 20px;
+    }
+    
+    .testimonial-info h4 {
+      font-size: 16px;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+    
+    .testimonial-info p {
+      font-size: 13px;
+      color: #64748b;
+    }
+    
+    .testimonial-text {
+      color: #475569;
+      font-size: 14px;
+      line-height: 1.7;
+      font-style: italic;
+    }
+    
+    .certificate-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 15px;
+    }
+    
+    /* Explore Services Section */
+    .explore-section {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border-radius: 24px;
+      padding: 40px;
+      margin-bottom: 30px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .explore-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    
+    .explore-section h3 {
+      font-size: 28px;
+      margin-bottom: 15px;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .explore-section > p {
+      color: #94a3b8;
+      margin-bottom: 30px;
+      max-width: 600px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .service-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 25px;
+      text-align: center;
+      transition: all 0.3s;
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+    }
+    
+    .service-card:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--primary);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(99, 102, 241, 0.2);
+    }
+    
+    .service-icon {
+      font-size: 40px;
+      margin-bottom: 15px;
+    }
+    
+    .service-card h4 {
+      font-size: 18px;
       margin-bottom: 8px;
       font-weight: 600;
-      color: #374151;
-      font-size: 14px;
     }
     
-    label .required {
-      color: var(--rose);
+    .service-card p {
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.5;
     }
     
-    input, select, textarea {
-      width: 100%;
-      padding: 14px 18px;
-      border: 2px solid #e5e7eb;
+    .service-badge {
+      display: inline-block;
+      background: var(--rose);
+      color: white;
+      padding: 4px 10px;
       border-radius: 12px;
-      font-size: 15px;
-      font-family: 'Inter', sans-serif;
-      transition: all 0.3s;
-      background: white;
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 12px;
     }
     
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--rose);
-      outline: none;
-      box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.1);
+    /* Updates Section */
+    .updates-section {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      margin-bottom: 30px;
     }
     
-    textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-    
-    /* Questions Section */
-    .questions-section {
-      margin-top: 30px;
-      padding-top: 30px;
-      border-top: 2px dashed #e5e7eb;
-    }
-    
-    .questions-section h4 {
-      font-size: 20px;
+    .updates-section h3 {
+      font-size: 24px;
       color: var(--dark);
-      margin-bottom: 20px;
+      margin-bottom: 25px;
+      font-weight: 700;
       display: flex;
       align-items: center;
       gap: 10px;
     }
     
-    .question-card {
-      background: linear-gradient(135deg, #fff5f5 0%, #fff0f6 100%);
-      border: 2px solid #fecdd3;
-      border-radius: 16px;
+    .update-item {
+      display: flex;
+      gap: 20px;
       padding: 20px;
-      margin-bottom: 20px;
+      border-radius: 16px;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border-left: 4px solid var(--primary);
       transition: all 0.3s;
     }
     
-    .question-card:hover {
-      border-color: var(--rose);
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(244, 63, 94, 0.1);
+    .update-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     }
     
-    .question-number {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      background: var(--rose-gradient);
-      color: white;
-      border-radius: 50%;
-      font-weight: 700;
-      font-size: 14px;
-      margin-bottom: 12px;
+    .update-date {
+      flex-shrink: 0;
+      text-align: center;
+      min-width: 60px;
     }
     
-    .question-text {
-      font-weight: 600;
-      color: var(--dark);
-      margin-bottom: 12px;
-      font-size: 15px;
+    .update-date .day {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1;
     }
     
-    .hint {
+    .update-date .month {
       font-size: 12px;
-      color: #9ca3af;
+      color: #64748b;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    
+    .update-content h4 {
+      font-size: 16px;
+      color: var(--dark);
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+    
+    .update-content p {
+      font-size: 14px;
+      color: #64748b;
+      line-height: 1.6;
+    }
+    
+    .update-tag {
+      display: inline-block;
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--primary);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
       margin-top: 8px;
     }
     
-    /* Submit Button */
-    .submit-btn {
-      width: 100%;
-      padding: 18px;
-      background: var(--rose-gradient);
-      color: white;
-      border: none;
-      border-radius: 14px;
-      font-size: 18px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s;
-      margin-top: 30px;
-      box-shadow: 0 10px 30px rgba(244, 63, 94, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-    
-    .submit-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 40px rgba(244, 63, 94, 0.4);
-    }
-    
-    .submit-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-    
-    /* Certificate Preview Section */
-    .certificate-section {
-      display: none;
-      animation: slideUp 0.6s ease;
-    }
-    
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .success-message {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: white;
-      padding: 20px;
-      border-radius: 16px;
+    /* CTA Section */
+    .cta-section {
+      background: var(--gradient);
+      border-radius: 24px;
+      padding: 50px 40px;
       text-align: center;
-      margin-bottom: 30px;
-      font-weight: 600;
-      box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
-    }
-    
-    /* Certificate Container */
-    .certificate-container {
-      position: relative;
-      width: 100%;
-      max-width: 1123px;
-      margin: 0 auto 30px;
-      background: white;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
-    }
-    
-    #certificateCanvas {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-    
-    /* Download Button */
-    .download-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
       color: white;
-      padding: 16px 32px;
-      border-radius: 12px;
-      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+    
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    .cta-section h3 {
+      font-size: 32px;
+      margin-bottom: 15px;
       font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .cta-section p {
       font-size: 16px;
-      transition: all 0.3s;
-      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
-      border: none;
-      cursor: pointer;
+      opacity: 0.95;
+      max-width: 500px;
+      margin: 0 auto 25px;
+      position: relative;
+      z-index: 1;
     }
     
-    .download-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4);
-    }
-    
-    .action-buttons {
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    
-    .secondary-btn {
+    .cta-button {
       display: inline-flex;
       align-items: center;
       gap: 10px;
@@ -408,50 +618,59 @@
       font-weight: 700;
       font-size: 16px;
       transition: all 0.3s;
-      border: 2px solid #e5e7eb;
-      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      position: relative;
+      z-index: 1;
     }
     
-    .secondary-btn:hover {
-      border-color: var(--rose);
-      color: var(--rose);
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 30px;
+      color: #64748b;
+      font-size: 14px;
+    }
+    
+    .footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
     }
     
     /* Responsive */
     @media (max-width: 768px) {
       .header h2 {
-        font-size: 32px;
+        font-size: 28px;
       }
       
-      .form-grid {
+      .closed-badge {
+        font-size: 16px;
+        padding: 12px 24px;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .services-grid {
         grid-template-columns: 1fr;
       }
       
-      .form-section {
+      .explore-section,
+      .success-stories,
+      .updates-section,
+      .cta-section {
         padding: 25px;
       }
-      
-      .certificate-container {
-        border-radius: 12px;
-      }
-    }
-    
-    /* Loading Spinner */
-    .spinner {
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: white;
-      animation: spin 1s ease-in-out infinite;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
     }
   </style>
-  </head>
-  <body>
+</head>
+<body>
   <!-- Background Animation -->
   <div class="bg-animation">
     <div class="shape shape-1"></div>
@@ -468,417 +687,175 @@
       </div>
       <h2>Women's Day 2026</h2>
       <p>Celebrating the power, creativity, and achievements of women creators worldwide</p>
-      <div class="badge">🏆 Certificate of Recognition</div>
+      
+      <!-- CLOSED Badge -->
+      <div class="closed-badge">
+        SUBMISSIONS CLOSED
+      </div>
+      
+      <p style="margin-top: 20px; font-size: 16px; color: #64748b;">
+        🎉 Thank you to all 7651 amazing women creators who participated!
+      </p>
     </div>
     
-    <!-- Form Section -->
-    <div class="form-section" id="formSection">
-      <h3>🌸 Participate & Get Your Certificate</h3>
-      
-      <form id="womensDayForm" onsubmit="generateCertificate(event)">
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Full Name <span class="required">*</span></label>
-            <input type="text" name="fullName" id="fullName" placeholder="Enter your full name" required>
-          </div>
-          
-          <div class="form-group">
-            <label>Email Address <span class="required">*</span></label>
-            <input type="email" name="email" id="email" placeholder="your@email.com" required>
-          </div>
-          
-          <div class="form-group">
-            <label>City <span class="required">*</span></label>
-            <input type="text" name="city" id="city" placeholder="Your city" required>
-          </div>
-          
-          <div class="form-group">
-            <label>Country <span class="required">*</span></label>
-            <input type="text" name="country" id="country" placeholder="Your country" required>
-          </div>
-          
-          <div class="form-group">
-            <label>Instagram Handle</label>
-            <input type="text" name="instagram" id="instagram" placeholder="@username">
-          </div>
-          
-          <div class="form-group">
-            <label>Profession/Niche <span class="required">*</span></label>
-            <select name="profession" id="profession" required>
-              <option value="">Select your niche</option>
-              <option value="Fashion & Lifestyle">Fashion & Lifestyle</option>
-              <option value="Beauty & Makeup">Beauty & Makeup</option>
-              <option value="Fitness & Health">Fitness & Health</option>
-              <option value="Food & Cooking">Food & Cooking</option>
-              <option value="Travel & Adventure">Travel & Adventure</option>
-              <option value="Tech & Gaming">Tech & Gaming</option>
-              <option value="Art & Design">Art & Design</option>
-              <option value="Business & Finance">Business & Finance</option>
-              <option value="Education & Coaching">Education & Coaching</option>
-              <option value="Entertainment">Entertainment</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          
-          <div class="form-group full-width">
-            <label>What inspired you to become a creator? <span class="required">*</span></label>
-            <textarea name="inspiration" id="inspiration" placeholder="Share your story..." required></textarea>
-            <div class="hint">Minimum 20 characters</div>
-          </div>
+    <!-- Stats Section -->
+    <div class="stats-section">
+      <h3>🌸 Event Highlights</h3>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number">7K+</div>
+          <div class="stat-label">Certificates Issued</div>
         </div>
-        
-        <!-- Questions Section -->
-        <div class="questions-section">
-          <h4>📝 Quick Questions (Answer any way you like!)</h4>
-          
-          <div class="question-card">
-            <div class="question-number">1</div>
-            <div class="question-text">What does Women's Day mean to you as a creator?</div>
-            <textarea name="q1" id="q1" placeholder="Write your thoughts here..." required></textarea>
-          </div>
-          
-          <div class="question-card">
-            <div class="question-number">2</div>
-            <div class="question-text">Share one achievement you're proud of as a woman creator.</div>
-            <textarea name="q2" id="q2" placeholder="Your achievement..." required></textarea>
-          </div>
-          
-          <div class="question-card">
-            <div class="question-number">3</div>
-            <div class="question-text">What advice would you give to aspiring women creators?</div>
-            <textarea name="q3" id="q3" placeholder="Your advice..." required></textarea>
-          </div>
+        <div class="stat-card">
+          <div class="stat-number">19+</div>
+          <div class="stat-label">Countries</div>
         </div>
-        
-        <button type="submit" class="submit-btn" id="submitBtn">
-          <span>Generate My Certificate</span>
-          <span>🎓</span>
-        </button>
-      </form>
+        <div class="stat-card">
+          <div class="stat-number">138K+</div>
+          <div class="stat-label">Total Reach</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">87%</div>
+          <div class="stat-label">Inspiring Stories</div>
+        </div>
+      </div>
     </div>
     
-    <!-- Certificate Section (Hidden initially) -->
-    <div class="certificate-section" id="certificateSection">
-      <div class="success-message">
-        🎉 Congratulations! Your certificate has been generated successfully!
+    <!-- Success Stories -->
+    <div class="success-stories">
+      <h3>💫 Featured Stories</h3>
+      <div class="testimonial-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-header">
+            <div class="testimonial-avatar">RS</div>
+            <div class="testimonial-info">
+              <h4>Riya Sharma</h4>
+              <p>Fashion Creator, India</p>
+            </div>
+          </div>
+          <p class="testimonial-text">"Getting my WWC certificate was such a proud moment! It validated my journey as a creator and connected me with amazing women worldwide."</p>
+          <span class="certificate-badge">🏆 Certified</span>
+        </div>
+        
+        <div class="testimonial-card">
+          <div class="testimonial-header">
+            <div class="testimonial-avatar">AK</div>
+            <div class="testimonial-info">
+              <h4>Amara Khan</h4>
+              <p>Tech Influencer, UAE</p>
+            </div>
+          </div>
+          <p class="testimonial-text">"WWC Women's Day event gave me the platform to share my tech journey. The certificate now hangs proudly in my home office!"</p>
+          <span class="certificate-badge">🏆 Certified</span>
+        </div>
+        
+        <div class="testimonial-card">
+          <div class="testimonial-header">
+            <div class="testimonial-avatar">MJ</div>
+            <div class="testimonial-info">
+              <h4>Maria Johnson</h4>
+              <p>Food Blogger, USA</p>
+            </div>
+          </div>
+          <p class="testimonial-text">"The questions made me reflect on my journey. Thank you WWC for this beautiful initiative supporting women creators!"</p>
+          <span class="certificate-badge">🏆 Certified</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Explore WW Collab Services -->
+    <div class="explore-section">
+      <h3>🚀 Explore WW Collab Services</h3>
+      <p>Boost your social media presence with our premium SMM services. Trusted by 10,000+ creators worldwide!</p>
+      
+      <div class="services-grid">
+        <a href="index.html#worldwideservices" class="service-card">
+          <div class="service-icon">📈</div>
+          <h4>Instagram Growth</h4>
+          <p>Real followers, likes & views at best prices</p>
+          <span class="service-badge">POPULAR</span>
+        </a>
+        
+        <a href="index.html#worldwideservices" class="service-card">
+          <div class="service-icon">🎬</div>
+          <h4>YouTube Boost</h4>
+          <p>Subscribers, watch hours & monetization help</p>
+        </a>
+        
+        <a href="index.html#worldwideservices" class="service-card">
+          <div class="service-icon">🎵</div>
+          <h4>TikTok Viral</h4>
+          <p>Followers, likes & shares for viral growth</p>
+        </a>
+        
+        <a href="index.html#worldwideservices" class="service-card">
+          <div class="service-icon">💬</div>
+          <h4>Telegram Members</h4>
+          <p>Channel & group members, post views</p>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Latest Updates -->
+    <div class="updates-section">
+      <h3>📢 Latest Updates</h3>
+      
+      <div class="update-item">
+        <div class="update-date">
+          <div class="day">09</div>
+          <div class="month">MAR</div>
+        </div>
+        <div class="update-content">
+          <h4>Women's Day 2026 Certificates Distributed!</h4>
+          <p>All 7K+ certificates have been successfully generated and emailed to participants. Check your inbox!</p>
+          <span class="update-tag">Event Completed</span>
+        </div>
       </div>
       
-      <div class="certificate-container">
-        <canvas id="certificateCanvas" width="1123" height="794"></canvas>
+      <div class="update-item">
+        <div class="update-date">
+          <div class="day">07</div>
+          <div class="month">JAN</div>
+        </div>
+        <div class="update-content">
+          <h4>New YouTube Watch Hours Service Launched</h4>
+          <p>Get 4000 watch hours fast to meet monetization requirements. Starting at just ₹1050!</p>
+          <span class="update-tag">New Service</span>
+        </div>
       </div>
       
-      <div class="action-buttons">
-        <button class="download-btn" onclick="downloadCertificate()">
-          <span>⬇️</span>
-          <span>Download Certificate</span>
-        </button>
-        <button class="secondary-btn" onclick="location.reload()">
-          <span>🔄</span>
-          <span>Create Another</span>
-        </button>
+      <div class="update-item">
+        <div class="update-date">
+          <div class="day">05</div>
+          <div class="month">MAR</div>
+        </div>
+        <div class="update-content">
+          <h4>WWC Creator Fund 2026 Announced</h4>
+          <p>We're launching a $10,000 fund to support emerging creators. Applications open April 27!</p>
+          <span class="update-tag">Coming Soon</span>
+        </div>
       </div>
+    </div>
+    
+    <!-- CTA Section -->
+    <div class="cta-section">
+      <h3>Ready to Grow Your Brand?</h3>
+      <p>Join 12,000+ creators who trust WW Collab for their social media growth. Real results, instant delivery!</p>
+      <a href="index.html#register" class="cta-button">
+        <span>Explore Services</span>
+        <span>→</span>
+      </a>
+    </div>
+    
+    <!-- Footer -->
+    <div class="footer">
+      <p>© 2024-26 WW Collab, All Rights Reserved.</p>
+      <p style="margin-top: 10px;">
+        <a href="index.html">Back to Homepage</a> • 
+        <a href="index.html#contact">Contact Support</a> • 
+        <a href="index.html#faqs">FAQs</a>
+      </p>
     </div>
   </div>
-    <script>
-    let generatedCertificateId = '';
-    
-    function generateCertificate(event) {
-      event.preventDefault();
-      
-      const btn = document.getElementById('submitBtn');
-      btn.disabled = true;
-      btn.innerHTML = '<div class="spinner"></div> <span>Generating...</span>';
-      
-      // Get form data
-      const formData = {
-        fullName: document.getElementById('fullName').value,
-        email: document.getElementById('email').value,
-        city: document.getElementById('city').value,
-        country: document.getElementById('country').value,
-        instagram: document.getElementById('instagram').value,
-        profession: document.getElementById('profession').value,
-        inspiration: document.getElementById('inspiration').value,
-        q1: document.getElementById('q1').value,
-        q2: document.getElementById('q2').value,
-        q3: document.getElementById('q3').value
-      };
-      
-      // Generate Certificate ID
-      const randomNum = Math.floor(100000 + Math.random() * 900000);
-      generatedCertificateId = `WWC-2026${randomNum}`;
-      
-      // Simulate processing delay
-      setTimeout(() => {
-        drawCertificate(formData);
-        
-        // Hide form, show certificate
-        document.getElementById('formSection').style.display = 'none';
-        document.getElementById('certificateSection').style.display = 'block';
-        
-        // Scroll to certificate
-        document.getElementById('certificateSection').scrollIntoView({ behavior: 'smooth' });
-        
-        // Send data to admin (optional - using FormSubmit)
-        sendToAdmin(formData);
-      }, 1500);
-    }
-    
-    function drawCertificate(data) {
-      const canvas = document.getElementById('certificateCanvas');
-      const ctx = canvas.getContext('2d');
-      
-      // Certificate dimensions: 1123 x 794 (A4 Landscape)
-      const width = 1123;
-      const height = 794;
-      
-      // White background
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, width, height);
-      
-      // Decorative Border - Outer
-      ctx.strokeStyle = '#f43f5e';
-      ctx.lineWidth = 4;
-      ctx.strokeRect(30, 30, width - 60, height - 60);
-      
-      // Decorative Border - Inner
-      ctx.strokeStyle = '#6366f1';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(45, 45, width - 90, height - 90);
-      
-      // Corner Decorations
-      drawCornerDecoration(ctx, 30, 30, 1);
-      drawCornerDecoration(ctx, width - 30, 30, 2);
-      drawCornerDecoration(ctx, 30, height - 30, 3);
-      drawCornerDecoration(ctx, width - 30, height - 30, 4);
-      
-      // Header Logo Area
-      ctx.fillStyle = '#1e293b';
-      ctx.font = 'bold 24px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('WORLDWIDE COLLAB', width / 2, 100);
-      
-      // Decorative line under header
-      ctx.beginPath();
-      ctx.moveTo(width / 2 - 100, 115);
-      ctx.lineTo(width / 2 + 100, 115);
-      ctx.strokeStyle = '#f43f5e';
-      ctx.lineWidth = 3;
-      ctx.stroke();
-      
-      // Certificate Title
-      ctx.fillStyle = '#f43f5e';
-      ctx.font = 'bold 48px Playfair Display, serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('Certificate of Recognition', width / 2, 180);
-      
-      // Subtitle
-      ctx.fillStyle = '#64748b';
-      ctx.font = '500 20px Inter, sans-serif';
-      ctx.fillText('International Women\'s Day 2026', width / 2, 215);
-      
-      // Main Content
-      ctx.fillStyle = '#1e293b';
-      ctx.font = '400 22px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('This is to certify that', width / 2, 280);
-      
-      // Recipient Name - Highlighted
-      ctx.fillStyle = '#f43f5e';
-      ctx.font = 'bold 52px Playfair Display, serif';
-      ctx.textAlign = 'center';
-      
-      // Handle long names
-      const name = data.fullName;
-      if (name.length > 30) {
-        ctx.font = 'bold 36px Playfair Display, serif';
-      } else if (name.length > 20) {
-        ctx.font = 'bold 42px Playfair Display, serif';
-      }
-      
-      ctx.fillText(name, width / 2, 340);
-      
-      // Decorative line under name
-      ctx.beginPath();
-      ctx.moveTo(width / 2 - 150, 360);
-      ctx.lineTo(width / 2 + 150, 360);
-      ctx.strokeStyle = '#e2e8f0';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      
-      // Description
-      ctx.fillStyle = '#475569';
-      ctx.font = '400 20px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      
-      const description = `From ${data.city}, ${data.country}`;
-      ctx.fillText(description, width / 2, 410);
-      
-      // Profession
-      ctx.font = '500 18px Inter, sans-serif';
-      ctx.fillStyle = '#6366f1';
-      ctx.fillText(`${data.profession} Creator`, width / 2, 445);
-      
-      // Recognition Text
-      ctx.fillStyle = '#64748b';
-      ctx.font = 'italic 18px Inter, sans-serif';
-      const recognitionText = 'Has been recognized for her outstanding contribution to the creator community';
-      ctx.fillText(recognitionText, width / 2, 495);
-      
-      // Motivational Quote
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = 'italic 16px Inter, sans-serif';
-      ctx.fillText('"Empowered women empower the world"', width / 2, 540);
-      
-      // Bottom Section - Date and Signature
-      const bottomY = 650;
-      
-      // Date
-      ctx.fillStyle = '#1e293b';
-      ctx.font = '500 16px Inter, sans-serif';
-      ctx.textAlign = 'left';
-      const date = new Date().toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      });
-      ctx.fillText(`Date: ${date}`, 80, bottomY);
-      
-      // Certificate ID
-      ctx.fillStyle = '#64748b';
-      ctx.font = '400 14px Inter, sans-serif';
-      ctx.fillText(`Certificate ID: ${generatedCertificateId}`, 80, bottomY + 25);
-      
-      // Signature Image (Right side)
-      const signatureX = width - 250;
-      const signatureY = bottomY - 40;
-      
-      // Load signature image
-      const signatureImg = new Image();
-      signatureImg.onload = function() {
-        // Draw signature image
-        ctx.drawImage(signatureImg, signatureX, signatureY, 150, 60);
-        
-        // Signature line
-        ctx.beginPath();
-        ctx.moveTo(signatureX, signatureY + 70);
-        ctx.lineTo(signatureX + 150, signatureY + 70);
-        ctx.strokeStyle = '#1e293b';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        
-        // Founder text
-        ctx.fillStyle = '#1e293b';
-        ctx.font = 'bold 16px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('Team, WW Collab', signatureX + 75, signatureY + 95);
-      };
-      signatureImg.onerror = function() {
-        // Fallback if image not found
-        ctx.fillStyle = '#1e293b';
-        ctx.font = 'bold 18px Playfair Display, serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('Founder, WW Collab', signatureX + 75, signatureY + 50);
-      };
-      signatureImg.src = 'signature.png';
-      
-      // Official Seal (Left side)
-      drawSeal(ctx, 200, bottomY - 20);
-    }
-    
-    function drawCornerDecoration(ctx, x, y, position) {
-      ctx.save();
-      ctx.translate(x, y);
-      
-      // Rotate based on position
-      if (position === 2) ctx.rotate(Math.PI / 2);
-      if (position === 3) ctx.rotate(-Math.PI / 2);
-      if (position === 4) ctx.rotate(Math.PI);
-      
-      // Draw decorative corner
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(40, 0);
-      ctx.arc(40, 40, 40, -Math.PI / 2, 0);
-      ctx.lineTo(0, 0);
-      ctx.fillStyle = 'rgba(244, 63, 94, 0.1)';
-      ctx.fill();
-      
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(25, 0);
-      ctx.arc(25, 25, 25, -Math.PI / 2, 0);
-      ctx.lineTo(0, 0);
-      ctx.fillStyle = 'rgba(99, 102, 241, 0.15)';
-      ctx.fill();
-      
-      ctx.restore();
-    }
-    
-    function drawSeal(ctx, x, y) {
-      ctx.save();
-      ctx.translate(x, y);
-      
-      // Outer circle
-      ctx.beginPath();
-      ctx.arc(0, 0, 35, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(244, 63, 94, 0.1)';
-      ctx.fill();
-      ctx.strokeStyle = '#f43f5e';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      
-      // Inner circle
-      ctx.beginPath();
-      ctx.arc(0, 0, 25, 0, Math.PI * 2);
-      ctx.strokeStyle = '#6366f1';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-      
-      // Text in seal
-      ctx.fillStyle = '#f43f5e';
-      ctx.font = 'bold 10px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('WWC', 0, -5);
-      ctx.font = '8px Inter, sans-serif';
-      ctx.fillText('2026', 0, 8);
-      
-      ctx.restore();
-    }
-          function downloadCertificate() {
-      const canvas = document.getElementById('certificateCanvas');
-      const link = document.createElement('a');
-      link.download = `WWC-Womens-Day-2026-${generatedCertificateId}.png`;
-      link.href = canvas.toDataURL('image/png', 1.0);
-      link.click();
-    }
-    
-    function sendToAdmin(data) {
-      // Send form data to admin using FormSubmit
-      fetch('https://formsubmit.co/ajax/team.wwcollab@gmail.com', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          _subject: `WWC Women's Day 2026 - New Certificate: ${generatedCertificateId}`,
-          certificateId: generatedCertificateId,
-          fullName: data.fullName,
-          email: data.email,
-          city: data.city,
-          country: data.country,
-          instagram: data.instagram || 'Not provided',
-          profession: data.profession,
-          inspiration: data.inspiration,
-          q1_womens_day_meaning: data.q1,
-          q2_achievement: data.q2,
-          q3_advice: data.q3,
-          generatedAt: new Date().toISOString(),
-          _template: 'table'
-        })
-      }).catch(err => console.log('Form notification sent'));
-    }
-  </script>
 </body>
 </html>
