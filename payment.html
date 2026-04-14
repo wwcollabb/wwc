@@ -762,7 +762,7 @@
     <div class="success-overlay" id="successMessage">
       <div class="success-icon-wrap">✅</div>
       <h2>Payment Confirmed!</h2>
-      <p>Aapka order successfully submit ho gaya hai.</p>
+      <p>Your order has been successfully submitted.</p>
       <p>Order ID: <span class="success-order-id" id="successOrderId"></span></p>
       <p style="margin-top:8px;">Delivery within <strong style="color:var(--text)">24 hours</strong> ⏰</p>
       <a href="index.html" class="back-link">
@@ -910,7 +910,7 @@
   function downloadQR() {
     const qrImg = document.getElementById('qrCodeImg');
     if (!qrImg.src || qrImg.style.display === 'none') {
-      alert('QR abhi load ho raha hai, thoda wait karo.');
+      alert('The QR code is loading, please wait a moment.');
       return;
     }
 
@@ -948,8 +948,8 @@
       if (timeLeft <= 0) {
         clearInterval(timerInterval);
         sessionStorage.removeItem('wwc_order');
-        alert('⏱ Payment window expire ho gayi. Please order dobara place karo.');
-        window.location.href = 'index.html';
+        alert('⏱ The payment window has expired. Please place the order again..');
+        window.location.href = 'index';
       }
       timeLeft--;
     }, 1000);
@@ -960,8 +960,8 @@
     const stored = sessionStorage.getItem('wwc_order');
 
     if (!stored) {
-      alert('Koi order nahi mila. Pehle order place karo.');
-      window.location.href = 'index.html';
+      alert('No order found. Please place an order first.');
+      window.location.href = 'index';
       return;
     }
 
@@ -990,7 +990,7 @@
     const transactionId = document.getElementById('transactionId').value;
 
     if (!customerEmail || !transactionId) {
-      alert('Saare required fields bharo.');
+      alert('Fill in all the required fields.');
       return;
     }
 
@@ -1036,11 +1036,29 @@
     })
     .catch(err => {
       console.error(err);
-      alert('Payment process mein error aaya. Support se contact karo, Order ID: ' + orderData.orderId);
+      alert('An error occurred during the payment process. Please contact support. Order ID:' + orderData.orderId);
       btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Confirm Payment & Submit Order`;
       btn.disabled = false;
     });
   }
+  // Firestore initialize karein
+const db = firebase.firestore();
+
+// FormSubmit fetch ke saath ye bhi add karein
+db.collection("orders").doc(orderData.orderId).set({
+    orderId: orderData.orderId,
+    email: orderData.email,
+    amount: orderData.amount,
+    status: "Processing", // Default status
+    date: new Date().toLocaleDateString(),
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+})
+.then(() => {
+    console.log("Tracking data saved to Firestore!");
+})
+.catch((error) => {
+    console.error("Error saving to Firestore: ", error);
+});
 </script>
 </body>
 </html>
