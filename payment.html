@@ -7,9 +7,6 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-</script>
 
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -978,28 +975,6 @@
     document.getElementById('displayQuantity').textContent = orderData.quantity;
     document.getElementById('displayLink').textContent = orderData.link;
     document.getElementById('displayAmount').textContent = amount;
-        // ===== Firebase Firestore Save =====
-    const db = firebase.firestore();
-
-    db.collection("orders").doc(orderData.orderId).set({
-        orderId: orderData.orderId,
-        email: orderData.email || "N/A", // Agar email session mein hai
-        amount: amount,
-        platform: orderData.platform,
-        service: orderData.service,
-        status: "Processing", // Default status jo track-order page pe dikhega
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        date: new Date().toLocaleDateString()
-    })
-    .then(() => {
-        console.log("Tracking record created in Firestore!");
-    })
-    .catch((error) => {
-        console.error("Firestore Error:", error);
-    });
-    
-    // Baaki ka EmailJS aur FormSubmit logic iske neeche aayega...
-  }; // window.onload closing
 
     // Generate QR with exact amount
     generateQR(amount, orderData.orderId);
