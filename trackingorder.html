@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Tracking - Worldwide Collab</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="tracking-styles.css">
+</head>
+<body>
+
+    <!-- Login Prompt (shown when not authenticated) -->
+    <div id="loginPrompt" class="login-prompt hidden">
+        <div class="login-card">
+            <i class="fas fa-lock"></i>
+            <h2>Authentication Required</h2>
+            <p>Please log in to view your order history and track your SMM campaigns.</p>
+            <button class="login-btn" onclick="redirectToLogin()">
+                <i class="fas fa-sign-in-alt"></i> Login to Continue
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App (shown when authenticated) -->
+    <div id="mainApp" class="hidden">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-globe"></i>
+                    <span>Worldwide Collab</span>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span class="user-name" id="userName">User</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="container">
+            <!-- Stats Cards -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon total">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Total Orders</h3>
+                        <p id="totalOrders">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Pending</h3>
+                        <p id="pendingOrders">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon processing">
+                        <i class="fas fa-spinner"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Processing</h3>
+                        <p id="processingOrders">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon completed">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Completed</h3>
+                        <p id="completedOrders">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Indicator -->
+            <div class="live-indicator">
+                <div class="live-dot"></div>
+                <span>Live Updates</span>
+                <span class="last-updated" id="lastUpdated">Last updated: Never</span>
+            </div>
+
+            <!-- Orders Section -->
+            <div class="orders-section">
+                <div class="orders-header">
+                    <h2><i class="fas fa-list-alt"></i> My Orders</h2>
+                    <button class="refresh-btn" id="refreshBtn" onclick="manualRefresh()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+                
+                <div id="ordersContainer">
+                    <!-- Loading State -->
+                    <div class="loading-container" id="loadingState">
+                        <div class="loader"></div>
+                        <p>Loading your orders...</p>
+                    </div>
+
+                    <!-- Orders List -->
+                    <div class="orders-list hidden" id="ordersList"></div>
+
+                    <!-- Empty State -->
+                    <div class="empty-state hidden" id="emptyState">
+                        <i class="fas fa-inbox"></i>
+                        <h3>No Orders Found</h3>
+                        <p>You haven't placed any orders yet. Start growing your social media presence today!</p>
+                    </div>
+
+                    <!-- Error State -->
+                    <div class="error-state hidden" id="errorState">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Failed to Load Orders</h3>
+                        <p id="errorMessage">Please try again later.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="tracking-script.js"></script>
+</body>
+                      </html>
+                      * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+    color: #fff;
+}
+
+/* Header */
+.header {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.logo i {
+    font-size: 1.8rem;
+    -webkit-text-fill-color: #667eea;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.user-name {
+    font-weight: 500;
+    color: #e0e0e0;
+}
+
+/* Main Container */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Stats Cards */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.stat-icon.total { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.stat-icon.pending { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.stat-icon.processing { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.stat-icon.completed { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+
+.stat-content h3 {
+    font-size: 0.875rem;
+    color: #a0a0a0;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.stat-content p {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* Live Indicator */
+.live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    color: #a0a0a0;
+    font-size: 0.875rem;
+}
+
+.live-dot {
+    width: 8px;
+    height: 8px;
+    background: #43e97b;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+.last-updated {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: #666;
+}
+
+/* Orders Section */
+.orders-section {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.orders-header {
+    padding: 1.5rem 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.orders-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.refresh-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: transform 0.2s;
+}
+
+.refresh-btn:hover {
+    transform: scale(1.05);
+}
+
+.refresh-btn.spinning i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Order Items */
+.orders-list {
+    padding: 1rem;
+}
+
+.order-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    gap: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.order-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(102, 126, 234, 0.3);
+    transform: translateX(5px);
+}
+
+.order-id-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.order-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.platform-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.platform-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.platform-icon.youtube { background: #ff0000; }
+.platform-icon.instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+.platform-icon.facebook { background: #1877f2; }
+.platform-icon.twitter { background: #1da1f2; }
+.platform-icon.tiktok { background: #000; border: 1px solid #fff; }
+.platform-icon.telegram { background: #0088cc; }
+.platform-icon.spotify { background: #1db954; }
+.platform-icon.soundcloud { background: #ff5500; }
+.platform-icon.twitch { background: #9146ff; }
+.platform-icon.linkedin { background: #0a66c2; }
+.platform-icon.default { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+
+.platform-name {
+    font-weight: 600;
+    color: #fff;
+}
+
+.service-name {
+    color: #a0a0a0;
+    font-size: 0.875rem;
+}
+
+.order-meta {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    font-size: 0.875rem;
+    color: #888;
+}
+
+.order-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.order-meta i {
+    color: #667eea;
+}
+
+.link-truncate {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.order-amount {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #a855f7;
+    text-align: right;
+}
+
+/* Indian Rupee Sign Styling */
+.order-amount::before {
+    content: '₹';
+    margin-right: 2px;
+}
+
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+.status-badge.pending {
+    background: rgba(234, 179, 8, 0.2);
+    color: #eab308;
+    border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+.status-badge.processing {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.status-badge.processing::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: #3b82f6;
+    border-radius: 50%;
+    animation: processing-pulse 1.5s infinite;
+}
+
+@keyframes processing-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.status-badge.completed {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.status-badge.cancelled {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    color: #667eea;
+    opacity: 0.5;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #fff;
+}
+
+.empty-state p {
+    color: #888;
+}
+
+/* Login Prompt */
+.login-prompt {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 3rem;
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+.login-card i {
+    font-size: 4rem;
+    color: #667eea;
+    margin-bottom: 1.5rem;
+}
+
+.login-card h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+}
+
+.login-card p {
+    color: #888;
+    margin-bottom: 2rem;
+}
+
+.login-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: 'Poppins', sans-serif;
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+/* Loading State */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem;
+}
+
+.loader {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(102, 126, 234, 0.3);
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+/* Error State */
+.error-state {
+    text-align: center;
+    padding: 3rem;
+    color: #ef4444;
+}
+
+.error-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 1rem;
+    }
+
+    .container {
+        padding: 1rem;
+    }
+
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+
+    .order-item {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .order-amount {
+        text-align: left;
+    }
+
+    .status-badge {
+        width: fit-content;
+    }
+
+    .link-truncate {
+        max-width: 150px;
+    }
+}
+
+/* Hidden class */
+.hidden {
+    display: none !important;
+}
+// ============================================
+// Worldwide Collab - Order Tracking System
+// ============================================
+
+// Firebase Configuration - Same as your login system
+const firebaseConfig = {
+    apiKey: "AIzaSyC1qX12t2yi7i1e8TFr7q3C7K_Zy8q2z14",
+    authDomain: "worldwide-collab-423c0.firebaseapp.com",
+    projectId: "worldwide-collab-423c0",
+    storageBucket: "worldwide-collab-423c0.appspot.com",
+    messagingSenderId: "123456789",
+    appId: "1:123456789:web:abcdef123456"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// SheetBest API URL
+const SHEET_API = 'https://api.sheetbest.com/sheets/62416cad-7c75-4c01-8a76-e526af3d16ba';
+
+// Global Variables
+let currentUser = null;
+let autoRefreshInterval = null;
+let allOrders = [];
+
+// Platform icons mapping
+const platformIcons = {
+    'youtube': { icon: 'fab fa-youtube', class: 'youtube' },
+    'instagram': { icon: 'fab fa-instagram', class: 'instagram' },
+    'facebook': { icon: 'fab fa-facebook-f', class: 'facebook' },
+    'twitter': { icon: 'fab fa-twitter', class: 'twitter' },
+    'tiktok': { icon: 'fab fa-tiktok', class: 'tiktok' },
+    'telegram': { icon: 'fab fa-telegram-plane', class: 'telegram' },
+    'spotify': { icon: 'fab fa-spotify', class: 'spotify' },
+    'soundcloud': { icon: 'fab fa-soundcloud', class: 'soundcloud' },
+    'twitch': { icon: 'fab fa-twitch', class: 'twitch' },
+    'linkedin': { icon: 'fab fa-linkedin-in', class: 'linkedin' }
+};
+
+// ============================================
+// AUTHENTICATION FUNCTIONS
+// ============================================
+
+/**
+ * Check authentication state on page load
+ * Automatically shows orders if user is logged in
+ */
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        // User is signed in
+        currentUser = user;
+        showMainApp();
+        loadOrders();
+        startAutoRefresh();
+    } else {
+        // User is not signed in
+        showLoginPrompt();
+    }
+});
+
+/**
+ * Show login prompt screen
+ */
+function showLoginPrompt() {
+    document.getElementById('loginPrompt').classList.remove('hidden');
+    document.getElementById('mainApp').classList.add('hidden');
+}
+
+/**
+ * Show main app with orders
+ */
+function showMainApp() {
+    document.getElementById('loginPrompt').classList.add('hidden');
+    document.getElementById('mainApp').classList.remove('hidden');
+    
+    // Update user info in header
+    const displayName = currentUser.displayName || currentUser.email.split('@')[0];
+    document.getElementById('userName').textContent = displayName;
+    document.getElementById('userAvatar').textContent = displayName.charAt(0).toUpperCase();
+}
+
+/**
+ * Redirect to login page
+ */
+function redirectToLogin() {
+    window.location.href = 'login.html';
+}
+
+// ============================================
+// DATA FETCHING FUNCTIONS
+// ============================================
+
+/**
+ * Load orders from SheetBest API
+ * Filters orders by logged-in user's email
+ * Sorts by date (newest first)
+ */
+async function loadOrders() {
+    showLoading();
+    
+    try {
+        const response = await fetch(SHEET_API);
+        if (!response.ok) throw new Error('Failed to fetch data');
+        
+        const data = await response.json();
+        
+        // Filter orders by current user's email
+        const userEmail = currentUser.email;
+        allOrders = data.filter(order => 
+            order.email && order.email.toLowerCase() === userEmail.toLowerCase()
+        );
+
+        // Sort by date (newest first)
+        allOrders.sort((a, b) => {
+            const dateA = parseDate(a.date);
+            const dateB = parseDate(b.date);
+            return dateB - dateA;
+        });
+
+        // Update UI
+        updateStats();
+        renderOrders();
+        updateTimestamp();
+        
+    } catch (error) {
+        console.error('Error loading orders:', error);
+        showError(error.message);
+    }
+}
+
+/**
+ * Parse date string from sheet
+ * Handles DD-MM-YYYY format
+ */
+function parseDate(dateStr) {
+    if (!dateStr) return new Date(0);
+    
+    // Handle format DD-MM-YYYY
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+        return new Date(parts[2], parts[1] - 1, parts[0]);
+    }
+    
+    return new Date(dateStr);
+}
+
+// ============================================
+// STATS FUNCTIONS
+// ============================================
+
+/**
+ * Update statistics cards
+ * Counts total, pending, processing, and completed orders
+ */
+function updateStats() {
+    const total = allOrders.length;
+    const pending = allOrders.filter(o => getStatus(o.status) === 'Pending').length;
+    const processing = allOrders.filter(o => getStatus(o.status) === 'Processing').length;
+    const completed = allOrders.filter(o => getStatus(o.status) === 'Completed').length;
+
+    // Animate numbers
+    animateNumber('totalOrders', total);
+    animateNumber('pendingOrders', pending);
+    animateNumber('processingOrders', processing);
+    animateNumber('completedOrders', completed);
+}
+
+/**
+ * Animate number counting effect
+ */
+function animateNumber(elementId, target) {
+    const element = document.getElementById(elementId);
+    const current = parseInt(element.textContent) || 0;
+    const increment = target > current ? 1 : -1;
+    const duration = 500;
+    const steps = Math.abs(target - current);
+    const stepDuration = steps > 0 ? duration / steps : 0;
+
+    let currentValue = current;
+    const timer = setInterval(() => {
+        if (currentValue === target) {
+            clearInterval(timer);
+        } else {
+            currentValue += increment;
+            element.textContent = currentValue;
+        }
+    }, stepDuration);
+}
+
+// ============================================
+// RENDER FUNCTIONS
+// ============================================
+
+/**
+ * Render orders list
+ */
+function renderOrders() {
+    const container = document.getElementById('ordersList');
+    
+    if (allOrders.length === 0) {
+        showEmpty();
+        return;
+    }
+
+    container.innerHTML = allOrders.map(order => createOrderHTML(order)).join('');
+    showOrders();
+}
+
+/**
+ * Create HTML for single order item
+ */
+function createOrderHTML(order) {
+    const platformKey = (order.platform || '').toLowerCase();
+    const platformData = platformIcons[platformKey] || { icon: 'fas fa-globe', class: 'default' };
+    const status = getStatus(order.status);
+    const statusClass = status.toLowerCase();
+    
+    // Truncate long links
+    const truncatedLink = order.link && order.link.length > 30 
+        ? order.link.substring(0, 30) + '...' 
+        : (order.link || 'N/A');
+
+    return `
+        <div class="order-item">
+            <div class="order-id-badge">${order.orderId || 'N/A'}</div>
+            
+            <div class="order-details">
+                <div class="platform-row">
+                    <div class="platform-icon ${platformData.class}">
+                        <i class="${platformData.icon}"></i>
+                    </div>
+                    <span class="platform-name">${order.platform || 'Unknown'}</span>
+                    <span class="service-name">• ${order.service || 'Unknown Service'}</span>
+                </div>
+                <div class="order-meta">
+                    <span><i class="fas fa-layer-group"></i> Qty: ${order.quantity || '0'}</span>
+                    <span class="link-truncate" title="${order.link || ''}">
+                        <i class="fas fa-link"></i> ${truncatedLink}
+                    </span>
+                    <span><i class="fas fa-calendar"></i> ${order.date || 'N/A'}</span>
+                </div>
+            </div>
+            
+            <div class="order-amount">${order.amount || '0'}</div>
+            
+            <div class="status-badge ${statusClass}">
+                ${status}
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Normalize status string
+ */
+function getStatus(status) {
+    if (!status) return 'Pending';
+    const s = status.toLowerCase().trim();
+    
+    if (s.includes('pending')) return 'Pending';
+    if (s.includes('processing') || s.includes('in progress')) return 'Processing';
+    if (s.includes('completed') || s.includes('done') || s.includes('finished')) return 'Completed';
+    if (s.includes('cancelled') || s.includes('canceled')) return 'Cancelled';
+    
+    return 'Pending';
+}
+
+// ============================================
+// UI STATE FUNCTIONS
+// ============================================
+
+function showLoading() {
+    document.getElementById('loadingState').classList.remove('hidden');
+    document.getElementById('ordersList').classList.add('hidden');
+    document.getElementById('emptyState').classList.add('hidden');
+    document.getElementById('errorState').classList.add('hidden');
+}
+
+function showOrders() {
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('ordersList').classList.remove('hidden');
+    document.getElementById('emptyState').classList.add('hidden');
+    document.getElementById('errorState').classList.add('hidden');
+}
+
+function showEmpty() {
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('ordersList').classList.add('hidden');
+    document.getElementById('emptyState').classList.remove('hidden');
+    document.getElementById('errorState').classList.add('hidden');
+}
+
+function showError(message) {
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('ordersList').classList.add('hidden');
+    document.getElementById('emptyState').classList.add('hidden');
+    document.getElementById('errorState').classList.remove('hidden');
+    document.getElementById('errorMessage').textContent = message || 'Failed to load orders. Please try again.';
+}
+
+/**
+ * Update last updated timestamp
+ */
+function updateTimestamp() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString();
+    document.getElementById('lastUpdated').textContent = `Last updated: ${timeString}`;
+}
+
+// ============================================
+// REFRESH FUNCTIONS
+// ============================================
+
+/**
+ * Manual refresh button handler
+ */
+function manualRefresh() {
+    const btn = document.getElementById('refreshBtn');
+    btn.classList.add('spinning');
+    btn.disabled = true;
+    
+    loadOrders().then(() => {
+        setTimeout(() => {
+            btn.classList.remove('spinning');
+            btn.disabled = false;
+        }, 500);
+    });
+}
+
+/**
+ * Start auto-refresh every 30 seconds
+ * This ensures live updates from Google Sheet
+ */
+function startAutoRefresh() {
+    // Clear existing interval if any
+    if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+    
+    // Set new interval - 30 seconds
+    autoRefreshInterval = setInterval(() => {
+        loadOrders();
+    }, 30000);
+}
+
+/**
+ * Stop auto-refresh
+ */
+function stopAutoRefresh() {
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+        autoRefreshInterval = null;
+    }
+}
+
+// ============================================
+// CLEANUP
+// ============================================
+
+// Stop auto-refresh when page is hidden
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        stopAutoRefresh();
+    } else {
+        startAutoRefresh();
+        loadOrders(); // Refresh when coming back
+    }
+});
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+    stopAutoRefresh();
+});
