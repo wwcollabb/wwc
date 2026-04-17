@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Payment — Worldwide Collab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #05050e;
+      --surface: #0a0a18;
+      --surface2: #10101f;
+      --surface3: #16162a;
+      --border: rgba(255,255,255,0.05);
+      --border2: rgba(255,255,255,0.09);
+      --border3: rgba(255,255,255,0.14);
+      --accent: #7c3aed;
+      --accent2: #a78bfa;
+      --accent3: #c4b5fd;
+      --gold: #f59e0b;
+      --green: #059669;
+      --green2: #10b981;
+      --green3: #34d399;
+      --red: #f87171;
+      --text: #f8fafc;
+      --text2: #cbd5e1;
+      --muted: #475569;
+      --muted2: #64748b;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Sora', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 28px 14px 52px;
+      position: relative;
+      overflow-x: hidden;
+      color: var(--text);
+    }
+
+    /* ── BACKGROUND EFFECTS ── */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .bg-layer .orb1 {
+      position: absolute;
+      top: -20%; left: 50%;
+      transform: translateX(-50%);
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(124,58,237,0.14) 0%, transparent 60%);
+    }
+    .bg-layer .orb2 {
+      position: absolute;
+      bottom: -10%; right: -10%;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(167,139,250,0.07) 0%, transparent 60%);
+    }
+    .bg-layer .orb3 {
+      position: absolute;
+      top: 40%; left: -10%;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(16,185,129,0.05) 0%, transparent 60%);
+    }
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(124,58,237,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,58,237,0.03) 1px, transparent 1px);
+      background-size: 44px 44px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── WRAPPER ── */
+    .payment-wrapper {
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── BRAND BAR ── */
+    .brand-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      animation: fadeDown 0.5s ease both;
+    }
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-logo {
+      width: 38px; height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 4px 20px rgba(124,58,237,0.45);
+      overflow: hidden;
+    }
+    .brand-logo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+    .brand-name {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+    .brand-name span {
+      background: linear-gradient(135deg, var(--accent2), var(--accent3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .secure-pill {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(16,185,129,0.08);
+      border: 1px solid rgba(16,185,129,0.22);
+      color: var(--green3);
+      font-size: 11px; font-weight: 600;
+      padding: 6px 13px; border-radius: 100px;
+      letter-spacing: 0.2px;
+    }
+    .secure-pill::before {
+      content: '🔒';
+      font-size: 10px;
+    }
+
+    /* ── MAIN CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border3);
+      border-radius: 26px;
+      overflow: hidden;
+      box-shadow:
+        0 40px 120px rgba(0,0,0,0.8),
+        0 0 0 1px rgba(124,58,237,0.08),
+        inset 0 1px 0 rgba(255,255,255,0.04);
+      animation: fadeUp 0.55s cubic-bezier(0.16,1,0.3,1) both 0.1s;
+    }
+
+    /* Card Header */
+    .card-header {
+      padding: 22px 26px 18px;
+      background: linear-gradient(135deg,
+        rgba(124,58,237,0.2) 0%,
+        rgba(167,139,250,0.1) 50%,
+        rgba(16,185,129,0.06) 100%);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-header::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at top right, rgba(167,139,250,0.12), transparent 60%);
+      pointer-events: none;
+    }
+    .header-info h1 {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      line-height: 1.2;
+    }
+    .header-status {
+      display: flex; align-items: center; gap: 6px;
+      margin-top: 5px;
+    }
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green3);
+      animation: blink 1.6s ease-in-out infinite;
+    }
+    .header-status span {
+      font-size: 11px;
+      color: var(--muted2);
+      letter-spacing: 0.3px;
+    }
+
+    /* Timer */
+    .timer-box {
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 10px 16px;
+      text-align: center;
+      backdrop-filter: blur(20px);
+      min-width: 80px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .timer-lbl {
+      font-size: 8px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      margin-bottom: 2px;
+    }
+    #countdown {
+      font-family: 'Space Mono', monospace;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+    .timer-box.urgent { border-color: rgba(245,158,11,0.5); background: rgba(245,158,11,0.08); }
+    .timer-box.urgent #countdown { color: var(--gold); animation: pulse 0.9s ease-in-out infinite; }
+
+    /* Card Body */
+    .card-body { padding: 22px 20px; }
+
+    /* Demo Banner */
+    .demo-banner {
+      display: none;
+      background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(245,158,11,0.06));
+      border: 1px solid rgba(245,158,11,0.25);
+      border-radius: 12px;
+      padding: 11px 16px;
+      font-size: 12px;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 18px;
+      letter-spacing: 0.2px;
+    }
+
+    /* ── ORDER ID ── */
+    .order-id-strip {
+      display: flex; align-items: center; gap: 12px;
+      background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(167,139,250,0.06));
+      border: 1px solid rgba(124,58,237,0.22);
+      border-radius: 14px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+    }
+    .oid-icon {
+      width: 38px; height: 38px;
+      background: rgba(124,58,237,0.15);
+      border: 1px solid rgba(124,58,237,0.3);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .oid-lbl { font-size: 10px; color: var(--muted2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+    .oid-val { font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; color: var(--accent3); letter-spacing: 0.3px; }
+
+    /* ── DETAILS GRID ── */
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-bottom: 16px;
+    }
+    .dc {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 11px 13px;
+      transition: border-color 0.2s;
+    }
+    .dc:hover { border-color: rgba(124,58,237,0.2); }
+    .dc.full { grid-column: 1 / -1; }
+    .dc-lbl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; font-weight: 600; }
+    .dc-val { font-size: 12.5px; font-weight: 600; color: var(--text2); word-break: break-all; line-height: 1.3; }
+
+    /* ── AMOUNT BLOCK ── */
+    .amount-block {
+      background: linear-gradient(135deg,
+        rgba(124,58,237,0.15) 0%,
+        rgba(167,139,250,0.08) 100%);
+      border: 1.5px solid rgba(124,58,237,0.3);
+      border-radius: 20px;
+      padding: 20px 18px 16px;
+      text-align: center;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .amount-block::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 160px; height: 160px;
+      background: radial-gradient(circle, rgba(167,139,250,0.15), transparent);
+    }
+    .amt-lbl { font-size: 10px; color: var(--muted2); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 8px; font-weight: 600; }
+    .amt-value {
+      font-size: 54px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -3px;
+      background: linear-gradient(135deg, #fff 0%, var(--accent3) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+    }
+    .amt-note {
+      font-size: 11px;
+      color: var(--muted2);
+      margin-top: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+    .amt-note::before { content: ''; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--green3); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      display: flex; align-items: center; gap: 10px;
+      margin: 20px 0 16px;
+      color: var(--muted2);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border2);
+    }
+
+    /* ── QR SECTION ── */
+    .qr-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 6px;
+    }
+    .qr-card {
+      background: #fff;
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow:
+        0 20px 60px rgba(0,0,0,0.6),
+        0 0 0 1px rgba(255,255,255,0.06),
+        0 0 50px rgba(124,58,237,0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 260px;
+    }
+    .qr-top-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .qr-inner {
+      width: 200px; height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    #qrCanvas {
+      width: 200px; height: 200px;
+      border-radius: 10px;
+      display: none;
+    }
+    #qrCodeImg {
+      width: 200px; height: 200px;
+      border-radius: 10px;
+      display: none;
+    }
+    .qr-loading {
+      width: 200px; height: 200px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 10px;
+      background: #f8fafc;
+      border-radius: 10px;
+    }
+    .qr-spinner {
+      width: 36px; height: 36px;
+      border: 3px solid #e2e8f0;
+      border-top-color: #7c3aed;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    .qr-loading span { font-size: 11px; font-weight: 500; color: #94a3b8; }
+    .qr-error { font-size: 11px; color: #ef4444; text-align: center; padding: 0 10px; }
+
+    .qr-amount-pill {
+      background: linear-gradient(135deg, #7c3aed, #a78bfa);
+      color: white;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 7px 22px;
+      border-radius: 100px;
+      letter-spacing: 0.2px;
+    }
+    .qr-upi-row {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; color: #64748b; font-weight: 500;
+    }
+    .upi-badge {
+      font-weight: 800; font-size: 12px;
+      background: linear-gradient(135deg, #5f259f, #00baf2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* QR Download */
+    .qr-dl-btn {
+      display: flex; align-items: center; gap: 7px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: 9px 16px;
+      color: var(--text2);
+      font-size: 12px; font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Sora', sans-serif;
+      margin-top: 14px;
+      opacity: 0.4;
+    }
+    .qr-dl-btn:hover { background: var(--surface3); border-color: var(--accent2); color: var(--accent2); }
+
+    /* ── UPI ID ── */
+    .upi-id-section { width: 100%; margin-top: 18px; }
+    .upi-id-lbl {
+      font-size: 9px; color: var(--muted2); text-transform: uppercase;
+      letter-spacing: 1.2px; font-weight: 700; margin-bottom: 8px; text-align: center;
+    }
+    .upi-row {
+      display: flex; align-items: center;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 13px;
+      overflow: hidden;
+    }
+    .upi-id-text {
+      flex: 1;
+      padding: 13px 15px;
+      font-family: 'Space Mono', monospace;
+      font-size: 14px; font-weight: 700;
+      color: var(--accent2);
+      letter-spacing: 0.3px;
+    }
+    .copy-btn {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none; cursor: pointer;
+      padding: 13px 16px;
+      color: white; font-size: 12px; font-weight: 700;
+      font-family: 'Sora', sans-serif;
+      transition: opacity 0.2s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .copy-btn:hover { opacity: 0.85; }
+    .copy-btn.copied { background: linear-gradient(135deg, var(--green), #047857); }
+
+    /* ── UPI APP BUTTONS ── */
+    .upi-apps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 9px;
+    }
+    .upi-app-btn {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 7px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 6px 11px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .upi-app-btn:hover {
+      border-color: rgba(124,58,237,0.35);
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 0 8px 24px rgba(124,58,237,0.18);
+    }
+    .upi-app-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .upi-app-icon img { width: 44px; height: 44px; object-fit: cover; border-radius: 12px; }
+    .upi-app-btn span { font-size: 10.5px; font-weight: 600; color: var(--text2); }
+    .apps-note {
+      font-size: 11px; color: var(--muted2);
+      text-align: center; margin-top: 10px;
+    }
+
+    /* ── NOTE BOX ── */
+    .note-box {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: rgba(245,158,11,0.07);
+      border: 1px solid rgba(245,158,11,0.2);
+      border-radius: 13px;
+      padding: 13px 14px;
+      font-size: 12.5px;
+      color: var(--text2);
+      line-height: 1.5;
+      margin: 18px 0 14px;
+    }
+    .note-box strong { color: var(--gold); }
+
+    /* ── FORM SECTION ── */
+    .form-section { margin-top: 4px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label {
+      display: block;
+      font-size: 11px; font-weight: 700;
+      color: var(--muted2);
+      text-transform: uppercase;
+      letter-spacing: 0.9px;
+      margin-bottom: 7px;
+    }
+    .form-group input[type="text"],
+    .form-group input[type="email"] {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 13px 15px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: 'Sora', sans-serif;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-group input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+    }
+    .form-group input::placeholder { color: var(--muted); }
+    .form-group input[type="file"] {
+      width: 100%;
+      background: var(--surface2);
+      border: 1.5px dashed var(--border2);
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: var(--muted2);
+      font-size: 12px;
+      font-family: 'Sora', sans-serif;
+      cursor: pointer;
+      outline: none;
+    }
+    .form-group input[type="file"]:hover { border-color: rgba(124,58,237,0.35); }
+
+    /* Submit Button */
+    .submit-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent) 0%, #9333ea 50%, var(--accent2) 100%);
+      border: none; border-radius: 16px;
+      padding: 0; cursor: pointer;
+      font-family: 'Sora', sans-serif;
+      position: relative;
+      overflow: hidden;
+      transition: opacity 0.2s, transform 0.2s;
+      box-shadow: 0 8px 32px rgba(124,58,237,0.4);
+      margin-top: 4px;
+    }
+    .submit-btn:hover:not(:disabled) { opacity: 0.92; transform: translateY(-2px); box-shadow: 0 12px 40px rgba(124,58,237,0.5); }
+    .submit-btn:active:not(:disabled) { transform: translateY(0); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-inner {
+      display: flex; align-items: center; justify-content: center; gap: 9px;
+      padding: 16px 24px;
+      font-size: 15px; font-weight: 700;
+      color: white; letter-spacing: 0.2px;
+    }
+
+    /* Spinner inside button */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    /* ── SUCCESS SCREEN ── */
+    .success-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 30px 16px 20px;
+      animation: fadeUp 0.5s ease both;
+    }
+    .success-icon-wrap {
+      width: 88px; height: 88px;
+      background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(52,211,153,0.08));
+      border: 2px solid rgba(16,185,129,0.3);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 42px;
+      margin-bottom: 20px;
+      animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both 0.1s;
+    }
+    .success-screen h2 {
+      font-size: 24px; font-weight: 800;
+      letter-spacing: -0.4px; margin-bottom: 10px;
+      background: linear-gradient(135deg, var(--green3), var(--green2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .success-screen p { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 18px; }
+    .success-order-id {
+      background: var(--surface2);
+      border: 1px solid rgba(16,185,129,0.25);
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-family: 'Space Mono', monospace;
+      font-size: 14px; font-weight: 700;
+      color: var(--green3);
+      margin-bottom: 14px;
+      letter-spacing: 0.5px;
+    }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 7px;
+      color: var(--accent2); font-size: 13px; font-weight: 600;
+      text-decoration: none; margin-top: 8px;
+      transition: gap 0.2s;
+    }
+    .back-link:hover { gap: 10px; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes popIn {
+      from { transform: scale(0.4); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 480px) {
+      body { padding: 16px 10px 40px; }
+      .card-body { padding: 16px 14px; }
+      .card-header { padding: 16px 16px 14px; }
+      .header-info h1 { font-size: 17px; }
+      .amt-value { font-size: 44px; }
+      .upi-apps-grid { gap: 7px; }
+      .upi-app-btn { padding: 11px 4px 9px; border-radius: 13px; }
+      .upi-app-icon { width: 38px; height: 38px; }
+      .upi-app-icon img { width: 38px; height: 38px; }
+      .upi-app-btn span { font-size: 9.5px; }
+      .details-grid { grid-template-columns: 1fr; }
+      #countdown { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-layer">
+  <div class="orb1"></div>
+  <div class="orb2"></div>
+  <div class="orb3"></div>
+</div>
+<div class="bg-grid"></div>
+
+<div class="payment-wrapper">
+
+  <!-- Brand Bar -->
+  <div class="brand-bar">
+    <div class="brand-left">
+      <div class="brand-logo">
+        <img src="logo.png" alt="WWC" onerror="this.style.display='none'; this.parentElement.textContent='🌐'">
+      </div>
+      <div class="brand-name">Worldwide <span>Collab</span></div>
+    </div>
+    <div class="secure-pill">Secure Pay</div>
+  </div>
+
+  <!-- Main Card -->
+  <div class="card">
+
+    <!-- Header -->
+    <div class="card-header">
+      <div class="header-info">
+        <h1>Complete Payment</h1>
+        <div class="header-status">
+          <div class="status-dot"></div>
+          <span>UPI &nbsp;·&nbsp; Instant &nbsp;·&nbsp; Verified</span>
+        </div>
+      </div>
+      <div class="timer-box" id="timerBox">
+        <div class="timer-lbl">Expires in</div>
+        <div id="countdown">05:00</div>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="card-body">
+
+      <!-- Payment Form -->
+      <div id="paymentForm">
+
+        <!-- Demo banner -->
+        <div class="demo-banner" id="demoBanner">
+          ⚡ Demo mode — Sample order data in use
+        </div>
+
+        <!-- Order ID -->
+        <div class="order-id-strip">
+          <div class="oid-icon">🧾</div>
+          <div>
+            <div class="oid-lbl">Order ID</div>
+            <div class="oid-val" id="displayOrderId">Loading...</div>
+          </div>
+        </div>
+
+        <!-- Details -->
+        <div class="details-grid">
+          <div class="dc">
+            <div class="dc-lbl">Platform</div>
+            <div class="dc-val" id="displayPlatform">—</div>
+          </div>
+          <div class="dc">
+            <div class="dc-lbl">Quantity</div>
+            <div class="dc-val" id="displayQuantity">—</div>
+          </div>
+          <div class="dc full">
+            <div class="dc-lbl">Service</div>
+            <div class="dc-val" id="displayService">—</div>
+          </div>
+          <div class="dc full">
+            <div class="dc-lbl">URL / Username</div>
+            <div class="dc-val" id="displayLink" style="font-size:12px;">—</div>
+          </div>
+        </div>
+
+        <!-- Amount -->
+        <div class="amount-block">
+          <div class="amt-lbl">Total Amount to Pay</div>
+          <div class="amt-value">₹<span id="displayAmount">0</span></div>
+          <div class="amt-note">Pay exactly this amount · No extra charges</div>
+        </div>
+
+        <!-- QR Section -->
+        <div class="divider">Scan &amp; Pay</div>
+        <div class="qr-section">
+          <div class="qr-card">
+            <div class="qr-top-label">📱 Scan with any UPI app</div>
+            <div class="qr-inner">
+              <div class="qr-loading" id="qrLoading">
+                <div class="qr-spinner"></div>
+                <span>Generating QR...</span>
+              </div>
+              <!-- Canvas for qrcodejs -->
+              <canvas id="qrCanvas"></canvas>
+              <!-- Fallback img -->
+              <img id="qrCodeImg" alt="UPI QR Code">
+            </div>
+            <div class="qr-amount-pill" id="qrAmountLabel">₹0</div>
+            <div class="qr-upi-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="#94a3b8" stroke-width="1.5"/>
+              </svg>
+              Powered by <span class="upi-badge">UPI</span>
+            </div>
+          </div>
+
+          <!-- Download QR -->
+          <button class="qr-dl-btn" id="qrDownloadBtn" onclick="downloadQR()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7,10 12,15 17,10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Download QR Code
+          </button>
+
+          <!-- UPI ID -->
+          <div class="upi-id-section">
+            <div class="upi-id-lbl">UPI ID</div>
+            <div class="upi-row">
+              <div class="upi-id-text" id="upiIdText">nextune@upi</div>
+              <button class="copy-btn" onclick="copyUPI()" id="copyBtn">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <rect x="9" y="9" width="13" height="13" rx="2"/>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+                <span id="copyBtnText">Copy</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- UPI Apps -->
+        <div class="divider">Open in UPI App</div>
+        <div style="margin-bottom:18px;">
+          <div class="upi-apps-grid">
+
+            <!-- Google Pay -->
+            <a class="upi-app-btn" href="#" onclick="return openUPIApp('gpay')">
+              <div class="upi-app-icon" style="background:#fff;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/512px-Google_Pay_Logo.svg.png"
+                     alt="GPay"
+                     onerror="this.parentElement.innerHTML='<span style=\'font-size:22px\'>G</span>'">
+              </div>
+              <span>GPay</span>
+            </a>
+
+            <!-- PhonePe -->
+            <a class="upi-app-btn" href="#" onclick="return openUPIApp('phonepe')">
+              <div class="upi-app-icon" style="background:#5f259f;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/PhonePe_Logo.png/800px-PhonePe_Logo.png"
+                     alt="PhonePe"
+                     onerror="this.parentElement.innerHTML='<span style=\'color:#fff;font-size:13px;font-weight:bold\'>Pe</span>'">
+              </div>
+              <span>PhonePe</span>
+            </a>
+
+            <!-- Paytm -->
+            <a class="upi-app-btn" href="#" onclick="return openUPIApp('paytm')">
+              <div class="upi-app-icon" style="background:#00baf2;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/Paytm_logo.png"
+                     alt="Paytm"
+                     onerror="this.parentElement.innerHTML='<span style=\'color:#fff;font-size:11px;font-weight:bold\'>Paytm</span>'">
+              </div>
+              <span>Paytm</span>
+            </a>
+
+            <!-- BHIM -->
+            <a class="upi-app-btn" href="#" onclick="return openUPIApp('bhim')">
+              <div class="upi-app-icon" style="background:#004c97;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/BHIM_svg_logo.svg/512px-BHIM_svg_logo.svg.png"
+                     alt="BHIM"
+                     onerror="this.parentElement.innerHTML='<span style=\'color:#fff;font-size:12px;font-weight:bold\'>BHIM</span>'">
+              </div>
+              <span>BHIM</span>
+            </a>
+
+          </div>
+          <p class="apps-note">Tapping opens your UPI app with amount pre-filled</p>
+        </div>
+
+        <!-- Note -->
+        <div class="note-box">
+          <span>⚠️</span>
+          <span>After payment, enter your <strong>UPI Transaction ID</strong> below so we can verify and process your order quickly.</span>
+        </div>
+
+        <!-- Form -->
+        <div class="form-section">
+          <div class="form-group">
+            <label>UPI Transaction ID / Reference Number</label>
+            <input type="text" id="transactionId" placeholder="e.g. 123456789012" required>
+          </div>
+          <div class="form-group">
+            <label>Transaction Screenshot <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">(Optional)</span></label>
+            <input type="file" id="paymentScreenshot" accept="image/*">
+          </div>
+          <button class="submit-btn" id="submitBtn" onclick="confirmPayment()">
+            <div class="btn-inner">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M20 6L9 17l-5-5"/>
+              </svg>
+              Confirm Payment &amp; Submit Order
+            </div>
+          </button>
+        </div>
+
+      </div><!-- /paymentForm -->
+
+      <!-- Success Screen -->
+      <div class="success-screen" id="successScreen">
+        <div class="success-icon-wrap">✅</div>
+        <h2>Payment Confirmed!</h2>
+        <p>Your order has been submitted successfully.<br>We'll process it within 24 hours.</p>
+        <div class="success-order-id" id="successOrderId">Order ID: —</div>
+        <p style="color:var(--muted2);font-size:12px;margin-bottom:20px;">Keep this Order ID for tracking your order.</p>
+        <a href="index.html" class="back-link">← Back to Home</a>
+      </div>
+
+    </div><!-- /card-body -->
+  </div><!-- /card -->
+
+</div><!-- /payment-wrapper -->
+
+<!-- QRCode.js — generates real scannable QR codes directly, no external image API needed -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script>
+  // ── CONFIG ──
+  const UPI_ID        = 'nextune@upi';
+  const MERCHANT_NAME = 'Worldwide Collab';
+  const SHEETS_URL    = 'https://script.google.com/macros/s/AKfycbydxFOBsdmISk0Hi4Ep-bsq5wFVGVWlrla6nskNHB3tKS2IuElAsKpqV4nR_YIqmgNvhg/exec';
+
+  let orderData     = null;
+  let timeLeft      = 300;
+  let timerInterval = null;
+  let qrInstance    = null;
+
+  // ── INIT ──
+  window.onload = function () {
+    const stored = sessionStorage.getItem('wwc_order');
+
+    if (!stored) {
+      document.getElementById('demoBanner').style.display = 'block';
+      orderData = {
+        orderId:  'WWC-' + Math.random().toString(36).substr(2,6).toUpperCase(),
+        platform: 'Instagram',
+        service:  'Likes',
+        quantity: '111',
+        link:     'itxm3haroon',
+        userEmail:'demo@example.com',
+        userName: 'Haroon',
+        amount:   '139.8'
+      };
+    } else {
+      orderData = JSON.parse(stored);
+    }
+
+    // Populate UI
+    document.getElementById('displayOrderId').textContent  = orderData.orderId;
+    document.getElementById('displayPlatform').textContent = capitalize(orderData.platform || '—');
+    document.getElementById('displayService').textContent  = orderData.service  || '—';
+    document.getElementById('displayQuantity').textContent = orderData.quantity || '—';
+    document.getElementById('displayLink').textContent     = orderData.link     || '—';
+    document.getElementById('displayAmount').textContent   = orderData.amount;
+    document.getElementById('qrAmountLabel').textContent   = '₹' + orderData.amount;
+
+    generateQR(orderData.amount);
+    buildUPILinks(orderData.amount);
+    startTimer();
+  };
+
+  function capitalize(str) {
+    if (!str) return '—';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  // ── QR GENERATION via QRCode.js (works in all apps — real QR, not image) ──
+  function generateQR(amount) {
+    const upiString = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${amount}&cu=INR&tn=${encodeURIComponent('Order - ' + (orderData?.orderId || ''))}`;
+
+    const loadingEl = document.getElementById('qrLoading');
+    const canvasEl  = document.getElementById('qrCanvas');
+    const imgEl     = document.getElementById('qrCodeImg');
+
+    // Clear any previous QR
+    if (qrInstance) {
+      try { document.getElementById('qrCanvas').getContext('2d').clearRect(0,0,200,200); } catch(e) {}
+    }
+
+    try {
+      // Use QRCode.js to draw directly on canvas — universally scannable
+      qrInstance = new QRCode(document.createElement('div'), {
+        text:         upiString,
+        width:        200,
+        height:       200,
+        colorDark:    '#1a1a2e',
+        colorLight:   '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+
+      // Get the generated canvas/image from qrInstance
+      setTimeout(() => {
+        try {
+          const qrDiv = document.createElement('div');
+          new QRCode(qrDiv, {
+            text:         upiString,
+            width:        200,
+            height:       200,
+            colorDark:    '#1a1a2e',
+            colorLight:   '#ffffff',
+            correctLevel: QRCode.CorrectLevel.M
+          });
+
+          setTimeout(() => {
+            const generatedCanvas = qrDiv.querySelector('canvas');
+            const generatedImg    = qrDiv.querySelector('img');
+
+            if (generatedCanvas) {
+              // Copy to our canvas
+              canvasEl.width  = 200;
+              canvasEl.height = 200;
+              const ctx = canvasEl.getContext('2d');
+              ctx.drawImage(generatedCanvas, 0, 0, 200, 200);
+              loadingEl.style.display = 'none';
+              canvasEl.style.display  = 'block';
+              document.getElementById('qrDownloadBtn').style.opacity = '1';
+            } else if (generatedImg && generatedImg.src) {
+              imgEl.src = generatedImg.src;
+              imgEl.onload = () => {
+                loadingEl.style.display = 'none';
+                imgEl.style.display = 'block';
+                document.getElementById('qrDownloadBtn').style.opacity = '1';
+              };
+            } else {
+              fallbackQR(upiString);
+            }
+          }, 300);
+        } catch(e) {
+          fallbackQR(upiString);
+        }
+      }, 100);
+
+    } catch(e) {
+      fallbackQR(upiString);
+    }
+  }
+
+  // Fallback: quickchart.io — highly reliable, works across apps
+  function fallbackQR(upiString) {
+    const loadingEl = document.getElementById('qrLoading');
+    const imgEl     = document.getElementById('qrCodeImg');
+
+    // quickchart.io generates proper QR that scans in all apps
+    const qrUrl = `https://quickchart.io/qr?text=${encodeURIComponent(upiString)}&size=200&margin=2&ecLevel=M&format=png`;
+
+    imgEl.onload = () => {
+      loadingEl.style.display = 'none';
+      imgEl.style.display = 'block';
+      document.getElementById('qrDownloadBtn').style.opacity = '1';
+    };
+    imgEl.onerror = () => {
+      loadingEl.innerHTML = '<span class="qr-error">QR generation failed.<br>Please use UPI ID directly.</span>';
+    };
+    imgEl.src = qrUrl;
+  }
+
+  // ── QR DOWNLOAD ──
+  function downloadQR() {
+    const canvasEl = document.getElementById('qrCanvas');
+    const imgEl    = document.getElementById('qrCodeImg');
+
+    if (canvasEl.style.display !== 'none' && canvasEl.width > 0) {
+      const link = document.createElement('a');
+      link.download = `WWC-QR-${orderData?.orderId || 'payment'}.png`;
+      link.href = canvasEl.toDataURL('image/png');
+      link.click();
+    } else if (imgEl.src) {
+      window.open(imgEl.src, '_blank');
+    }
+  }
+
+  // ── UPI DEEP LINKS ──
+  function buildUPILinks(amount) {
+    const note = encodeURIComponent('Order - ' + (orderData?.orderId || ''));
+    const base = `pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${amount}&cu=INR&tn=${note}`;
+    window._upiLinks = {
+      gpay:    `gpay://upi/pay?${base}`,
+      phonepe: `phonepe://pay?${base}`,
+      paytm:   `paytmmp://pay?${base}`,
+      bhim:    `upi://pay?${base}`
+    };
+  }
+
+  function openUPIApp(app) {
+    if (!window._upiLinks) return false;
+    const link = window._upiLinks[app];
+    window.location.href = link;
+    setTimeout(() => {
+      window.location.href = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${orderData?.amount||0}&cu=INR`;
+    }, 1800);
+    return false;
+  }
+
+  // ── COPY UPI ID ──
+  function copyUPI() {
+    const upiId  = document.getElementById('upiIdText').textContent;
+    const btn    = document.getElementById('copyBtn');
+    const btnTxt = document.getElementById('copyBtnText');
+
+    const onSuccess = () => {
+      btn.classList.add('copied');
+      btnTxt.textContent = '✓ Copied';
+      setTimeout(() => { btn.classList.remove('copied'); btnTxt.textContent = 'Copy'; }, 2500);
+    };
+
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(upiId).then(onSuccess).catch(() => legacyCopy(upiId, onSuccess));
+    } else {
+      legacyCopy(upiId, onSuccess);
+    }
+  }
+
+  function legacyCopy(text, cb) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;opacity:0;';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    cb();
+  }
+
+  // ── COUNTDOWN TIMER ──
+  function startTimer() {
+    const el   = document.getElementById('countdown');
+    const box  = document.getElementById('timerBox');
+    timerInterval = setInterval(() => {
+      const m = Math.floor(timeLeft / 60);
+      const s = timeLeft % 60;
+      el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+      if (timeLeft <= 60) box.classList.add('urgent');
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        alert('Payment window expired. Please place your order again.');
+        sessionStorage.removeItem('wwc_order');
+        window.location.href = 'index.html';
+      }
+      timeLeft--;
+    }, 1000);
+  }
+
+  // ── SUBMIT TO GOOGLE SHEETS ──
+  async function confirmPayment() {
+    const txnId = document.getElementById('transactionId').value.trim();
+    if (!txnId) {
+      const inp = document.getElementById('transactionId');
+      inp.focus();
+      inp.style.borderColor = '#f87171';
+      inp.style.boxShadow   = '0 0 0 3px rgba(248,113,113,0.15)';
+      setTimeout(() => { inp.style.borderColor = ''; inp.style.boxShadow = ''; }, 2200);
+      return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.innerHTML = '<div class="btn-inner"><div class="spinner"></div> Submitting...</div>';
+    btn.disabled  = true;
+
+    // ── Sheet columns (exact format from screenshot):
+    // Timestamp | Order ID | User Email | User Name | Platform | Service | Quantity | Link | Amount | Transaction ID | Payment Status | Order Status | Progress | Notes
+    const now = new Date();
+    const timestamp = now.toLocaleDateString('en-IN') + ' ' + now.toLocaleTimeString('en-IN');
+
+    const sheetPayload = {
+      Timestamp:        timestamp,
+      OrderID:          orderData.orderId,
+      UserEmail:        orderData.userEmail  || '',
+      UserName:         orderData.userName   || '',
+      Platform:         capitalize(orderData.platform || ''),
+      Service:          orderData.service    || '',
+      Quantity:         orderData.quantity   || '',
+      Link:             orderData.link       || '',
+      Amount:           orderData.amount     || '',
+      TransactionID:    txnId,
+      PaymentStatus:    'Completed',
+      OrderStatus:      'Pending',
+      Progress:         '0%',
+      Notes:            ''
+    };
+
+    try {
+      // Send to Google Sheets via Apps Script Web App
+      await fetch(SHEETS_URL, {
+        method:  'POST',
+        mode:    'no-cors', // required for Apps Script
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(sheetPayload)
+      });
+    } catch(err) {
+      console.warn('Sheets submission error:', err);
+      // Still show success — don't block user
+    }
+
+    // Show success screen
+    clearInterval(timerInterval);
+    document.getElementById('paymentForm').style.display = 'none';
+    const ss = document.getElementById('successScreen');
+    ss.style.display = 'flex';
+    document.getElementById('successOrderId').textContent = 'Order ID: ' + orderData.orderId;
+    sessionStorage.removeItem('wwc_order');
+  }
+</script>
+
+</body>
+</html>
