@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Payment — Worldwide Collab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #080810;
+      --surface: #0f0f1a;
+      --surface2: #161624;
+      --surface3: #1c1c2e;
+      --border: rgba(255,255,255,0.06);
+      --border2: rgba(255,255,255,0.1);
+      --border3: rgba(255,255,255,0.16);
+      --accent: #6366f1;
+      --accent2: #a78bfa;
+      --accent3: #818cf8;
+      --gold: #fbbf24;
+      --green: #10b981;
+      --green2: #34d399;
+      --red: #f87171;
+      --text: #f1f5f9;
+      --text2: #cbd5e1;
+      --muted: #64748b;
+      --glow-accent: 0 0 60px rgba(99,102,241,0.2);
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 16px 48px;
+      position: relative;
+      overflow-x: hidden;
+      color: var(--text);
+    }
+
+    .ambient {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .ambient::before {
+      content: ''; position: absolute; top: -300px; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 900px;
+      background: radial-gradient(circle at 50% 50%, rgba(99,102,241,0.13) 0%, transparent 65%);
+    }
+    .ambient::after {
+      content: ''; position: absolute; bottom: -200px; right: -150px;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(167,139,250,0.08) 0%, transparent 65%);
+    }
+    body::after {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 40px 40px; pointer-events: none; z-index: 0;
+    }
+
+    .payment-wrapper { width: 100%; max-width: 500px; position: relative; z-index: 1; }
+
+    /* BRAND BAR */
+    .brand-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; animation: fadeDown 0.5s ease both; }
+    .brand-left { display: flex; align-items: center; gap: 10px; }
+    .brand-logo { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 4px 16px rgba(99,102,241,0.4); }
+    .brand-logo img { width: 100%; height: 100%; border-radius: 10px; object-fit: cover; }
+    .brand-name { font-size: 16px; font-weight: 800; letter-spacing: 0.3px; color: var(--text); }
+    .brand-name span { background: linear-gradient(135deg, var(--accent3), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .secure-badge { display: flex; align-items: center; gap: 5px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); color: var(--green2); font-size: 11px; font-weight: 600; padding: 5px 12px; border-radius: 100px; letter-spacing: 0.3px; }
+
+    /* CARD */
+    .card { background: var(--surface); border: 1px solid var(--border3); border-radius: 28px; overflow: hidden; box-shadow: 0 32px 100px rgba(0,0,0,0.7), var(--glow-accent); animation: fadeUp 0.6s ease both 0.1s; }
+    .card-header { padding: 24px 28px 20px; background: linear-gradient(135deg, rgba(99,102,241,0.18) 0%, rgba(167,139,250,0.12) 100%); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: relative; overflow: hidden; }
+    .card-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(167,139,250,0.15), transparent); border-radius: 50%; }
+    .header-title h1 { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+    .header-title p { font-size: 12px; color: var(--muted); margin-top: 3px; display: flex; align-items: center; gap: 6px; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green2); display: inline-block; animation: blink 1.5s infinite; }
+
+    .timer-pill { background: rgba(0,0,0,0.4); border: 1px solid var(--border3); border-radius: 16px; padding: 10px 18px; text-align: center; backdrop-filter: blur(12px); min-width: 90px; }
+    .timer-label { font-size: 9px; color: var(--muted); letter-spacing: 1.2px; text-transform: uppercase; }
+    #countdown { font-size: 26px; font-weight: 800; color: var(--text); font-variant-numeric: tabular-nums; letter-spacing: -1px; font-family: 'JetBrains Mono', monospace; line-height: 1.2; }
+    .timer-pill.urgent { border-color: rgba(251,191,36,0.4); }
+    .timer-pill.urgent #countdown { color: var(--gold); animation: pulse 0.8s infinite; }
+
+    .card-body { padding: 24px 24px; }
+
+    /* ORDER ID */
+    .order-id-row { display: flex; align-items: center; gap: 12px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 14px; padding: 13px 16px; margin-bottom: 18px; }
+    .oi-icon { width: 36px; height: 36px; background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(167,139,250,0.15)); border: 1px solid rgba(99,102,241,0.25); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+    .oi-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    .oi-value { font-size: 14px; font-weight: 700; color: var(--text); font-family: 'JetBrains Mono', monospace; }
+    .oi-copy-btn { margin-left: auto; background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.25); color: var(--accent3); font-size: 11px; font-weight: 600; padding: 5px 10px; border-radius: 7px; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.15s; white-space: nowrap; }
+    .oi-copy-btn:hover { background: rgba(99,102,241,0.2); }
+    .oi-copy-btn.copied { background: rgba(52,211,153,0.15); border-color: rgba(52,211,153,0.3); color: var(--green2); }
+
+    /* DETAILS GRID */
+    .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; }
+    .detail-cell { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+    .detail-cell.full { grid-column: 1 / -1; }
+    .dc-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+    .dc-value { font-size: 13px; font-weight: 600; color: var(--text2); word-break: break-all; }
+
+    /* AMOUNT */
+    .amount-block { background: linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(167,139,250,0.08) 100%); border: 1px solid rgba(99,102,241,0.3); border-radius: 20px; padding: 22px 20px 18px; text-align: center; margin-bottom: 22px; position: relative; overflow: hidden; }
+    .amount-block::before { content: '₹'; position: absolute; font-size: 140px; font-weight: 900; color: rgba(99,102,241,0.05); top: -20px; right: -5px; font-family: 'Outfit', sans-serif; line-height: 1; pointer-events: none; }
+    .ab-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 8px; }
+    .ab-amount { font-size: 58px; font-weight: 900; line-height: 1; letter-spacing: -3px; background: linear-gradient(135deg, #fff 0%, var(--accent2) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .ab-note { font-size: 11px; color: var(--muted); margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+    .ab-note::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--green2); }
+
+    /* DIVIDER */
+    .divider { display: flex; align-items: center; gap: 12px; margin: 22px 0 18px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
+
+    /* QR */
+    .qr-section { display: flex; flex-direction: column; align-items: center; gap: 0; margin-bottom: 8px; }
+    .qr-card { background: #fff; border-radius: 24px; padding: 20px; box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08), 0 0 40px rgba(99,102,241,0.2); position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .qr-top-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
+    .qr-inner { position: relative; width: 210px; height: 210px; display: flex; align-items: center; justify-content: center; }
+    .qr-inner img { width: 210px; height: 210px; border-radius: 10px; display: block; }
+    .qr-loading { width: 210px; height: 210px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #94a3b8; background: #f8fafc; border-radius: 10px; }
+    .qr-loading .spin { width: 40px; height: 40px; border: 3px solid #e2e8f0; border-top-color: #6366f1; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    .qr-loading span { font-size: 12px; font-weight: 500; color: #94a3b8; }
+    .qr-amount-tag { background: linear-gradient(135deg, #6366f1, #a78bfa); color: white; font-size: 15px; font-weight: 800; padding: 8px 20px; border-radius: 100px; letter-spacing: 0.3px; }
+    .qr-upi-logo { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #64748b; font-weight: 500; }
+    .upi-logo-text { font-weight: 800; font-size: 13px; background: linear-gradient(135deg, #5f259f, #00baf2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .qr-download-btn { display: flex; align-items: center; gap: 7px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 10px; padding: 9px 16px; color: var(--text2); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Outfit', sans-serif; margin-top: 14px; text-decoration: none; }
+    .qr-download-btn:hover { background: var(--surface3); border-color: var(--accent3); color: var(--accent3); }
+
+    /* UPI ID */
+    .upi-id-section { width: 100%; margin-top: 20px; }
+    .upi-id-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 8px; text-align: center; }
+    .upi-row { display: flex; align-items: center; background: var(--surface2); border: 1px solid var(--border2); border-radius: 14px; overflow: hidden; }
+    .upi-id-text { flex: 1; padding: 13px 16px; font-size: 15px; font-weight: 700; color: var(--accent2); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.3px; }
+    .copy-btn { background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; cursor: pointer; padding: 13px 18px; color: white; font-size: 13px; font-weight: 700; font-family: 'Outfit', sans-serif; transition: opacity 0.2s; display: flex; align-items: center; gap: 7px; }
+    .copy-btn:hover { opacity: 0.85; }
+    .copy-btn.copied { background: linear-gradient(135deg, var(--green), #059669); }
+
+    /* UPI APPS */
+    .upi-apps-section { margin-bottom: 20px; }
+    .upi-apps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .upi-app-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 16px 8px 12px; cursor: pointer; text-decoration: none; transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; overflow: hidden; }
+    .upi-app-btn:hover { transform: translateY(-3px) scale(1.03); }
+    .upi-app-btn:active { transform: translateY(0) scale(0.97); }
+    .upi-app-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .upi-app-icon img { width: 44px; height: 44px; object-fit: contain; border-radius: 12px; }
+    .upi-app-btn span { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.2px; }
+    .upi-app-btn.gpay:hover { background: rgba(66,133,244,0.1); border-color: #4285f4; }
+    .upi-app-btn.gpay:hover span { color: #4285f4; }
+    .upi-app-btn.phonepe:hover { background: rgba(95,37,159,0.1); border-color: #7c3aed; }
+    .upi-app-btn.phonepe:hover span { color: #a78bfa; }
+    .upi-app-btn.paytm:hover { background: rgba(0,186,242,0.1); border-color: #00baf2; }
+    .upi-app-btn.paytm:hover span { color: #38bdf8; }
+    .upi-app-btn.bhim:hover { background: rgba(0,166,81,0.1); border-color: #10b981; }
+    .upi-app-btn.bhim:hover span { color: #34d399; }
+    .apps-hint { font-size: 11px; color: var(--muted); text-align: center; margin-top: 10px; }
+
+    /* NOTE BOX */
+    .note-box { background: rgba(251,191,36,0.07); border: 1px solid rgba(251,191,36,0.18); border-radius: 14px; padding: 14px 16px; margin-bottom: 20px; font-size: 13px; color: #d4a012; line-height: 1.65; display: flex; gap: 10px; align-items: flex-start; }
+    .note-box .ni { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+    /* FORM */
+    .form-section { margin-top: 4px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .form-group input[type="text"], .form-group input[type="file"] { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 12px; padding: 14px 16px; font-size: 15px; color: var(--text); font-family: 'Outfit', sans-serif; transition: border-color 0.2s, box-shadow 0.2s; }
+    .form-group input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
+    .form-group input[type="file"] { cursor: pointer; color: var(--muted); }
+    .form-group input::placeholder { color: var(--muted); }
+
+    .submit-btn { width: 100%; background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%); border: none; border-radius: 16px; padding: 17px; font-size: 16px; font-weight: 800; color: white; font-family: 'Outfit', sans-serif; cursor: pointer; transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); margin-top: 4px; letter-spacing: 0.3px; box-shadow: 0 10px 30px rgba(99,102,241,0.4); position: relative; overflow: hidden; }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(99,102,241,0.5); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-inner { display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+    /* ── ENHANCED SUCCESS SCREEN ── */
+    .success-screen {
+      display: none; flex-direction: column; align-items: center;
+      text-align: center; padding: 36px 20px 28px;
+    }
+    .success-icon { width: 90px; height: 90px; background: linear-gradient(135deg, var(--green), #059669); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 44px; margin-bottom: 20px; animation: successPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; box-shadow: 0 0 50px rgba(16,185,129,0.4); }
+    .success-screen h2 { font-size: 26px; font-weight: 900; color: var(--text); margin-bottom: 8px; letter-spacing: -0.5px; }
+    .success-screen > p { color: var(--muted); font-size: 14px; line-height: 1.7; }
+
+    .success-order-box {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 16px; padding: 16px 18px; margin: 18px 0 14px;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .sob-left .sob-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+    .sob-left .sob-id { font-size: 16px; font-weight: 800; color: var(--accent2); font-family: 'JetBrains Mono', monospace; }
+    .sob-copy-btn { background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.25); color: var(--accent3); font-size: 12px; font-weight: 600; padding: 7px 12px; border-radius: 9px; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; }
+    .sob-copy-btn:hover { background: rgba(99,102,241,0.2); }
+    .sob-copy-btn.copied { background: rgba(52,211,153,0.15); border-color: rgba(52,211,153,0.3); color: var(--green2); }
+
+    .success-summary {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 14px; margin-bottom: 18px; overflow: hidden;
+    }
+    .ss-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+    .ss-row:last-child { border-bottom: none; }
+    .ss-key { font-size: 12px; color: var(--muted); }
+    .ss-val { font-size: 13px; font-weight: 600; color: var(--text2); }
+    .ss-val.amount { color: var(--green2); font-family: 'JetBrains Mono', monospace; }
+
+    .track-link-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white; font-size: 15px; font-weight: 800; padding: 15px;
+      border-radius: 14px; text-decoration: none; margin-bottom: 10px;
+      box-shadow: 0 8px 24px rgba(99,102,241,0.4);
+      transition: all 0.2s; letter-spacing: 0.3px;
+    }
+    .track-link-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(99,102,241,0.5); }
+
+    .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); text-decoration: none; font-weight: 600; font-size: 13px; margin-top: 4px; transition: color 0.15s; }
+    .back-link:hover { color: var(--text2); }
+
+    /* Saving indicator */
+    .saving-indicator {
+      display: none; align-items: center; gap: 8px;
+      background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2);
+      border-radius: 10px; padding: 10px 14px; margin-bottom: 14px;
+      font-size: 13px; color: var(--accent3);
+    }
+    .saving-indicator.show { display: flex; }
+    .saving-indicator .mini-spin { width: 14px; height: 14px; border: 2px solid rgba(99,102,241,0.3); border-top-color: var(--accent3); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+
+    /* SPINNER */
+    .spinner { width: 20px; height: 20px; border: 2.5px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
+
+    /* DEMO BANNER */
+    .demo-banner { display: none; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.25); border-radius: 10px; padding: 10px 14px; font-size: 12px; color: #d4a012; text-align: center; margin-bottom: 16px; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+    @keyframes fadeDown { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+    @keyframes successPop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    @media (max-width: 480px) {
+      body { padding: 20px 12px 40px; }
+      .card-body { padding: 18px; }
+      .card-header { padding: 18px 18px 16px; }
+      .header-title h1 { font-size: 18px; }
+      .ab-amount { font-size: 46px; }
+      .upi-apps-grid { gap: 7px; }
+      .upi-app-btn { padding: 12px 5px 10px; }
+      .upi-app-icon { width: 38px; height: 38px; }
+      .upi-app-icon img { width: 38px; height: 38px; }
+      .upi-app-btn span { font-size: 10px; }
+      .details-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<div class="payment-wrapper">
+
+  <!-- Brand bar -->
+  <div class="brand-bar">
+    <div class="brand-left">
+      <div class="brand-logo">
+        <img src="logo.png" alt="WWC" onerror="this.style.display='none'; this.parentElement.textContent='🌐'">
+      </div>
+      <div class="brand-name">Worldwide <span>Collab</span></div>
+    </div>
+    <div class="secure-badge">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.5C16.5 22.15 20 17.25 20 12V6L12 2z"/></svg>
+      Secure Pay
+    </div>
+  </div>
+
+  <!-- Main card -->
+  <div class="card">
+
+    <div class="card-header">
+      <div class="header-title">
+        <h1>Complete Payment</h1>
+        <p><span class="dot"></span> UPI &nbsp;·&nbsp; Instant &nbsp;·&nbsp; Verified</p>
+      </div>
+      <div class="timer-pill" id="timerPill">
+        <div class="timer-label">Expires in</div>
+        <div id="countdown">05:00</div>
+      </div>
+    </div>
+
+    <div class="card-body">
+
+      <div id="paymentForm">
+
+        <div class="demo-banner" id="demoBanner">⚡ Demo mode — Using sample order data</div>
+
+        <!-- Order ID with copy button -->
+        <div class="order-id-row">
+          <div class="oi-icon">🧾</div>
+          <div style="flex:1;">
+            <div class="oi-label">Order ID</div>
+            <div class="oi-value" id="displayOrderId">Loading...</div>
+          </div>
+          <button class="oi-copy-btn" id="oiCopyBtn" onclick="copyOrderIdTop()">📋 Copy</button>
+        </div>
+
+        <!-- Details -->
+        <div class="details-grid">
+          <div class="detail-cell">
+            <div class="dc-label">Platform</div>
+            <div class="dc-value" id="displayPlatform">—</div>
+          </div>
+          <div class="detail-cell">
+            <div class="dc-label">Quantity</div>
+            <div class="dc-value" id="displayQuantity">—</div>
+          </div>
+          <div class="detail-cell full">
+            <div class="dc-label">Service</div>
+            <div class="dc-value" id="displayService">—</div>
+          </div>
+          <div class="detail-cell full">
+            <div class="dc-label">URL / Username</div>
+            <div class="dc-value" id="displayLink" style="font-size:12px;">—</div>
+          </div>
+        </div>
+
+        <!-- Amount -->
+        <div class="amount-block">
+          <div class="ab-label">Total Amount to Pay</div>
+          <div class="ab-amount">₹<span id="displayAmount">0</span></div>
+          <div class="ab-note">Pay exactly this amount · No extra charges</div>
+        </div>
+
+        <!-- QR -->
+        <div class="divider">Scan & Pay</div>
+        <div class="qr-section">
+          <div class="qr-card">
+            <div class="qr-top-label">📱 Scan with any UPI app</div>
+            <div class="qr-inner">
+              <div class="qr-loading" id="qrLoading">
+                <div class="spin"></div>
+                <span>Generating QR...</span>
+              </div>
+              <img id="qrCodeImg" style="display:none;" alt="UPI QR Code">
+            </div>
+            <div class="qr-amount-tag" id="qrAmountLabel">₹0</div>
+            <div class="qr-upi-logo">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#64748b" stroke-width="1.5"/><path d="M12 6v12M6 12h12" stroke="#64748b" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Powered by <span class="upi-logo-text">UPI</span>
+            </div>
+          </div>
+          <button class="qr-download-btn" id="qrDownloadBtn" onclick="downloadQR()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download QR Code
+          </button>
+          <div class="upi-id-section">
+            <div class="upi-id-label">UPI ID</div>
+            <div class="upi-row">
+              <div class="upi-id-text" id="upiIdText">nextune@upi</div>
+              <button class="copy-btn" onclick="copyUPI()" id="copyBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <span id="copyBtnText">Copy</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- UPI Apps -->
+        <div class="divider">Open in UPI App</div>
+        <div class="upi-apps-section">
+          <div class="upi-apps-grid">
+            <a class="upi-app-btn gpay" href="#" onclick="return openUPIApp('gpay')">
+              <div class="upi-app-icon" style="background:#fff;">
+                <svg width="44" height="44" viewBox="0 0 44 44" fill="none"><rect width="44" height="44" rx="12" fill="white"/><image href="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/512px-Google_Pay_Logo.svg.png" x="4" y="4" width="36" height="36" preserveAspectRatio="xMidYMid meet" onerror="this.style.display='none'"/></svg>
+              </div>
+              <span>GPay</span>
+            </a>
+            <a class="upi-app-btn phonepe" href="#" onclick="return openUPIApp('phonepe')">
+              <div class="upi-app-icon">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/PhonePe_Logo.png/800px-PhonePe_Logo.png" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 44 44%22><rect width=%2244%22 height=%2244%22 rx=%2212%22 fill=%22%235f259f%22/><text x=%2222%22 y=%2230%22 text-anchor=%22middle%22 font-size=%2218%22 font-family=%22Arial%22 fill=%22white%22 font-weight=%22bold%22>Pe</text></svg>'" alt="PhonePe" style="background:#5f259f;">
+              </div>
+              <span>PhonePe</span>
+            </a>
+            <a class="upi-app-btn paytm" href="#" onclick="return openUPIApp('paytm')">
+              <div class="upi-app-icon">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/Paytm_logo.png" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 44 44%22><rect width=%2244%22 height=%2244%22 rx=%2212%22 fill=%22%2300baf2%22/><text x=%2222%22 y=%2230%22 text-anchor=%22middle%22 font-size=%2213%22 font-family=%22Arial%22 fill=%22white%22 font-weight=%22bold%22>Paytm</text></svg>'" alt="Paytm" style="background:#fff;">
+              </div>
+              <span>Paytm</span>
+            </a>
+            <a class="upi-app-btn bhim" href="#" onclick="return openUPIApp('bhim')">
+              <div class="upi-app-icon">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/BHIM_svg_logo.svg/512px-BHIM_svg_logo.svg.png" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 44 44%22><rect width=%2244%22 height=%2244%22 rx=%2212%22 fill=%22%23004C97%22/><text x=%2222%22 y=%2230%22 text-anchor=%22middle%22 font-size=%2213%22 font-family=%22Arial%22 fill=%22white%22 font-weight=%22bold%22>BHIM</text></svg>'" alt="BHIM" style="background:#fff;">
+              </div>
+              <span>BHIM</span>
+            </a>
+          </div>
+          <p class="apps-hint">Tapping opens your UPI app with amount pre-filled</p>
+        </div>
+
+        <!-- Note -->
+        <div class="note-box">
+          <span class="ni">⚠️</span>
+          <span>After payment, enter your <strong>UPI Transaction ID</strong> below so we can verify and process your order quickly.</span>
+        </div>
+
+        <!-- Saving indicator -->
+        <div class="saving-indicator" id="savingIndicator">
+          <div class="mini-spin"></div>
+          <span id="savingMsg">Submitting order to Google Sheets…</span>
+        </div>
+
+        <!-- Form -->
+        <div class="form-section">
+          <div class="form-group">
+            <label>UPI Transaction ID / Reference Number</label>
+            <input type="text" id="transactionId" placeholder="e.g. 123456789012" required>
+          </div>
+          <div class="form-group">
+            <label>Transaction Screenshot <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">(Optional)</span></label>
+            <input type="file" id="paymentScreenshot" accept="image/*">
+          </div>
+          <button class="submit-btn" id="submitBtn" onclick="confirmPayment()">
+            <div class="btn-inner">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              Confirm Payment & Submit Order
+            </div>
+          </button>
+        </div>
+
+      </div><!-- /paymentForm -->
+
+      <!-- ── ENHANCED SUCCESS SCREEN ── -->
+      <div class="success-screen" id="successScreen">
+        <div class="success-icon">✅</div>
+        <h2>Payment Confirmed!</h2>
+        <p>Your order has been submitted successfully.<br>We'll process it within 24 hours.</p>
+
+        <!-- Order ID with copy -->
+        <div class="success-order-box">
+          <div class="sob-left">
+            <div class="sob-label">Your Order ID</div>
+            <div class="sob-id" id="successOrderId">—</div>
+          </div>
+          <button class="sob-copy-btn" id="sobCopyBtn" onclick="copySuccessOrderId()">📋 Copy ID</button>
+        </div>
+
+        <!-- Order summary -->
+        <div class="success-summary" id="successSummary"></div>
+
+        <!-- Track order button -->
+        <a id="trackOrderBtn" href="trackingorder.html" class="track-link-btn">
+          🔍 Track Your Order
+        </a>
+
+        <a href="index.html" class="back-link">← Back to Home</a>
+      </div>
+
+    </div><!-- /card-body -->
+  </div><!-- /card -->
+
+</div><!-- /payment-wrapper -->
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+<script>
+// ── CONFIG ──
+const UPI_ID = 'nextune@upi';
+const MERCHANT_NAME = 'Worldwide Collab';
+const ADMIN_EMAIL = 'team.wwcollab@gmail.com';
+const SHEETS_API = 'https://script.google.com/macros/s/AKfycbydxFOBsdmISk0Hi4Ep-bsq5wFVGVWlrla6nskNHB3tKS2IuElAsKpqV4nR_YIqmgNvhg/exec';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDcvUZkjQYvUFMmS2FC8k0E9XKNXuzPA4k",
+  authDomain: "ww-c-5c5c1.firebaseapp.com",
+  projectId: "ww-c-5c5c1",
+  storageBucket: "ww-c-5c5c1.firebasestorage.app",
+  messagingSenderId: "200600278915",
+  appId: "1:200600278915:web:654a42ec7f71e9386e08b6"
+};
+firebase.initializeApp(firebaseConfig);
+
+let orderData = null;
+let timeLeft = 300;
+let timerInterval = null;
+let currentQRUrl = null;
+let currentUser = null;
+
+// Listen for Firebase user
+firebase.auth().onAuthStateChanged(user => { currentUser = user; });
+
+// ── INIT ──
+window.onload = function () {
+  const stored = sessionStorage.getItem('wwc_order');
+
+  if (!stored) {
+    document.getElementById('demoBanner').style.display = 'block';
+    orderData = {
+      orderId: 'WWC-DEMO-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
+      platform: 'Instagram',
+      service: 'Followers — Premium',
+      quantity: '1000',
+      link: 'instagram.com/yourpage',
+      amount: '299'
+    };
+  } else {
+    orderData = JSON.parse(stored);
+  }
+
+  document.getElementById('displayOrderId').textContent  = orderData.orderId;
+  document.getElementById('displayPlatform').textContent = capitalize(orderData.platform || '—');
+  document.getElementById('displayService').textContent  = orderData.service || '—';
+  document.getElementById('displayQuantity').textContent = orderData.quantity || '—';
+  document.getElementById('displayLink').textContent     = orderData.link || '—';
+  document.getElementById('displayAmount').textContent   = orderData.amount;
+  document.getElementById('qrAmountLabel').textContent   = '₹' + orderData.amount;
+
+  generateQR(orderData.amount);
+  buildUPILinks(orderData.amount);
+  startTimer();
+};
+
+function capitalize(str) {
+  if (!str) return '—';
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// ── COPY ORDER ID (top) ──
+function copyOrderIdTop() {
+  const id = orderData?.orderId || '';
+  const btn = document.getElementById('oiCopyBtn');
+  navigator.clipboard.writeText(id).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 Copy'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => legacyCopy(id, () => {}));
+}
+
+// ── QR GENERATION ──
+function generateQR(amount) {
+  const upiString = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${amount}&cu=INR&tn=${encodeURIComponent('Order - ' + (orderData?.orderId || ''))}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=210x210&data=${encodeURIComponent(upiString)}&bgcolor=ffffff&color=1a1a2e&qzone=1&format=png&margin=0`;
+  currentQRUrl = qrUrl;
+  const loadingEl = document.getElementById('qrLoading');
+  const imgEl = document.getElementById('qrCodeImg');
+  imgEl.onload = function () { loadingEl.style.display = 'none'; imgEl.style.display = 'block'; document.getElementById('qrDownloadBtn').style.opacity = '1'; };
+  imgEl.onerror = function () { loadingEl.innerHTML = '<span style="font-size:12px;color:#f87171;">QR load failed.<br>Use UPI ID directly.</span>'; };
+  document.getElementById('qrDownloadBtn').style.opacity = '0.4';
+  imgEl.src = qrUrl;
+}
+
+async function downloadQR() {
+  if (!currentQRUrl) return;
+  try {
+    const response = await fetch(currentQRUrl);
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `WWC-QR-${orderData?.orderId || 'payment'}.png`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch(e) { window.open(currentQRUrl, '_blank'); }
+}
+
+function buildUPILinks(amount) {
+  const note = encodeURIComponent('Order - ' + (orderData?.orderId || ''));
+  const base = `pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${amount}&cu=INR&tn=${note}`;
+  window._upiLinks = { gpay: `gpay://upi/pay?${base}`, phonepe: `phonepe://pay?${base}`, paytm: `paytmmp://pay?${base}`, bhim: `upi://pay?${base}` };
+}
+
+function openUPIApp(app) {
+  if (!window._upiLinks) return false;
+  window.location.href = window._upiLinks[app];
+  setTimeout(() => { window.location.href = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${orderData?.amount || 0}&cu=INR`; }, 1800);
+  return false;
+}
+
+function copyUPI() {
+  const upiId = document.getElementById('upiIdText').textContent;
+  const btn = document.getElementById('copyBtn');
+  const btnText = document.getElementById('copyBtnText');
+  const doSuccess = () => { btn.classList.add('copied'); btnText.textContent = '✓ Copied'; setTimeout(() => { btn.classList.remove('copied'); btnText.textContent = 'Copy'; }, 2500); };
+  if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(upiId).then(doSuccess).catch(() => legacyCopy(upiId, doSuccess)); }
+  else { legacyCopy(upiId, doSuccess); }
+}
+
+function legacyCopy(text, cb) {
+  const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+}
+
+function startTimer() {
+  const el = document.getElementById('countdown');
+  const pill = document.getElementById('timerPill');
+  timerInterval = setInterval(() => {
+    const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+    el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    if (timeLeft <= 60) pill.classList.add('urgent');
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      alert('Payment window expired. Please place your order again.');
+      sessionStorage.removeItem('wwc_order');
+      window.location.href = 'index.html';
+    }
+    timeLeft--;
+  }, 1000);
+}
+
+// ── SUBMIT PAYMENT ──
+async function confirmPayment() {
+  const txnId = document.getElementById('transactionId').value.trim();
+  if (!txnId) {
+    document.getElementById('transactionId').focus();
+    document.getElementById('transactionId').style.borderColor = '#f87171';
+    setTimeout(() => document.getElementById('transactionId').style.borderColor = '', 2000);
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.innerHTML = '<div class="btn-inner"><div class="spinner"></div> Processing...</div>';
+  btn.disabled = true;
+
+  const savingEl = document.getElementById('savingIndicator');
+  savingEl.classList.add('show');
+
+  // Collect Firebase user info
+  const userEmail = currentUser?.email || orderData.userEmail || 'guest@demo.com';
+  const userName  = currentUser?.displayName || orderData.userName || 'Guest User';
+
+  const sheetPayload = {
+    action: 'submitOrder',
+    timestamp:      new Date().toISOString(),
+    orderId:        orderData.orderId,
+    userEmail:      userEmail,
+    userName:       userName,
+    platform:       orderData.platform || '',
+    service:        orderData.service || '',
+    quantity:       orderData.quantity || '',
+    link:           orderData.link || '',
+    amount:         orderData.amount || '',
+    transactionId:  txnId,
+    paymentStatus:  'completed',
+    orderStatus:    'pending',
+    progress:       '0',
+    notes:          'New order'
+  };
+
+  // 1. Send to Google Sheets
+  document.getElementById('savingMsg').textContent = 'Saving order to database…';
+  let sheetsOk = false;
+  try {
+    const sheetsRes = await fetch(SHEETS_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(sheetPayload)
+    });
+    const sheetsData = await sheetsRes.json();
+    sheetsOk = sheetsData.success !== false;
+  } catch(e) {
+    console.warn('Google Sheets submission failed:', e);
+  }
+
+  // 2. Send email via FormSubmit
+  document.getElementById('savingMsg').textContent = 'Notifying admin…';
+  const emailPayload = {
+    ...sheetPayload,
+    _subject: `New Order — ${orderData.orderId}`,
+    _template: 'table',
+    _captcha: false
+  };
+  try {
+    await fetch('https://formsubmit.co/ajax/' + ADMIN_EMAIL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(emailPayload)
+    });
+  } catch(e) {
+    console.warn('FormSubmit failed:', e);
+  }
+
+  // 3. Show success
+  clearInterval(timerInterval);
+  savingEl.classList.remove('show');
+  document.getElementById('paymentForm').style.display = 'none';
+  sessionStorage.removeItem('wwc_order');
+
+  // Populate success screen
+  const successId = orderData.orderId;
+  document.getElementById('successOrderId').textContent = successId;
+  document.getElementById('trackOrderBtn').href = `trackingorder.html?id=${encodeURIComponent(successId)}`;
+
+  // Summary rows
+  const rows = [
+    { key: 'Platform', val: capitalize(orderData.platform||'—') },
+    { key: 'Service', val: orderData.service||'—' },
+    { key: 'Quantity', val: orderData.quantity||'—' },
+    { key: 'Amount Paid', val: '₹' + (orderData.amount||'—'), cls: 'amount' },
+    { key: 'Transaction ID', val: txnId },
+    { key: 'Status', val: sheetsOk ? '✅ Saved to database' : '✅ Submitted (email)' },
+  ];
+  document.getElementById('successSummary').innerHTML = rows.map(r =>
+    `<div class="ss-row"><span class="ss-key">${r.key}</span><span class="ss-val ${r.cls||''}">${r.val}</span></div>`
+  ).join('');
+
+  const ss = document.getElementById('successScreen');
+  ss.style.display = 'flex';
+}
+
+// Copy order ID on success screen
+function copySuccessOrderId() {
+  const id = document.getElementById('successOrderId').textContent;
+  const btn = document.getElementById('sobCopyBtn');
+  navigator.clipboard.writeText(id).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 Copy ID'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => legacyCopy(id, () => {}));
+}
+</script>
+
+</body>
+</html>
