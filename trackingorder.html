@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Track Order — Worldwide Collab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:       #6366f1;
+      --primary-light: #818cf8;
+      --primary-dark:  #4f46e5;
+      --accent:        #a78bfa;
+      --bg:            #0f172a;
+      --surface:       #1e293b;
+      --surface-2:     #263348;
+      --border:        rgba(99,102,241,.22);
+      --text:          #f1f5f9;
+      --text-muted:    #94a3b8;
+      --pending:       #f59e0b;
+      --processing:    #38bdf8;
+      --completed:     #34d399;
+      --cancelled:     #f87171;
+      --radius:        16px;
+      --glass:         rgba(30,41,59,.72);
+      --glass-border:  rgba(255,255,255,.07);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Animated background ──────────────────────── */
+    .bg-mesh {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 0%,   rgba(99,102,241,.18) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 50% at 90% 100%,  rgba(167,139,250,.14) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 50% 50%,   rgba(56,189,248,.07) 0%, transparent 70%);
+    }
+    .bg-grid {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(99,102,241,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99,102,241,.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    /* ── Layout wrapper ────────────────────────────── */
+    .page {
+      position: relative; z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+
+    /* ── Top nav ───────────────────────────────────── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 0 20px;
+      border-bottom: 1px solid var(--glass-border);
+      margin-bottom: 48px;
+      animation: fadeDown .5s ease both;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
+    }
+    .brand-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .brand-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: 1.05rem;
+      letter-spacing: -.3px;
+    }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .btn-back {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 10px;
+      background: var(--glass); border: 1px solid var(--glass-border);
+      color: var(--text-muted); font-family: inherit; font-size: .85rem;
+      cursor: pointer; text-decoration: none;
+      transition: all .2s; backdrop-filter: blur(10px);
+    }
+    .btn-back:hover { color: var(--text); border-color: var(--border); background: var(--surface); }
+
+    /* ── User profile pill ─────────────────────────── */
+    .user-pill {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--glass); backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 50px; padding: 6px 14px 6px 6px;
+      animation: fadeDown .5s .1s ease both;
+    }
+    .user-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: .8rem;
+      flex-shrink: 0;
+    }
+    .user-info { line-height: 1.2; }
+    .user-name { font-size: .82rem; font-weight: 600; }
+    .user-email { font-size: .72rem; color: var(--text-muted); }
+
+    /* ── Page hero ─────────────────────────────────── */
+    .hero {
+      text-align: center;
+      margin-bottom: 44px;
+      animation: fadeUp .6s .15s ease both;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(99,102,241,.12); border: 1px solid rgba(99,102,241,.28);
+      border-radius: 50px; padding: 5px 14px;
+      font-size: .75rem; font-weight: 500; color: var(--primary-light);
+      letter-spacing: .4px; text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-weight: 800; letter-spacing: -1px;
+      line-height: 1.1; margin-bottom: 12px;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--primary-light), var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p { color: var(--text-muted); font-size: .95rem; max-width: 420px; margin: 0 auto; }
+
+    /* ── Search card ───────────────────────────────── */
+    .search-card {
+      background: var(--glass); backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 28px 28px 24px;
+      margin-bottom: 32px;
+      animation: fadeUp .6s .25s ease both;
+      box-shadow: 0 4px 40px rgba(0,0,0,.3);
+    }
+    .search-label {
+      font-size: .78rem; font-weight: 600; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: .6px; margin-bottom: 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .search-label::before {
+      content: ''; display: inline-block;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--primary-light);
+    }
+    .search-row {
+      display: flex; gap: 10px;
+    }
+    .search-input {
+      flex: 1; padding: 14px 18px;
+      background: rgba(15,23,42,.6); border: 1px solid var(--glass-border);
+      border-radius: 12px; color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: 1rem;
+      outline: none; transition: border-color .2s, box-shadow .2s;
+      letter-spacing: .2px;
+    }
+    .search-input::placeholder { color: var(--text-muted); }
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99,102,241,.18);
+    }
+    .btn-track {
+      display: flex; align-items: center; gap: 8px;
+      padding: 14px 26px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border: none; color: #fff;
+      font-family: 'Syne', sans-serif; font-weight: 600; font-size: .9rem;
+      cursor: pointer; white-space: nowrap;
+      transition: all .2s; box-shadow: 0 4px 20px rgba(99,102,241,.35);
+      position: relative; overflow: hidden;
+    }
+    .btn-track::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.1), transparent);
+      opacity: 0; transition: opacity .2s;
+    }
+    .btn-track:hover::after { opacity: 1; }
+    .btn-track:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(99,102,241,.45); }
+    .btn-track:active { transform: translateY(0); }
+    .btn-track:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+
+    /* ── Spinner ───────────────────────────────────── */
+    .spinner-wrap {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 14px; padding: 52px 0;
+      animation: fadeUp .4s ease both;
+    }
+    .spinner {
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 3px solid rgba(99,102,241,.18);
+      border-top-color: var(--primary);
+      animation: spin .8s linear infinite;
+    }
+    .spinner-text { color: var(--text-muted); font-size: .88rem; }
+
+    /* ── Empty / Error state ───────────────────────── */
+    .state-card {
+      text-align: center; padding: 52px 24px;
+      background: var(--glass); backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      animation: fadeUp .4s ease both;
+    }
+    .state-icon {
+      font-size: 3rem; margin-bottom: 16px;
+      display: block;
+    }
+    .state-title {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 1.2rem; margin-bottom: 8px;
+    }
+    .state-desc { color: var(--text-muted); font-size: .9rem; max-width: 320px; margin: 0 auto; }
+
+    /* ── Order result card ─────────────────────────── */
+    .order-card {
+      background: var(--glass); backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 8px 48px rgba(0,0,0,.35);
+      animation: fadeUp .45s ease both;
+    }
+    .order-header {
+      background: linear-gradient(135deg, rgba(99,102,241,.25), rgba(167,139,250,.15));
+      border-bottom: 1px solid var(--glass-border);
+      padding: 24px 28px;
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .order-header-left {}
+    .order-id-label {
+      font-size: .72rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .6px; color: var(--text-muted); margin-bottom: 4px;
+    }
+    .order-id-val {
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.3rem;
+      letter-spacing: -.5px;
+    }
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 50px;
+      font-size: .78rem; font-weight: 600; letter-spacing: .3px;
+      border: 1px solid; white-space: nowrap;
+    }
+    .status-badge .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      animation: pulse 1.8s ease infinite;
+    }
+    .status-pending  { color: var(--pending);    background: rgba(245,158,11,.1);  border-color: rgba(245,158,11,.3); }
+    .status-pending .dot  { background: var(--pending); }
+    .status-processing { color: var(--processing); background: rgba(56,189,248,.1); border-color: rgba(56,189,248,.3); }
+    .status-processing .dot { background: var(--processing); }
+    .status-completed  { color: var(--completed);  background: rgba(52,211,153,.1);  border-color: rgba(52,211,153,.3); }
+    .status-completed .dot  { background: var(--completed); animation: none; }
+    .status-cancelled  { color: var(--cancelled);  background: rgba(248,113,113,.1);  border-color: rgba(248,113,113,.3); }
+    .status-cancelled .dot  { background: var(--cancelled); animation: none; }
+
+    .order-body { padding: 28px; }
+    .order-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .order-field {
+      background: rgba(15,23,42,.45);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px; padding: 16px;
+    }
+    .field-label {
+      font-size: .7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .6px; color: var(--text-muted); margin-bottom: 6px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .field-icon { font-size: .9rem; }
+    .field-value {
+      font-weight: 600; font-size: .97rem; color: var(--text);
+      word-break: break-word;
+    }
+
+    .order-footer {
+      padding: 16px 28px;
+      border-top: 1px solid var(--glass-border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 8px;
+      background: rgba(15,23,42,.3);
+    }
+    .footer-ts {
+      font-size: .78rem; color: var(--text-muted);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .footer-ts svg { opacity: .5; }
+    .amount-chip {
+      background: linear-gradient(135deg, rgba(99,102,241,.2), rgba(167,139,250,.15));
+      border: 1px solid rgba(99,102,241,.3);
+      border-radius: 50px; padding: 6px 16px;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: .95rem;
+      color: var(--primary-light);
+    }
+
+    /* ── Keyframes ─────────────────────────────────── */
+    @keyframes spin    { to { transform: rotate(360deg); } }
+    @keyframes fadeUp  { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+    @keyframes fadeDown{ from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: none; } }
+    @keyframes pulse   { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.45; transform:scale(.8); } }
+
+    /* ── Auth overlay ──────────────────────────────── */
+    #auth-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .auth-loader {
+      text-align: center;
+    }
+    .auth-loader .spinner { margin: 0 auto 14px; }
+    .auth-loader p { color: var(--text-muted); font-size: .9rem; }
+
+    /* ── Responsive ────────────────────────────────── */
+    @media (max-width: 560px) {
+      .search-row { flex-direction: column; }
+      .btn-track { width: 100%; justify-content: center; }
+      .order-grid { grid-template-columns: 1fr; }
+      nav { flex-wrap: wrap; gap: 12px; }
+      .order-header { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Auth loading overlay -->
+<div id="auth-overlay">
+  <div class="auth-loader">
+    <div class="spinner"></div>
+    <p>Authenticating…</p>
+  </div>
+</div>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<div class="page">
+
+  <!-- Nav -->
+  <nav>
+    <a href="index.html" class="nav-brand">
+      <div class="brand-icon">🌐</div>
+      <span class="brand-name">Worldwide Collab</span>
+    </a>
+    <div class="nav-right">
+      <a href="index.html" class="btn-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Home
+      </a>
+      <div class="user-pill" id="user-pill" style="display:none">
+        <div class="user-avatar" id="user-avatar"></div>
+        <div class="user-info">
+          <div class="user-name" id="user-display-name">—</div>
+          <div class="user-email" id="user-email-disp">—</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+      Real-time tracking
+    </div>
+    <h1>Track Your <span>Order</span></h1>
+    <p>Enter your Order ID below to get instant updates on your delivery status.</p>
+  </div>
+
+  <!-- Search -->
+  <div class="search-card">
+    <div class="search-label">Order ID</div>
+    <div class="search-row">
+      <input
+        id="order-input"
+        class="search-input"
+        type="text"
+        placeholder="e.g. ORD-2024-00123"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button class="btn-track" id="track-btn" onclick="trackOrder()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Track Order
+      </button>
+    </div>
+  </div>
+
+  <!-- Results area -->
+  <div id="results"></div>
+
+</div>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDcvUZkjQYvUFMmS2FC8k0E9XKNXuzPA4k",
+    authDomain: "ww-c-5c5c1.firebaseapp.com",
+    projectId: "ww-c-5c5c1",
+    storageBucket: "ww-c-5c5c1.firebasestorage.app",
+    messagingSenderId: "200600278915",
+    appId: "1:200600278915:web:654a42ec7f71e9386e08b6"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth, (user) => {
+    const overlay = document.getElementById('auth-overlay');
+    if (!user) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    // Hide overlay
+    overlay.style.display = 'none';
+
+    // Store user data globally
+    window._wwUser = { email: user.email, name: user.displayName || user.email.split('@')[0] };
+
+    // Populate UI
+    const name  = window._wwUser.name;
+    const email = window._wwUser.email;
+    const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+
+    document.getElementById('user-avatar').textContent      = initials;
+    document.getElementById('user-display-name').textContent = name;
+    document.getElementById('user-email-disp').textContent  = email;
+    document.getElementById('user-pill').style.display      = 'flex';
+  });
+</script>
+
+<script>
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbydxFOBsdmISk0Hi4Ep-bsq5wFVGVWlrla6nskNHB3tKS2IuElAsKpqV4nR_YIqmgNvhg/exec';
+
+  function setLoading(on) {
+    const btn = document.getElementById('track-btn');
+    btn.disabled = on;
+    btn.innerHTML = on
+      ? `<svg style="animation:spin .8s linear infinite" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Searching…`
+      : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> Track Order`;
+  }
+
+  function statusClass(status) {
+    if (!status) return 'status-pending';
+    const s = status.toLowerCase();
+    if (s.includes('complet')) return 'status-completed';
+    if (s.includes('process') || s.includes('progress')) return 'status-processing';
+    if (s.includes('cancel')) return 'status-cancelled';
+    return 'status-pending';
+  }
+
+  function platformIcon(platform) {
+    const icons = {
+      instagram: '📸', youtube: '▶️', tiktok: '🎵',
+      twitter: '🐦', facebook: '👤', twitch: '🎮',
+      spotify: '🎧', linkedin: '💼', snapchat: '👻',
+    };
+    if (!platform) return '🌐';
+    return icons[platform.toLowerCase()] || '🌐';
+  }
+
+  function serviceIcon(service) {
+    const icons = {
+      followers: '👥', likes: '❤️', views: '👁️',
+      comments: '💬', shares: '🔁', subscribers: '🔔',
+      plays: '▶️', streams: '🎵',
+    };
+    if (!service) return '⚡';
+    return icons[service.toLowerCase()] || '⚡';
+  }
+
+  function formatDate(ts) {
+    if (!ts) return '—';
+    const d = new Date(ts);
+    if (isNaN(d)) return ts;
+    return d.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+
+  function renderNotFound() {
+    return `
+      <div class="state-card">
+        <span class="state-icon">🔍</span>
+        <div class="state-title">Order Not Found</div>
+        <p class="state-desc">No order matched that ID for your account. Please check the Order ID and try again.</p>
+      </div>`;
+  }
+
+  function renderError(msg) {
+    return `
+      <div class="state-card">
+        <span class="state-icon">⚠️</span>
+        <div class="state-title">Something went wrong</div>
+        <p class="state-desc">${msg || 'Unable to fetch order data. Please try again.'}</p>
+      </div>`;
+  }
+
+  function renderOrder(o) {
+    const sc    = statusClass(o.status);
+    const pIcon = platformIcon(o.platform);
+    const sIcon = serviceIcon(o.service);
+    const qty   = o.quantity ? Number(o.quantity).toLocaleString() : '—';
+    const amt   = o.amount   ? `$${parseFloat(o.amount).toFixed(2)}` : (o.Amount ? `$${parseFloat(o.Amount).toFixed(2)}` : '—');
+
+    return `
+      <div class="order-card">
+        <div class="order-header">
+          <div class="order-header-left">
+            <div class="order-id-label">Order ID</div>
+            <div class="order-id-val">#${o.orderId || o.order_id || o.id || '—'}</div>
+          </div>
+          <span class="status-badge ${sc}">
+            <span class="dot"></span>
+            ${o.status || 'Pending'}
+          </span>
+        </div>
+
+        <div class="order-body">
+          <div class="order-grid">
+            <div class="order-field">
+              <div class="field-label"><span class="field-icon">${pIcon}</span> Platform</div>
+              <div class="field-value">${o.platform || '—'}</div>
+            </div>
+            <div class="order-field">
+              <div class="field-label"><span class="field-icon">${sIcon}</span> Service</div>
+              <div class="field-value">${o.service || '—'}</div>
+            </div>
+            <div class="order-field">
+              <div class="field-label"><span class="field-icon">📊</span> Quantity</div>
+              <div class="field-value">${qty}</div>
+            </div>
+            <div class="order-field">
+              <div class="field-label"><span class="field-icon">🔗</span> Link</div>
+              <div class="field-value" style="font-size:.82rem;color:var(--text-muted);word-break:break-all">${o.link || o.url || '—'}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="order-footer">
+          <div class="footer-ts">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            ${formatDate(o.timestamp || o.createdAt || o.date)}
+          </div>
+          <div class="amount-chip">${amt}</div>
+        </div>
+      </div>`;
+  }
+
+  async function trackOrder() {
+    const raw = document.getElementById('order-input').value.trim();
+    if (!raw) {
+      document.getElementById('order-input').focus();
+      return;
+    }
+
+    const user = window._wwUser;
+    if (!user) return;
+
+    setLoading(true);
+    document.getElementById('results').innerHTML = `
+      <div class="spinner-wrap">
+        <div class="spinner"></div>
+        <span class="spinner-text">Fetching your order…</span>
+      </div>`;
+
+    try {
+      const url = `${APPS_SCRIPT_URL}?action=trackOrder&orderId=${encodeURIComponent(raw)}&email=${encodeURIComponent(user.email)}`;
+      const res  = await fetch(url);
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const data = await res.json();
+
+      if (!data || data.status === 'error' || data.error) {
+        document.getElementById('results').innerHTML = renderNotFound();
+      } else if (data.order) {
+        document.getElementById('results').innerHTML = renderOrder(data.order);
+      } else if (Array.isArray(data) && data.length > 0) {
+        // If API returns array, find matching by email
+        const match = data.find(o =>
+          (o.email || '').toLowerCase() === user.email.toLowerCase() &&
+          String(o.orderId || o.order_id || o.id || '').toLowerCase() === raw.toLowerCase()
+        );
+        document.getElementById('results').innerHTML = match ? renderOrder(match) : renderNotFound();
+      } else if (data && typeof data === 'object' && !data.error) {
+        // Direct order object
+        const emailMatch = !data.email || data.email.toLowerCase() === user.email.toLowerCase();
+        document.getElementById('results').innerHTML = emailMatch ? renderOrder(data) : renderNotFound();
+      } else {
+        document.getElementById('results').innerHTML = renderNotFound();
+      }
+    } catch (err) {
+      console.error(err);
+      document.getElementById('results').innerHTML = renderError('Could not connect to the server. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Allow Enter key
+  document.getElementById('order-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') trackOrder();
+  });
+</script>
+
+</body>
+</html>
