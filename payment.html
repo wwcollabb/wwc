@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Payment — Worldwide Collab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #080810;
+      --surface: #0f0f1a;
+      --surface2: #161624;
+      --surface3: #1c1c2e;
+      --border: rgba(255,255,255,0.06);
+      --border2: rgba(255,255,255,0.1);
+      --border3: rgba(255,255,255,0.16);
+      --accent: #6366f1;
+      --accent2: #a78bfa;
+      --accent3: #818cf8;
+      --gold: #fbbf24;
+      --green: #10b981;
+      --green2: #34d399;
+      --red: #f87171;
+      --text: #f1f5f9;
+      --text2: #cbd5e1;
+      --muted: #64748b;
+      --glow-accent: 0 0 60px rgba(99,102,241,0.2);
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 16px 48px;
+      position: relative;
+      overflow-x: hidden;
+      color: var(--text);
+    }
+
+    /* Ambient glows */
+    .ambient {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .ambient::before {
+      content: '';
+      position: absolute;
+      top: -300px; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 900px;
+      background: radial-gradient(circle at 50% 50%, rgba(99,102,241,0.13) 0%, transparent 65%);
+    }
+    .ambient::after {
+      content: '';
+      position: absolute;
+      bottom: -200px; right: -150px;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(167,139,250,0.08) 0%, transparent 65%);
+    }
+
+    /* Grid texture */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .payment-wrapper {
+      width: 100%;
+      max-width: 500px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── TOP BRAND BAR ── */
+    .brand-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      animation: fadeDown 0.5s ease both;
+    }
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-logo {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 4px 16px rgba(99,102,241,0.4);
+    }
+    .brand-logo img {
+      width: 100%; height: 100%;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+    .brand-name {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      color: var(--text);
+    }
+    .brand-name span {
+      background: linear-gradient(135deg, var(--accent3), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .secure-badge {
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.25);
+      color: var(--green2);
+      font-size: 11px; font-weight: 600;
+      padding: 5px 12px; border-radius: 100px;
+      letter-spacing: 0.3px;
+    }
+    .secure-badge svg { flex-shrink: 0; }
+
+    /* ── MAIN CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border3);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 32px 100px rgba(0,0,0,0.7), var(--glow-accent);
+      animation: fadeUp 0.6s ease both 0.1s;
+    }
+
+    /* Card header */
+    .card-header {
+      padding: 24px 28px 20px;
+      background: linear-gradient(135deg, rgba(99,102,241,0.18) 0%, rgba(167,139,250,0.12) 100%);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-header::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 180px; height: 180px;
+      background: radial-gradient(circle, rgba(167,139,250,0.15), transparent);
+      border-radius: 50%;
+    }
+    .header-title h1 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+    .header-title p {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 3px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green2); display: inline-block; animation: blink 1.5s infinite; }
+
+    .timer-pill {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border3);
+      border-radius: 16px;
+      padding: 10px 18px;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      min-width: 90px;
+    }
+    .timer-label { font-size: 9px; color: var(--muted); letter-spacing: 1.2px; text-transform: uppercase; }
+    #countdown {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -1px;
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1.2;
+    }
+    .timer-pill.urgent { border-color: rgba(251,191,36,0.4); }
+    .timer-pill.urgent #countdown { color: var(--gold); animation: pulse 0.8s infinite; }
+
+    /* Card body */
+    .card-body { padding: 24px 24px; }
+
+    /* ── ORDER ID ── */
+    .order-id-row {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 14px;
+      padding: 13px 16px;
+      margin-bottom: 18px;
+    }
+    .oi-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(167,139,250,0.15));
+      border: 1px solid rgba(99,102,241,0.25);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+    .oi-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    .oi-value { font-size: 14px; font-weight: 700; color: var(--text); font-family: 'JetBrains Mono', monospace; }
+
+    /* ── DETAILS GRID ── */
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .detail-cell {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+    .detail-cell.full { grid-column: 1 / -1; }
+    .dc-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+    .dc-value { font-size: 13px; font-weight: 600; color: var(--text2); word-break: break-all; }
+
+    /* ── AMOUNT BLOCK ── */
+    .amount-block {
+      background: linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(167,139,250,0.08) 100%);
+      border: 1px solid rgba(99,102,241,0.3);
+      border-radius: 20px;
+      padding: 22px 20px 18px;
+      text-align: center;
+      margin-bottom: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .amount-block::before {
+      content: '₹';
+      position: absolute;
+      font-size: 140px;
+      font-weight: 900;
+      color: rgba(99,102,241,0.05);
+      top: -20px; right: -5px;
+      font-family: 'Outfit', sans-serif;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .ab-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 8px; }
+    .ab-amount {
+      font-size: 58px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -3px;
+      background: linear-gradient(135deg, #fff 0%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .ab-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+    .ab-note::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--green2); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 22px 0 18px;
+      color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1;
+      height: 1px; background: var(--border2);
+    }
+
+    /* ── QR SECTION ── */
+    .qr-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 8px;
+    }
+
+    .qr-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08), 0 0 40px rgba(99,102,241,0.2);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .qr-top-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+
+    .qr-inner {
+      position: relative;
+      width: 210px; height: 210px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .qr-inner img {
+      width: 210px; height: 210px;
+      border-radius: 10px;
+      display: block;
+    }
+
+    .qr-loading {
+      width: 210px; height: 210px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 12px;
+      color: #94a3b8;
+      background: #f8fafc;
+      border-radius: 10px;
+    }
+    .qr-loading .spin {
+      width: 40px; height: 40px;
+      border: 3px solid #e2e8f0;
+      border-top-color: #6366f1;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    .qr-loading span { font-size: 12px; font-weight: 500; color: #94a3b8; }
+
+    .qr-amount-tag {
+      background: linear-gradient(135deg, #6366f1, #a78bfa);
+      color: white;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 8px 20px;
+      border-radius: 100px;
+      letter-spacing: 0.3px;
+    }
+
+    .qr-upi-logo {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; color: #64748b; font-weight: 500;
+    }
+    .upi-logo-text {
+      font-weight: 800;
+      font-size: 13px;
+      background: linear-gradient(135deg, #5f259f, #00baf2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* QR Download button */
+    .qr-download-btn {
+      display: flex; align-items: center; gap: 7px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: 9px 16px;
+      color: var(--text2);
+      font-size: 12px; font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Outfit', sans-serif;
+      margin-top: 14px;
+      text-decoration: none;
+    }
+    .qr-download-btn:hover {
+      background: var(--surface3);
+      border-color: var(--accent3);
+      color: var(--accent3);
+    }
+    .qr-download-btn svg { flex-shrink: 0; }
+
+    /* ── UPI ID ROW ── */
+    .upi-id-section {
+      width: 100%;
+      margin-top: 20px;
+    }
+    .upi-id-label {
+      font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
+      margin-bottom: 8px; text-align: center;
+    }
+    .upi-row {
+      display: flex; align-items: center;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .upi-id-text {
+      flex: 1;
+      padding: 13px 16px;
+      font-size: 15px; font-weight: 700;
+      color: var(--accent2);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.3px;
+    }
+    .copy-btn {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none; cursor: pointer;
+      padding: 13px 18px;
+      color: white; font-size: 13px; font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+      transition: opacity 0.2s;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .copy-btn:hover { opacity: 0.85; }
+    .copy-btn.copied { background: linear-gradient(135deg, var(--green), #059669); }
+
+    /* ── UPI APPS ── */
+    .upi-apps-section { margin-bottom: 20px; }
+    .upi-apps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .upi-app-btn {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 8px 12px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .upi-app-btn:hover { transform: translateY(-3px) scale(1.03); }
+    .upi-app-btn:active { transform: translateY(0) scale(0.97); }
+
+    .upi-app-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .upi-app-icon img { width: 44px; height: 44px; object-fit: contain; border-radius: 12px; }
+
+    .upi-app-btn span {
+      font-size: 11px; font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.2px;
+    }
+
+    /* App-specific styles */
+    .upi-app-btn.gpay { --app-color: #4285f4; }
+    .upi-app-btn.phonepe { --app-color: #5f259f; }
+    .upi-app-btn.paytm { --app-color: #00baf2; }
+    .upi-app-btn.bhim { --app-color: #00a651; }
+
+    .upi-app-btn:hover { border-color: var(--app-color); background: rgba(var(--app-color-rgb, 99,102,241), 0.08); }
+    .upi-app-btn.gpay:hover { background: rgba(66,133,244,0.1); border-color: #4285f4; }
+    .upi-app-btn.gpay:hover span { color: #4285f4; }
+    .upi-app-btn.phonepe:hover { background: rgba(95,37,159,0.1); border-color: #7c3aed; }
+    .upi-app-btn.phonepe:hover span { color: #a78bfa; }
+    .upi-app-btn.paytm:hover { background: rgba(0,186,242,0.1); border-color: #00baf2; }
+    .upi-app-btn.paytm:hover span { color: #38bdf8; }
+    .upi-app-btn.bhim:hover { background: rgba(0,166,81,0.1); border-color: #10b981; }
+    .upi-app-btn.bhim:hover span { color: #34d399; }
+
+    .apps-hint { font-size: 11px; color: var(--muted); text-align: center; margin-top: 10px; }
+
+    /* ── NOTE BOX ── */
+    .note-box {
+      background: rgba(251,191,36,0.07);
+      border: 1px solid rgba(251,191,36,0.18);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      font-size: 13px; color: #d4a012;
+      line-height: 1.65;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .note-box .ni { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── FORM ── */
+    .form-section { margin-top: 4px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+      display: block;
+      font-size: 11px; font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .form-group input[type="text"],
+    .form-group input[type="file"] {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 15px; color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+    }
+    .form-group input[type="file"] { cursor: pointer; color: var(--muted); }
+    .form-group input::placeholder { color: var(--muted); }
+
+    .submit-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      border: none;
+      border-radius: 16px;
+      padding: 17px;
+      font-size: 16px; font-weight: 800;
+      color: white; font-family: 'Outfit', sans-serif;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      margin-top: 4px;
+      letter-spacing: 0.3px;
+      box-shadow: 0 10px 30px rgba(99,102,241,0.4);
+      position: relative; overflow: hidden;
+    }
+    .submit-btn::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background 0.2s;
+    }
+    .submit-btn:hover::after { background: rgba(255,255,255,0.07); }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(99,102,241,0.5); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-inner { display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+    /* ── SUCCESS ── */
+    .success-screen {
+      display: none;
+      flex-direction: column; align-items: center;
+      text-align: center;
+      padding: 48px 28px;
+    }
+    .success-icon {
+      width: 90px; height: 90px;
+      background: linear-gradient(135deg, var(--green), #059669);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 44px;
+      margin-bottom: 24px;
+      animation: successPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+      box-shadow: 0 0 50px rgba(16,185,129,0.4);
+    }
+    .success-screen h2 {
+      font-size: 28px; font-weight: 900;
+      color: var(--text); margin-bottom: 10px;
+      letter-spacing: -0.5px;
+    }
+    .success-screen p { color: var(--muted); font-size: 14px; line-height: 1.7; }
+    .success-order {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 14px;
+      padding: 14px 24px;
+      margin: 20px 0;
+      font-size: 15px; font-weight: 700;
+      color: var(--accent2);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--accent3); text-decoration: none;
+      font-weight: 700; font-size: 14px;
+      margin-top: 10px;
+      transition: gap 0.2s;
+    }
+    .back-link:hover { gap: 10px; }
+
+    /* Spinner */
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2.5px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    /* ── PREFILLED AMOUNT BAR ── */
+    .prefilled-amount-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(52,211,153,0.06));
+      border: 1px solid rgba(16,185,129,0.25);
+      border-radius: 14px;
+      padding: 12px 16px;
+      margin-bottom: 18px;
+      font-size: 13px;
+      color: var(--green2);
+      font-weight: 600;
+      flex-wrap: wrap;
+      gap: 6px 10px;
+    }
+    .pab-amount {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--green2);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: -0.5px;
+    }
+    .pab-note {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 500;
+      margin-left: auto;
+    }
+
+    /* ── PAYMENT METHOD TABS ── */
+    .pay-tabs {
+      display: flex;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      padding: 5px;
+      margin-bottom: 22px;
+      gap: 4px;
+    }
+    .pay-tab {
+      flex: 1;
+      padding: 11px 8px;
+      border: none;
+      background: transparent;
+      border-radius: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.22s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .pay-tab.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      box-shadow: 0 4px 14px rgba(99,102,241,0.4);
+    }
+    .pay-tab:not(.active):hover {
+      background: var(--surface3);
+      color: var(--text2);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── MANUAL QR PANEL ── */
+    .manual-layout {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+    .manual-qr-side {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .manual-qr-frame {
+      background: #fff;
+      border-radius: 18px;
+      padding: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.06), 0 0 30px rgba(99,102,241,0.18);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .manual-qr-frame img {
+      width: 150px;
+      height: 150px;
+      border-radius: 8px;
+      display: block;
+      object-fit: contain;
+    }
+    .manual-qr-label {
+      font-size: 9px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      text-align: center;
+    }
+    .manual-qr-upi {
+      font-size: 9px;
+      font-weight: 700;
+      color: #4f46e5;
+      font-family: 'JetBrains Mono', monospace;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .manual-info-side {
+      flex: 1;
+      min-width: 0;
+    }
+    .manual-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .manual-step {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .ms-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .ms-text {
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.5;
+      font-weight: 500;
+    }
+    .ms-text strong { color: var(--accent2); }
+    .manual-amount-input-wrap {
+      margin-bottom: 12px;
+    }
+    .manual-amount-input-wrap label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 7px;
+    }
+    .amount-input-row {
+      display: flex;
+      align-items: center;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .amount-input-row:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+    }
+    .amount-prefix {
+      padding: 0 12px;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--accent2);
+      background: rgba(99,102,241,0.08);
+      border-right: 1px solid var(--border2);
+      height: 48px;
+      display: flex;
+      align-items: center;
+    }
+    .amount-input-row input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 0 14px;
+      height: 48px;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+    }
+    .amount-input-row input::placeholder { color: var(--muted); font-size: 14px; font-weight: 400; font-family: 'Outfit', sans-serif; }
+    .manual-hint {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    .manual-hint::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--green2);
+      display: inline-block;
+    }
+
+    @media (max-width: 400px) {
+      .manual-qr-frame img { width: 170px; height: 170px; }
+    }
+
+    /* Demo banner */
+    .demo-banner {
+      display: none;
+      background: rgba(251,191,36,0.1);
+      border: 1px solid rgba(251,191,36,0.25);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #d4a012;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+    @keyframes fadeDown { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+    @keyframes successPop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    @media (max-width: 480px) {
+      body { padding: 20px 12px 40px; }
+      .card-body { padding: 18px; }
+      .card-header { padding: 18px 18px 16px; }
+      .header-title h1 { font-size: 18px; }
+      .ab-amount { font-size: 46px; }
+      .upi-apps-grid { gap: 7px; }
+      .upi-app-btn { padding: 12px 5px 10px; }
+      .upi-app-icon { width: 38px; height: 38px; }
+      .upi-app-icon img { width: 38px; height: 38px; }
+      .upi-app-btn span { font-size: 10px; }
+      .details-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<div class="payment-wrapper">
+
+  <!-- Brand bar -->
+  <div class="brand-bar">
+    <div class="brand-left">
+      <div class="brand-logo">
+        <img src="logo.png" alt="WWC" onerror="this.style.display='none'; this.parentElement.textContent='🌐'">
+      </div>
+      <div class="brand-name">Worldwide <span>Collab</span></div>
+    </div>
+    <div class="secure-badge">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.5C16.5 22.15 20 17.25 20 12V6L12 2z"/></svg>
+      Secure Pay
+    </div>
+  </div>
+
+  <!-- Main card -->
+  <div class="card">
+
+    <!-- Card header -->
+    <div class="card-header">
+      <div class="header-title">
+        <h1>Complete Payment</h1>
+        <p><span class="dot"></span> UPI &nbsp;·&nbsp; Instant &nbsp;·&nbsp; Verified</p>
+      </div>
+      <div class="timer-pill" id="timerPill">
+        <div class="timer-label">Expires in</div>
+        <div id="countdown">05:00</div>
+      </div>
+    </div>
+
+    <!-- Card body -->
+    <div class="card-body">
+
+      <div id="paymentForm">
+
+        <!-- Demo banner (shown when no session data) -->
+        <div class="demo-banner" id="demoBanner">
+          ⚡ Demo mode — Using sample order data
+        </div>
+
+        <!-- Order ID -->
+        <div class="order-id-row">
+          <div class="oi-icon">🧾</div>
+          <div>
+            <div class="oi-label">Order ID</div>
+            <div class="oi-value" id="displayOrderId">Loading...</div>
+          </div>
+        </div>
+
+        <!-- Details -->
+        <div class="details-grid">
+          <div class="detail-cell">
+            <div class="dc-label">Platform</div>
+            <div class="dc-value" id="displayPlatform">—</div>
+          </div>
+          <div class="detail-cell">
+            <div class="dc-label">Quantity</div>
+            <div class="dc-value" id="displayQuantity">—</div>
+          </div>
+          <div class="detail-cell full">
+            <div class="dc-label">Service</div>
+            <div class="dc-value" id="displayService">—</div>
+          </div>
+          <div class="detail-cell full">
+            <div class="dc-label">URL / Username</div>
+            <div class="dc-value" id="displayLink" style="font-size:12px;">—</div>
+          </div>
+        </div>
+
+        <!-- Amount -->
+        <div class="amount-block">
+          <div class="ab-label">Total Amount to Pay</div>
+          <div class="ab-amount">₹<span id="displayAmount">0</span></div>
+          <div class="ab-note">Pay exactly this amount · No extra charges</div>
+        </div>
+
+        <!-- ── PAYMENT METHOD TABS ── -->
+        <div class="divider">Choose UPI Option</div>
+
+        <div class="pay-tabs">
+          <button class="pay-tab active" id="tab-dynamic" onclick="switchTab('dynamic')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            UPI — 1
+          </button>
+          <button class="pay-tab" id="tab-manual" onclick="switchTab('manual')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="17" y="17" width="3" height="3"/></svg>
+            UPI — 2
+          </button>
+        </div>
+
+        <!-- ═══ TAB 1: UPI-1 (Dynamic Auto QR) ═══ -->
+        <div class="tab-panel active" id="panel-dynamic">
+
+          <!-- Prefilled amount bar -->
+          <div class="prefilled-amount-bar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span>Pay Exactly</span>
+            <span class="pab-amount" id="prefilledAmt1">₹0</span>
+            <span class="pab-note">Amount auto-filled in QR — Do not change</span>
+          </div>
+
+          <div class="qr-section">
+            <div class="qr-card">
+              <div class="qr-top-label">📱 Scan with any UPI app</div>
+              <div class="qr-inner">
+                <div class="qr-loading" id="qrLoading">
+                  <div class="spin"></div>
+                  <span>Generating QR...</span>
+                </div>
+                <img id="qrCodeImg" style="display:none;" alt="UPI QR Code">
+              </div>
+              <div class="qr-amount-tag" id="qrAmountLabel">₹0</div>
+              <div class="qr-upi-logo">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#64748b" stroke-width="1.5"/><path d="M12 6v12M6 12h12" stroke="#64748b" stroke-width="1.5" stroke-linecap="round"/></svg>
+                Powered by <span class="upi-logo-text">UPI</span>
+              </div>
+            </div>
+            <button class="qr-download-btn" id="qrDownloadBtn" onclick="downloadQR()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download QR Code
+            </button>
+            <div class="upi-id-section">
+              <div class="upi-id-label">UPI ID</div>
+              <div class="upi-row">
+                <div class="upi-id-text" id="upiIdText">nextune@upi</div>
+                <button class="copy-btn" onclick="copyUPI()" id="copyBtn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <span id="copyBtnText">Copy</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider" style="margin-top:20px;">Open in App to Pay</div>
+          <div class="upi-apps-section">
+            <div class="upi-apps-grid">
+              <a class="upi-app-btn gpay" href="#" onclick="return openUPIApp('gpay')">
+                <div class="upi-app-icon" style="background:#fff;"><svg width="44" height="44" viewBox="0 0 44 44" fill="none"><rect width="44" height="44" rx="12" fill="white"/><image href="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/512px-Google_Pay_Logo.svg.png" x="4" y="4" width="36" height="36" preserveAspectRatio="xMidYMid meet" onerror="this.style.display='none'"/></svg></div>
+                <span>GPay</span>
+              </a>
+              <a class="upi-app-btn phonepe" href="#" onclick="return openUPIApp('phonepe')">
+                <div class="upi-app-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/PhonePe_Logo.png/800px-PhonePe_Logo.png" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 44 44%22><rect width=%2244%22 height=%2244%22 rx=%2212%22 fill=%22%235f259f%22/><text x=%2222%22 y=%2230%22 text-anchor=%22middle%22 font-size=%2220%22 font-family=%22Arial%22 fill=%22white%22>Pe</text></svg>'" alt="PhonePe" style="background:#5f259f;"></div>
+                <span>PhonePe</span>
+              </a>
+              <a class="upi-app-btn paytm" href="#" onclick="return openUPIApp('paytm')">
+                <div class="upi-app-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/4/42/Paytm_logo.png" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 44 44%22><rect width=%2244%22 height=%2244%22 rx=%2212%22 fill=%22%2300baf2%22/><text x=%2222%22 y=%2230%22 text-anchor=%22middle%22 font-size=%2214%22 font-family=%22Arial%22 fill=%22white%22 font-weight=%22bold%22>Paytm</text></svg>'" alt="Paytm" style="background:#fff;"></div>
+                <span>Paytm</span>
+              </a>
+              <a class="upi-app-btn bhim" href="#" onclick="return openUPIApp('bhim')">
+                <div class="upi-app-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/BHIM_svg_logo.svg/512px-BHIM_svg_logo.svg.png" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 44 44%22><rect width=%2244%22 height=%2244%22 rx=%2212%22 fill=%22%23004C97%22/><text x=%2222%22 y=%2230%22 text-anchor=%22middle%22 font-size=%2213%22 font-family=%22Arial%22 fill=%22white%22 font-weight=%22bold%22>BHIM</text></svg>'" alt="BHIM" style="background:#fff;"></div>
+                <span>BHIM</span>
+              </a>
+            </div>
+            <p class="apps-hint">Tap to open app — amount already filled ✓</p>
+          </div>
+
+        </div><!-- /panel-dynamic -->
+
+        <!-- ═══ TAB 2: UPI-2 (Static QR / qrcode.png) ═══ -->
+        <div class="tab-panel" id="panel-manual">
+
+          <!-- Prefilled amount bar -->
+          <div class="prefilled-amount-bar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" fill="currentColor" stroke="none"/></svg>
+            <span>Pay Exactly</span>
+            <span class="pab-amount" id="prefilledAmt2">₹0</span>
+            <span class="pab-note">Enter this exact amount while paying</span>
+          </div>
+
+          <!-- Static QR centered -->
+          <div class="qr-section">
+            <div class="qr-card">
+              <div class="qr-top-label">📷 Scan QR Code — enter amount manually</div>
+              <div class="qr-inner">
+                <img src="qrcode.png" id="manualQrImg" alt="Manual QR Code"
+                     style="width:210px;height:210px;border-radius:10px;display:block;"
+                     onerror="this.style.display='none'; document.getElementById('manualQrFallback').style.display='flex';">
+                <div id="manualQrFallback" style="display:none;width:210px;height:210px;background:#f1f5f9;border-radius:10px;flex-direction:column;align-items:center;justify-content:center;gap:10px;">
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/><rect x="14" y="18" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/></svg>
+                  <span style="font-size:11px;color:#94a3b8;text-align:center;font-weight:600;line-height:1.5;">Place your<br><strong>qrcode.png</strong><br>in same folder</span>
+                </div>
+              </div>
+              <!-- Amount tag shown below QR -->
+              <div class="qr-amount-tag" id="manualAmountTag">₹0</div>
+              <div class="qr-upi-logo">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#64748b" stroke-width="1.5"/><path d="M12 6v12M6 12h12" stroke="#64748b" stroke-width="1.5" stroke-linecap="round"/></svg>
+                <span class="upi-logo-text">nextune@upi</span>
+              </div>
+            </div>
+
+            <!-- Download button for static QR -->
+            <a class="qr-download-btn" id="manualQrDownloadBtn" href="qrcode.png" download="WWC-QR.png">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download QR Code
+            </a>
+
+            <!-- UPI ID copy -->
+            <div class="upi-id-section">
+              <div class="upi-id-label">UPI ID — Copy & pay manually</div>
+              <div class="upi-row">
+                <div class="upi-id-text">nextune@upi</div>
+                <button class="copy-btn" onclick="copyManualUPI()" id="copyBtnManual">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <span id="copyBtnManualText">Copy</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Same app buttons in UPI-2 tab too -->
+          <div class="divider" style="margin-top:20px;">Open App → Scan QR</div>
+          <div class="upi-apps-section">
+            <div class="upi-apps-grid">
+              <a class="upi-app-btn gpay" href="#" onclick="openAppForManual('gpay'); return false;">
+                <div class="upi-app-icon" style="background:#fff;"><svg width="44" height="44" viewBox="0 0 44 44" fill="none"><rect width="44" height="44" rx="12" fill="white"/><image href="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/512px-Google_Pay_Logo.svg.png" x="4" y="4" width="36" height="36" preserveAspectRatio="xMidYMid meet" onerror="this.style.display='none'"/></svg></div>
+                <span>GPay</span>
+              </a>
+              <a class="upi-app-btn phonepe" href="#" onclick="openAppForManual('phonepe'); return false;">
+                <div class="upi-app-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/PhonePe_Logo.png/800px-PhonePe_Logo.png" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 44 44%22><rect width=%2244%22 height=%2244%22 rx=%2212%22 fill=%22%235f259f%22/><text x=%2222%22 y=%2230%22 text-anchor=%22middle%22 font-size=%2220%22 font-family=%22Arial%22 fill=%22white%22>Pe</text></svg>'" alt="PhonePe" style="background:#5f259f;"></div>
+                <span>PhonePe</span>
+              </a>
+              <a class="upi-app-btn paytm" href="#" onclick="openAppForManual('paytm'); return false;">
+                <div class="upi-app-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/4/42/Paytm_logo.png" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 44 44%22><rect width=%2244%22 height=%2244%22 rx=%2212%22 fill=%22%2300baf2%22/><text x=%2222%22 y=%2230%22 text-anchor=%22middle%22 font-size=%2214%22 font-family=%22Arial%22 fill=%22white%22 font-weight=%22bold%22>Paytm</text></svg>'" alt="Paytm" style="background:#fff;"></div>
+                <span>Paytm</span>
+              </a>
+              <a class="upi-app-btn bhim" href="#" onclick="openAppForManual('bhim'); return false;">
+                <div class="upi-app-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/BHIM_svg_logo.svg/512px-BHIM_svg_logo.svg.png" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 44 44%22><rect width=%2244%22 height=%2244%22 rx=%2212%22 fill=%22%23004C97%22/><text x=%2222%22 y=%2230%22 text-anchor=%22middle%22 font-size=%2213%22 font-family=%22Arial%22 fill=%22white%22 font-weight=%22bold%22>BHIM</text></svg>'" alt="BHIM" style="background:#fff;"></div>
+                <span>BHIM</span>
+              </a>
+            </div>
+            <p class="apps-hint">Open app → tap Scan QR → scan the code above</p>
+          </div>
+
+        </div><!-- /panel-manual -->
+
+        <!-- Note -->
+        <div class="note-box">
+          <span class="ni">⚠️</span>
+          <span>After payment, enter your <strong>UPI Transaction ID</strong> below so we can verify and process your order quickly.</span>
+        </div>
+
+        <!-- Form -->
+        <div class="form-section">
+          <div class="form-group">
+            <label>UPI Transaction ID / Reference Number</label>
+            <input type="text" id="transactionId" placeholder="e.g. 123456789012" required>
+          </div>
+          <div class="form-group">
+            <label>Transaction Screenshot <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">(Optional)</span></label>
+            <input type="file" id="paymentScreenshot" accept="image/*">
+          </div>
+          <button class="submit-btn" id="submitBtn" onclick="confirmPayment()">
+            <div class="btn-inner">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              Confirm Payment & Submit Order
+            </div>
+          </button>
+        </div>
+
+      </div><!-- /paymentForm -->
+
+      <!-- Success screen -->
+      <div class="success-screen" id="successScreen">
+        <div class="success-icon">✅</div>
+        <h2>Payment Confirmed!</h2>
+        <p>Your order has been submitted successfully.<br>We'll process it within 24 hours.</p>
+        <div class="success-order" id="successOrderId">Order ID: —</div>
+        <p style="color:var(--muted);font-size:13px;">Keep this Order ID for tracking your order.</p>
+        <a href="index.html" class="back-link">← Back to Home</a>
+      </div>
+
+    </div><!-- /card-body -->
+  </div><!-- /card -->
+
+</div><!-- /payment-wrapper -->
+
+<script>
+  // ── CONFIG ──
+  const UPI_ID = 'nextune@upi';
+  const MERCHANT_NAME = 'Worldwide Collab';
+  const ADMIN_EMAIL = 'team.wwcollab@gmail.com';
+
+  let orderData = null;
+  let timeLeft = 300;
+  let timerInterval = null;
+  let currentQRUrl = null;
+
+  // ── INIT ──
+  window.onload = function () {
+    const stored = sessionStorage.getItem('wwc_order');
+
+    if (!stored) {
+      // ✅ DEMO MODE — no redirect, show sample data
+      document.getElementById('demoBanner').style.display = 'block';
+      orderData = {
+        orderId: 'WWC-DEMO-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
+        platform: 'Instagram',
+        service: 'Followers — Premium',
+        quantity: '1000',
+        link: 'instagram.com/yourpage',
+        amount: '299'
+      };
+    } else {
+      orderData = JSON.parse(stored);
+    }
+
+    // Populate
+    document.getElementById('displayOrderId').textContent  = orderData.orderId;
+    document.getElementById('displayPlatform').textContent = capitalize(orderData.platform || '—');
+    document.getElementById('displayService').textContent  = orderData.service || '—';
+    document.getElementById('displayQuantity').textContent = orderData.quantity || '—';
+    document.getElementById('displayLink').textContent     = orderData.link || '—';
+    document.getElementById('displayAmount').textContent   = orderData.amount;
+    document.getElementById('qrAmountLabel').textContent   = '₹' + orderData.amount;
+
+    // Prefilled amount bars
+    const amt = '₹' + orderData.amount;
+    if (document.getElementById('prefilledAmt1')) document.getElementById('prefilledAmt1').textContent = amt;
+    if (document.getElementById('prefilledAmt2')) document.getElementById('prefilledAmt2').textContent = amt;
+    if (document.getElementById('manualAmountTag')) document.getElementById('manualAmountTag').textContent = amt;
+
+    generateQR(orderData.amount);
+    buildUPILinks(orderData.amount);
+    startTimer();
+  };
+
+  function capitalize(str) {
+    if (!str) return '—';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  // ── QR GENERATION (dynamic by amount) ──
+  function generateQR(amount) {
+    const upiString = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${amount}&cu=INR&tn=${encodeURIComponent('Order - ' + (orderData?.orderId || ''))}`;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=210x210&data=${encodeURIComponent(upiString)}&bgcolor=ffffff&color=1a1a2e&qzone=1&format=png&margin=0`;
+
+    const loadingEl = document.getElementById('qrLoading');
+    const imgEl = document.getElementById('qrCodeImg');
+
+    // Save QR URL for download
+    currentQRUrl = qrUrl;
+
+    imgEl.onload = function () {
+      loadingEl.style.display = 'none';
+      imgEl.style.display = 'block';
+      document.getElementById('qrDownloadBtn').style.opacity = '1';
+    };
+    imgEl.onerror = function () {
+      loadingEl.innerHTML = '<span style="font-size:12px;color:#f87171;">QR load failed.<br>Use UPI ID directly.</span>';
+    };
+
+    document.getElementById('qrDownloadBtn').style.opacity = '0.4';
+    imgEl.src = qrUrl;
+  }
+
+  // ── QR DOWNLOAD ──
+  async function downloadQR() {
+    if (!currentQRUrl) return;
+    try {
+      const response = await fetch(currentQRUrl);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `WWC-QR-${orderData?.orderId || 'payment'}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      // Fallback: open in new tab
+      window.open(currentQRUrl, '_blank');
+    }
+  }
+
+  // ── UPI DEEP LINKS (amount-filled) ──
+  function buildUPILinks(amount) {
+    const note = encodeURIComponent('Order - ' + (orderData?.orderId || ''));
+    const base = `pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${amount}&cu=INR&tn=${note}`;
+
+    window._upiLinks = {
+      gpay:    `gpay://upi/pay?${base}`,
+      phonepe: `phonepe://pay?${base}`,
+      paytm:   `paytmmp://pay?${base}`,
+      bhim:    `upi://pay?${base}`
+    };
+  }
+
+  function openUPIApp(app) {
+    if (!window._upiLinks) return false;
+    const link = window._upiLinks[app];
+    const fallback = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${orderData?.amount || 0}&cu=INR`;
+
+    window.location.href = link;
+    setTimeout(() => {
+      // If app didn't open, try generic UPI
+      window.location.href = fallback;
+    }, 1800);
+    return false;
+  }
+
+  // ── OPEN APP FOR MANUAL QR (just opens app scan screen) ──
+  function openAppForManual(app) {
+    const appLinks = {
+      gpay:    'gpay://upi/pay',
+      phonepe: 'phonepe://pay',
+      paytm:   'paytmmp://pay',
+      bhim:    'upi://pay'
+    };
+    window.location.href = appLinks[app] || 'upi://pay';
+    setTimeout(() => {
+      // fallback — try generic
+      window.location.href = 'upi://pay';
+    }, 1800);
+  }
+
+  // ── TAB SWITCHING ──
+  function switchTab(tab) {
+    document.querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.getElementById('panel-' + tab).classList.add('active');
+  }
+
+  // ── SYNC MANUAL AMOUNT (pre-fill from order if available) ──
+  function syncManualAmount(val) {
+    // Just a visual helper — user manually enters amount
+  }
+
+  // ── COPY UPI ID (Manual tab) ──
+  function copyManualUPI() {
+    const btn = document.getElementById('copyBtnManual');
+    const btnText = document.getElementById('copyBtnManualText');
+    const doSuccess = () => {
+      btn.classList.add('copied');
+      btnText.textContent = '✓ Copied';
+      setTimeout(() => { btn.classList.remove('copied'); btnText.textContent = 'Copy'; }, 2500);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(UPI_ID).then(doSuccess).catch(() => legacyCopy(UPI_ID, doSuccess));
+    } else {
+      legacyCopy(UPI_ID, doSuccess);
+    }
+  }
+
+  // ── COPY UPI ID ──
+  function copyUPI() {
+    const upiId = document.getElementById('upiIdText').textContent;
+    const btn = document.getElementById('copyBtn');
+    const btnText = document.getElementById('copyBtnText');
+
+    const doSuccess = () => {
+      btn.classList.add('copied');
+      btnText.textContent = '✓ Copied';
+      setTimeout(() => { btn.classList.remove('copied'); btnText.textContent = 'Copy'; }, 2500);
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(upiId).then(doSuccess).catch(() => legacyCopy(upiId, doSuccess));
+    } else {
+      legacyCopy(upiId, doSuccess);
+    }
+  }
+
+  function legacyCopy(text, cb) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    cb();
+  }
+
+  // ── COUNTDOWN TIMER ──
+  function startTimer() {
+    const el = document.getElementById('countdown');
+    const pill = document.getElementById('timerPill');
+
+    timerInterval = setInterval(() => {
+      const m = Math.floor(timeLeft / 60);
+      const s = timeLeft % 60;
+      el.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+
+      if (timeLeft <= 60) pill.classList.add('urgent');
+
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        alert('Payment window expired. Please place your order again.');
+        sessionStorage.removeItem('wwc_order');
+        window.location.href = 'index.html';
+      }
+      timeLeft--;
+    }, 1000);
+  }
+
+  // ── SUBMIT PAYMENT ──
+  function confirmPayment() {
+    const txnId = document.getElementById('transactionId').value.trim();
+    if (!txnId) {
+      document.getElementById('transactionId').focus();
+      document.getElementById('transactionId').style.borderColor = '#f87171';
+      setTimeout(() => document.getElementById('transactionId').style.borderColor = '', 2000);
+      return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.innerHTML = '<div class="btn-inner"><div class="spinner"></div> Processing...</div>';
+    btn.disabled = true;
+
+    const payload = {
+      ...orderData,
+      transactionId: txnId,
+      paymentDate: new Date().toLocaleString(),
+      _subject: 'New Order — ' + orderData.orderId,
+      _template: 'table',
+      _captcha: false
+    };
+
+    const finalize = () => {
+      clearInterval(timerInterval);
+      document.getElementById('paymentForm').style.display = 'none';
+      const ss = document.getElementById('successScreen');
+      ss.style.display = 'flex';
+      document.getElementById('successOrderId').textContent = 'Order ID: ' + orderData.orderId;
+      sessionStorage.removeItem('wwc_order');
+    };
+
+    // Update Firestore with transactionId
+    const updateFirestore = () => {
+      if (orderData && orderData.orderId) {
+        return firebase.firestore().collection('orders').doc(orderData.orderId).update({
+          transactionId: txnId,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(err => console.warn('Firestore update failed:', err));
+      }
+      return Promise.resolve();
+    };
+
+    // Send email notification
+    fetch('https://formsubmit.co/ajax/' + ADMIN_EMAIL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .finally(() => {
+      updateFirestore().finally(finalize);
+    });
+  }
+</script>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDcvUZkjQYvUFMmS2FC8k0E9XKNXuzPA4k",
+    authDomain: "ww-c-5c5c1.firebaseapp.com",
+    projectId: "ww-c-5c5c1",
+    storageBucket: "ww-c-5c5c1.firebasestorage.app",
+    messagingSenderId: "200600278915",
+    appId: "1:200600278915:web:654a42ec7f71e9386e08b6"
+  };
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+</script>
+
+</body>
+</html>
