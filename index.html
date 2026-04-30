@@ -1580,7 +1580,7 @@ footer a {
     
     firebase.auth().onAuthStateChanged((user) => {
       if (!user) {
-        window.location.href = 'login.html';
+        window.location.href = 'login';
       } else {
         console.log('Welcome:', user.displayName || user.email);
       }
@@ -1588,7 +1588,7 @@ footer a {
     
     function logout() {
       firebase.auth().signOut().then(() => {
-        window.location.href = 'login.html';
+        window.location.href = 'login';
       }).catch((error) => {
         alert('Error logging out: ' + error.message);
       });
@@ -1872,7 +1872,7 @@ footer a {
       
       <!-- Brand Card -->
       <div style="animation: slideUp 0.6s ease-out 0.1s both;">
-        <a href="register.html#brand" style="text-decoration: none; display: block; height: 100%;">
+        <a href="register#brand" style="text-decoration: none; display: block; height: 100%;">
           <div class="reg-card reg-card-brand" style="position: relative; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 28px; padding: 40px 35px; height: 100%; box-shadow: 0 20px 40px -15px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05); overflow: hidden;">
             
             <!-- Glow Effect -->
@@ -1929,14 +1929,14 @@ footer a {
             <!-- Price Tag -->
             <div class="reg-price" style="position: absolute; top: 25px; right: 25px; background: rgba(15,23,42,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 8px 14px; border-radius: 10px; z-index: 3;">
               <div style="color: #94a3b8; font-size: 11px; margin-bottom: 2px;">Starting at</div>
-              <div class="reg-price-amt" style="color: white; font-weight: 700; font-size: 16px;">349</div>
+              <div class="reg-price-amt" style="color: white; font-weight: 700; font-size: 16px;">0</div>
             </div>
           </div>
         </a>
       </div>
             <!-- Creator Card -->
       <div style="animation: slideUp 0.6s ease-out 0.2s both;">
-        <a href="register.html#creator" style="text-decoration: none; display: block; height: 100%;">
+        <a href="register#creator" style="text-decoration: none; display: block; height: 100%;">
           <div class="reg-card reg-card-creator" style="position: relative; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 28px; padding: 40px 35px; height: 100%; box-shadow: 0 20px 40px -15px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05); overflow: hidden;">
             
             <!-- Glow Effect -->
@@ -1993,7 +1993,7 @@ footer a {
             <!-- Price Tag -->
             <div class="reg-price" style="position: absolute; top: 25px; right: 25px; background: rgba(15,23,42,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 8px 14px; border-radius: 10px; z-index: 3;">
               <div style="color: #94a3b8; font-size: 11px; margin-bottom: 2px;">Starting at</div>
-              <div class="reg-price-amt" style="color: white; font-weight: 700; font-size: 16px;">249</div>
+              <div class="reg-price-amt" style="color: white; font-weight: 700; font-size: 16px;">0</div>
             </div>
           </div>
         </a>
@@ -2554,13 +2554,13 @@ footer a {
 
       const btn = document.getElementById('proceedBtn');
       btn.disabled = true;
-      btn.textContent = 'Saving order...';
+      btn.textContent = 'Submitting order...';
 
       firebase.firestore().collection('orders').doc(orderId).set(firestoreDoc)
         .then(() => {
           sessionStorage.setItem('wwc_order', JSON.stringify(orderData));
           document.getElementById('orderSuccess').style.display = 'block';
-          setTimeout(() => { window.location.href = 'payment.html'; }, 1500);
+          setTimeout(() => { window.location.href = 'payment'; }, 1500);
         })
         .catch((error) => {
           console.error('Error saving order:', error);
@@ -2568,7 +2568,7 @@ footer a {
           btn.textContent = 'Proceed to Payment';
           sessionStorage.setItem('wwc_order', JSON.stringify(orderData));
           document.getElementById('orderSuccess').style.display = 'block';
-          setTimeout(() => { window.location.href = 'payment.html'; }, 1500);
+          setTimeout(() => { window.location.href = 'payment'; }, 1500);
         });
     }
     
