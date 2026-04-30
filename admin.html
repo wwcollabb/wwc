@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — Worldwide Collab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary:  #4f46e5;
+      --bg:       #e8edf5;
+      --surface:  #ffffff;
+      --border:   #d4dce8;
+      --text:     #1e293b;
+      --muted:    #64748b;
+      --head-bg:  #dce6f5;
+      --green:    #10b981;
+      --green2:   #34d399;
+      --yellow:   #f59e0b;
+      --red:      #ef4444;
+      --blue:     #3b82f6;
+      --purple:   #8b5cf6;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      color: var(--text);
+    }
+
+    /* ── LOADING / ACCESS DENIED ── */
+    .fullscreen-state {
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, #0f172a, #1e1b4b);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 1000; gap: 16px;
+    }
+    .fullscreen-state.hidden { display: none; }
+    .spinner-ring {
+      width: 44px; height: 44px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: #818cf8;
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .fullscreen-state p { color: #94a3b8; font-size: 15px; }
+    .access-denied { color: #f87171; font-size: 20px; font-weight: 700; }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #0c1a2e 100%);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .topbar-inner {
+      max-width: 1400px; margin: 0 auto;
+      padding: 12px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+    .admin-logo {
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .admin-title { font-size: 17px; font-weight: 800; color: #f1f5f9; }
+    .admin-badge {
+      background: rgba(99,102,241,0.2);
+      border: 1px solid rgba(99,102,241,0.35);
+      color: #818cf8;
+      font-size: 10px; font-weight: 700;
+      padding: 3px 8px; border-radius: 6px;
+      text-transform: uppercase; letter-spacing: 0.8px;
+    }
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+    .admin-user { display: flex; align-items: center; gap: 7px; font-size: 13px; color: #cbd5e1; }
+    .admin-avatar {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: white;
+    }
+    .logout-btn {
+      color: #f87171; font-size: 12px; font-weight: 600;
+      cursor: pointer; padding: 5px 11px;
+      border: 1px solid rgba(248,113,113,0.25);
+      border-radius: 7px; transition: all 0.2s;
+      background: none; font-family: 'Inter', sans-serif;
+    }
+    .logout-btn:hover { background: rgba(248,113,113,0.1); }
+
+    /* ── MAIN ── */
+    .main-content { max-width: 1400px; margin: 0 auto; padding: 20px 16px 60px; }
+
+    /* ── STATS ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px; margin-bottom: 20px;
+    }
+    .stat-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 16px;
+      position: relative; overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .stat-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+    }
+    .stat-card.total::before      { background: linear-gradient(90deg,#4f46e5,#818cf8); }
+    .stat-card.pending::before    { background: linear-gradient(90deg,#f59e0b,#fbbf24); }
+    .stat-card.processing::before { background: linear-gradient(90deg,#3b82f6,#60a5fa); }
+    .stat-card.completed::before  { background: linear-gradient(90deg,#10b981,#34d399); }
+    .stat-card.revenue::before    { background: linear-gradient(90deg,#8b5cf6,#c084fc); }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+    .stat-icon { font-size: 20px; margin-bottom: 8px; }
+    .stat-num {
+      font-size: 24px; font-weight: 800;
+      font-family: 'JetBrains Mono', monospace; line-height: 1; margin-bottom: 3px;
+    }
+    .stat-card.total      .stat-num { color: #4f46e5; }
+    .stat-card.pending    .stat-num { color: #d97706; }
+    .stat-card.processing .stat-num { color: #2563eb; }
+    .stat-card.completed  .stat-num { color: #059669; }
+    .stat-card.revenue    .stat-num { color: #7c3aed; }
+    .stat-label { font-size: 10px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+
+    /* ── TOOLBAR ── */
+    .toolbar {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 12px; flex-wrap: wrap;
+    }
+    .search-wrap {
+      flex: 1; min-width: 200px;
+      background: white; border: 1px solid var(--border);
+      border-radius: 9px; padding: 7px 10px 7px 14px;
+      display: flex; align-items: center; gap: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .search-input {
+      flex: 1; border: none; outline: none;
+      font-size: 13px; font-family: 'Inter', sans-serif;
+      color: var(--text); background: transparent;
+    }
+    .search-input::placeholder { color: #b0bec5; }
+    .search-btn {
+      background: #5b8dee; border: none; border-radius: 7px;
+      width: 34px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0; transition: background 0.2s;
+    }
+    .search-btn:hover { background: #3b82f6; }
+    .search-btn svg { width: 14px; height: 14px; }
+
+    .filter-select {
+      background: white; border: 1px solid var(--border);
+      color: var(--text); font-size: 12px;
+      padding: 8px 12px; border-radius: 9px;
+      font-family: 'Inter', sans-serif; outline: none;
+      cursor: pointer; min-width: 140px;
+    }
+    .filter-select:focus { border-color: var(--primary); }
+
+    .export-btn {
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(79,70,229,0.1);
+      border: 1px solid rgba(79,70,229,0.25);
+      color: var(--primary);
+      font-size: 12px; font-weight: 600;
+      padding: 8px 14px; border-radius: 9px;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: all 0.2s; white-space: nowrap;
+    }
+    .export-btn:hover { background: rgba(79,70,229,0.18); }
+
+    .live-badge {
+      display: flex; align-items: center; gap: 5px;
+      color: var(--green2); font-size: 12px; font-weight: 600;
+      white-space: nowrap;
+    }
+    .live-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green);
+      animation: livePulse 2s infinite;
+    }
+    @keyframes livePulse {
+      0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0.4)}
+      50%{box-shadow:0 0 0 4px rgba(16,185,129,0)}
+    }
+
+    /* ── TABLE ── */
+    .table-outer {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .table-scroll {
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+    }
+    .table-scroll::-webkit-scrollbar { height: 4px; }
+    .table-scroll::-webkit-scrollbar-track { background: #f1f5f9; }
+    .table-scroll::-webkit-scrollbar-thumb { background: #c7d2fe; border-radius: 4px; }
+
+    .smm-table {
+      width: 100%; min-width: 1100px;
+      border-collapse: collapse;
+    }
+    .smm-table thead tr { background: var(--head-bg); }
+    .smm-table th {
+      padding: 9px 12px;
+      font-size: 11px; font-weight: 700; color: #3b5bdb;
+      text-align: left; white-space: nowrap;
+      border-bottom: 1px solid var(--border);
+    }
+    .smm-table tbody tr {
+      border-bottom: 1px solid #f0f4fa;
+      transition: background 0.12s;
+      animation: rowIn 0.2s ease both;
+    }
+    .smm-table tbody tr:last-child { border-bottom: none; }
+    .smm-table tbody tr:hover { background: #f5f8ff; }
+    @keyframes rowIn { from{opacity:0;transform:translateY(3px)} to{opacity:1;transform:translateY(0)} }
+
+    .smm-table td {
+      padding: 8px 12px; font-size: 12px;
+      color: var(--text); white-space: nowrap; vertical-align: middle;
+    }
+
+    /* Cells */
+    .cell-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 700; color: #4f46e5;
+    }
+    .user-av {
+      width: 26px; height: 26px; border-radius: 7px;
+      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: white; flex-shrink: 0;
+    }
+    .user-cell { display: flex; align-items: center; gap: 7px; }
+    .user-name  { font-size: 12px; font-weight: 600; color: var(--text); }
+    .user-email { font-size: 10px; color: var(--muted); }
+
+    .plat-cell { display: flex; align-items: center; gap: 6px; }
+    .plat-icon { width: 18px; height: 18px; object-fit: contain; border-radius: 4px; }
+    .plat-name { font-size: 12px; font-weight: 600; color: var(--text); }
+
+    .svc-text {
+      font-size: 11px; color: var(--text);
+      max-width: 130px; overflow: hidden;
+      text-overflow: ellipsis; display: block;
+    }
+
+    /* Link — clickable */
+    .link-cell a {
+      color: #3b82f6; text-decoration: none;
+      font-size: 11px; font-family: 'JetBrains Mono', monospace;
+      display: block; max-width: 130px;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .link-cell a:hover { text-decoration: underline; }
+
+    .cell-amount {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; font-weight: 700; color: #4f46e5;
+    }
+    .cell-date { font-size: 11px; color: var(--muted); }
+
+    /* Editable inputs */
+    .editable-input {
+      background: #f8fafc; border: 1px solid var(--border);
+      color: var(--text); font-size: 12px;
+      padding: 5px 8px; border-radius: 7px;
+      width: 80px; font-family: 'JetBrains Mono', monospace;
+      outline: none; transition: border-color 0.2s;
+    }
+    .editable-input:focus { border-color: var(--primary); }
+
+    /* Status select */
+    .status-select {
+      background: #f8fafc; border: 1px solid var(--border);
+      color: var(--text); font-size: 11px;
+      padding: 5px 8px; border-radius: 7px;
+      font-family: 'Inter', sans-serif; outline: none;
+      cursor: pointer; min-width: 115px;
+    }
+    .status-select:focus { border-color: var(--primary); }
+
+    /* Save button */
+    .save-btn {
+      background: rgba(79,70,229,0.1);
+      border: 1px solid rgba(79,70,229,0.3);
+      color: var(--primary);
+      font-size: 11px; font-weight: 700;
+      padding: 5px 11px; border-radius: 7px;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: all 0.2s; white-space: nowrap;
+    }
+    .save-btn:hover { background: rgba(79,70,229,0.18); }
+    .save-btn.saving { opacity: 0.5; cursor: not-allowed; }
+    .save-btn.saved {
+      background: rgba(16,185,129,0.1);
+      border-color: rgba(16,185,129,0.35);
+      color: #059669;
+    }
+
+    /* Empty / loading row */
+    .empty-row td {
+      text-align: center; padding: 50px 20px;
+      color: var(--muted); font-size: 13px;
+    }
+    .empty-icon { font-size: 36px; margin-bottom: 8px; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      .stats-row { grid-template-columns: repeat(2,1fr); }
+      .stats-row .stat-card:last-child { grid-column: 1/-1; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .main-content { padding: 14px 12px 50px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div class="fullscreen-state" id="loadingScreen">
+    <div class="spinner-ring"></div>
+    <p>Verifying admin access...</p>
+  </div>
+
+  <!-- Access Denied -->
+  <div class="fullscreen-state hidden" id="accessDenied">
+    <div style="font-size:48px">🚫</div>
+    <div class="access-denied">Access Denied</div>
+    <p style="color:#94a3b8">You don't have admin privileges.</p>
+    <a href="index.html" style="color:#818cf8;text-decoration:none;margin-top:8px;font-weight:600;">← Back to Home</a>
+  </div>
+
+  <!-- Admin Panel -->
+  <div id="adminPanel" style="display:none">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+      <div class="topbar-inner">
+        <div class="topbar-left">
+          <div class="admin-logo">⚙️</div>
+          <div class="admin-title">Admin Panel</div>
+          <div class="admin-badge">Worldwide Collab</div>
+        </div>
+        <div class="topbar-right">
+          <div class="admin-user">
+            <div class="admin-avatar" id="adminAvatar">A</div>
+            <span id="adminName">Admin</span>
+          </div>
+          <button class="logout-btn"
+            onclick="firebase.auth().signOut().then(()=>window.location.href='login.html')">
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card total">     <div class="stat-icon">📦</div><div class="stat-num" id="sTotal">0</div>   <div class="stat-label">Total Orders</div></div>
+        <div class="stat-card pending">   <div class="stat-icon">⏳</div><div class="stat-num" id="sPending">0</div> <div class="stat-label">Pending</div></div>
+        <div class="stat-card processing"><div class="stat-icon">⚙️</div><div class="stat-num" id="sProcessing">0</div><div class="stat-label">Processing</div></div>
+        <div class="stat-card completed"> <div class="stat-icon">✅</div><div class="stat-num" id="sCompleted">0</div><div class="stat-label">Completed</div></div>
+        <div class="stat-card revenue">   <div class="stat-icon">💰</div><div class="stat-num" id="sRevenue">₹0</div><div class="stat-label">Total Revenue</div></div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="search-wrap">
+          <input type="text" class="search-input" id="searchInput"
+                 placeholder="Search by Order ID, Email, or Name..." oninput="applyFilters()">
+          <button class="search-btn" onclick="applyFilters()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round">
+              <circle cx="11" cy="11" r="6"/><line x1="16.5" y1="16.5" x2="21" y2="21"/>
+            </svg>
+          </button>
+        </div>
+        <select class="filter-select" id="statusFilter" onchange="applyFilters()">
+          <option value="">All Statuses</option>
+          <option value="Pending">Pending</option>
+          <option value="Processing">Processing</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+          <option value="Partial">Partial</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+        <button class="export-btn" onclick="exportCSV()">⬇️ Export CSV</button>
+        <div class="live-badge"><div class="live-dot"></div>Live updates</div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-outer">
+        <div class="table-scroll">
+          <table class="smm-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>User</th>
+                <th>Platform</th>
+                <th>Service</th>
+                <th>Qty</th>
+                <th>Start Count</th>
+                <th>Remains</th>
+                <th>Link</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+              <tr class="empty-row">
+                <td colspan="12">
+                  <div class="empty-icon">⏳</div>
+                  <p>Loading orders...</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /adminPanel -->
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script>
+    firebase.initializeApp({
+      apiKey:            "AIzaSyDcvUZkjQYvUFMmS2FC8k0E9XKNXuzPA4k",
+      authDomain:        "ww-c-5c5c1.firebaseapp.com",
+      projectId:         "ww-c-5c5c1",
+      storageBucket:     "ww-c-5c5c1.firebasestorage.app",
+      messagingSenderId: "200600278915",
+      appId:             "1:200600278915:web:654a42ec7f71e9386e08b6"
+    });
+    const db   = firebase.firestore();
+    const auth = firebase.auth();
+
+    const PLATFORM_ICONS = {
+      instagram: 'https://cdn-icons-png.flaticon.com/512/174/174855.png',
+      youtube:   'https://cdn-icons-png.flaticon.com/512/174/174883.png',
+      tiktok:    'https://cdn-icons-png.flaticon.com/512/3046/3046121.png',
+      telegram:  'https://cdn-icons-png.flaticon.com/512/2111/2111646.png',
+      twitter:   'https://cdn-icons-png.flaticon.com/512/174/174876.png',
+      facebook:  'https://cdn-icons-png.flaticon.com/512/174/174848.png'
+    };
+    const FALLBACK_ICON = 'https://cdn-icons-png.flaticon.com/512/684/684908.png';
+
+    let allOrders  = [];
+    let unsubscribe = null;
+
+    /* ── AUTH CHECK ── */
+    auth.onAuthStateChanged(async user => {
+      if (!user) { window.location.href = 'login.html'; return; }
+      try {
+        const adminDoc = await db.collection('admins').doc(user.uid).get();
+        if (!adminDoc.exists || adminDoc.data().role !== 'admin') {
+          document.getElementById('loadingScreen').classList.add('hidden');
+          document.getElementById('accessDenied').classList.remove('hidden');
+          return;
+        }
+        const name = user.displayName || user.email.split('@')[0];
+        document.getElementById('adminAvatar').textContent = name.charAt(0).toUpperCase();
+        document.getElementById('adminName').textContent   = name;
+        document.getElementById('loadingScreen').classList.add('hidden');
+        document.getElementById('adminPanel').style.display = 'block';
+        setupListener();
+      } catch (err) {
+        console.error('Admin check failed:', err);
+        document.getElementById('loadingScreen').classList.add('hidden');
+        document.getElementById('accessDenied').classList.remove('hidden');
+      }
+    });
+
+    /* ── LISTENER ── */
+    function setupListener() {
+      if (unsubscribe) unsubscribe();
+      unsubscribe = db.collection('orders')
+        .orderBy('createdAt', 'desc')
+        .onSnapshot(snap => {
+          allOrders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          updateStats(allOrders);
+          applyFilters();
+        }, err => console.error('Orders listener error:', err));
+    }
+
+    /* ── STATS ── */
+    function updateStats(orders) {
+      document.getElementById('sTotal').textContent      = orders.length;
+      document.getElementById('sPending').textContent    = orders.filter(o=>o.status==='Pending').length;
+      document.getElementById('sProcessing').textContent = orders.filter(o=>['Processing','In Progress'].includes(o.status)).length;
+      document.getElementById('sCompleted').textContent  = orders.filter(o=>o.status==='Completed').length;
+      const rev = orders.reduce((s,o)=>s+(parseFloat(o.amount)||0), 0);
+      document.getElementById('sRevenue').textContent = '₹' + rev.toFixed(0);
+    }
+
+    /* ── FILTERS ── */
+    function applyFilters() {
+      const q  = (document.getElementById('searchInput').value||'').toLowerCase();
+      const sf = document.getElementById('statusFilter').value;
+      const filtered = allOrders.filter(o => {
+        const matchSearch = !q ||
+          (o.orderId||'').toLowerCase().includes(q) ||
+          (o.userEmail||'').toLowerCase().includes(q) ||
+          (o.userName||'').toLowerCase().includes(q);
+        return matchSearch && (!sf || o.status === sf);
+      });
+      renderTable(filtered);
+    }
+
+    /* ── RENDER TABLE ── */
+    function renderTable(orders) {
+      const tbody = document.getElementById('ordersTableBody');
+
+      if (orders.length === 0) {
+        tbody.innerHTML = `<tr class="empty-row"><td colspan="12">
+          <div class="empty-icon">📭</div><p>No orders found</p>
+        </td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = orders.map((o, idx) => {
+        const platform   = (o.platform||'').toLowerCase();
+        const icon       = PLATFORM_ICONS[platform] || FALLBACK_ICON;
+        const capPlatform = (o.platform||'').charAt(0).toUpperCase()+(o.platform||'').slice(1);
+        const dateStr    = o.createdAt ? formatDate(o.createdAt.toDate ? o.createdAt.toDate() : new Date(o.createdAt)) : '—';
+        const userName   = o.userName || o.userEmail || '—';
+        const initials   = userName.charAt(0).toUpperCase();
+        const docId      = o.orderId || o.id;
+        const link       = o.link || '';
+        const shortLink  = link.replace(/^https?:\/\//,'').substring(0,30) + (link.length>30?'…':'');
+
+        return `<tr id="row-${docId}" style="animation-delay:${Math.min(idx*0.02,0.4)}s">
+
+          <td><span class="cell-id">${docId}</span></td>
+
+          <td><div class="user-cell">
+            <div class="user-av">${initials}</div>
+            <div>
+              <div class="user-name">${userName}</div>
+              <div class="user-email">${o.userEmail||''}</div>
+            </div>
+          </div></td>
+
+          <td><div class="plat-cell">
+            <img src="${icon}" class="plat-icon" alt="${capPlatform}"
+                 onerror="this.src='${FALLBACK_ICON}'">
+            <span class="plat-name">${capPlatform||'—'}</span>
+          </div></td>
+
+          <td><span class="svc-text" title="${o.service||''}">${o.service||'—'}</span></td>
+
+          <td style="font-family:'JetBrains Mono',monospace;font-size:12px;">
+            ${(o.quantity||0).toLocaleString()}
+          </td>
+
+          <td><input class="editable-input" type="number"
+               id="sc-${docId}" value="${o.startCount||0}" min="0"></td>
+
+          <td><input class="editable-input" type="number"
+               id="rem-${docId}" value="${o.remains||0}" min="0"></td>
+
+          <td class="link-cell">
+            ${link
+              ? `<a href="${link}" target="_blank" rel="noopener" title="${link}">${shortLink}</a>`
+              : '<span style="color:#94a3b8">—</span>'}
+          </td>
+
+          <td><span class="cell-amount">₹${parseFloat(o.amount||0).toFixed(2)}</span></td>
+
+          <td><select class="status-select" id="st-${docId}">
+            <option ${o.status==='Pending'     ?'selected':''}>Pending</option>
+            <option ${o.status==='Processing'  ?'selected':''}>Processing</option>
+            <option ${o.status==='In Progress' ?'selected':''}>In Progress</option>
+            <option ${o.status==='Completed'   ?'selected':''}>Completed</option>
+            <option ${o.status==='Partial'     ?'selected':''}>Partial</option>
+            <option ${o.status==='Cancelled'   ?'selected':''}>Cancelled</option>
+          </select></td>
+
+          <td><span class="cell-date">${dateStr}</span></td>
+
+          <td><button class="save-btn" id="btn-${docId}"
+               onclick="saveOrder('${docId}')">💾 Save</button></td>
+
+        </tr>`;
+      }).join('');
+    }
+
+    /* ── SAVE ORDER ── */
+    async function saveOrder(docId) {
+      const btn        = document.getElementById('btn-'+docId);
+      const startCount = parseInt(document.getElementById('sc-'+docId).value)||0;
+      const remains    = parseInt(document.getElementById('rem-'+docId).value)||0;
+      const status     = document.getElementById('st-'+docId).value;
+
+      btn.textContent = '⏳ Saving...';
+      btn.classList.add('saving');
+      btn.disabled = true;
+
+      try {
+        await db.collection('orders').doc(docId).update({
+          startCount, remains, status,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        btn.textContent = '✅ Saved';
+        btn.classList.remove('saving');
+        btn.classList.add('saved');
+        setTimeout(()=>{ btn.textContent='💾 Save'; btn.classList.remove('saved'); btn.disabled=false; }, 2000);
+      } catch(err) {
+        console.error('Save error:', err);
+        btn.textContent = '❌ Error';
+        btn.classList.remove('saving');
+        btn.disabled = false;
+        setTimeout(()=>{ btn.textContent='💾 Save'; }, 2000);
+      }
+    }
+
+    /* ── EXPORT CSV ── */
+    function exportCSV() {
+      const q  = (document.getElementById('searchInput').value||'').toLowerCase();
+      const sf = document.getElementById('statusFilter').value;
+      const filtered = allOrders.filter(o => {
+        const matchSearch = !q ||
+          (o.orderId||'').toLowerCase().includes(q) ||
+          (o.userEmail||'').toLowerCase().includes(q) ||
+          (o.userName||'').toLowerCase().includes(q);
+        return matchSearch && (!sf || o.status===sf);
+      });
+      const headers = ['Order ID','User Name','User Email','Platform','Service','Quantity','Start Count','Remains','Link','Amount','Status','Transaction ID','Date'];
+      const rows = filtered.map(o=>[
+        o.orderId||o.id, o.userName||'', o.userEmail||'', o.platform||'', o.service||'',
+        o.quantity||0, o.startCount||0, o.remains||0, o.link||'',
+        o.amount||0, o.status||'', o.transactionId||'',
+        o.createdAt ? (o.createdAt.toDate?o.createdAt.toDate().toLocaleString():'') : ''
+      ].map(v=>'"'+String(v).replace(/"/g,'""')+'"'));
+      const csv  = [headers.join(','),...rows.map(r=>r.join(','))].join('\n');
+      const blob = new Blob([csv],{type:'text/csv'});
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href=url; a.download='wwc-orders-'+new Date().toISOString().split('T')[0]+'.csv';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    /* ── DATE FORMAT ── */
+    function formatDate(date) {
+      const yy = date.getFullYear();
+      const mm = String(date.getMonth()+1).padStart(2,'0');
+      const dd = String(date.getDate()).padStart(2,'0');
+      const hh = String(date.getHours()).padStart(2,'0');
+      const mi = String(date.getMinutes()).padStart(2,'0');
+      return `${yy}-${mm}-${dd} ${hh}:${mi}`;
+    }
+
+    window.addEventListener('beforeunload', ()=>{ if(unsubscribe) unsubscribe(); });
+  </script>
+</body>
+</html>
