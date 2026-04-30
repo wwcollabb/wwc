@@ -570,10 +570,10 @@
         <h3>Registration Successful!</h3>
         <p>Your application has been submitted. We'll review it within 24 hours.</p>
         <div class="reg-id-display" id="regIdDisplay">WWC-REG-0000</div>
-        <p style="font-size:12px; color: var(--muted);">Redirecting to home in 3 seconds...</p>
+        <p style="font-size:12px; color: var(--muted);">Redirecting to home in 50 seconds...</p>
         <div class="success-actions">
-          <a href="track-collab.html" class="btn-track">📋 Track My Application</a>
-          <a href="index.html" class="btn-home">🏠 Back to Home</a>
+          <a href="track-collab" class="btn-track">📋 Track My Application</a>
+          <a href="index" class="btn-home">🏠 Back to Home</a>
         </div>
       </div>
 
@@ -954,7 +954,7 @@
       document.getElementById('successMessage').style.display = 'block';
       form.style.display = 'none';
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      setTimeout(() => { window.location.href = 'index.html'; }, 3000);
+      setTimeout(() => { window.location.href = 'index'; }, 3000);
 
     } catch (err) {
       console.error('Submission error:', err);
