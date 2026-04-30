@@ -476,7 +476,7 @@
 
   // ── Auth state ──
   auth.onAuthStateChanged(user => {
-    if (user) window.location.href = 'index.html';
+    if (user) window.location.href = 'index';
   });
 
   // ── Toggle Login / Signup ──
@@ -543,12 +543,12 @@
       if (isLogin) {
         await auth.signInWithEmailAndPassword(email, password);
         showSuccess('✓ Login successful! Redirecting...');
-        setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+        setTimeout(() => { window.location.href = 'index'; }, 1000);
       } else {
         const cred = await auth.createUserWithEmailAndPassword(email, password);
         if (name) await cred.user.updateProfile({ displayName: name });
         showSuccess('✓ Account created! Redirecting...');
-        setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+        setTimeout(() => { window.location.href = 'index'; }, 1000);
       }
     } catch (err) {
       showError(getErrorMessage(err.code));
@@ -568,7 +568,7 @@
     btn.innerHTML = `<div class="spinner-sm" style="border-color:rgba(0,0,0,0.15);border-top-color:var(--accent);"></div> Signing in...`;
 
     auth.signInWithPopup(googleProvider)
-      .then(() => { window.location.href = 'index.html'; })
+      .then(() => { window.location.href = 'index'; })
       .catch(err => {
         showError(getErrorMessage(err.code));
         btn.disabled = false; submit.disabled = false;
