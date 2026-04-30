@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile - Worldwide Collab</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #8b5cf6;
+      --accent: #06b6d4;
+      --dark: #0f172a;
+      --light: #f8fafc;
+      --success: #10b981;
+      --danger: #ef4444;
+      --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+      min-height: 100vh;
+      padding-top: 80px;
+    }
+    
+    /* Header */
+    header {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+    }
+    
+    .logo {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 22px; font-weight: 800;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .logo img { width: 45px; height: 45px; border-radius: 12px; object-fit: cover; }
+    
+    .back-btn {
+      background: var(--gradient);
+      color: white; border: none;
+      padding: 10px 24px; border-radius: 12px;
+      font-weight: 700; cursor: pointer;
+      text-decoration: none; font-size: 14px;
+      transition: all 0.3s;
+    }
+    .back-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(99,102,241,0.3); }
+    
+    /* Main Container */
+    .profile-container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    
+    .profile-card {
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .profile-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .profile-header h1 {
+      font-size: 28px; font-weight: 800;
+      color: var(--dark); margin-bottom: 8px;
+    }
+    
+    .profile-header p { color: #64748b; font-weight: 500; }
+    
+    /* Profile Picture Section */
+    .avatar-section {
+      text-align: center;
+      margin-bottom: 35px;
+      position: relative;
+    }
+    
+    .avatar-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .avatar {
+      width: 150px; height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid white;
+      box-shadow: 0 10px 30px rgba(99,102,241,0.3);
+      background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 60px;
+    }
+    
+    .avatar-overlay {
+      position: absolute;
+      bottom: 5px; right: 5px;
+      width: 45px; height: 45px;
+      background: var(--gradient);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      border: 3px solid white;
+      box-shadow: 0 4px 15px rgba(99,102,241,0.4);
+      transition: all 0.3s;
+    }
+    
+    .avatar-overlay:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(99,102,241,0.5);
+    }
+    
+    .avatar-overlay svg { width: 20px; height: 20px; color: white; }
+    
+    #avatarInput { display: none; }
+    
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 25px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 700;
+      color: #334155;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s;
+      background: white;
+    }
+    
+    .form-group input:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(99,102,241,0.1);
+    }
+    
+    .form-group input:disabled {
+      background: #f1f5f9;
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
+    
+    .email-field {
+      background: #f1f5f9 !important;
+      color: #64748b !important;
+    }
+    
+    /* Buttons */
+    .btn-primary {
+      background: var(--gradient);
+      color: white; border: none;
+      padding: 16px 40px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 700;
+      width: 100%;
+      transition: all 0.3s;
+      font-family: 'Inter', sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(99,102,241,0.4);
+    }
+    
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    /* Loading Spinner */
+    .spinner {
+      display: none;
+      width: 20px; height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 10px;
+    }
+    
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* Success/Error Messages */
+    .alert {
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .alert-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      display: flex;
+    }
+    
+    .alert-error {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      display: flex;
+    }
+    
+    /* Upload Progress */
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      margin-top: 15px;
+      overflow: hidden;
+      display: none;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--gradient);
+      border-radius: 3px;
+      transition: width 0.3s;
+      width: 0%;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .profile-card { padding: 30px 20px; }
+      .avatar { width: 120px; height: 120px; font-size: 48px; }
+      .profile-header h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <img src="logo.png" alt="WWC Logo">
+      <span>Worldwide Collab</span>
+    </div>
+    <a href="index.html" class="back-btn">← Back to Home</a>
+  </header>
+
+  <!-- Main Content -->
+  <div class="profile-container">
+    <div class="profile-card">
+      
+      <div class="profile-header">
+        <h1>👤 My Profile</h1>
+        <p>Manage your account details</p>
+      </div>
+      
+      <!-- Alerts -->
+      <div class="alert alert-success" id="successAlert">
+        <span>✓</span>
+        <span id="successText">Profile updated successfully!</span>
+      </div>
+      
+      <div class="alert alert-error" id="errorAlert">
+        <span>✕</span>
+        <span id="errorText">Something went wrong!</span>
+      </div>
+      
+      <!-- Profile Picture -->
+      <div class="avatar-section">
+        <div class="avatar-wrapper">
+          <img src="" alt="Profile" class="avatar" id="avatarImg" style="display: none;">
+          <div class="avatar" id="avatarPlaceholder">👤</div>
+          <div class="avatar-overlay" onclick="document.getElementById('avatarInput').click()" title="Change Photo">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+        </div>
+        <input type="file" id="avatarInput" accept="image/*" onchange="uploadAvatar(this)">
+        <div class="progress-bar" id="progressBar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <p style="color: #94a3b8; font-size: 13px; margin-top: 12px;">Click camera icon to change photo</p>
+      </div>
+      
+      <!-- Profile Form -->
+      <form id="profileForm" onsubmit="saveProfile(event)">
+        <div class="form-group">
+          <label for="displayName">Full Name</label>
+          <input type="text" id="displayName" placeholder="Enter your full name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="userEmail">Email Address</label>
+          <input type="email" id="userEmail" class="email-field" disabled>
+        </div>
+        
+        <div class="form-group">
+          <label for="userPhone">Phone Number (Optional)</label>
+          <input type="tel" id="userPhone" placeholder="+91 98765 43210">
+        </div>
+        
+        <div class="form-group">
+          <label for="userBio">Bio (Optional)</label>
+          <input type="text" id="userBio" placeholder="Tell us about yourself..." maxlength="100">
+        </div>
+        
+        <button type="submit" class="btn-primary" id="saveBtn">
+          <span class="spinner" id="btnSpinner"></span>
+          <span id="btnText">Save Changes</span>
+        </button>
+      </form>
+      
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+  
+  <script>
+    // ===== FIREBASE CONFIG (Same as your index.html) =====
+    const firebaseConfig = {
+      apiKey: "AIzaSyDcvUZkjQYvUFMmS2FC8k0E9XKNXuzPA4k",
+      authDomain: "ww-c-5c5c1.firebaseapp.com",
+      projectId: "ww-c-5c5c1",
+      storageBucket: "ww-c-5c5c1.firebasestorage.app",
+      messagingSenderId: "200600278915",
+      appId: "1:200600278915:web:654a42ec7f71e9386e08b6"
+    };
+    firebase.initializeApp(firebaseConfig);
+    
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+    
+    let currentUser = null;
+    let currentPhotoURL = '';
+    
+    // ===== CHECK AUTH & LOAD PROFILE =====
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      currentUser = user;
+      document.getElementById('userEmail').value = user.email;
+      
+      // Load user data from Firestore
+      db.collection('users').doc(user.uid).get()
+        .then((doc) => {
+          if (doc.exists) {
+            const data = doc.data();
+            document.getElementById('displayName').value = data.displayName || user.displayName || '';
+            document.getElementById('userPhone').value = data.phone || '';
+            document.getElementById('userBio').value = data.bio || '';
+            
+            if (data.photoURL) {
+              showAvatar(data.photoURL);
+            } else if (user.photoURL) {
+              showAvatar(user.photoURL);
+            }
+          } else {
+            // First time - use auth data
+            document.getElementById('displayName').value = user.displayName || '';
+            if (user.photoURL) showAvatar(user.photoURL);
+          }
+        })
+        .catch((error) => {
+          console.error('Error loading profile:', error);
+        });
+    });
+    
+    // ===== SHOW AVATAR =====
+    function showAvatar(url) {
+      currentPhotoURL = url;
+      const img = document.getElementById('avatarImg');
+      const placeholder = document.getElementById('avatarPlaceholder');
+      
+      img.src = url;
+      img.style.display = 'block';
+      placeholder.style.display = 'none';
+    }
+    
+    // ===== UPLOAD AVATAR =====
+    function uploadAvatar(input) {
+      const file = input.files[0];
+      if (!file) return;
+      
+      // Validate file
+      if (!file.type.startsWith('image/')) {
+        showError('Please select an image file');
+        return;
+      }
+      
+      if (file.size > 5 * 1024 * 1024) {
+        showError('Image must be less than 5MB');
+        return;
+      }
+      
+      const progressBar = document.getElementById('progressBar');
+      const progressFill = document.getElementById('progressFill');
+      progressBar.style.display = 'block';
+      
+      // Create storage reference
+      const storageRef = storage.ref(`avatars/${currentUser.uid}/${Date.now()}_${file.name}`);
+      
+      // Upload file
+      const uploadTask = storageRef.put(file);
+      
+      uploadTask.on('state_changed',
+        (snapshot) => {
+          // Progress
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          progressFill.style.width = progress + '%';
+        },
+        (error) => {
+          // Error
+          progressBar.style.display = 'none';
+          showError('Upload failed: ' + error.message);
+        },
+        () => {
+          // Complete
+          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+            currentPhotoURL = downloadURL;
+            showAvatar(downloadURL);
+            progressBar.style.display = 'none';
+            progressFill.style.width = '0%';
+            
+            // Auto-save to Firestore
+            db.collection('users').doc(currentUser.uid).set({
+              photoURL: downloadURL,
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+            
+            // Update Auth profile
+            currentUser.updateProfile({ photoURL: downloadURL });
+            
+            showSuccess('Profile picture updated!');
+          });
+        }
+      );
+    }
+    
+    // ===== SAVE PROFILE =====
+    function saveProfile(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById('displayName').value.trim();
+      const phone = document.getElementById('userPhone').value.trim();
+      const bio = document.getElementById('userBio').value.trim();
+      
+      if (!name) {
+        showError('Please enter your name');
+        return;
+      }
+      
+      setLoading(true);
+      
+      // Update Auth profile
+      const authUpdate = currentUser.updateProfile({
+        displayName: name,
+        photoURL: currentPhotoURL || currentUser.photoURL
+      });
+      
+      // Update Firestore
+      const firestoreUpdate = db.collection('users').doc(currentUser.uid).set({
+        displayName: name,
+        email: currentUser.email,
+        phone: phone,
+        bio: bio,
+        photoURL: currentPhotoURL || currentUser.photoURL || '',
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+      
+      Promise.all([authUpdate, firestoreUpdate])
+        .then(() => {
+          showSuccess('Profile saved successfully!');
+          setLoading(false);
+        })
+        .catch((error) => {
+          showError('Error: ' + error.message);
+          setLoading(false);
+        });
+    }
+    
+    // ===== UI HELPERS =====
+    function setLoading(loading) {
+      const btn = document.getElementById('saveBtn');
+      const spinner = document.getElementById('btnSpinner');
+      const text = document.getElementById('btnText');
+      
+      btn.disabled = loading;
+      spinner.style.display = loading ? 'inline-block' : 'none';
+      text.textContent = loading ? 'Saving...' : 'Save Changes';
+    }
+    
+    function showSuccess(msg) {
+      const alert = document.getElementById('successAlert');
+      document.getElementById('successText').textContent = msg;
+      alert.style.display = 'flex';
+      document.getElementById('errorAlert').style.display = 'none';
+      
+      setTimeout(() => {
+        alert.style.display = 'none';
+      }, 4000);
+    }
+    
+    function showError(msg) {
+      const alert = document.getElementById('errorAlert');
+      document.getElementById('errorText').textContent = msg;
+      alert.style.display = 'flex';
+      document.getElementById('successAlert').style.display = 'none';
+      
+      setTimeout(() => {
+        alert.style.display = 'none';
+      }, 5000);
+    }
+  </script>
+</body>
+  </html>
