@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register — Worldwide Collab</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #080810;
+      --surface: #0f0f1a;
+      --surface2: #161624;
+      --surface3: #1c1c2e;
+      --border: rgba(255,255,255,0.06);
+      --border2: rgba(255,255,255,0.1);
+      --border3: rgba(255,255,255,0.16);
+      --accent: #6366f1;
+      --accent2: #a78bfa;
+      --accent3: #818cf8;
+      --brand-color: #f43f5e;
+      --brand2: #fb7185;
+      --creator-color: #667eea;
+      --creator2: #a78bfa;
+      --gold: #fbbf24;
+      --green: #10b981;
+      --green2: #34d399;
+      --text: #f1f5f9;
+      --text2: #cbd5e1;
+      --muted: #64748b;
+      --glow: 0 0 60px rgba(99,102,241,0.18);
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      padding: 32px 16px 60px;
+      position: relative;
+      overflow-x: hidden;
+      color: var(--text);
+    }
+
+    .ambient {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .ambient::before {
+      content: '';
+      position: absolute; top: -300px; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 900px;
+      background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 65%);
+    }
+    .ambient::after {
+      content: '';
+      position: absolute; bottom: -200px; right: -150px;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(167,139,250,0.07) 0%, transparent 65%);
+    }
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.014) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.014) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none; z-index: 0;
+    }
+
+    #authOverlay {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 16px;
+    }
+    #authOverlay .spinner {
+      width: 44px; height: 44px;
+      border: 3px solid var(--border2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    #authOverlay p { color: var(--muted); font-size: 14px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .page-wrapper {
+      max-width: 700px;
+      margin: 0 auto;
+      position: relative; z-index: 1;
+    }
+
+    .brand-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px;
+      animation: fadeDown 0.5s ease both;
+    }
+    .brand-left { display: flex; align-items: center; gap: 10px; }
+    .brand-logo {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 4px 16px rgba(99,102,241,0.4);
+      overflow: hidden;
+    }
+    .brand-logo img { width: 100%; height: 100%; border-radius: 10px; object-fit: cover; }
+    .brand-name { font-size: 16px; font-weight: 800; color: var(--text); letter-spacing: 0.3px; }
+    .brand-name span {
+      background: linear-gradient(135deg, var(--accent3), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .back-link {
+      display: flex; align-items: center; gap: 6px;
+      color: var(--muted); text-decoration: none;
+      font-size: 13px; font-weight: 600;
+      padding: 8px 14px;
+      background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 100px;
+      transition: all 0.2s;
+    }
+    .back-link:hover { color: var(--text2); border-color: var(--border3); }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border3);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 32px 100px rgba(0,0,0,0.7), var(--glow);
+      animation: fadeUp 0.6s ease both 0.1s;
+    }
+
+    .card-header {
+      padding: 36px 32px 28px;
+      background: linear-gradient(135deg, rgba(99,102,241,0.18) 0%, rgba(167,139,250,0.12) 100%);
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .card-header::before {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(167,139,250,0.15), transparent);
+      border-radius: 50%;
+    }
+    .card-header::after {
+      content: '';
+      position: absolute; bottom: -40px; left: -40px;
+      width: 150px; height: 150px;
+      background: radial-gradient(circle, rgba(99,102,241,0.1), transparent);
+      border-radius: 50%;
+    }
+    .header-logo {
+      width: 72px; height: 72px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 12px 36px rgba(99,102,241,0.5);
+      overflow: hidden;
+      position: relative; z-index: 1;
+    }
+    .header-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 18px; }
+    .card-header h1 {
+      font-size: 26px; font-weight: 900;
+      color: var(--text); letter-spacing: -0.5px;
+      position: relative; z-index: 1;
+    }
+    .card-header p {
+      font-size: 13px; color: var(--muted);
+      margin-top: 6px;
+      position: relative; z-index: 1;
+    }
+    .free-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(52,211,153,0.1));
+      border: 1px solid rgba(16,185,129,0.3);
+      color: var(--green2);
+      font-size: 11px; font-weight: 800;
+      padding: 4px 12px; border-radius: 100px;
+      letter-spacing: 0.8px; text-transform: uppercase;
+      margin-top: 10px;
+      position: relative; z-index: 1;
+    }
+
+    .user-info-bar {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 16px;
+      background: rgba(99,102,241,0.08);
+      border-bottom: 1px solid var(--border);
+      font-size: 12px; color: var(--muted);
+    }
+    .user-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: white;
+      flex-shrink: 0;
+    }
+    .user-info-bar span { color: var(--accent3); font-weight: 600; }
+
+    .toggle-wrap {
+      padding: 20px 24px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: center;
+    }
+    .toggle-switch {
+      display: flex;
+      background: var(--surface3);
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      padding: 5px; gap: 4px;
+    }
+    .toggle-btn {
+      padding: 12px 32px;
+      border: none; background: transparent; cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px; font-weight: 700;
+      border-radius: 12px;
+      color: var(--muted);
+      transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .toggle-btn.active { color: white; }
+    .toggle-btn.brand.active {
+      background: linear-gradient(135deg, var(--brand-color), #e11d48);
+      box-shadow: 0 4px 18px rgba(244,63,94,0.45);
+    }
+    .toggle-btn.creator.active {
+      background: linear-gradient(135deg, var(--creator-color), #764ba2);
+      box-shadow: 0 4px 18px rgba(102,126,234,0.45);
+    }
+    .toggle-btn:not(.active):hover { background: rgba(255,255,255,0.06); color: var(--text2); }
+
+    .card-body { padding: 28px 28px; }
+
+    .form-section { display: none; }
+    .form-section.active { display: block; animation: fadeUp 0.35s ease both; }
+
+    .success-message {
+      display: none;
+      background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(52,211,153,0.08));
+      border: 1px solid rgba(16,185,129,0.3);
+      border-radius: 20px;
+      padding: 36px 28px;
+      text-align: center;
+      margin-bottom: 20px;
+      animation: fadeUp 0.4s ease both;
+    }
+    .success-message .s-icon {
+      font-size: 48px; margin-bottom: 12px; display: block;
+      animation: successPop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both;
+    }
+    .success-message h3 { font-size: 22px; font-weight: 900; color: var(--green2); margin-bottom: 8px; }
+    .success-message p { font-size: 14px; color: var(--muted); margin-bottom: 4px; }
+    .reg-id-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px; font-weight: 700;
+      color: var(--accent3);
+      background: rgba(99,102,241,0.1);
+      border: 1px solid rgba(99,102,241,0.2);
+      border-radius: 10px;
+      padding: 8px 16px;
+      display: inline-block;
+      margin: 12px 0;
+    }
+    .success-actions {
+      display: flex; gap: 12px; justify-content: center;
+      flex-wrap: wrap; margin-top: 20px;
+    }
+    .btn-track, .btn-home {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 24px;
+      border-radius: 14px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px; font-weight: 700;
+      text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .btn-track {
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      color: white;
+      box-shadow: 0 8px 24px rgba(99,102,241,0.35);
+    }
+    .btn-track:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(99,102,241,0.5); }
+    .btn-home {
+      background: var(--surface2);
+      color: var(--text2);
+      border: 1px solid var(--border2);
+    }
+    .btn-home:hover { border-color: var(--border3); color: var(--text); }
+
+    .info-box {
+      background: rgba(99,102,241,0.08);
+      border: 1px solid rgba(99,102,241,0.2);
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      font-size: 13px; color: var(--accent3);
+      line-height: 1.6;
+    }
+    .info-box.brand-info {
+      background: rgba(244,63,94,0.08);
+      border-color: rgba(244,63,94,0.2);
+      color: var(--brand2);
+    }
+    .info-box.creator-info {
+      background: rgba(102,126,234,0.08);
+      border-color: rgba(102,126,234,0.2);
+      color: #a5b4fc;
+    }
+
+    .section-title {
+      font-size: 13px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.2px;
+      margin-bottom: 18px; margin-top: 28px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title:first-of-type { margin-top: 0; }
+    .section-title.brand-title { color: var(--brand2); }
+    .section-title.creator-title { color: #a5b4fc; }
+    .section-title::after {
+      content: ''; flex: 1; height: 1px;
+      background: var(--border2);
+    }
+
+    .form-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+      margin-bottom: 4px;
+    }
+    @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
+    .form-group { margin-bottom: 0; }
+    .form-group.full-width { grid-column: 1 / -1; }
+
+    label {
+      display: block; margin-bottom: 7px;
+      font-size: 11px; font-weight: 700;
+      color: var(--muted); text-transform: uppercase; letter-spacing: 1px;
+    }
+    label .req { color: var(--brand-color); }
+
+    input[type="text"], input[type="email"], input[type="tel"],
+    input[type="url"], input[type="number"], select, textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 13px 16px;
+      font-size: 14px; color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+    }
+    .brand-form input:focus, .brand-form select:focus, .brand-form textarea:focus {
+      border-color: var(--brand-color);
+      box-shadow: 0 0 0 3px rgba(244,63,94,0.12);
+    }
+    .creator-form input:focus, .creator-form select:focus, .creator-form textarea:focus {
+      border-color: var(--creator-color);
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.12);
+    }
+    input::placeholder, textarea::placeholder { color: var(--muted); }
+    select { cursor: pointer; }
+    select option { background: var(--surface2); color: var(--text); }
+    textarea { resize: vertical; min-height: 96px; }
+
+    .platform-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px; margin-top: 4px;
+    }
+    @media (max-width: 400px) { .platform-grid { grid-template-columns: repeat(2, 1fr); } }
+    .platform-item {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 6px;
+      padding: 14px 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .platform-item:hover { background: var(--surface3); border-color: var(--border2); transform: translateY(-2px); }
+    .platform-item.selected {
+      background: rgba(102,126,234,0.12);
+      border-color: var(--creator-color);
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    }
+    .platform-icon { font-size: 26px; }
+    .platform-name { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.3px; }
+    .platform-item.selected .platform-name { color: #a5b4fc; }
+
+    .checkbox-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .checkbox-item {
+      display: flex; align-items: center; gap: 7px;
+      padding: 9px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 12px; font-weight: 600; color: var(--muted);
+    }
+    .checkbox-item:hover { background: var(--surface3); color: var(--text2); }
+    .checkbox-item.selected {
+      background: rgba(99,102,241,0.12);
+      border-color: var(--accent);
+      color: var(--accent3);
+    }
+    .brand-form .checkbox-item.selected {
+      background: rgba(244,63,94,0.1);
+      border-color: var(--brand-color);
+      color: var(--brand2);
+    }
+    .checkbox-item input[type="checkbox"] {
+      width: 14px; height: 14px; padding: 0; border-radius: 4px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .submit-section {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px dashed var(--border2);
+    }
+    .submit-btn {
+      width: 100%; padding: 17px;
+      font-size: 16px; font-weight: 800;
+      border: none; border-radius: 16px;
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer; color: white;
+      position: relative; overflow: hidden;
+      transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+      letter-spacing: 0.3px;
+    }
+    .submit-btn::after {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background 0.2s;
+    }
+    .submit-btn:hover::after { background: rgba(255,255,255,0.07); }
+    .submit-btn:hover { transform: translateY(-2px); }
+    .submit-btn:disabled {
+      opacity: 0.6; cursor: not-allowed;
+      transform: none !important;
+    }
+    .submit-btn.submit-brand {
+      background: linear-gradient(135deg, var(--brand-color), #c2185b);
+      box-shadow: 0 10px 30px rgba(244,63,94,0.4);
+    }
+    .submit-btn.submit-creator {
+      background: linear-gradient(135deg, var(--creator-color), #764ba2);
+      box-shadow: 0 10px 30px rgba(102,126,234,0.4);
+    }
+    .btn-inner { display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+    .error-toast {
+      display: none;
+      background: rgba(239,68,68,0.12);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-top: 12px;
+      font-size: 13px; color: #f87171;
+      text-align: center;
+    }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+    @keyframes fadeDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: none; } }
+    @keyframes successPop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    /* Country "other" reveal */
+    .country-other-input {
+      margin-top: 8px;
+      display: none;
+      animation: fadeUp 0.25s ease both;
+    }
+    .country-other-input.visible { display: block; }
+
+    /* Brand history textarea reveal */
+    .brand-history-wrap {
+      grid-column: 1 / -1;
+      display: none;
+      animation: fadeUp 0.25s ease both;
+    }
+    .brand-history-wrap.visible { display: block; }
+
+    /* Char counter */
+    .char-counter {
+      font-size: 10px; font-weight: 600;
+      color: var(--muted); text-align: right;
+      margin-top: 5px; letter-spacing: 0.5px;
+      transition: color 0.2s;
+    }
+    .char-counter.warn { color: #f97316; }
+    .char-counter.over  { color: #ef4444; }
+
+    /* Engagement 3-col grid */
+    .engagement-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 4px;
+    }
+    @media (max-width: 560px) { .engagement-grid { grid-template-columns: 1fr; } }
+
+    /* Socials 2-col grid reuses form-grid */
+
+    @media (max-width: 480px) {
+      body { padding: 16px 12px 48px; }
+      .card-header { padding: 28px 20px 20px; }
+      .card-body { padding: 20px 16px; }
+      .toggle-btn { padding: 10px 20px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+<div class="ambient"></div>
+
+<div id="authOverlay">
+  <div class="spinner"></div>
+  <p>Checking authentication...</p>
+</div>
+
+<div class="page-wrapper">
+
+  <div class="brand-bar">
+    <div class="brand-left">
+      <div class="brand-logo">
+        <img src="logo.png" alt="WWC" onerror="this.style.display='none';this.parentElement.textContent='🌐'">
+      </div>
+      <div class="brand-name">Worldwide <span>Collab</span></div>
+    </div>
+    <a href="index.html" class="back-link">← Back</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="header-logo">
+        <img src="logo.png" alt="WWC" onerror="this.style.display='none';this.parentElement.textContent='🌐'">
+      </div>
+      <h1>Join Worldwide Collab</h1>
+      <p>Register as a Brand or Creator — completely free</p>
+      <div class="free-badge">✨ Free Registration</div>
+    </div>
+
+    <div class="user-info-bar">
+      <div class="user-avatar" id="userAvatar">?</div>
+      <span id="userEmailDisplay">Loading...</span>
+    </div>
+
+    <!-- Success message -->
+    <div class="success-message" id="successMessage">
+      <span class="s-icon">🎉</span>
+      <h3>Application Submitted!</h3>
+      <p>Your registration has been received. Your Reg ID:</p>
+      <div class="reg-id-display" id="regIdDisplay">WWC-REG-0000</div>
+      <p style="font-size:12px; margin-top: 8px;">Status: <strong style="color:#fbbf24">SUBMITTED</strong> — Our team will review your application soon.</p>
+      <div class="success-actions">
+        <a href="track-collab.html" class="btn-track">📋 Track Status</a>
+        <a href="index.html" class="btn-home">🏠 Go Home</a>
+      </div>
+    </div>
+
+    <div class="toggle-wrap">
+      <div class="toggle-switch">
+        <button class="toggle-btn brand active" onclick="switchType('brand')">🏢 Brand</button>
+        <button class="toggle-btn creator" onclick="switchType('creator')">🎨 Creator</button>
+      </div>
+    </div>
+
+    <div class="card-body">
+
+      <!-- BRAND FORM -->
+      <div class="form-section active" id="brandForm">
+        <form class="brand-form" onsubmit="handleSubmit(event, 'brand')">
+
+          <div class="info-box brand-info">
+            🏢 Register your Brand to find the perfect creators for your campaigns. We'll match you with relevant influencers based on your niche and requirements.
+          </div>
+
+          <div class="section-title brand-title">🏢 Brand Information</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Brand Name <span class="req">*</span></label>
+              <input type="text" name="brandName" placeholder="Your brand name" required>
+            </div>
+            <div class="form-group">
+              <label>Instagram ID <span class="req">*</span></label>
+              <input type="text" name="instagramId" placeholder="@yourbrand" required>
+            </div>
+            <div class="form-group">
+              <label>Contact Person Name <span class="req">*</span></label>
+              <input type="text" name="contactName" placeholder="Full name" required>
+            </div>
+            <div class="form-group">
+              <label>WhatsApp Number <span class="req">*</span></label>
+              <input type="tel" name="whatsapp" placeholder="+1234567890" required>
+            </div>
+            <div class="form-group">
+              <label>Email Address <span class="req">*</span></label>
+              <input type="email" name="email" id="brandEmail" placeholder="brand@email.com" required>
+            </div>
+            <div class="form-group">
+              <label>Country <span class="req">*</span></label>
+              <select name="country" id="brandCountrySelect" onchange="handleCountryChange('brand')" required>
+                <option value="">Select country</option>
+                <option>India</option><option>United States</option><option>Pakistan</option><option>United Kingdom</option>
+                <option>UAE</option><option>Canada</option><option>Australia</option>
+                <option>Singapore</option><option value="Other">Other (Type manually)</option>
+              </select>
+              <div class="country-other-input" id="brandCountryOther">
+                <input type="text" name="countryOther" placeholder="Enter your country" id="brandCountryOtherInput">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>City</label>
+              <input type="text" name="city" placeholder="Your city">
+            </div>
+            <div class="form-group">
+              <label>Website</label>
+              <input type="url" name="website" placeholder="https://yourbrand.com">
+            </div>
+          </div>
+
+          <div class="section-title brand-title">📦 Campaign Details</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Promotion Type <span class="req">*</span></label>
+              <select name="promotionType" required>
+                <option value="">Select type</option>
+                <option>Product Review</option><option>Brand Awareness</option>
+                <option>Affiliate/Commission</option><option>Giveaway</option>
+                <option>Long-term Partnership</option><option>Event Promotion</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Target Countries</label>
+              <input type="text" name="targetCountries" placeholder="e.g. India, USA, UK">
+            </div>
+            <div class="form-group">
+              <label>Niche / Industry <span class="req">*</span></label>
+              <select name="niche" required>
+                <option value="">Select niche</option>
+                <option>Fashion & Lifestyle</option><option>Beauty & Skincare</option>
+                <option>Tech & Gadgets</option><option>Food & Beverage</option>
+                <option>Health & Fitness</option><option>Travel</option>
+                <option>Finance & Business</option><option>Gaming</option>
+                <option>Education</option><option>Entertainment</option><option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Collaboration Type <span class="req">*</span></label>
+              <select name="collabType" required>
+                <option value="">Select type</option>
+                <option>Paid</option><option>Barter</option><option>Both</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Budget Range</label>
+              <select name="budget">
+                <option value="">Select range</option>
+                <option>Under $100</option><option>$100 – $500</option>
+                <option>$500 – $2000</option><option>$2000+</option><option>To be discussed</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 14px;">
+            <label>Creator Size Preference</label>
+            <div class="checkbox-group">
+              <label class="checkbox-item"><input type="checkbox" name="creatorSize" value="Any / No preference"> Any / No preference</label>
+              <label class="checkbox-item"><input type="checkbox" name="creatorSize" value="Nano (1K-10K)"> Nano (1K–10K)</label>
+              <label class="checkbox-item"><input type="checkbox" name="creatorSize" value="Micro (10K-100K)"> Micro (10K–100K)</label>
+              <label class="checkbox-item"><input type="checkbox" name="creatorSize" value="Mid (100K-500K)"> Mid (100K–500K)</label>
+              <label class="checkbox-item"><input type="checkbox" name="creatorSize" value="Macro (500K+)"> Macro (500K+)</label>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 14px;">
+            <label>Campaign Brief / Requirements</label>
+            <textarea name="brief" id="brandBrief" maxlength="1000" placeholder="Describe your campaign goals, product details, content requirements..."></textarea>
+            <div class="char-counter" id="brandBriefCounter">0 / 1000</div>
+          </div>
+
+          <div class="submit-section">
+            <button type="submit" class="submit-btn submit-brand" id="brandSubmitBtn">
+              <div class="btn-inner">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                Submit Brand Application — Free
+              </div>
+            </button>
+            <div class="error-toast" id="brandError"></div>
+          </div>
+        </form>
+      </div>
+
+      <!-- CREATOR FORM -->
+      <div class="form-section" id="creatorForm">
+        <form class="creator-form" onsubmit="handleSubmit(event, 'creator')">
+
+          <div class="info-box creator-info">
+            🎨 Register as a Creator to get matched with brands. Share your profile details and we'll connect you with relevant collaboration opportunities.
+          </div>
+
+          <div class="section-title creator-title">🎨 Creator Profile</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Full Name <span class="req">*</span></label>
+              <input type="text" name="fullName" placeholder="Your full name" required>
+            </div>
+            <div class="form-group">
+              <label>Instagram Handle <span class="req">*</span></label>
+              <input type="text" name="instagram" placeholder="@yourhandle" required>
+            </div>
+            <div class="form-group">
+              <label>WhatsApp Number <span class="req">*</span></label>
+              <input type="tel" name="whatsapp" placeholder="+1234567890" required>
+            </div>
+            <div class="form-group">
+              <label>Email Address <span class="req">*</span></label>
+              <input type="email" name="email" id="creatorEmail" placeholder="you@email.com" required>
+            </div>
+            <div class="form-group">
+              <label>Country <span class="req">*</span></label>
+              <select name="country" id="creatorCountrySelect" onchange="handleCountryChange('creator')" required>
+                <option value="">Select country</option>
+                <option>India</option><option>United States</option><option>Pakistan</option><option>United Kingdom</option>
+                <option>UAE</option><option>Canada</option><option>Australia</option>
+                <option>Singapore</option><option value="Other">Other (Type manually)</option>
+              </select>
+              <div class="country-other-input" id="creatorCountryOther">
+                <input type="text" name="countryOther" placeholder="Enter your country" id="creatorCountryOtherInput">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>City</label>
+              <input type="text" name="city" placeholder="Your city">
+            </div>
+          </div>
+
+          <div class="section-title creator-title">📱 Platform & Reach</div>
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label>Main Platform <span class="req">*</span></label>
+            <input type="hidden" id="selectedPlatform" name="mainPlatform" required>
+            <div class="platform-grid">
+              <div class="platform-item" onclick="selectPlatform(this, 'Instagram')"><span class="platform-icon">📸</span><span class="platform-name">Instagram</span></div>
+              <div class="platform-item" onclick="selectPlatform(this, 'YouTube')"><span class="platform-icon">▶️</span><span class="platform-name">YouTube</span></div>
+              <div class="platform-item" onclick="selectPlatform(this, 'TikTok')"><span class="platform-icon">🎵</span><span class="platform-name">TikTok</span></div>
+              <div class="platform-item" onclick="selectPlatform(this, 'Twitter/X')"><span class="platform-icon">🐦</span><span class="platform-name">Twitter/X</span></div>
+              <div class="platform-item" onclick="selectPlatform(this, 'LinkedIn')"><span class="platform-icon">💼</span><span class="platform-name">LinkedIn</span></div>
+              <div class="platform-item" onclick="selectPlatform(this, 'Other')"><span class="platform-icon">🌐</span><span class="platform-name">Other</span></div>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Follower Count <span class="req">*</span></label>
+              <select name="followers" required>
+                <option value="">Select range</option>
+                <option>Under 1K</option><option>1K – 10K</option>
+                <option>10K – 50K</option><option>50K – 100K</option>
+                <option>100K – 500K</option><option>500K+</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Content Niche <span class="req">*</span></label>
+              <select name="niche" required>
+                <option value="">Select niche</option>
+                <option>Fashion & Lifestyle</option><option>Beauty & Skincare</option>
+                <option>Tech & Gadgets</option><option>Food & Beverage</option>
+                <option>Health & Fitness</option><option>Travel</option>
+                <option>Finance & Business</option><option>Gaming</option>
+                <option>Education</option><option>Entertainment</option><option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Collaboration Preference <span class="req">*</span></label>
+              <select name="collabPref" required>
+                <option value="">Select preference</option>
+                <option>Paid Only</option><option>Barter Only</option><option>Both</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Experience Level</label>
+              <select name="experience">
+                <option value="">Select level</option>
+                <option>Beginner</option><option>Intermediate</option><option>Professional</option>
+              </select>
+            </div>
+            <div class="form-group full-width">
+              <label>Portfolio Link (Optional)</label>
+              <input type="url" name="portfolio" placeholder="https://yourportfolio.com">
+            </div>
+            <div class="form-group full-width">
+              <label>Bio / About You</label>
+              <textarea name="bio" id="creatorBio" maxlength="500" placeholder="Tell us about yourself, your content style, and achievements..."></textarea>
+              <div class="char-counter" id="creatorBioCounter">0 / 500</div>
+            </div>
+          </div>
+
+          <!-- ── Brand Collaboration History ── -->
+          <div class="section-title creator-title">🤝 Collaboration History</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Worked with brands before?</label>
+              <select name="brandCollabHistory" id="brandCollabSelect" onchange="toggleBrandHistory()">
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+            <div class="brand-history-wrap" id="brandHistoryWrap">
+              <label>Brand Names You've Worked With</label>
+              <textarea name="brandNames" placeholder="e.g. Nike, Adidas, Samsung, Local brands..."></textarea>
+            </div>
+          </div>
+
+          <!-- ── Languages Spoken ── -->
+          <div class="section-title creator-title">🌐 Languages Spoken</div>
+          <div class="form-group">
+            <div class="checkbox-group">
+              <label class="checkbox-item"><input type="checkbox" name="languages" value="English"> English</label>
+              <label class="checkbox-item"><input type="checkbox" name="languages" value="Hindi"> Hindi</label>
+              <label class="checkbox-item"><input type="checkbox" name="languages" value="Urdu"> Urdu</label>
+              <label class="checkbox-item"><input type="checkbox" name="languages" value="Spanish"> Spanish</label>
+              <label class="checkbox-item"><input type="checkbox" name="languages" value="Arabic"> Arabic</label>
+              <label class="checkbox-item"><input type="checkbox" name="languages" value="French"> French</label>
+              <label class="checkbox-item"><input type="checkbox" name="languages" value="Bengali"> Bengali</label>
+              <label class="checkbox-item"><input type="checkbox" name="languages" value="Portuguese"> Portuguese</label>
+              <label class="checkbox-item"><input type="checkbox" name="languages" value="Russian"> Russian</label>
+              <label class="checkbox-item"><input type="checkbox" name="languages" value="Other"> Other</label>
+            </div>
+          </div>
+
+          <!-- ── Content Types ── -->
+          <div class="section-title creator-title">🎬 Content Types</div>
+          <div class="form-group">
+            <div class="checkbox-group">
+              <label class="checkbox-item"><input type="checkbox" name="contentTypes" value="Reels/Shorts"> Reels / Shorts</label>
+              <label class="checkbox-item"><input type="checkbox" name="contentTypes" value="Long Videos"> Long Videos</label>
+              <label class="checkbox-item"><input type="checkbox" name="contentTypes" value="Posts/Carousels"> Posts / Carousels</label>
+              <label class="checkbox-item"><input type="checkbox" name="contentTypes" value="Stories"> Stories</label>
+              <label class="checkbox-item"><input type="checkbox" name="contentTypes" value="Live Streams"> Live Streams</label>
+              <label class="checkbox-item"><input type="checkbox" name="contentTypes" value="Podcasts"> Podcasts</label>
+            </div>
+          </div>
+
+          <!-- ── Engagement Metrics ── -->
+          <div class="section-title creator-title">📊 Engagement Metrics</div>
+          <div class="engagement-grid">
+            <div class="form-group">
+              <label>Avg Likes / Post</label>
+              <input type="number" name="avgLikes" placeholder="e.g. 500" min="0">
+            </div>
+            <div class="form-group">
+              <label>Avg Comments / Post</label>
+              <input type="number" name="avgComments" placeholder="e.g. 40" min="0">
+            </div>
+            <div class="form-group">
+              <label>Avg Story Views</label>
+              <input type="number" name="avgStoryViews" placeholder="e.g. 1200" min="0">
+            </div>
+          </div>
+
+          <!-- ── Additional Social Media ── -->
+          <div class="section-title creator-title">🔗 Additional Social Media</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>YouTube Channel</label>
+              <input type="url" name="youtubeLink" placeholder="https://youtube.com/@channel">
+            </div>
+            <div class="form-group">
+              <label>TikTok Profile</label>
+              <input type="url" name="tiktokLink" placeholder="https://tiktok.com/@profile">
+            </div>
+            <div class="form-group">
+              <label>Twitter / X Handle</label>
+              <input type="text" name="twitterHandle" placeholder="@username">
+            </div>
+            <div class="form-group">
+              <label>Facebook Page</label>
+              <input type="url" name="facebookLink" placeholder="https://facebook.com/page">
+            </div>
+          </div>
+
+          <!-- ── Availability ── -->
+          <div class="section-title creator-title">📅 Availability</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Available for Collaborations?</label>
+              <select name="availability">
+                <option value="">Select availability</option>
+                <option value="Yes - Immediately">Yes — Immediately</option>
+                <option value="Yes - In 2 weeks">Yes — In 2 weeks</option>
+                <option value="Yes - In 1 month">Yes — In 1 month</option>
+                <option value="Not currently">Not currently</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="submit-section">
+            <button type="submit" class="submit-btn submit-creator" id="creatorSubmitBtn">
+              <div class="btn-inner">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                Submit Creator Application — Free
+              </div>
+            </button>
+            <div class="error-toast" id="creatorError"></div>
+          </div>
+        </form>
+      </div>
+
+    </div><!-- /card-body -->
+  </div><!-- /card -->
+
+</div><!-- /page-wrapper -->
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDcvUZkjQYvUFMmS2FC8k0E9XKNXuzPA4k",
+    authDomain: "ww-c-5c5c1.firebaseapp.com",
+    projectId: "ww-c-5c5c1",
+    storageBucket: "ww-c-5c5c1.firebasestorage.app",
+    messagingSenderId: "200600278915",
+    appId: "1:200600278915:web:654a42ec7f71e9386e08b6"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let currentUser = null;
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = 'login.html';
+      return;
+    }
+    currentUser = user;
+    document.getElementById('authOverlay').style.display = 'none';
+
+    const email = user.email || '';
+    document.getElementById('userEmailDisplay').innerHTML = `Logged in as <span>${email}</span>`;
+    const initial = (user.displayName || email || '?')[0].toUpperCase();
+    document.getElementById('userAvatar').textContent = initial;
+
+    if (email) {
+      document.getElementById('brandEmail').value = email;
+      document.getElementById('creatorEmail').value = email;
+    }
+  });
+
+  function generateRegId() {
+    const num = Math.floor(1000 + Math.random() * 9000);
+    return `WWC-REG-${num}`;
+  }
+
+  // WhatsApp validation: must start with + and have 8–15 digits total
+  function validateWhatsApp(val) {
+    return /^\+\d{8,15}$/.test(val.trim());
+  }
+
+  // Resolve final country value (dropdown or typed)
+  function resolveCountry(form, prefix) {
+    const sel = form.querySelector(`#${prefix}CountrySelect`);
+    if (sel && sel.value === 'Other') {
+      const inp = form.querySelector(`#${prefix}CountryOtherInput`);
+      return (inp && inp.value.trim()) ? inp.value.trim() : 'Other';
+    }
+    return sel ? sel.value : '';
+  }
+
+  window.handleSubmit = async function(event, type) {
+    event.preventDefault();
+    if (!currentUser) { window.location.href = 'login.html'; return; }
+
+    const form = event.target;
+    const submitBtn = document.getElementById(`${type}SubmitBtn`);
+    const errorEl = document.getElementById(`${type}Error`);
+    errorEl.style.display = 'none';
+
+    const fd = new FormData(form);
+    const data = Object.fromEntries(fd.entries());
+
+    // WhatsApp validation
+    const waField = form.querySelector('input[name="whatsapp"]');
+    if (waField && !validateWhatsApp(waField.value)) {
+      errorEl.textContent = '❌ WhatsApp number must start with + and contain 8–15 digits (e.g. +919876543210)';
+      errorEl.style.display = 'block';
+      waField.focus();
+      return;
+    }
+
+    const creatorSizeValues = [...form.querySelectorAll('input[name="creatorSize"]:checked')].map(cb => cb.value);
+    const languageValues    = [...form.querySelectorAll('input[name="languages"]:checked')].map(cb => cb.value);
+    const contentTypeValues = [...form.querySelectorAll('input[name="contentTypes"]:checked')].map(cb => cb.value);
+
+    const regId = generateRegId();
+    const finalCountry = resolveCountry(form, type);
+
+    const docData = {
+      userId: currentUser.uid,
+      type: type,
+      regId: regId,
+      status: 'SUBMITTED',
+      statusHistory: [
+        {
+          status: 'SUBMITTED',
+          timestamp: new Date().toISOString(),
+          message: 'Registration submitted successfully'
+        }
+      ],
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    };
+
+    if (type === 'brand') {
+      Object.assign(docData, {
+        brandName:     data.brandName     || '',
+        instagramId:   data.instagramId   || '',
+        contactName:   data.contactName   || '',
+        whatsapp:      data.whatsapp      || '',
+        email:         data.email         || '',
+        country:       finalCountry,
+        city:          data.city          || '',
+        website:       data.website       || '',
+        promotionType: data.promotionType || '',
+        targetCountries: data.targetCountries || '',
+        niche:         data.niche         || '',
+        creatorSize:   creatorSizeValues,
+        collabType:    data.collabType    || '',
+        budget:        data.budget        || '',
+        brief:         data.brief         || ''
+      });
+    } else {
+      Object.assign(docData, {
+        fullName:           data.fullName           || '',
+        instagram:          data.instagram          || '',
+        whatsapp:           data.whatsapp           || '',
+        email:              data.email              || '',
+        country:            finalCountry,
+        city:               data.city               || '',
+        mainPlatform:       data.mainPlatform       || '',
+        followers:          data.followers          || '',
+        niche:              data.niche              || '',
+        collabPref:         data.collabPref         || '',
+        experience:         data.experience         || '',
+        portfolio:          data.portfolio          || '',
+        bio:                data.bio                || '',
+        // New creator fields
+        brandCollabHistory: data.brandCollabHistory || '',
+        brandNames:         data.brandNames         || '',
+        languages:          languageValues,
+        contentTypes:       contentTypeValues,
+        avgLikes:           data.avgLikes           || '',
+        avgComments:        data.avgComments        || '',
+        avgStoryViews:      data.avgStoryViews      || '',
+        youtubeLink:        data.youtubeLink        || '',
+        tiktokLink:         data.tiktokLink         || '',
+        twitterHandle:      data.twitterHandle      || '',
+        facebookLink:       data.facebookLink       || '',
+        availability:       data.availability       || ''
+      });
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.querySelector('.btn-inner').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 0.8s linear infinite"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg> Submitting...';
+
+    try {
+      await addDoc(collection(db, 'registrations'), docData);
+
+      const name = type === 'brand' ? (data.brandName || '') : (data.fullName || '');
+      fetch('https://formsubmit.co/ajax/team.wwcollab@gmail.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          ...docData,
+          country:        finalCountry,
+          creatorSize:    creatorSizeValues.join(', '),
+          languages:      languageValues.join(', '),
+          contentTypes:   contentTypeValues.join(', '),
+          statusHistory:  JSON.stringify(docData.statusHistory),
+          _subject: `New ${type.charAt(0).toUpperCase() + type.slice(1)} Registration — ${name} [${regId}]`,
+          _template: 'table'
+        })
+      }).catch(() => {});
+
+      document.getElementById('regIdDisplay').textContent = regId;
+      document.getElementById('successMessage').style.display = 'block';
+      form.style.display = 'none';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => { window.location.href = 'index.html'; }, 50000);
+
+    } catch (err) {
+      console.error('Submission error:', err);
+      errorEl.textContent = '❌ Submission failed: ' + err.message;
+      errorEl.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.querySelector('.btn-inner').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Submit ' + (type === 'brand' ? 'Brand' : 'Creator') + ' Application — Free';
+    }
+  };
+</script>
+
+<script>
+  let currentType = 'brand';
+
+  function switchType(type) {
+    currentType = type;
+    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.toggle-btn.${type}`).classList.add('active');
+    document.querySelectorAll('.form-section').forEach(f => f.classList.remove('active'));
+    document.getElementById(`${type}Form`).classList.add('active');
+    window.location.hash = type;
+  }
+
+  function selectPlatform(el, platform) {
+    document.querySelectorAll('.platform-item').forEach(i => i.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('selectedPlatform').value = platform;
+  }
+
+  // Show/hide "Other country" text input
+  function handleCountryChange(prefix) {
+    const sel   = document.getElementById(`${prefix}CountrySelect`);
+    const wrap  = document.getElementById(`${prefix}CountryOther`);
+    const input = document.getElementById(`${prefix}CountryOtherInput`);
+    if (!sel || !wrap) return;
+    if (sel.value === 'Other') {
+      wrap.classList.add('visible');
+      if (input) { input.required = true; input.focus(); }
+    } else {
+      wrap.classList.remove('visible');
+      if (input) { input.required = false; input.value = ''; }
+    }
+  }
+
+  // Show/hide brand names textarea based on collab history dropdown
+  function toggleBrandHistory() {
+    const sel  = document.getElementById('brandCollabSelect');
+    const wrap = document.getElementById('brandHistoryWrap');
+    if (!sel || !wrap) return;
+    wrap.classList.toggle('visible', sel.value === 'Yes');
+  }
+
+  // Char counter helper
+  function initCharCounter(textareaId, counterId, max) {
+    const ta = document.getElementById(textareaId);
+    const ct = document.getElementById(counterId);
+    if (!ta || !ct) return;
+    function update() {
+      const len = ta.value.length;
+      ct.textContent = `${len} / ${max}`;
+      ct.classList.toggle('warn', len >= max * 0.85 && len < max);
+      ct.classList.toggle('over', len >= max);
+    }
+    ta.addEventListener('input', update);
+    update();
+  }
+
+  window.onload = function() {
+    if (window.location.hash === '#creator') switchType('creator');
+
+    // Checkbox toggle styling
+    document.querySelectorAll('.checkbox-item input').forEach(cb => {
+      cb.addEventListener('change', function() {
+        this.closest('.checkbox-item').classList.toggle('selected', this.checked);
+      });
+    });
+
+    // Char counters
+    initCharCounter('creatorBio',  'creatorBioCounter',  500);
+    initCharCounter('brandBrief',  'brandBriefCounter',  1000);
+  };
+</script>
+
+</body>
+</html>
