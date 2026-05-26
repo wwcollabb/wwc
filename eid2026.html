@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Eid-ul-Adha Mubarak 2026 | Worldwide Collab</title>
+<meta name="description" content="Celebrate Eid-ul-Adha 2026 with Worldwide Collab. A special event for creators — join the community, participate, and grow together." />
+<meta property="og:title" content="Eid-ul-Adha Mubarak 2026 | Worldwide Collab" />
+<meta property="og:description" content="A Special Celebration From Worldwide Collab. Celebrate the spirit of sacrifice, gratitude, unity and blessings with us." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="logo.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Eid-ul-Adha Mubarak 2026 | Worldwide Collab" />
+<meta name="twitter:description" content="A Special Celebration From Worldwide Collab." />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+<!-- AOS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+
+<style>
+  /* ===== CSS VARIABLES ===== */
+  :root {
+    --gold: #D4AF37;
+    --gold-light: #F5D76E;
+    --gold-dark: #9A7D0A;
+    --green: #0B3D2E;
+    --green-mid: #145A3C;
+    --green-light: #1E8449;
+    --white: #F9F5EE;
+    --cream: #EAE0C8;
+    --black: #08100D;
+    --glass: rgba(255,255,255,0.06);
+    --glass-border: rgba(212,175,55,0.25);
+    --font-display: 'Cinzel Decorative', serif;
+    --font-body: 'Cormorant Garamond', serif;
+    --font-ui: 'Josefin Sans', sans-serif;
+  }
+
+  /* ===== RESET ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    line-height: 1.7;
+  }
+  img { max-width: 100%; display: block; }
+  a { text-decoration: none; color: inherit; }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 3px; }
+
+  /* ===== CANVAS BG ===== */
+  #bg-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ===== MOSQUE SILHOUETTE ===== */
+  .mosque-silhouette {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 1400px;
+    opacity: 0.07;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ===== NAVBAR ===== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    padding: 0 2rem;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(8,16,13,0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    transition: background 0.3s;
+  }
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .nav-logo {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid var(--gold);
+    background: var(--green);
+  }
+  .nav-logo-fallback {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gold);
+    background: linear-gradient(135deg, var(--green), var(--gold-dark));
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    color: var(--gold);
+    letter-spacing: 0.5px;
+  }
+  .nav-name {
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--cream);
+    opacity: 0.85;
+    transition: color 0.3s, opacity 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0; right: 0;
+    height: 1px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); opacity: 1; }
+  .nav-links a:hover::after { transform: scaleX(1); }
+  .nav-toggle {
+    display: none;
+    background: none; border: none;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+    padding: 4px;
+  }
+  .nav-toggle span {
+    display: block; width: 24px; height: 2px;
+    background: var(--gold);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+
+  /* ===== SECTIONS ===== */
+  section { position: relative; z-index: 2; }
+
+  /* ===== HERO ===== */
+  #home {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 2rem 80px;
+    overflow: hidden;
+  }
+  .hero-ornament {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px;
+    height: 700px;
+    border: 1px solid rgba(212,175,55,0.1);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: rotateSlow 60s linear infinite;
+  }
+  .hero-ornament::before {
+    content: '';
+    position: absolute;
+    inset: 30px;
+    border: 1px dashed rgba(212,175,55,0.08);
+    border-radius: 50%;
+    animation: rotateSlow 40s linear infinite reverse;
+  }
+  @keyframes rotateSlow { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+  .moon-decoration {
+    font-size: clamp(3rem, 8vw, 6rem);
+    display: block;
+    margin-bottom: 1rem;
+    animation: moonFloat 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 30px rgba(212,175,55,0.5));
+  }
+  @keyframes moonFloat {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-18px) rotate(5deg); }
+  }
+
+  .hero-badge {
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--glass-border);
+    padding: 0.45rem 1.5rem;
+    border-radius: 50px;
+    background: rgba(212,175,55,0.08);
+    margin-bottom: 1.5rem;
+    display: inline-block;
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 6vw, 4.5rem);
+    line-height: 1.2;
+    color: var(--gold-light);
+    text-shadow: 0 0 60px rgba(212,175,55,0.4), 0 4px 20px rgba(0,0,0,0.6);
+    margin-bottom: 1.2rem;
+    letter-spacing: 1px;
+  }
+  .hero-sub {
+    font-family: var(--font-ui);
+    font-size: clamp(0.7rem, 2vw, 0.9rem);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--cream);
+    opacity: 0.7;
+    margin-bottom: 1.2rem;
+  }
+  .hero-desc {
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    color: var(--cream);
+    opacity: 0.85;
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+    font-style: italic;
+    font-weight: 300;
+  }
+  .hero-lanterns {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 1.5rem 0;
+    pointer-events: none;
+  }
+  .lantern {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    animation: lanternSwing 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 15px rgba(212,175,55,0.6));
+  }
+  .lantern:nth-child(2) { animation-delay: -1s; }
+  .lantern:nth-child(3) { animation-delay: -2s; }
+  @keyframes lanternSwing {
+    0%, 100% { transform: rotate(-8deg); }
+    50% { transform: rotate(8deg); }
+  }
+  .hero-btns {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 1rem 2.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border: none;
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.1);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease;
+  }
+  .btn:hover::before { transform: scaleX(1); }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+    color: var(--black);
+    box-shadow: 0 4px 20px rgba(212,175,55,0.35);
+  }
+  .btn-gold:hover {
+    box-shadow: 0 8px 35px rgba(212,175,55,0.55);
+    transform: translateY(-2px);
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--gold);
+    border: 1.5px solid var(--gold);
+    box-shadow: 0 4px 20px rgba(212,175,55,0.1);
+  }
+  .btn-outline:hover {
+    background: rgba(212,175,55,0.08);
+    box-shadow: 0 8px 30px rgba(212,175,55,0.2);
+    transform: translateY(-2px);
+  }
+  .btn:disabled, .btn[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  .btn:disabled::before { display: none; }
+  .tooltip-wrap { position: relative; display: inline-block; }
+  .tooltip-wrap .tooltip-text {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(8,16,13,0.95);
+    border: 1px solid var(--glass-border);
+    color: var(--cream);
+    font-family: var(--font-ui);
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+    padding: 0.5rem 0.9rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .tooltip-wrap:hover .tooltip-text { opacity: 1; }
+
+  /* ===== DIVIDER ===== */
+  .ornament-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 0 auto;
+    max-width: 400px;
+  }
+  .ornament-divider .line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold-dark), transparent);
+  }
+  .ornament-divider .diamond {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  /* ===== SECTION WRAPPER ===== */
+  .section-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 2rem;
+  }
+  .section-label {
+    font-family: var(--font-ui);
+    font-size: 0.65rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.8;
+    margin-bottom: 0.8rem;
+    display: block;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 4vw, 2.8rem);
+    color: var(--gold-light);
+    line-height: 1.25;
+    margin-bottom: 1.5rem;
+  }
+  .section-desc {
+    font-size: 1.15rem;
+    color: var(--cream);
+    opacity: 0.75;
+    max-width: 620px;
+    font-weight: 300;
+  }
+
+  /* ===== COUNTDOWN ===== */
+  #countdown-section {
+    background: linear-gradient(180deg, transparent 0%, rgba(11,61,46,0.15) 50%, transparent 100%);
+  }
+  .countdown-header { text-align: center; margin-bottom: 3rem; }
+  .countdown-grid {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .countdown-box {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    border-radius: 12px;
+    padding: 2rem 2.5rem;
+    text-align: center;
+    min-width: 120px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .countdown-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(212,175,55,0.1), transparent 70%);
+    pointer-events: none;
+  }
+  .countdown-box:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(212,175,55,0.15); }
+  .countdown-num {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 5vw, 3.8rem);
+    color: var(--gold);
+    line-height: 1;
+    display: block;
+    text-shadow: 0 0 30px rgba(212,175,55,0.4);
+    transition: all 0.3s;
+  }
+  .countdown-label {
+    font-family: var(--font-ui);
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--cream);
+    opacity: 0.6;
+    margin-top: 0.5rem;
+    display: block;
+  }
+  .countdown-sep {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    color: var(--gold);
+    opacity: 0.4;
+    align-self: center;
+    padding-bottom: 1rem;
+  }
+  .event-passed-msg {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--gold);
+    text-align: center;
+    padding: 2rem;
+    display: none;
+  }
+
+  /* ===== EID MESSAGE ===== */
+  #about {
+    background: linear-gradient(180deg, transparent, rgba(11,61,46,0.08), transparent);
+  }
+  .eid-message-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(25px);
+    border-radius: 16px;
+    padding: clamp(2rem, 5vw, 4rem);
+    position: relative;
+    overflow: hidden;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .eid-message-card::before {
+    content: '"';
+    position: absolute;
+    top: -1rem; left: 1.5rem;
+    font-family: var(--font-display);
+    font-size: 12rem;
+    color: var(--gold);
+    opacity: 0.05;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .eid-message-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 80% 20%, rgba(212,175,55,0.05), transparent 60%);
+    pointer-events: none;
+  }
+  .message-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 3vw, 2rem);
+    color: var(--gold-light);
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  .message-body {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    line-height: 2;
+    color: var(--cream);
+    opacity: 0.9;
+    font-weight: 300;
+  }
+  .message-body p { margin-bottom: 1.2rem; }
+  .message-signature {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--glass-border);
+    font-family: var(--font-display);
+    color: var(--gold);
+    font-size: 1.1rem;
+    text-align: right;
+    font-style: italic;
+  }
+
+  /* ===== COMMUNITY GRID ===== */
+  .community-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .comm-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    border-radius: 12px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25,0.8,0.25,1);
+    cursor: default;
+  }
+  .comm-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+  }
+  .comm-card:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(212,175,55,0.12); border-color: rgba(212,175,55,0.45); }
+  .comm-card:hover::before { transform: scaleX(1); }
+  .comm-icon {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .comm-card h3 {
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+  }
+  .comm-card p {
+    font-size: 1rem;
+    color: var(--cream);
+    opacity: 0.75;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* ===== SPOTLIGHT CARD ===== */
+  .spotlight-card {
+    background: linear-gradient(135deg, rgba(11,61,46,0.5) 0%, rgba(212,175,55,0.08) 50%, rgba(11,61,46,0.5) 100%);
+    border: 1px solid var(--gold-dark);
+    border-radius: 16px;
+    padding: clamp(2.5rem, 5vw, 4rem);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-top: 3rem;
+  }
+  .spotlight-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(212,175,55,0.15), transparent 70%);
+    pointer-events: none;
+    animation: spotPulse 3s ease-in-out infinite;
+  }
+  @keyframes spotPulse {
+    0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+    50% { opacity: 1; transform: translateX(-50%) scale(1.2); }
+  }
+  .spotlight-card .gift-icon {
+    font-size: 4rem;
+    display: block;
+    margin: 0 auto 1.5rem;
+    filter: drop-shadow(0 0 20px rgba(212,175,55,0.5));
+    animation: giftBounce 2s ease-in-out infinite;
+  }
+  @keyframes giftBounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+  .spotlight-card h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 3vw, 2rem);
+    color: var(--gold-light);
+    margin-bottom: 1.2rem;
+  }
+  .spotlight-card p {
+    font-size: 1.15rem;
+    color: var(--cream);
+    opacity: 0.85;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    font-weight: 300;
+    line-height: 1.8;
+  }
+
+  /* ===== STATS ===== */
+  #stats {
+    background: linear-gradient(180deg, transparent, rgba(212,175,55,0.03), transparent);
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+  .stat-item {
+    text-align: center;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 2.5rem 1.5rem;
+    backdrop-filter: blur(15px);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .stat-item:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(212,175,55,0.12); }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    color: var(--gold);
+    display: block;
+    line-height: 1;
+    text-shadow: 0 0 30px rgba(212,175,55,0.3);
+  }
+  .stat-plus {
+    font-size: 1.5rem;
+    color: var(--gold-light);
+  }
+  .stat-label {
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--cream);
+    opacity: 0.6;
+    margin-top: 0.75rem;
+    display: block;
+  }
+
+  /* ===== ROADMAP ===== */
+  .roadmap-list {
+    position: relative;
+    margin-top: 3rem;
+    padding-left: 2rem;
+  }
+  .roadmap-list::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--gold-dark), transparent);
+  }
+  .roadmap-item {
+    position: relative;
+    padding: 0 0 2.5rem 2.5rem;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .roadmap-item.visible { opacity: 1; transform: translateX(0); }
+  .roadmap-item::before {
+    content: '';
+    position: absolute;
+    left: -5px; top: 8px;
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 15px rgba(212,175,55,0.5);
+  }
+  .roadmap-year {
+    font-family: var(--font-ui);
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  .roadmap-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    backdrop-filter: blur(15px);
+    transition: border-color 0.3s;
+  }
+  .roadmap-card:hover { border-color: rgba(212,175,55,0.5); }
+  .roadmap-card h3 {
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+  }
+  .roadmap-card p {
+    font-size: 0.95rem;
+    color: var(--cream);
+    opacity: 0.7;
+    font-weight: 300;
+  }
+
+  /* ===== TESTIMONIALS ===== */
+  .testimonials-track-wrap {
+    overflow: hidden;
+    margin-top: 3rem;
+    position: relative;
+  }
+  .testimonials-track-wrap::before,
+  .testimonials-track-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 80px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .testimonials-track-wrap::before { left: 0; background: linear-gradient(to right, var(--black), transparent); }
+  .testimonials-track-wrap::after { right: 0; background: linear-gradient(to left, var(--black), transparent); }
+  .testimonials-track {
+    display: flex;
+    gap: 1.5rem;
+    animation: slideLeft 40s linear infinite;
+    width: max-content;
+  }
+  .testimonials-track:hover { animation-play-state: paused; }
+  @keyframes slideLeft {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .test-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.8rem;
+    width: 300px;
+    flex-shrink: 0;
+    backdrop-filter: blur(15px);
+    transition: border-color 0.3s;
+  }
+  .test-card:hover { border-color: rgba(212,175,55,0.4); }
+  .test-stars {
+    color: var(--gold);
+    font-size: 0.85rem;
+    margin-bottom: 0.8rem;
+    letter-spacing: 2px;
+  }
+  .test-msg {
+    font-size: 0.95rem;
+    color: var(--cream);
+    opacity: 0.8;
+    font-style: italic;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+  .test-author {
+    font-family: var(--font-ui);
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.8;
+  }
+
+  /* ===== GALLERY ===== */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+  .gallery-item {
+    border-radius: 10px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    position: relative;
+    cursor: pointer;
+  }
+  .gallery-item img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+    filter: brightness(0.85) saturate(0.9);
+  }
+  .gallery-item:hover img { transform: scale(1.07); filter: brightness(1) saturate(1.1); }
+  .gallery-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    pointer-events: none;
+    transition: border-color 0.3s;
+  }
+  .gallery-item:hover::after { border-color: rgba(212,175,55,0.5); }
+
+  /* ===== LOCKED EVENT ===== */
+  .locked-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: clamp(3rem, 6vw, 5rem) 2rem;
+    text-align: center;
+    backdrop-filter: blur(25px);
+    position: relative;
+    overflow: hidden;
+    max-width: 700px;
+    margin: 3rem auto 0;
+  }
+  .locked-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 100%, rgba(11,61,46,0.3), transparent 70%);
+    pointer-events: none;
+  }
+  .lock-icon {
+    font-size: 4rem;
+    display: block;
+    margin: 0 auto 1.5rem;
+    animation: lockPulse 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(212,175,55,0.4));
+  }
+  @keyframes lockPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+  .locked-card h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 3vw, 2rem);
+    color: var(--gold-light);
+    margin-bottom: 1rem;
+  }
+  .locked-card p {
+    color: var(--cream);
+    opacity: 0.75;
+    font-size: 1.05rem;
+    font-weight: 300;
+    margin-bottom: 2rem;
+    line-height: 1.8;
+  }
+  .unlocked-content { display: none; }
+
+  /* ===== FLOATING CTA ===== */
+  .floating-cta {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 900;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-end;
+  }
+  .fcta-btn {
+    font-family: var(--font-ui);
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 0.8rem 1.4rem;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+  }
+  .fcta-primary {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: var(--black);
+    box-shadow: 0 4px 20px rgba(212,175,55,0.4);
+  }
+  .fcta-primary:hover { box-shadow: 0 8px 30px rgba(212,175,55,0.6); transform: translateY(-2px); }
+  .fcta-secondary {
+    background: rgba(11,61,46,0.85);
+    color: var(--gold);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(15px);
+  }
+  .fcta-secondary:hover { background: rgba(11,61,46,1); transform: translateY(-2px); }
+
+  /* ===== FOOTER ===== */
+  footer {
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(180deg, transparent, rgba(11,61,46,0.15));
+    border-top: 1px solid var(--glass-border);
+    padding: 4rem 2rem 2rem;
+    text-align: center;
+  }
+  .footer-logo-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .footer-logo {
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--gold);
+    background: var(--green);
+  }
+  .footer-logo-fallback {
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    background: linear-gradient(135deg, var(--green), var(--gold-dark));
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    color: var(--gold);
+  }
+  .footer-brand {
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 700;
+  }
+  .footer-msg {
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 3vw, 1.8rem);
+    color: var(--gold-light);
+    margin-bottom: 1rem;
+    text-shadow: 0 0 30px rgba(212,175,55,0.3);
+  }
+  .footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+  }
+  .footer-social a {
+    font-family: var(--font-ui);
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--cream);
+    opacity: 0.6;
+    transition: opacity 0.3s, color 0.3s;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--glass-border);
+    border-radius: 4px;
+  }
+  .footer-social a:hover { opacity: 1; color: var(--gold); border-color: rgba(212,175,55,0.4); }
+  .footer-copy {
+    font-family: var(--font-ui);
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    color: var(--cream);
+    opacity: 0.4;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: 70px; left: 0; right: 0;
+      flex-direction: column;
+      background: rgba(8,16,13,0.97);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 1.5rem 2rem;
+      gap: 1.5rem;
+    }
+    .nav-links.open { display: flex; }
+    .nav-toggle { display: flex; }
+    .countdown-sep { display: none; }
+    .countdown-box { padding: 1.2rem 1.5rem; min-width: 85px; }
+    .floating-cta { bottom: 1.5rem; right: 1rem; }
+    .fcta-btn { padding: 0.7rem 1rem; font-size: 0.6rem; }
+    .roadmap-list { padding-left: 1.5rem; }
+    .roadmap-item { padding-left: 2rem; }
+  }
+  @media (max-width: 480px) {
+    .hero-btns { flex-direction: column; align-items: center; }
+    .btn { width: 100%; justify-content: center; }
+    .gallery-grid { grid-template-columns: 1fr 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .community-grid { grid-template-columns: 1fr; }
+  }
+
+  /* AOS custom */
+  [data-aos] { transition-duration: 800ms !important; }
+</style>
+</head>
+<body>
+
+<!-- BG Canvas -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- Mosque SVG Silhouette -->
+<svg class="mosque-silhouette" viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
+  <path fill="#D4AF37" d="
+    M0,300 L0,200 L80,200 L80,180 L100,160 L120,180 L120,200 L200,200 L200,100
+    C200,100 215,40 230,40 C245,40 260,100 260,100 L260,200 L280,200 L280,180
+    L295,155 L305,140 L315,155 L330,180 L330,200 L370,200 L370,100
+    C370,100 385,40 400,40 C415,40 430,100 430,100 L430,200 L450,200
+    L460,180 L480,200 L500,200 L500,220 L550,220 L550,80
+    C550,80 575,20 600,20 C625,20 650,80 650,80 L650,220 L700,220 L700,200
+    L720,200 L730,180 L750,200 L770,200 L770,100
+    C770,100 785,40 800,40 C815,40 830,100 830,100 L830,200 L870,200 L870,180
+    L885,155 L895,140 L905,155 L920,180 L920,200 L940,200 L940,100
+    C940,100 955,40 970,40 C985,40 1000,100 1000,100 L1000,200 L1080,200
+    L1080,180 L1100,160 L1120,180 L1120,200 L1200,200 L1200,300 Z
+  "/>
+  <!-- Minarets tops -->
+  <polygon fill="#D4AF37" points="228,40 230,20 232,40"/>
+  <polygon fill="#D4AF37" points="398,40 400,20 402,40"/>
+  <polygon fill="#D4AF37" points="598,20 600,0 602,20"/>
+  <polygon fill="#D4AF37" points="798,40 800,20 802,40"/>
+  <polygon fill="#D4AF37" points="968,40 970,20 972,40"/>
+  <!-- Dome -->
+  <ellipse cx="600" cy="80" rx="50" ry="30" fill="none" stroke="#D4AF37" stroke-width="1"/>
+  <!-- Crescent on dome -->
+  <text x="597" y="72" font-size="18" fill="#D4AF37">☽</text>
+</svg>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="nav-brand">
+    <img src="logo.png" alt="Worldwide Collab" class="nav-logo" id="nav-logo-img" onerror="this.style.display='none';document.getElementById('nav-logo-fb').style.display='flex'"/>
+    <div class="nav-logo-fallback" id="nav-logo-fb" style="display:none">WWC</div>
+    <span class="nav-name">Worldwide Collab</span>
+  </div>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="register.html">Register</a></li>
+  </ul>
+  <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-ornament"></div>
+
+  <span class="moon-decoration" data-aos="zoom-in">🌙</span>
+
+  <div class="hero-badge" data-aos="fade-up" data-aos-delay="100">27 May 2026 · Special Event</div>
+
+  <h1 class="hero-title" data-aos="fade-up" data-aos-delay="200">
+    Eid-ul-Adha Mubarak 2026
+  </h1>
+
+  <p class="hero-sub" data-aos="fade-up" data-aos-delay="300">A Special Celebration From Worldwide Collab</p>
+
+  <p class="hero-desc" data-aos="fade-up" data-aos-delay="400">
+    Celebrate the spirit of sacrifice, gratitude, unity and blessings with us.
+  </p>
+
+  <div class="hero-lanterns" data-aos="fade-up" data-aos-delay="450">
+    <span class="lantern">🏮</span>
+    <span class="lantern">✨</span>
+    <span class="lantern">🏮</span>
+  </div>
+
+  <div class="hero-btns" data-aos="fade-up" data-aos-delay="500">
+    <div class="tooltip-wrap" id="participate-wrap">
+      <button class="btn btn-gold" id="participate-btn" onclick="handleParticipate()">
+        🌙 Participate Now
+      </button>
+      <span class="tooltip-text" id="participate-tooltip">Participation opens on Eid-ul-Adha 2026.</span>
+    </div>
+    <a href="register.html" class="btn btn-outline">✦ Register Now</a>
+  </div>
+</section>
+
+<!-- COUNTDOWN -->
+<section id="countdown-section">
+  <div class="section-inner">
+    <div class="countdown-header" data-aos="fade-up">
+      <span class="section-label">Time Remaining</span>
+      <h2 class="section-title">🕐 Countdown to Eid-ul-Adha</h2>
+      <div class="ornament-divider" style="margin-top:1.5rem">
+        <div class="line"></div><div class="diamond"></div><div class="line"></div>
+      </div>
+    </div>
+    <div class="countdown-grid" data-aos="fade-up" data-aos-delay="150">
+      <div class="countdown-box">
+        <span class="countdown-num" id="cd-days">00</span>
+        <span class="countdown-label">Days</span>
+      </div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-box">
+        <span class="countdown-num" id="cd-hours">00</span>
+        <span class="countdown-label">Hours</span>
+      </div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-box">
+        <span class="countdown-num" id="cd-mins">00</span>
+        <span class="countdown-label">Minutes</span>
+      </div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-box">
+        <span class="countdown-num" id="cd-secs">00</span>
+        <span class="countdown-label">Seconds</span>
+      </div>
+    </div>
+    <p class="event-passed-msg" id="eid-arrived">🎉 Eid-ul-Adha Has Arrived! Eid Mubarak! 🎉</p>
+  </div>
+</section>
+
+<!-- EID MESSAGE -->
+<section id="about">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:3rem" data-aos="fade-up">
+      <span class="section-label">From Our Hearts</span>
+      <h2 class="section-title">✨ Eid-ul-Adha Wishes ✨</h2>
+      <div class="ornament-divider" style="margin-top:1.5rem">
+        <div class="line"></div><div class="diamond"></div><div class="line"></div>
+      </div>
+    </div>
+    <div class="eid-message-card" data-aos="fade-up" data-aos-delay="150">
+      <h3 class="message-title">🌙 A Message of Love, Faith & Unity</h3>
+      <div class="message-body">
+        <p>On this most blessed occasion of Eid-ul-Adha — the Festival of Sacrifice — we at Worldwide Collab bow our heads in deep reverence and heartfelt gratitude. This sacred day reminds us of the unparalleled devotion of Prophet Ibrahim (AS) and the profound meaning of placing our faith and trust in the Almighty above all else. May we carry that spirit of submission and surrender in our own hearts today and always.</p>
+        <p>Sacrifice is not merely an act of devotion — it is a declaration of love. It teaches us to let go of what we hold most dear for a greater purpose. May this Eid inspire each of us to sacrifice our ego, our indifference, and our fears, and replace them with compassion, courage, and kindness. True sacrifice begins not with what we give outwardly, but with what we choose to change within ourselves.</p>
+        <p>Gratitude is the language of the soul. As we celebrate today, let us pause and count our blessings — the gift of family, of health, of community, of purpose. There is so much to be thankful for, even in moments of struggle. Let us hold those blessings close and share them generously with those who need them most.</p>
+        <p>Generosity is the heartbeat of Eid. From the act of Qurbani to the sharing of meals with neighbors and loved ones, this festival calls us to give — to give freely, joyfully, and without expectation. Let us be generous not just with our wealth, but with our time, our attention, our words of encouragement, and our acts of service.</p>
+        <p>Family and unity are the pillars of this celebration. Whether near or far, today is a day to reconnect — to reach out to those we love, to forgive old wounds, to bridge distances, and to strengthen bonds. A community that stands together, celebrates together, and supports one another through every season is a community that truly thrives.</p>
+        <p>From every corner of the world where the Worldwide Collab community reaches, we send our warmest wishes to you and your entire family. May this Eid bring peace to your home, prosperity to your path, joy to your heart, and success to all your endeavors. May you and your loved ones be wrapped in the warmth of blessings, health, and happiness throughout the year ahead.</p>
+        <p>To every creator, every member, every supporter — you are the soul of this community. Your creativity, your dedication, and your spirit make Worldwide Collab what it is. On this joyous day, we honor you, we celebrate you, and we are deeply grateful for you.</p>
+      </div>
+      <div class="message-signature">
+        — With Love &amp; Blessings, Worldwide Collab ❤️
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY SECTION -->
+<section id="community">
+  <div class="section-inner">
+    <div data-aos="fade-up">
+      <span class="section-label">Our Community</span>
+      <h2 class="section-title">🌍 A Growing Creator Community</h2>
+      <p class="section-desc">Together we grow, together we celebrate. Worldwide Collab is more than a platform — it is a family.</p>
+    </div>
+    <div class="community-grid">
+      <div class="comm-card" data-aos="fade-up" data-aos-delay="50">
+        <span class="comm-icon">🚀</span>
+        <h3>Creator Opportunities</h3>
+        <p>Unlock meaningful opportunities that elevate your creative career and open doors to real-world collaborations and visibility.</p>
+      </div>
+      <div class="comm-card" data-aos="fade-up" data-aos-delay="100">
+        <span class="comm-icon">🤝</span>
+        <h3>Community Support</h3>
+        <p>A supportive network that uplifts every creator. Share knowledge, celebrate wins, and grow alongside thousands of fellow creators.</p>
+      </div>
+      <div class="comm-card" data-aos="fade-up" data-aos-delay="150">
+        <span class="comm-icon">🌐</span>
+        <h3>Future Collaborations</h3>
+        <p>Be part of exciting future projects and partnerships that connect creators with brands and opportunities across the globe.</p>
+      </div>
+      <div class="comm-card" data-aos="fade-up" data-aos-delay="200">
+        <span class="comm-icon">📈</span>
+        <h3>Creator Growth</h3>
+        <p>Access resources, mentorship, and insights designed to accelerate your growth and help you reach your fullest potential as a creator.</p>
+      </div>
+      <div class="comm-card" data-aos="fade-up" data-aos-delay="250">
+        <span class="comm-icon">🔗</span>
+        <h3>Networking</h3>
+        <p>Connect with like-minded creators, industry voices, and community leaders who inspire and challenge you to think bigger.</p>
+      </div>
+      <div class="comm-card" data-aos="fade-up" data-aos-delay="300">
+        <span class="comm-icon">🏆</span>
+        <h3>Recognition</h3>
+        <p>Your hard work deserves to be seen. We celebrate creators who contribute meaningfully and shine a light on talent within the community.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPOTLIGHT -->
+<section id="opportunity">
+  <div class="section-inner">
+    <div data-aos="fade-up">
+      <span class="section-label">Special Event</span>
+      <h2 class="section-title">🎁 Eid Special Creator Opportunity</h2>
+    </div>
+    <div class="spotlight-card" data-aos="zoom-in" data-aos-delay="150">
+      <span class="gift-icon">🎁</span>
+      <h2>A Gift for Our Creator Community</h2>
+      <p>In the spirit of Eid and generosity, Worldwide Collab is offering creators a special opportunity to participate and be considered for exclusive future collaboration opportunities. This is our gift to you — a chance to be seen, recognized, and celebrated as part of something truly meaningful.</p>
+      <a href="register.html" class="btn btn-gold">Register Now ✦</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:1rem" data-aos="fade-up">
+      <span class="section-label">Impact</span>
+      <h2 class="section-title">📈 Community Highlights</h2>
+      <div class="ornament-divider" style="margin-top:1.5rem">
+        <div class="line"></div><div class="diamond"></div><div class="line"></div>
+      </div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-item" data-aos="fade-up" data-aos-delay="50">
+        <span class="stat-num"><span class="counter" data-target="1200">0</span><span class="stat-plus">+</span></span>
+        <span class="stat-label">Creators Registered</span>
+      </div>
+      <div class="stat-item" data-aos="fade-up" data-aos-delay="100">
+        <span class="stat-num"><span class="counter" data-target="340">0</span><span class="stat-plus">+</span></span>
+        <span class="stat-label">Collaborations</span>
+      </div>
+      <div class="stat-item" data-aos="fade-up" data-aos-delay="150">
+        <span class="stat-num"><span class="counter" data-target="45">0</span><span class="stat-plus">+</span></span>
+        <span class="stat-label">Countries Reached</span>
+      </div>
+      <div class="stat-item" data-aos="fade-up" data-aos-delay="200">
+        <span class="stat-num"><span class="counter" data-target="5000">0</span><span class="stat-plus">+</span></span>
+        <span class="stat-label">Community Members</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="section-inner">
+    <div data-aos="fade-up">
+      <span class="section-label">The Path Forward</span>
+      <h2 class="section-title">🚀 Looking Ahead</h2>
+      <p class="section-desc">Our vision for the future is ambitious, inspired, and creator-first. Here is what we are building toward.</p>
+    </div>
+    <div class="roadmap-list" id="roadmap-list">
+      <div class="roadmap-item">
+        <span class="roadmap-year">2026 Goal 1</span>
+        <div class="roadmap-card">
+          <h3>Bigger Community</h3>
+          <p>Expanding our creator network to reach even more talented individuals from every corner of the world.</p>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <span class="roadmap-year">2026 Goal 2</span>
+        <div class="roadmap-card">
+          <h3>More Creator Opportunities</h3>
+          <p>Launching new programs and partnerships that create tangible career-changing opportunities for registered creators.</p>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <span class="roadmap-year">2026 Goal 3</span>
+        <div class="roadmap-card">
+          <h3>Global Expansion</h3>
+          <p>Strengthening our presence across continents, building local creator hubs, and bridging cultures through creativity.</p>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <span class="roadmap-year">2026 Goal 4</span>
+        <div class="roadmap-card">
+          <h3>Improved Creator Features</h3>
+          <p>Enhancing our platform with smarter tools, better resources, and richer experiences that serve creators better than ever before.</p>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <span class="roadmap-year">2026 Goal 5</span>
+        <div class="roadmap-card">
+          <h3>Future Collaborations</h3>
+          <p>Forging long-term partnerships with brands and agencies that value authentic creator partnerships and meaningful storytelling.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="wall">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:1rem" data-aos="fade-up">
+      <span class="section-label">Community Love</span>
+      <h2 class="section-title">❤️ Community Appreciation</h2>
+    </div>
+  </div>
+  <div class="testimonials-track-wrap" data-aos="fade-up" data-aos-delay="150">
+    <div class="testimonials-track" id="test-track">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="section-inner">
+    <div data-aos="fade-up">
+      <span class="section-label">Celebrations</span>
+      <h2 class="section-title">🌙 Eid Gallery</h2>
+      <p class="section-desc">Beautiful moments from Eid celebrations around the world — light, family, faith, and joy.</p>
+    </div>
+    <div class="gallery-grid" id="gallery-grid" data-aos="fade-up" data-aos-delay="150">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- LOCKED EVENT -->
+<section id="event">
+  <div class="section-inner">
+    <div style="text-align:center" data-aos="fade-up">
+      <span class="section-label">Special</span>
+      <h2 class="section-title">🔒 Eid Special Event</h2>
+    </div>
+    <div class="locked-card" data-aos="zoom-in" data-aos-delay="150" id="locked-card">
+      <!-- Locked state -->
+      <div id="locked-content">
+        <span class="lock-icon">🔒</span>
+        <h2>This Event Will Unlock Automatically</h2>
+        <p>This special participation event will unlock automatically on Eid-ul-Adha 2026 — <strong style="color:var(--gold)">27 May 2026</strong>. Return on the day and claim your opportunity to participate.</p>
+        <div class="countdown-grid" style="justify-content:center">
+          <div class="countdown-box">
+            <span class="countdown-num" id="lcd-days">00</span>
+            <span class="countdown-label">Days</span>
+          </div>
+          <span class="countdown-sep" style="display:flex;align-items:center;padding-bottom:1rem">:</span>
+          <div class="countdown-box">
+            <span class="countdown-num" id="lcd-hours">00</span>
+            <span class="countdown-label">Hours</span>
+          </div>
+          <span class="countdown-sep" style="display:flex;align-items:center;padding-bottom:1rem">:</span>
+          <div class="countdown-box">
+            <span class="countdown-num" id="lcd-mins">00</span>
+            <span class="countdown-label">Mins</span>
+          </div>
+        </div>
+      </div>
+      <!-- Unlocked state -->
+      <div class="unlocked-content" id="unlocked-content">
+        <span style="font-size:4rem;display:block;margin-bottom:1rem;animation:moonFloat 4s ease-in-out infinite">🔓</span>
+        <h2 style="font-family:var(--font-display);font-size:clamp(1.3rem,3vw,2rem);color:var(--gold-light);margin-bottom:1rem">✨ The Event Is Now Unlocked!</ield></h2>
+        <p style="color:var(--cream);opacity:0.85;font-size:1.05rem;max-width:500px;margin:0 auto 2rem;font-weight:300">Eid Mubarak! The special participation event is now open. Join now and be part of something extraordinary.</p>
+        <a href="https://www.instagram.com/p/DYydr9HMIip/" target="_blank" rel="noopener" class="btn btn-gold">Participate Now 🌙</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer data-aos="fade-up">
+  <div class="footer-logo-wrap">
+    <img src="logo.png" alt="Logo" class="footer-logo" id="footer-logo-img" onerror="this.style.display='none';document.getElementById('footer-logo-fb').style.display='flex'"/>
+    <div class="footer-logo-fallback" id="footer-logo-fb" style="display:none">WWC</div>
+    <span class="footer-brand">Worldwide Collab</span>
+  </div>
+  <p class="footer-msg">🌙 Eid-ul-Adha Mubarak From Worldwide Collab ❤️</p>
+  <div class="footer-social">
+    <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://youtube.com" target="_blank" rel="noopener">YouTube</a>
+    <a href="https://twitter.com" target="_blank" rel="noopener">Twitter</a>
+    <a href="register.html">Register</a>
+  </div>
+  <div style="margin:1.5rem 0">
+    <div class="ornament-divider"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+  </div>
+  <p class="footer-copy">© 2026 Worldwide Collab. All Rights Reserved. Eid-ul-Adha Mubarak 🌙</p>
+</footer>
+
+<!-- FLOATING CTA -->
+<div class="floating-cta">
+  <a href="register.html" class="fcta-btn fcta-primary">✦ Register Now</a>
+  <button class="fcta-btn fcta-secondary" onclick="document.getElementById('countdown-section').scrollIntoView({behavior:'smooth'})">⏱ Countdown</button>
+</div>
+
+<!-- AOS JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
+<script>
+// ===== AOS INIT =====
+AOS.init({ once: true, offset: 80 });
+
+// ===== NAV TOGGLE =====
+const navToggle = document.getElementById('nav-toggle');
+const navLinks = document.getElementById('nav-links');
+navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+// ===== EID DATE =====
+const EID_DATE = new Date('2026-05-27T00:00:00');
+
+// ===== COUNTDOWN =====
+function padZ(n) { return String(n).padStart(2, '0'); }
+function updateCountdown() {
+  const now = new Date();
+  const diff = EID_DATE - now;
+  if (diff <= 0) {
+    // Arrived
+    document.querySelector('.countdown-grid').style.display = 'none';
+    document.getElementById('eid-arrived').style.display = 'block';
+    // Sync locked section
+    unlockEvent();
+    // Enable participate btn
+    document.getElementById('participate-btn').disabled = false;
+    document.getElementById('participate-tooltip').style.display = 'none';
+    return;
+  }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cd-days').textContent = padZ(d);
+  document.getElementById('cd-hours').textContent = padZ(h);
+  document.getElementById('cd-mins').textContent = padZ(m);
+  document.getElementById('cd-secs').textContent = padZ(s);
+  // Locked section mini countdown
+  if (document.getElementById('lcd-days')) {
+    document.getElementById('lcd-days').textContent = padZ(d);
+    document.getElementById('lcd-hours').textContent = padZ(h);
+    document.getElementById('lcd-mins').textContent = padZ(m);
+  }
+}
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
+// ===== PARTICIPATE BUTTON =====
+function handleParticipate() {
+  const now = new Date();
+  if (now >= EID_DATE) {
+    window.open('https://www.instagram.com/p/DYydr9HMIip/', '_blank');
+  }
+}
+function initParticipateBtn() {
+  const btn = document.getElementById('participate-btn');
+  const tooltip = document.getElementById('participate-tooltip');
+  const now = new Date();
+  if (now < EID_DATE) {
+    btn.disabled = true;
+    tooltip.style.display = '';
+  } else {
+    btn.disabled = false;
+    tooltip.style.display = 'none';
+  }
+}
+initParticipateBtn();
+
+// ===== UNLOCK EVENT =====
+function unlockEvent() {
+  const locked = document.getElementById('locked-content');
+  const unlocked = document.getElementById('unlocked-content');
+  if (locked && unlocked) {
+    locked.style.display = 'none';
+    unlocked.style.display = 'block';
+  }
+}
+function checkLockState() {
+  if (new Date() >= EID_DATE) unlockEvent();
+}
+checkLockState();
+
+// ===== STATS COUNTER =====
+function animateCounter(el) {
+  const target = parseInt(el.dataset.target);
+  const duration = 2200;
+  const step = target / (duration / 16);
+  let current = 0;
+  const interval = setInterval(() => {
+    current = Math.min(current + step, target);
+    el.textContent = Math.floor(current).toLocaleString();
+    if (current >= target) clearInterval(interval);
+  }, 16);
+}
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.counter').forEach(animateCounter);
+      counterObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+document.getElementById('stats').querySelectorAll('.stat-item').forEach(el => counterObserver.observe(el.closest('#stats') || el));
+counterObserver.observe(document.getElementById('stats'));
+
+// ===== ROADMAP ANIMATION =====
+const roadmapItems = document.querySelectorAll('.roadmap-item');
+const rmObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 150);
+      rmObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+roadmapItems.forEach(item => rmObserver.observe(item));
+
+// ===== TESTIMONIALS =====
+const testimonials = [
+  { msg: "Worldwide Collab changed how I approach content creation. The community is truly one of a kind.", author: "Ayesha R. · Creator" },
+  { msg: "Eid Mubarak to the entire WWC family! Grateful for every opportunity and connection made here.", author: "Zaid M. · Filmmaker" },
+  { msg: "The support I received from this community is something I never expected. Truly a blessing.", author: "Fatima S. · Designer" },
+  { msg: "Being part of WWC feels like being part of a family that believes in you and your craft.", author: "Omar K. · Photographer" },
+  { msg: "From a struggling creator to finding real opportunities — Worldwide Collab made that journey possible.", author: "Nadia H. · Content Creator" },
+  { msg: "The Eid event is a beautiful gesture. It shows how much the team truly cares for creators.", author: "Hassan T. · Videographer" },
+  { msg: "I have grown not just as a creator but as a person thanks to the WWC community's warmth.", author: "Sana B. · Writer" },
+  { msg: "Every collaboration I landed came through the network WWC helped me build. Grateful always.", author: "Imran Q. · Digital Artist" },
+];
+const track = document.getElementById('test-track');
+const doubled = [...testimonials, ...testimonials];
+doubled.forEach(t => {
+  const card = document.createElement('div');
+  card.className = 'test-card';
+  card.innerHTML = `<div class="test-stars">★★★★★</div><p class="test-msg">"${t.msg}"</p><span class="test-author">${t.author}</span>`;
+  track.appendChild(card);
+});
+
+// ===== GALLERY =====
+const galleryImages = [
+  { url: 'https://images.unsplash.com/photo-1564121211835-e88c852648ab?w=600&q=80', alt: 'Eid lanterns' },
+  { url: 'https://images.unsplash.com/photo-1602045065430-9b14a3fcfb64?w=600&q=80', alt: 'Mosque at night' },
+  { url: 'https://images.unsplash.com/photo-1609599006353-e629aaabef79?w=600&q=80', alt: 'Crescent moon' },
+  { url: 'https://images.unsplash.com/photo-1563548090-08b0b92e8ad4?w=600&q=80', alt: 'Eid celebration' },
+  { url: 'https://images.unsplash.com/photo-1511497584788-876760111969?w=600&q=80', alt: 'Family moments' },
+  { url: 'https://images.unsplash.com/photo-1576673442511-7e39b6545c87?w=600&q=80', alt: 'Festive lights' },
+];
+const grid = document.getElementById('gallery-grid');
+galleryImages.forEach(img => {
+  const item = document.createElement('div');
+  item.className = 'gallery-item';
+  item.innerHTML = `<img src="${img.url}" alt="${img.alt}" loading="lazy" />`;
+  grid.appendChild(item);
+});
+
+// ===== CANVAS STARS + PARTICLES =====
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let stars = [], particles = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function initStars() {
+  stars = [];
+  for (let i = 0; i < 200; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.5 + 0.3,
+      twinkle: Math.random() * Math.PI * 2,
+      speed: Math.random() * 0.03 + 0.01,
+    });
+  }
+}
+function initParticles() {
+  particles = [];
+  for (let i = 0; i < 30; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height + canvas.height,
+      r: Math.random() * 2 + 0.5,
+      speed: Math.random() * 0.4 + 0.2,
+      alpha: Math.random() * 0.5 + 0.1,
+      drift: (Math.random() - 0.5) * 0.3,
+    });
+  }
+}
+initStars();
+initParticles();
+
+function drawStars() {
+  stars.forEach(s => {
+    s.twinkle += s.speed;
+    const alpha = 0.4 + 0.6 * Math.abs(Math.sin(s.twinkle));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(245, 215, 110, ${alpha})`;
+    ctx.fill();
+  });
+}
+function drawParticles() {
+  particles.forEach(p => {
+    p.y -= p.speed;
+    p.x += p.drift;
+    if (p.y < -10) {
+      p.y = canvas.height + 10;
+      p.x = Math.random() * canvas.width;
+    }
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(212, 175, 55, ${p.alpha})`;
+    ctx.fill();
+  });
+}
+
+// Crescent moon on canvas
+function drawMoon() {
+  const cx = canvas.width * 0.85;
+  const cy = canvas.height * 0.12;
+  const r = 40;
+  // Glow
+  const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, r * 2.5);
+  grd.addColorStop(0, 'rgba(212,175,55,0.12)');
+  grd.addColorStop(1, 'transparent');
+  ctx.fillStyle = grd;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r * 2.5, 0, Math.PI * 2);
+  ctx.fill();
+  // Moon body
+  ctx.fillStyle = 'rgba(212, 175, 55, 0.18)';
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fill();
+  // Crescent cutout
+  ctx.fillStyle = 'rgba(8, 16, 13, 1)';
+  ctx.beginPath();
+  ctx.arc(cx + r * 0.35, cy - r * 0.1, r * 0.85, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function animateCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawMoon();
+  drawStars();
+  drawParticles();
+  requestAnimationFrame(animateCanvas);
+}
+animateCanvas();
+
+// ===== PARALLAX =====
+window.addEventListener('scroll', () => {
+  const sy = window.scrollY;
+  const mosque = document.querySelector('.mosque-silhouette');
+  if (mosque) mosque.style.transform = `translateX(-50%) translateY(${sy * 0.05}px)`;
+  const heroEl = document.querySelector('.hero-ornament');
+  if (heroEl) heroEl.style.transform = `translate(-50%, calc(-50% + ${sy * 0.1}px)) rotate(${sy * 0.02}deg)`;
+});
+
+// ===== SMOOTH SCROLL FOR NAV LINKS =====
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+</script>
+</body>
+</html>
