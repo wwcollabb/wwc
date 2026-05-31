@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel 2 — WWC Brand Match</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#04040e;--surface:#090918;--surface2:#0e0e20;--surface3:#131328;
+  --border:rgba(255,255,255,0.05);--border2:rgba(255,255,255,0.09);--border3:rgba(255,255,255,0.16);
+  --accent:#6366f1;--accent2:#a78bfa;--accent3:#818cf8;
+  --gold:#f59e0b;--gold2:#fbbf24;
+  --green:#10b981;--green2:#34d399;
+  --red:#ef4444;--red2:#f87171;
+  --cyan:#06b6d4;--pink:#ec4899;--orange:#f97316;
+  --text:#f1f5f9;--text2:#cbd5e1;--muted:#64748b;--muted2:#475569;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;color:var(--text);overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 40% at 50% -10%,rgba(99,102,241,0.12),transparent);pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,0.01) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.01) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;z-index:0;}
+
+/* Auth */
+#authOverlay{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+.spinner{width:44px;height:44px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+#authOverlay p{color:var(--muted);font-size:13px;}
+.auth-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;}
+.auth-logo span{background:linear-gradient(135deg,var(--accent3),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+/* Header */
+.header{position:sticky;top:0;z-index:200;background:rgba(4,4,14,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border2);padding:0 24px;}
+.header-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;height:60px;gap:14px;}
+.logo-wrap{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-box{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;box-shadow:0 4px 14px rgba(99,102,241,0.4);}
+.logo-box img{width:100%;height:100%;object-fit:cover;}
+.logo-text{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--text);}
+.logo-text span{background:linear-gradient(135deg,var(--accent3),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.admin-badge{padding:3px 10px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.25);border-radius:6px;font-size:10px;font-weight:800;color:var(--red2);text-transform:uppercase;letter-spacing:0.5px;}
+.header-spacer{flex:1;}
+.header-pill{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:4px 12px 4px 6px;}
+.header-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+.header-name{font-size:11px;color:var(--text2);}
+.btn-logout{padding:6px 12px;background:var(--surface3);border:1px solid var(--border2);border-radius:7px;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.btn-logout:hover{border-color:var(--red);color:var(--red2);}
+
+/* Layout */
+.layout{display:flex;max-width:1300px;margin:0 auto;padding:0 24px;gap:0;position:relative;z-index:1;}
+.sidebar{width:220px;flex-shrink:0;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;padding:24px 0;}
+.sidebar-nav{display:flex;flex-direction:column;gap:4px;}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:12px;
+  font-size:13px;font-weight:600;color:var(--muted);
+  cursor:pointer;transition:all .2s;border:1px solid transparent;
+}
+.nav-item:hover{color:var(--text2);background:var(--surface2);}
+.nav-item.active{color:var(--accent3);background:rgba(99,102,241,0.1);border-color:rgba(99,102,241,0.2);}
+.nav-icon{font-size:16px;flex-shrink:0;}
+.nav-section{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--muted2);padding:12px 14px 4px;}
+
+.content{flex:1;min-width:0;padding:28px 0 60px 28px;border-left:1px solid var(--border);}
+
+/* Panel */
+.panel{display:none;}
+.panel.active{display:block;}
+.panel-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:4px;}
+.panel-desc{font-size:13px;color:var(--muted);margin-bottom:24px;}
+
+/* Cards */
+.card{background:rgba(255,255,255,0.025);border:1px solid var(--border2);border-radius:18px;padding:22px;margin-bottom:18px;}
+.card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:6px;}
+.card-title::before{content:'';width:14px;height:2px;border-radius:1px;background:linear-gradient(90deg,var(--accent),var(--accent2));display:block;}
+
+/* Forms */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr;}}
+.form-full{grid-column:1/-1;}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);}
+.form-input,.form-select,.form-textarea{
+  background:var(--surface2);border:1px solid var(--border2);border-radius:10px;
+  padding:10px 14px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;
+  transition:border-color .2s;outline:none;width:100%;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent);}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--muted2);}
+.form-select option{background:var(--surface2);}
+.form-textarea{resize:vertical;min-height:90px;line-height:1.6;}
+
+/* Checkbox group */
+.checkbox-group{display:flex;flex-wrap:wrap;gap:8px;}
+.checkbox-chip{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:100px;
+  font-size:12px;font-weight:600;
+  background:var(--surface2);border:1px solid var(--border2);
+  cursor:pointer;transition:all .2s;user-select:none;
+}
+.checkbox-chip input{display:none;}
+.checkbox-chip.checked{background:rgba(99,102,241,0.12);border-color:rgba(99,102,241,0.3);color:var(--accent3);}
+.checkbox-chip:hover{border-color:var(--border3);}
+
+/* Buttons */
+.btn-primary{
+  padding:12px 24px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;
+  font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .22s;
+  box-shadow:0 4px 16px rgba(99,102,241,0.3);
+}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(99,102,241,0.4);}
+.btn-secondary{
+  padding:10px 20px;background:var(--surface3);border:1px solid var(--border2);
+  border-radius:12px;color:var(--text2);font-size:13px;font-weight:600;
+  font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s;
+}
+.btn-secondary:hover{border-color:var(--border3);}
+.btn-danger{
+  padding:8px 16px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);
+  border-radius:10px;color:var(--red2);font-size:12px;font-weight:700;
+  font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s;
+}
+.btn-danger:hover{background:rgba(239,68,68,0.2);}
+.btn-green{
+  padding:8px 16px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);
+  border-radius:10px;color:var(--green2);font-size:12px;font-weight:700;
+  font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s;
+}
+.btn-green:hover{background:rgba(16,185,129,0.2);}
+
+/* Search */
+.search-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.search-wrap{position:relative;flex:1;min-width:200px;}
+.search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;}
+.search-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:9px 12px 9px 36px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;transition:border-color .2s;outline:none;}
+.search-input:focus{border-color:var(--accent);}
+.search-input::placeholder{color:var(--muted);}
+
+/* Creator card result */
+.creator-result{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:14px;
+  margin-bottom:10px;cursor:pointer;transition:all .2s;
+}
+.creator-result:hover{border-color:var(--accent);background:rgba(99,102,241,0.06);}
+.cr-avatar{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden;}
+.cr-avatar img{width:100%;height:100%;object-fit:cover;}
+.cr-info{flex:1;min-width:0;}
+.cr-name{font-weight:700;font-size:14px;margin-bottom:2px;}
+.cr-sub{font-size:11px;color:var(--muted);}
+.cr-actions{display:flex;gap:6px;}
+
+/* Match list */
+.match-table{width:100%;border-collapse:collapse;}
+.match-table th{padding:10px 14px;background:var(--surface2);border-bottom:1px solid var(--border2);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);text-align:left;white-space:nowrap;}
+.match-table td{padding:12px 14px;font-size:13px;color:var(--text2);border-bottom:1px solid var(--border);vertical-align:middle;}
+.match-table tr:hover td{background:rgba(99,102,241,0.03);}
+.td-mono{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent3);font-weight:700;}
+.td-name{font-weight:600;color:var(--text);}
+
+/* Status badges */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:10px;font-weight:800;letter-spacing:0.3px;white-space:nowrap;}
+.b-submitted{background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);}
+.b-review{background:rgba(59,130,246,0.15);color:#3b82f6;border:1px solid rgba(59,130,246,0.3);}
+.b-verified{background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3);}
+.b-matched{background:rgba(6,182,212,0.15);color:#06b6d4;border:1px solid rgba(6,182,212,0.3);}
+.b-accepted{background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.3);}
+.b-active{background:rgba(139,92,246,0.15);color:#8b5cf6;border:1px solid rgba(139,92,246,0.3);}
+.b-completed{background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.3);}
+.b-onhold{background:rgba(107,114,128,0.15);color:#6b7280;border:1px solid rgba(107,114,128,0.3);}
+.b-rejected{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.3);}
+.b-declined{background:rgba(107,114,128,0.15);color:#9ca3af;border:1px solid rgba(107,114,128,0.3);}
+
+/* Filter pills */
+.filter-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.fp{padding:6px 14px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.fp:hover{border-color:var(--border3);color:var(--text2);}
+.fp.active{background:rgba(99,102,241,0.12);border-color:var(--accent);color:var(--accent3);}
+
+/* Link box */
+.link-box{
+  display:flex;align-items:center;gap:10px;
+  background:var(--surface2);border:1px solid var(--border2);border-radius:12px;
+  padding:10px 14px;margin-top:12px;
+}
+.link-url{flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);word-break:break-all;}
+.btn-copy{
+  padding:6px 12px;background:var(--surface3);border:1px solid var(--border2);
+  border-radius:8px;color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all .2s;white-space:nowrap;
+}
+.btn-copy:hover{border-color:var(--accent);color:var(--accent3);}
+
+/* Status select */
+.status-select-wrap{display:flex;align-items:center;gap:8px;}
+.status-select{padding:7px 12px;background:var(--surface2);border:1px solid var(--border2);border-radius:9px;font-size:12px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;}
+.status-select:focus{border-color:var(--accent);}
+
+/* Doc upload */
+.doc-upload-list{display:flex;flex-direction:column;gap:8px;margin-top:8px;}
+.doc-upload-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;}
+.doc-upload-name{flex:1;font-size:12px;color:var(--text2);}
+.doc-upload-type{font-size:10px;color:var(--muted);text-transform:uppercase;}
+.btn-remove{background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;line-height:1;padding:2px;transition:color .2s;}
+.btn-remove:hover{color:var(--red2);}
+
+/* Skeleton */
+.skeleton{background:linear-gradient(90deg,var(--surface2) 25%,var(--surface3) 50%,var(--surface2) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px;height:14px;}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+/* Toast */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface3);border:1px solid var(--border3);border-radius:14px;padding:11px 20px;font-size:13px;font-weight:600;color:var(--text);z-index:9000;transition:transform .35s cubic-bezier(0.34,1.56,0.64,1);white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.4);}
+#toast.show{transform:translateX(-50%) translateY(0);}
+#toast.toast-success{border-color:var(--green);color:var(--green2);}
+#toast.toast-error{border-color:var(--red);color:var(--red2);}
+
+/* Activity log */
+.log-item{padding:10px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start;}
+.log-item:last-child{border:none;}
+.log-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:5px;}
+.log-text{font-size:13px;color:var(--text2);flex:1;}
+.log-ts{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);white-space:nowrap;}
+
+/* Empty */
+.empty{text-align:center;padding:40px 20px;color:var(--muted);}
+.empty-icon{font-size:40px;margin-bottom:10px;}
+.empty h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:6px;color:var(--muted);}
+.empty p{font-size:13px;}
+
+/* Section divider */
+.divider{height:1px;background:var(--border);margin:20px 0;}
+
+@media(max-width:900px){
+  .sidebar{display:none;}
+  .content{padding:16px 0;border:none;}
+  .layout{padding:0 16px;}
+}
+</style>
+</head>
+<body>
+
+<div id="authOverlay">
+  <div class="auth-logo">WWC <span>Admin</span></div>
+  <div class="spinner"></div>
+  <p>Authenticating admin…</p>
+</div>
+
+<div id="toast"></div>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="logo-wrap">
+      <div class="logo-box"><img src="Logo.png" alt="WWC" onerror="this.parentNode.innerHTML='W'"></div>
+      <div class="logo-text">Worldwide <span>Collab</span></div>
+    </a>
+    <span class="admin-badge">Admin 2</span>
+    <div class="header-spacer"></div>
+    <div class="header-pill">
+      <div class="header-avatar" id="headerAvatar">A</div>
+      <span class="header-name" id="headerName">Admin</span>
+    </div>
+    <button class="btn-logout" id="btnLogout">Sign Out</button>
+  </div>
+</header>
+
+<!-- Layout -->
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <nav class="sidebar-nav">
+      <div class="nav-section">Brand Match</div>
+      <div class="nav-item active" data-panel="search" onclick="switchPanel('search',this)">
+        <span class="nav-icon">🔍</span> Search Creator
+      </div>
+      <div class="nav-item" data-panel="create" onclick="switchPanel('create',this)">
+        <span class="nav-icon">➕</span> Create Match
+      </div>
+      <div class="nav-item" data-panel="matches" onclick="switchPanel('matches',this)">
+        <span class="nav-icon">🔗</span> All Matches
+      </div>
+      <div class="nav-section">Management</div>
+      <div class="nav-item" data-panel="status" onclick="switchPanel('status',this)">
+        <span class="nav-icon">🔄</span> Status Control
+      </div>
+      <div class="nav-item" data-panel="notify" onclick="switchPanel('notify',this)">
+        <span class="nav-icon">📣</span> Notifications
+      </div>
+      <div class="nav-section">Opportunities</div>
+      <div class="nav-item" data-panel="opps" onclick="switchPanel('opps',this)">
+        <span class="nav-icon">🚀</span> Future Opps
+      </div>
+      <div class="nav-item" data-panel="log" onclick="switchPanel('log',this)">
+        <span class="nav-icon">📋</span> Activity Log
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Content -->
+  <main class="content" id="mainContent" style="display:none;">
+
+    <!-- ── 1. SEARCH CREATOR ── -->
+    <div class="panel active" id="panel-search">
+      <div class="panel-title">🔍 Search Creator</div>
+      <div class="panel-desc">Find a creator by Registration ID, username, or name.</div>
+
+      <div class="card">
+        <div class="search-row">
+          <div class="search-wrap">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input class="search-input" id="creatorSearchInput" placeholder="Search by Reg ID, username, or name…">
+          </div>
+          <button class="btn-primary" onclick="searchCreator()" style="padding:9px 20px;font-size:13px;">Search</button>
+        </div>
+        <div id="searchResults"></div>
+      </div>
+
+      <!-- Selected Creator Detail -->
+      <div id="selectedCreatorCard" style="display:none;">
+        <div class="card">
+          <div class="card-title">👤 Creator Profile</div>
+          <div id="selectedCreatorDetail"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 2. CREATE MATCH ── -->
+    <div class="panel" id="panel-create">
+      <div class="panel-title">➕ Create Brand Match</div>
+      <div class="panel-desc">Match a verified creator with a brand collaboration opportunity.</div>
+
+      <div class="card">
+        <div class="card-title">🏢 Brand Information</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Brand Name *</label>
+            <input class="form-input" id="f_brandName" placeholder="e.g. Nike India">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Brand Country</label>
+            <input class="form-input" id="f_brandCountry" placeholder="e.g. India">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Brand Logo URL</label>
+            <input class="form-input" id="f_brandLogo" placeholder="https://…">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Brand Website</label>
+            <input class="form-input" id="f_brandWebsite" placeholder="https://brand.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Brand Instagram</label>
+            <input class="form-input" id="f_brandIG" placeholder="@brandhandle">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📋 Campaign Details</div>
+        <div class="form-grid">
+          <div class="form-group form-full">
+            <label class="form-label">Campaign Name *</label>
+            <input class="form-input" id="f_campaignName" placeholder="e.g. Summer Collection Launch">
+          </div>
+          <div class="form-group form-full">
+            <label class="form-label">Campaign Description *</label>
+            <textarea class="form-textarea" id="f_campaignDesc" placeholder="Describe the campaign goals, brand voice, target audience…"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Budget / Rate</label>
+            <input class="form-input" id="f_budget" placeholder="e.g. ₹5000 or Barter">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Deadline</label>
+            <input class="form-input" type="date" id="f_deadline">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Required Content Type</label>
+            <input class="form-input" id="f_contentType" placeholder="e.g. Reel, Story, YouTube Video">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Collaboration Type</label>
+            <select class="form-select" id="f_collabType">
+              <option value="">Select…</option>
+              <option value="Paid">💰 Paid</option>
+              <option value="Barter">🎁 Barter</option>
+              <option value="Affiliate">🔗 Affiliate</option>
+            </select>
+          </div>
+          <div class="form-group form-full">
+            <label class="form-label">Deliverables (one per line)</label>
+            <textarea class="form-textarea" id="f_deliverables" placeholder="1 Instagram Reel&#10;3 Stories&#10;1 Swipe-Up Link"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Eligibility</label>
+            <select class="form-select" id="f_eligibility">
+              <option value="both">👥 Both</option>
+              <option value="male">👦 Male Only</option>
+              <option value="female">👧 Female Only</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Required Niche</label>
+            <div class="checkbox-group" id="nicheCheckboxes">
+              <label class="checkbox-chip"><input type="checkbox" value="Beauty">💄 Beauty</label>
+              <label class="checkbox-chip"><input type="checkbox" value="Fashion">👗 Fashion</label>
+              <label class="checkbox-chip"><input type="checkbox" value="Lifestyle">✨ Lifestyle</label>
+              <label class="checkbox-chip"><input type="checkbox" value="UGC">🎥 UGC</label>
+              <label class="checkbox-chip"><input type="checkbox" value="Fitness">💪 Fitness</label>
+              <label class="checkbox-chip"><input type="checkbox" value="Tech">💻 Tech</label>
+              <label class="checkbox-chip"><input type="checkbox" value="Food">🍔 Food</label>
+              <label class="checkbox-chip"><input type="checkbox" value="Travel">✈️ Travel</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Match Score %</label>
+            <input class="form-input" type="number" id="f_matchScore" min="0" max="100" placeholder="85">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Brand Fit %</label>
+            <input class="form-input" type="number" id="f_brandFit" min="0" max="100" placeholder="90">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📁 Attach Documents</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Document Name</label>
+            <input class="form-input" id="f_docName" placeholder="e.g. Brand Brief">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Document Type</label>
+            <select class="form-select" id="f_docType">
+              <option value="brief">📋 Brand Brief</option>
+              <option value="contract">📜 Contract</option>
+              <option value="image">🖼️ Product Images</option>
+              <option value="guidelines">📝 Content Guidelines</option>
+              <option value="other">📎 Other</option>
+            </select>
+          </div>
+          <div class="form-group form-full">
+            <label class="form-label">Document URL</label>
+            <input class="form-input" id="f_docUrl" placeholder="https://drive.google.com/…">
+          </div>
+        </div>
+        <button class="btn-secondary" style="margin-top:8px;" onclick="addDocument()">+ Add Document</button>
+        <div class="doc-upload-list" id="docUploadList"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">👤 Assign Creator</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Creator Registration ID *</label>
+            <input class="form-input" id="f_creatorRegId" placeholder="e.g. WWC8445">
+          </div>
+          <div class="form-group" style="justify-content:flex-end;">
+            <label class="form-label">&nbsp;</label>
+            <button class="btn-secondary" onclick="lookupCreatorForMatch()">🔍 Verify Creator</button>
+          </div>
+        </div>
+        <div id="matchCreatorPreview" style="margin-top:10px;"></div>
+      </div>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="saveMatch()">💾 Save Match</button>
+        <button class="btn-secondary" onclick="clearMatchForm()">✕ Clear Form</button>
+      </div>
+    </div>
+
+    <!-- ── 3. ALL MATCHES ── -->
+    <div class="panel" id="panel-matches">
+      <div class="panel-title">🔗 All Matches</div>
+      <div class="panel-desc">View and manage all brand-creator matches.</div>
+
+      <div class="filter-pills">
+        <div class="fp active" data-mf="all" onclick="filterMatches('all',this)">All</div>
+        <div class="fp" data-mf="BRAND_MATCHED" onclick="filterMatches('BRAND_MATCHED',this)">🔗 Matched</div>
+        <div class="fp" data-mf="ACCEPTED" onclick="filterMatches('ACCEPTED',this)">🤝 Accepted</div>
+        <div class="fp" data-mf="CAMPAIGN_ACTIVE" onclick="filterMatches('CAMPAIGN_ACTIVE',this)">🎬 Active</div>
+        <div class="fp" data-mf="COMPLETED" onclick="filterMatches('COMPLETED',this)">🏆 Completed</div>
+        <div class="fp" data-mf="DECLINED" onclick="filterMatches('DECLINED',this)">🚫 Declined</div>
+        <div class="fp" data-mf="ON_HOLD" onclick="filterMatches('ON_HOLD',this)">⏸️ On Hold</div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div style="overflow-x:auto;">
+          <table class="match-table">
+            <thead>
+              <tr>
+                <th>Reg ID</th>
+                <th>Creator</th>
+                <th>Brand</th>
+                <th>Campaign</th>
+                <th>Budget</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="matchesTableBody">
+              <tr><td colspan="8"><div class="empty"><div class="empty-icon">⏳</div><p>Loading matches…</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 4. STATUS CONTROL ── -->
+    <div class="panel" id="panel-status">
+      <div class="panel-title">🔄 Status Control</div>
+      <div class="panel-desc">Update the status of any creator's registration.</div>
+
+      <div class="card">
+        <div class="card-title">Find Creator</div>
+        <div class="search-row">
+          <div class="search-wrap" style="flex:1;">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input class="search-input" id="statusSearchInput" placeholder="Enter Registration ID or name…">
+          </div>
+          <button class="btn-primary" onclick="searchForStatus()" style="padding:9px 20px;font-size:13px;">Find</button>
+        </div>
+        <div id="statusSearchResults"></div>
+      </div>
+
+      <div class="card" id="statusControlCard" style="display:none;">
+        <div class="card-title">⚙️ Update Status</div>
+        <div style="margin-bottom:14px;">
+          <span style="font-size:13px;color:var(--muted);">Creator: </span>
+          <strong id="statusCreatorName" style="font-size:14px;"></strong>
+          <span class="td-mono" id="statusCreatorId" style="margin-left:8px;"></span>
+        </div>
+        <div class="form-group" style="max-width:320px;margin-bottom:16px;">
+          <label class="form-label">New Status</label>
+          <select class="form-select" id="newStatusSelect">
+            <option value="SUBMITTED">📨 Submitted</option>
+            <option value="UNDER_REVIEW">🔍 Under Review</option>
+            <option value="VERIFIED">✅ Verified</option>
+            <option value="BRAND_MATCHED">🔗 Brand Matched</option>
+            <option value="ACCEPTED">🤝 Accepted</option>
+            <option value="CAMPAIGN_ACTIVE">🎬 Campaign Active</option>
+            <option value="CONTENT_SUBMITTED">📤 Content Submitted</option>
+            <option value="COMPLETED">🏆 Completed</option>
+            <option value="ON_HOLD">⏸️ On Hold</option>
+            <option value="REJECTED">❌ Rejected</option>
+            <option value="DECLINED">🚫 Declined</option>
+          </select>
+        </div>
+        <div class="form-group" style="max-width:400px;margin-bottom:16px;">
+          <label class="form-label">Note (optional)</label>
+          <input class="form-input" id="statusNote" placeholder="e.g. Profile verified by admin">
+        </div>
+        <button class="btn-primary" onclick="applyStatus()">✅ Update Status</button>
+      </div>
+    </div>
+
+    <!-- ── 5. NOTIFICATIONS ── -->
+    <div class="panel" id="panel-notify">
+      <div class="panel-title">📣 Notifications</div>
+      <div class="panel-desc">Send messages to creators or generate their match links.</div>
+
+      <div class="card">
+        <div class="card-title">👤 Select Creator</div>
+        <div class="search-row">
+          <div class="search-wrap" style="flex:1;">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input class="search-input" id="notifSearchInput" placeholder="Enter Reg ID or name…">
+          </div>
+          <button class="btn-primary" onclick="searchForNotif()" style="padding:9px 20px;font-size:13px;">Find</button>
+        </div>
+        <div id="notifSearchResults"></div>
+      </div>
+
+      <div class="card" id="notifActionsCard" style="display:none;">
+        <div class="card-title">📤 Actions</div>
+        <div style="margin-bottom:14px;">
+          <span style="font-size:13px;color:var(--muted);">Creator: </span>
+          <strong id="notifCreatorName"></strong>
+          <span class="td-mono" id="notifCreatorId" style="margin-left:8px;"></span>
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label class="form-label">Custom Message (for WhatsApp)</label>
+          <textarea class="form-textarea" id="notifMessage" placeholder="Enter your message to the creator…" style="min-height:80px;"></textarea>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+          <button class="btn-primary" onclick="sendWhatsApp()">💬 Send WhatsApp</button>
+          <button class="btn-secondary" onclick="sendEmail()">📧 Send Email</button>
+        </div>
+        <div class="divider"></div>
+        <div class="card-title" style="margin-top:12px;">🔗 Generate Creator Link</div>
+        <button class="btn-green" onclick="generateLink()">⚡ Generate Match Link</button>
+        <div id="generatedLinkBox" style="display:none;">
+          <div class="link-box">
+            <div class="link-url" id="generatedLinkUrl"></div>
+            <button class="btn-copy" onclick="copyLink()">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 6. FUTURE OPPORTUNITIES ── -->
+    <div class="panel" id="panel-opps">
+      <div class="panel-title">🚀 Future Opportunities</div>
+      <div class="panel-desc">Create new opportunities that appear on all matched creator pages.</div>
+
+      <div class="card">
+        <div class="card-title">➕ New Opportunity</div>
+        <div class="form-grid">
+          <div class="form-group form-full">
+            <label class="form-label">Title *</label>
+            <input class="form-input" id="o_title" placeholder="e.g. Premium Brand Collab — Tech Niche">
+          </div>
+          <div class="form-group form-full">
+            <label class="form-label">Description</label>
+            <textarea class="form-textarea" id="o_desc" placeholder="Describe the opportunity…"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Brand Name</label>
+            <input class="form-input" id="o_brand" placeholder="e.g. Samsung">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Country</label>
+            <input class="form-input" id="o_country" placeholder="e.g. India">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Gender Requirement</label>
+            <select class="form-select" id="o_gender">
+              <option value="Both">👥 Both</option>
+              <option value="Male">👦 Male Only</option>
+              <option value="Female">👧 Female Only</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Minimum Followers</label>
+            <input class="form-input" id="o_minFollowers" type="number" placeholder="e.g. 5000">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Niche</label>
+            <input class="form-input" id="o_niche" placeholder="e.g. Beauty, Fashion">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Budget</label>
+            <input class="form-input" id="o_budget" placeholder="e.g. ₹3000 or Barter">
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
+          <button class="btn-primary" onclick="publishOpp()">🚀 Publish Opportunity</button>
+          <button class="btn-secondary" onclick="clearOppForm()">✕ Clear</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📋 Published Opportunities</div>
+        <div id="oppsList"></div>
+      </div>
+    </div>
+
+    <!-- ── 7. ACTIVITY LOG ── -->
+    <div class="panel" id="panel-log">
+      <div class="panel-title">📋 Activity Log</div>
+      <div class="panel-desc">Recent admin actions and system events.</div>
+      <div class="card">
+        <div id="activityLog">
+          <div class="empty"><div class="empty-icon">📋</div><h3>Loading log…</h3></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDcvUZkjQYvUFMmS2FC8k0E9XKNXuzPA4k",
+  authDomain: "ww-c-5c5c1.firebaseapp.com",
+  projectId: "ww-c-5c5c1",
+  storageBucket: "ww-c-5c5c1.firebasestorage.app",
+  messagingSenderId: "200600278915",
+  appId: "1:200600278915:web:654a42ec7f71e9386e08b6"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+var adminUser = null;
+var selectedStatusCreator = null;
+var selectedNotifCreator = null;
+var pendingDocs = [];
+var allMatchesData = [];
+var matchFilter = 'all';
+
+function showToast(msg, type) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast-' + (type || 'success');
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 3200);
+}
+function escHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function formatTs(ts){
+  if (!ts) return '—';
+  try{ var d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}); }
+  catch(e){ return '—'; }
+}
+
+// Panel switching
+function switchPanel(id, el) {
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('panel-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  if (id === 'matches') loadMatches();
+  if (id === 'log') loadActivityLog();
+  if (id === 'opps') loadOpps();
+}
+
+// Niche checkbox
+document.querySelectorAll('.checkbox-chip').forEach(function(chip) {
+  chip.addEventListener('click', function() {
+    var inp = chip.querySelector('input');
+    inp.checked = !inp.checked;
+    chip.classList.toggle('checked', inp.checked);
+  });
+});
+
+// ── Status badge HTML ──
+function buildBadge(status) {
+  var map = {
+    SUBMITTED:'b-submitted',UNDER_REVIEW:'b-review',VERIFIED:'b-verified',
+    BRAND_MATCHED:'b-matched',ACCEPTED:'b-accepted',CAMPAIGN_ACTIVE:'b-active',
+    COMPLETED:'b-completed',ON_HOLD:'b-onhold',REJECTED:'b-rejected',DECLINED:'b-declined'
+  };
+  var labels = {
+    SUBMITTED:'📨 Submitted',UNDER_REVIEW:'🔍 Under Review',VERIFIED:'✅ Verified',
+    BRAND_MATCHED:'🔗 Brand Matched',ACCEPTED:'🤝 Accepted',CAMPAIGN_ACTIVE:'🎬 Active',
+    COMPLETED:'🏆 Completed',ON_HOLD:'⏸️ On Hold',REJECTED:'❌ Rejected',DECLINED:'🚫 Declined'
+  };
+  var cls = map[status] || 'b-submitted';
+  return '<span class="badge '+cls+'">'+(labels[status]||status)+'</span>';
+}
+
+// ── 1. SEARCH ──
+function searchCreator() {
+  var q = document.getElementById('creatorSearchInput').value.trim().toLowerCase();
+  if (!q) { showToast('Enter a search term', 'error'); return; }
+  var el = document.getElementById('searchResults');
+  el.innerHTML = '<p style="color:var(--muted);font-size:13px;">Searching…</p>';
+
+  db.collection('registrations').orderBy('createdAt','desc').limit(100).get().then(function(snap) {
+    var results = snap.docs.map(function(d){ return Object.assign({id:d.id},d.data()); }).filter(function(r) {
+      return (r.regId||'').toLowerCase().includes(q) ||
+             (r.fullName||'').toLowerCase().includes(q) ||
+             (r.username||'').toLowerCase().includes(q) ||
+             (r.instagramHandle||'').toLowerCase().includes(q) ||
+             (r.email||'').toLowerCase().includes(q);
+    });
+    if (!results.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div><p>No creators found for "'+escHtml(q)+'"</p></div>'; return; }
+    el.innerHTML = results.slice(0,20).map(function(r) {
+      var init = (r.fullName||r.name||'?')[0].toUpperCase();
+      return '<div class="creator-result" onclick="selectCreator(\''+escHtml(r.id)+'\')" data-id="'+escHtml(r.id)+'">' +
+        '<div class="cr-avatar">'+init+'</div>' +
+        '<div class="cr-info"><div class="cr-name">'+escHtml(r.fullName||r.name||'—')+'</div>' +
+        '<div class="cr-sub">'+escHtml(r.regId||'—')+' • @'+escHtml(r.username||r.instagramHandle||'—')+' • '+escHtml(r.niche||'—')+'</div></div>' +
+        buildBadge(r.status||'SUBMITTED') +
+        '</div>';
+    }).join('');
+  }).catch(function(e){ el.innerHTML='<p style="color:var(--red2)">Error: '+escHtml(e.message)+'</p>'; });
+}
+document.getElementById('creatorSearchInput').addEventListener('keyup', function(e){ if(e.key==='Enter') searchCreator(); });
+
+function selectCreator(docId) {
+  db.collection('registrations').doc(docId).get().then(function(doc) {
+    if (!doc.exists) return;
+    var r = Object.assign({id:doc.id}, doc.data());
+    var card = document.getElementById('selectedCreatorCard');
+    var detail = document.getElementById('selectedCreatorDetail');
+    card.style.display = 'block';
+    detail.innerHTML =
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">' +
+        '<div><div class="form-label">Name</div><div style="font-size:14px;font-weight:700;margin-top:3px;">'+escHtml(r.fullName||r.name||'—')+'</div></div>' +
+        '<div><div class="form-label">Reg ID</div><div class="td-mono" style="margin-top:3px;">'+escHtml(r.regId||'—')+'</div></div>' +
+        '<div><div class="form-label">Username</div><div style="font-size:13px;margin-top:3px;">@'+escHtml(r.username||r.instagramHandle||'—')+'</div></div>' +
+        '<div><div class="form-label">Gender</div><div style="font-size:13px;margin-top:3px;">'+escHtml(r.gender||'—')+'</div></div>' +
+        '<div><div class="form-label">Country</div><div style="font-size:13px;margin-top:3px;">'+escHtml(r.country||'—')+'</div></div>' +
+        '<div><div class="form-label">Niche</div><div style="font-size:13px;margin-top:3px;">'+escHtml(r.niche||'—')+'</div></div>' +
+        '<div><div class="form-label">Followers</div><div style="font-size:13px;margin-top:3px;">'+escHtml(r.followers||'—')+'</div></div>' +
+        '<div><div class="form-label">Status</div><div style="margin-top:3px;">'+buildBadge(r.status||'SUBMITTED')+'</div></div>' +
+      '</div>' +
+      '<div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;">' +
+        '<button class="btn-primary" onclick="autoFillCreator(\''+escHtml(r.regId||'')+'\')">➕ Create Match</button>' +
+        '<button class="btn-secondary" onclick="autoFillStatus(\''+escHtml(r.id)+'\',\''+escHtml(r.fullName||r.name||'')+'\',\''+escHtml(r.regId||'')+'\')">🔄 Update Status</button>' +
+        '<button class="btn-green" onclick="autoFillNotif(\''+escHtml(r.id)+'\',\''+escHtml(r.fullName||r.name||'')+'\',\''+escHtml(r.regId||'')+'\',\''+escHtml(r.whatsapp||r.phone||'')+'\')">📣 Notify</button>' +
+      '</div>';
+    card.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+}
+
+function autoFillCreator(regId) { document.getElementById('f_creatorRegId').value = regId; switchPanel('create', document.querySelector('[data-panel="create"]')); }
+function autoFillStatus(id, name, regId) {
+  selectedStatusCreator = {id:id, name:name, regId:regId};
+  document.getElementById('statusCreatorName').textContent = name;
+  document.getElementById('statusCreatorId').textContent = regId;
+  document.getElementById('statusControlCard').style.display = 'block';
+  switchPanel('status', document.querySelector('[data-panel="status"]'));
+}
+function autoFillNotif(id, name, regId, phone) {
+  selectedNotifCreator = {id:id, name:name, regId:regId, phone:phone};
+  document.getElementById('notifCreatorName').textContent = name;
+  document.getElementById('notifCreatorId').textContent = regId;
+  document.getElementById('notifActionsCard').style.display = 'block';
+  switchPanel('notify', document.querySelector('[data-panel="notify"]'));
+}
+
+// ── 2. CREATE MATCH ──
+function addDocument() {
+  var name = document.getElementById('f_docName').value.trim();
+  var type = document.getElementById('f_docType').value;
+  var url = document.getElementById('f_docUrl').value.trim();
+  if (!name) { showToast('Enter document name', 'error'); return; }
+  pendingDocs.push({name:name, type:type, url:url});
+  renderPendingDocs();
+  document.getElementById('f_docName').value = '';
+  document.getElementById('f_docUrl').value = '';
+}
+function renderPendingDocs() {
+  var el = document.getElementById('docUploadList');
+  if (!pendingDocs.length) { el.innerHTML = ''; return; }
+  el.innerHTML = pendingDocs.map(function(d, i) {
+    return '<div class="doc-upload-item">' +
+      '<span style="font-size:16px;">📄</span>' +
+      '<div class="doc-upload-name">'+escHtml(d.name)+'</div>' +
+      '<div class="doc-upload-type">'+escHtml(d.type)+'</div>' +
+      '<button class="btn-remove" onclick="removeDoc('+i+')">✕</button>' +
+      '</div>';
+  }).join('');
+}
+function removeDoc(i) { pendingDocs.splice(i,1); renderPendingDocs(); }
+
+function lookupCreatorForMatch() {
+  var regId = document.getElementById('f_creatorRegId').value.trim().toUpperCase();
+  if (!regId) { showToast('Enter Reg ID', 'error'); return; }
+  var el = document.getElementById('matchCreatorPreview');
+  el.innerHTML = '<p style="color:var(--muted);font-size:13px;">Looking up…</p>';
+  db.collection('registrations').where('regId','==',regId).limit(1).get().then(function(snap) {
+    if (snap.empty) { el.innerHTML = '<p style="color:var(--red2);font-size:13px;">❌ Not found: '+escHtml(regId)+'</p>'; return; }
+    var r = snap.docs[0].data();
+    el.innerHTML = '<div class="creator-result" style="cursor:default;">' +
+      '<div class="cr-avatar">'+(r.fullName||'?')[0].toUpperCase()+'</div>' +
+      '<div class="cr-info"><div class="cr-name">'+escHtml(r.fullName||r.name||'—')+'</div>' +
+      '<div class="cr-sub">'+escHtml(r.niche||'—')+' • '+escHtml(r.country||'—')+' • '+escHtml(r.followers||'—')+' followers</div></div>' +
+      buildBadge(r.status||'SUBMITTED') + '</div>';
+  });
+}
+
+function getSelectedNiches() {
+  return Array.from(document.querySelectorAll('#nicheCheckboxes input:checked')).map(function(inp){ return inp.value; });
+}
+
+function saveMatch() {
+  var brandName = document.getElementById('f_brandName').value.trim();
+  var campaignName = document.getElementById('f_campaignName').value.trim();
+  var creatorRegId = document.getElementById('f_creatorRegId').value.trim().toUpperCase();
+  if (!brandName || !campaignName || !creatorRegId) { showToast('Brand name, campaign name & creator Reg ID required', 'error'); return; }
+
+  db.collection('registrations').where('regId','==',creatorRegId).limit(1).get().then(function(snap) {
+    if (snap.empty) { showToast('Creator not found: '+creatorRegId, 'error'); return; }
+    var creatorDoc = snap.docs[0];
+
+    var matchObj = {
+      creatorRegId: creatorRegId,
+      creatorDocId: creatorDoc.id,
+      brandName: brandName,
+      brandCountry: document.getElementById('f_brandCountry').value.trim(),
+      brandLogo: document.getElementById('f_brandLogo').value.trim(),
+      brandWebsite: document.getElementById('f_brandWebsite').value.trim(),
+      brandInstagram: document.getElementById('f_brandIG').value.trim(),
+      campaignName: campaignName,
+      campaignDescription: document.getElementById('f_campaignDesc').value.trim(),
+      budget: document.getElementById('f_budget').value.trim(),
+      deadline: document.getElementById('f_deadline').value,
+      contentType: document.getElementById('f_contentType').value.trim(),
+      collabType: document.getElementById('f_collabType').value,
+      deliverables: document.getElementById('f_deliverables').value.trim(),
+      eligibility: document.getElementById('f_eligibility').value,
+      requiredNiche: getSelectedNiches(),
+      matchScore: parseInt(document.getElementById('f_matchScore').value)||85,
+      brandFit: parseInt(document.getElementById('f_brandFit').value)||90,
+      documents: pendingDocs.slice(),
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      createdBy: adminUser ? adminUser.email : 'admin',
+    };
+
+    // Save match
+    db.collection('matches').add(matchObj).then(function(matchRef) {
+      // Update creator status to BRAND_MATCHED
+      var histEntry = {
+        status:'BRAND_MATCHED',
+        timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+        updatedBy:'admin',
+        message:'Brand matched: '+brandName+' — '+campaignName
+      };
+      return creatorDoc.ref.update({
+        status: 'BRAND_MATCHED',
+        matchId: matchRef.id,
+        statusHistory: firebase.firestore.FieldValue.arrayUnion(histEntry),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }).then(function() {
+      // Log action
+      db.collection('activityLog').add({
+        action:'MATCH_CREATED',
+        message:'Admin created brand match: '+brandName+' → '+creatorRegId,
+        adminEmail: adminUser ? adminUser.email : 'admin',
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      showToast('✅ Match created! Creator status set to Brand Matched.', 'success');
+      clearMatchForm();
+    }).catch(function(e){ showToast('Error: '+e.message,'error'); });
+  });
+}
+
+function clearMatchForm() {
+  ['f_brandName','f_brandCountry','f_brandLogo','f_brandWebsite','f_brandIG',
+   'f_campaignName','f_campaignDesc','f_budget','f_deadline','f_contentType',
+   'f_deliverables','f_matchScore','f_brandFit','f_creatorRegId'].forEach(function(id){
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('f_collabType').value='';
+  document.getElementById('f_eligibility').value='both';
+  document.querySelectorAll('#nicheCheckboxes input').forEach(function(inp){ inp.checked=false; });
+  document.querySelectorAll('#nicheCheckboxes .checkbox-chip').forEach(function(c){ c.classList.remove('checked'); });
+  pendingDocs = [];
+  renderPendingDocs();
+  document.getElementById('matchCreatorPreview').innerHTML='';
+}
+
+// ── 3. MATCHES ──
+function loadMatches() {
+  db.collection('matches').orderBy('createdAt','desc').limit(100).get().then(function(snap) {
+    allMatchesData = snap.docs.map(function(d){ return Object.assign({id:d.id},d.data()); });
+    // Join creator status
+    var regIds = allMatchesData.map(function(m){ return m.creatorRegId; }).filter(Boolean);
+    if (!regIds.length) { renderMatchesTable([]); return; }
+    // Batch get creator statuses
+    db.collection('registrations').where('regId','in',regIds.slice(0,10)).get().then(function(snap2) {
+      var statusMap = {};
+      snap2.docs.forEach(function(d){ statusMap[d.data().regId] = d.data().status; });
+      allMatchesData.forEach(function(m){ m._creatorStatus = statusMap[m.creatorRegId] || 'BRAND_MATCHED'; });
+      renderMatchesTable(allMatchesData);
+    });
+  }).catch(function(e){ document.getElementById('matchesTableBody').innerHTML='<tr><td colspan="8"><p style="color:var(--red2);padding:20px;">Error: '+escHtml(e.message)+'</p></td></tr>'; });
+}
+
+function filterMatches(filter, el) {
+  matchFilter = filter;
+  document.querySelectorAll('.fp').forEach(function(f){ f.classList.remove('active'); });
+  el.classList.add('active');
+  var filtered = filter === 'all' ? allMatchesData : allMatchesData.filter(function(m){ return m._creatorStatus === filter; });
+  renderMatchesTable(filtered);
+}
+
+function renderMatchesTable(data) {
+  var tbody = document.getElementById('matchesTableBody');
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="8"><div class="empty"><div class="empty-icon">🔗</div><h3>No matches</h3></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(function(m) {
+    return '<tr>' +
+      '<td class="td-mono">'+escHtml(m.creatorRegId||'—')+'</td>' +
+      '<td class="td-name">'+escHtml(m.creatorDocId||'—')+'</td>' +
+      '<td>'+escHtml(m.brandName||'—')+'</td>' +
+      '<td>'+escHtml(m.campaignName||'—')+'</td>' +
+      '<td style="font-family:\'JetBrains Mono\',monospace;font-size:12px;color:var(--gold2);">'+escHtml(m.budget||'—')+'</td>' +
+      '<td>'+buildBadge(m._creatorStatus||'BRAND_MATCHED')+'</td>' +
+      '<td style="font-size:11px;color:var(--muted);">'+formatTs(m.createdAt)+'</td>' +
+      '<td><button class="btn-secondary" style="padding:5px 10px;font-size:11px;" onclick="openMatchLink(\''+escHtml(m.creatorRegId||'')+'\')">🔗 Link</button></td>' +
+      '</tr>';
+  }).join('');
+}
+
+function openMatchLink(regId) {
+  var link = 'https://wwcollab.site/match/'+regId;
+  window.open(link,'_blank');
+}
+
+// ── 4. STATUS CONTROL ──
+function searchForStatus() {
+  var q = document.getElementById('statusSearchInput').value.trim();
+  if (!q) { showToast('Enter search term','error'); return; }
+  var el = document.getElementById('statusSearchResults');
+  el.innerHTML = '<p style="color:var(--muted);font-size:13px;">Searching…</p>';
+  db.collection('registrations').orderBy('createdAt','desc').limit(100).get().then(function(snap) {
+    var lq = q.toLowerCase();
+    var results = snap.docs.filter(function(d){
+      var r=d.data();
+      return (r.regId||'').toLowerCase().includes(lq)||(r.fullName||'').toLowerCase().includes(lq)||(r.username||'').toLowerCase().includes(lq);
+    }).slice(0,8);
+    if (!results.length) { el.innerHTML='<div class="empty"><p>No creators found</p></div>'; return; }
+    el.innerHTML = results.map(function(d) {
+      var r=d.data();
+      return '<div class="creator-result" onclick="selectStatusCreator(\''+d.id+'\',\''+escHtml(r.fullName||r.name||'')+'\',\''+escHtml(r.regId||'')+'\',\''+escHtml(r.status||'SUBMITTED')+'\')">' +
+        '<div class="cr-avatar">'+(r.fullName||'?')[0].toUpperCase()+'</div>' +
+        '<div class="cr-info"><div class="cr-name">'+escHtml(r.fullName||r.name||'—')+'</div><div class="cr-sub">'+escHtml(r.regId||'—')+'</div></div>' +
+        buildBadge(r.status||'SUBMITTED')+'</div>';
+    }).join('');
+  });
+}
+document.getElementById('statusSearchInput').addEventListener('keyup',function(e){if(e.key==='Enter')searchForStatus();});
+
+function selectStatusCreator(id,name,regId,status) {
+  selectedStatusCreator = {id:id,name:name,regId:regId};
+  document.getElementById('statusCreatorName').textContent = name;
+  document.getElementById('statusCreatorId').textContent = regId;
+  document.getElementById('newStatusSelect').value = status;
+  document.getElementById('statusControlCard').style.display = 'block';
+}
+
+function applyStatus() {
+  if (!selectedStatusCreator) { showToast('Select a creator first','error'); return; }
+  var newStatus = document.getElementById('newStatusSelect').value;
+  var note = document.getElementById('statusNote').value.trim();
+  var histEntry = {
+    status: newStatus,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    updatedBy: 'admin',
+    message: note || 'Status updated by admin'
+  };
+  db.collection('registrations').doc(selectedStatusCreator.id).update({
+    status: newStatus,
+    statusHistory: firebase.firestore.FieldValue.arrayUnion(histEntry),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(function() {
+    db.collection('activityLog').add({
+      action:'STATUS_CHANGED',
+      message:'Status changed to '+newStatus+' for '+selectedStatusCreator.name+' ('+selectedStatusCreator.regId+')',
+      adminEmail: adminUser ? adminUser.email : 'admin',
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    showToast('✅ Status updated to '+newStatus,'success');
+    document.getElementById('statusNote').value='';
+  }).catch(function(e){ showToast('Error: '+e.message,'error'); });
+}
+
+// ── 5. NOTIFICATIONS ──
+function searchForNotif() {
+  var q = document.getElementById('notifSearchInput').value.trim();
+  if (!q) { showToast('Enter search term','error'); return; }
+  var el = document.getElementById('notifSearchResults');
+  el.innerHTML = '<p style="color:var(--muted);font-size:13px;">Searching…</p>';
+  db.collection('registrations').orderBy('createdAt','desc').limit(100).get().then(function(snap) {
+    var lq = q.toLowerCase();
+    var results = snap.docs.filter(function(d){
+      var r=d.data();
+      return (r.regId||'').toLowerCase().includes(lq)||(r.fullName||'').toLowerCase().includes(lq);
+    }).slice(0,6);
+    if (!results.length) { el.innerHTML='<div class="empty"><p>No creators found</p></div>'; return; }
+    el.innerHTML = results.map(function(d) {
+      var r=d.data();
+      return '<div class="creator-result" onclick="selectNotifCreator(\''+d.id+'\',\''+escHtml(r.fullName||r.name||'')+'\',\''+escHtml(r.regId||'')+'\',\''+escHtml(r.whatsapp||r.phone||'')+'\',\''+escHtml(r.email||'')+'\',\''+escHtml(r.instagramHandle||r.username||'')+'\')">'+
+        '<div class="cr-avatar">'+(r.fullName||'?')[0].toUpperCase()+'</div>' +
+        '<div class="cr-info"><div class="cr-name">'+escHtml(r.fullName||r.name||'—')+'</div><div class="cr-sub">'+escHtml(r.regId||'—')+' • '+(r.whatsapp||r.email||'—')+'</div></div>' +
+        buildBadge(r.status||'SUBMITTED')+'</div>';
+    }).join('');
+  });
+}
+document.getElementById('notifSearchInput').addEventListener('keyup',function(e){if(e.key==='Enter')searchForNotif();});
+
+function selectNotifCreator(id,name,regId,phone,email,ig) {
+  selectedNotifCreator = {id:id,name:name,regId:regId,phone:phone,email:email,ig:ig};
+  document.getElementById('notifCreatorName').textContent = name;
+  document.getElementById('notifCreatorId').textContent = regId;
+  document.getElementById('notifActionsCard').style.display='block';
+}
+
+function sendWhatsApp() {
+  if (!selectedNotifCreator) { showToast('Select a creator first','error'); return; }
+  var msg = document.getElementById('notifMessage').value.trim() || 'Hi '+selectedNotifCreator.name+'! This is a message from Worldwide Collab (WWC). Please check your match page: https://wwcollab.site/match/'+selectedNotifCreator.regId;
+  var phone = selectedNotifCreator.phone ? selectedNotifCreator.phone.replace(/\D/g,'') : '';
+  var url = phone ? 'https://wa.me/'+phone+'?text='+encodeURIComponent(msg) : 'https://wa.me/?text='+encodeURIComponent(msg);
+  window.open(url,'_blank');
+  showToast('Opening WhatsApp…','success');
+}
+
+function sendEmail() {
+  if (!selectedNotifCreator) { showToast('Select a creator first','error'); return; }
+  var msg = document.getElementById('notifMessage').value.trim() || 'Check your match page: https://wwcollab.site/match/'+selectedNotifCreator.regId;
+  if (!selectedNotifCreator.email) { showToast('No email on file for this creator','error'); return; }
+  window.open('mailto:'+selectedNotifCreator.email+'?subject=Your+WWC+Brand+Match&body='+encodeURIComponent(msg),'_blank');
+}
+
+function generateLink() {
+  if (!selectedNotifCreator) { showToast('Select a creator first','error'); return; }
+  var link = 'https://wwcollab.site/match/'+selectedNotifCreator.regId;
+  document.getElementById('generatedLinkUrl').textContent = link;
+  document.getElementById('generatedLinkBox').style.display='block';
+}
+
+function copyLink() {
+  var url = document.getElementById('generatedLinkUrl').textContent;
+  navigator.clipboard.writeText(url).then(function(){ showToast('Link copied!','success'); }).catch(function(){ showToast('Copy failed — select and copy manually','error'); });
+}
+
+// ── 6. FUTURE OPPS ──
+function publishOpp() {
+  var title = document.getElementById('o_title').value.trim();
+  if (!title) { showToast('Title is required','error'); return; }
+  db.collection('campaigns').add({
+    title: title,
+    description: document.getElementById('o_desc').value.trim(),
+    brand: document.getElementById('o_brand').value.trim(),
+    country: document.getElementById('o_country').value.trim(),
+    gender: document.getElementById('o_gender').value,
+    minFollowers: document.getElementById('o_minFollowers').value,
+    niche: document.getElementById('o_niche').value.trim(),
+    budget: document.getElementById('o_budget').value.trim(),
+    published: true,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    createdBy: adminUser ? adminUser.email : 'admin'
+  }).then(function() {
+    showToast('🚀 Opportunity published!','success');
+    clearOppForm();
+    loadOpps();
+  }).catch(function(e){ showToast('Error: '+e.message,'error'); });
+}
+
+function clearOppForm() {
+  ['o_title','o_desc','o_brand','o_country','o_minFollowers','o_niche','o_budget'].forEach(function(id){
+    document.getElementById(id).value='';
+  });
+  document.getElementById('o_gender').value='Both';
+}
+
+function loadOpps() {
+  db.collection('campaigns').where('published','==',true).orderBy('createdAt','desc').limit(20).get().then(function(snap) {
+    var el = document.getElementById('oppsList');
+    if (snap.empty) { el.innerHTML='<div class="empty"><div class="empty-icon">🚀</div><p>No opportunities yet.</p></div>'; return; }
+    el.innerHTML = snap.docs.map(function(d) {
+      var o=d.data();
+      return '<div style="padding:14px;background:var(--surface2);border:1px solid var(--border2);border-radius:12px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;">' +
+        '<div style="flex:1;">' +
+          '<div style="font-weight:700;font-size:14px;margin-bottom:4px;">'+escHtml(o.title||'—')+'</div>' +
+          '<div style="font-size:12px;color:var(--muted);">'+escHtml(o.niche||'—')+' • '+escHtml(o.gender||'Both')+' • '+escHtml(o.budget||'—')+'</div>' +
+        '</div>' +
+        '<button class="btn-danger" style="padding:5px 10px;font-size:11px;" onclick="unpublishOpp(\''+d.id+'\')">Unpublish</button>' +
+        '</div>';
+    }).join('');
+  });
+}
+
+function unpublishOpp(id) {
+  db.collection('campaigns').doc(id).update({published:false}).then(function(){
+    showToast('Opportunity unpublished','success');
+    loadOpps();
+  });
+}
+
+// ── 7. ACTIVITY LOG ──
+function loadActivityLog() {
+  db.collection('activityLog').orderBy('timestamp','desc').limit(50).get().then(function(snap) {
+    var el = document.getElementById('activityLog');
+    if (snap.empty) { el.innerHTML='<div class="empty"><div class="empty-icon">📋</div><p>No activity yet.</p></div>'; return; }
+    el.innerHTML = snap.docs.map(function(d) {
+      var l=d.data();
+      var ts='';
+      try{ if(l.timestamp) { var dt=l.timestamp.toDate(); ts=dt.toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); } }catch(e){}
+      return '<div class="log-item"><div class="log-dot"></div><div class="log-text">'+escHtml(l.message||l.action||'—')+'<br><span style="font-size:11px;color:var(--muted);">'+escHtml(l.adminEmail||'')+'</span></div><div class="log-ts">'+ts+'</div></div>';
+    }).join('');
+  });
+}
+
+// ── AUTH ──
+auth.onAuthStateChanged(function(user) {
+  if (!user) { window.location.href = 'login.html'; return; }
+  // Verify admin
+  db.collection('admins').doc(user.uid).get().then(function(doc) {
+    if (!doc.exists) {
+      document.getElementById('authOverlay').innerHTML = '<div class="auth-logo">🔐 <span>Access Denied</span></div><p style="color:var(--red2);font-size:14px;">This page is for admins only.</p><a href="index.html" style="margin-top:12px;padding:10px 24px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;text-decoration:none;">Go Home</a>';
+      return;
+    }
+    adminUser = user;
+    document.getElementById('authOverlay').style.display='none';
+    document.getElementById('mainContent').style.display='block';
+    var init=(user.displayName||user.email||'A')[0].toUpperCase();
+    document.getElementById('headerAvatar').textContent=init;
+    document.getElementById('headerName').textContent=user.displayName||user.email||'Admin';
+    document.getElementById('btnLogout').addEventListener('click',function(){
+      auth.signOut().then(function(){ window.location.href='login.html'; });
+    });
+  }).catch(function(){
+    document.getElementById('authOverlay').style.display='none';
+    document.getElementById('mainContent').style.display='block';
+    adminUser = user;
+    document.getElementById('headerAvatar').textContent=(user.email||'A')[0].toUpperCase();
+    document.getElementById('headerName').textContent=user.email||'Admin';
+    document.getElementById('btnLogout').addEventListener('click',function(){
+      auth.signOut().then(function(){ window.location.href='login.html'; });
+    });
+  });
+});
+</script>
+</body>
+</html>
