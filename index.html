@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KashRun – Food at Your Doorstep</title>
+<meta name="description" content="KashRun delivers hot, fresh food to your doorstep across Kulgam and nearby villages. Fast, reliable food delivery in Kashmir.">
+<meta name="keywords" content="KashRun, food delivery, Kulgam, Kashmir, momos, pizza, rolls">
+<meta property="og:title" content="KashRun – Food at Your Doorstep">
+<meta property="og:description" content="Fast food delivery across Kulgam and nearby villages.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --primary:#FF6B00;
+    --primary-dark:#e55d00;
+    --dark:#0F172A;
+    --white:#FFFFFF;
+    --gray-50:#F8FAFC;
+    --gray-100:#F1F5F9;
+    --gray-200:#E2E8F0;
+    --gray-400:#94A3B8;
+    --gray-600:#475569;
+    --gray-700:#334155;
+    --shadow-sm:0 1px 3px rgba(0,0,0,.08);
+    --shadow-md:0 4px 16px rgba(0,0,0,.1);
+    --shadow-lg:0 8px 32px rgba(0,0,0,.15);
+    --radius:14px;
+    --radius-sm:8px;
+  }
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--dark);overflow-x:hidden}
+
+  /* NAVBAR */
+  .navbar{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--gray-200);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:64px;transition:box-shadow .3s}
+  .navbar.scrolled{box-shadow:var(--shadow-md)}
+  .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+  .nav-logo img{height:36px;width:auto;object-fit:contain}
+  .nav-logo span{font-weight:800;font-size:1.2rem;color:var(--primary)}
+  .nav-links{display:flex;align-items:center;gap:28px;list-style:none}
+  .nav-links a{text-decoration:none;color:var(--gray-700);font-weight:500;font-size:.9rem;transition:color .2s}
+  .nav-links a:hover{color:var(--primary)}
+  .cart-btn{position:relative;background:var(--primary);color:#fff;border:none;border-radius:50px;padding:8px 18px;cursor:pointer;font-weight:600;font-size:.9rem;display:flex;align-items:center;gap:6px;transition:background .2s,transform .1s}
+  .cart-btn:hover{background:var(--primary-dark);transform:scale(1.04)}
+  .cart-count{background:#fff;color:var(--primary);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;min-width:20px}
+  .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+  .hamburger span{width:22px;height:2px;background:var(--dark);border-radius:2px;transition:.3s}
+  .mobile-menu{display:none;position:fixed;inset:0;background:rgba(15,23,42,.95);z-index:2000;flex-direction:column;align-items:center;justify-content:center;gap:32px}
+  .mobile-menu.open{display:flex}
+  .mobile-menu a{color:#fff;font-size:1.4rem;font-weight:700;text-decoration:none}
+  .mobile-menu .close-btn{position:absolute;top:20px;right:24px;background:none;border:none;color:#fff;font-size:1.8rem;cursor:pointer}
+
+  /* HERO */
+  .hero{background:linear-gradient(135deg,#0F172A 0%,#1e2d45 50%,#0F172A 100%);min-height:90vh;display:flex;align-items:center;padding:80px 5% 60px;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(255,107,0,.18) 0%,transparent 70%);border-radius:50%}
+  .hero::after{content:'';position:absolute;bottom:-150px;left:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(255,107,0,.1) 0%,transparent 70%);border-radius:50%}
+  .hero-content{max-width:600px;z-index:1;position:relative}
+  .hero-badge{display:inline-block;background:rgba(255,107,0,.15);color:var(--primary);border:1px solid rgba(255,107,0,.3);border-radius:50px;padding:6px 16px;font-size:.8rem;font-weight:600;letter-spacing:.5px;margin-bottom:24px;text-transform:uppercase}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.8rem);font-weight:900;color:#fff;line-height:1.1;margin-bottom:16px}
+  .hero h1 span{color:var(--primary)}
+  .hero p{color:rgba(255,255,255,.7);font-size:1.1rem;margin-bottom:36px;line-height:1.6}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+  .btn-primary{background:var(--primary);color:#fff;border:none;border-radius:50px;padding:14px 32px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s,transform .15s,box-shadow .2s;box-shadow:0 4px 20px rgba(255,107,0,.4);text-decoration:none;display:inline-block}
+  .btn-primary:hover{background:var(--primary-dark);transform:translateY(-2px);box-shadow:0 6px 28px rgba(255,107,0,.5)}
+  .btn-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.3);border-radius:50px;padding:14px 32px;font-size:1rem;font-weight:600;cursor:pointer;transition:.2s;text-decoration:none;display:inline-block}
+  .btn-outline:hover{border-color:#fff;background:rgba(255,255,255,.08)}
+  .hero-stats{display:flex;gap:36px;margin-top:48px}
+  .stat{text-align:left}
+  .stat-num{font-size:1.6rem;font-weight:800;color:#fff}
+  .stat-label{font-size:.8rem;color:rgba(255,255,255,.5);font-weight:500;margin-top:2px}
+  .hero-image{flex:1;display:flex;justify-content:flex-end;align-items:center;z-index:1;position:relative}
+  .hero-image img{width:100%;max-width:500px;border-radius:24px;object-fit:cover;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+  .floating-card{position:absolute;background:#fff;border-radius:14px;padding:12px 16px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:10px;animation:float 3s ease-in-out infinite}
+  .floating-card.card1{top:10%;right:5%;animation-delay:0s}
+  .floating-card.card2{bottom:20%;right:20%;animation-delay:1.5s}
+  .floating-card .card-icon{font-size:1.4rem}
+  .floating-card .card-text{font-size:.8rem;font-weight:600;color:var(--dark)}
+  .floating-card .card-sub{font-size:.7rem;color:var(--gray-400)}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+  /* VILLAGE SEARCH */
+  .search-section{padding:64px 5%;background:#fff}
+  .section-header{text-align:center;margin-bottom:40px}
+  .section-header h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;color:var(--dark)}
+  .section-header p{color:var(--gray-600);margin-top:8px;font-size:1rem}
+  .search-box{max-width:560px;margin:0 auto;position:relative}
+  .search-input-wrap{position:relative;display:flex;align-items:center}
+  .search-input-wrap input{width:100%;padding:16px 56px 16px 20px;border:2px solid var(--gray-200);border-radius:50px;font-size:1rem;font-family:'Inter',sans-serif;outline:none;transition:border .2s,box-shadow .2s;background:#fff}
+  .search-input-wrap input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(255,107,0,.1)}
+  .search-input-wrap .search-icon{position:absolute;right:18px;font-size:1.2rem;cursor:pointer;color:var(--gray-400)}
+  .autocomplete-list{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border-radius:14px;box-shadow:var(--shadow-lg);z-index:100;overflow:hidden;display:none;border:1px solid var(--gray-200)}
+  .autocomplete-list.show{display:block}
+  .autocomplete-item{padding:12px 20px;cursor:pointer;font-size:.95rem;transition:background .15s;display:flex;align-items:center;gap:8px}
+  .autocomplete-item:hover{background:var(--gray-50)}
+  .village-result{margin-top:16px;padding:14px 20px;border-radius:12px;font-weight:600;font-size:.95rem;text-align:center;display:none}
+  .village-result.available{background:#DCFCE7;color:#16A34A;display:block}
+  .village-result.unavailable{background:#FEF2F2;color:#DC2626;display:block}
+
+  /* MENU */
+  .menu-section{padding:64px 5%}
+  .search-food-wrap{max-width:400px;margin:0 auto 32px;position:relative}
+  .search-food-wrap input{width:100%;padding:12px 44px 12px 18px;border:2px solid var(--gray-200);border-radius:50px;font-size:.95rem;font-family:'Inter',sans-serif;outline:none;transition:border .2s}
+  .search-food-wrap input:focus{border-color:var(--primary)}
+  .search-food-wrap .si{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:1.1rem;color:var(--gray-400)}
+  .category-tabs{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;margin-bottom:36px;scrollbar-width:none}
+  .category-tabs::-webkit-scrollbar{display:none}
+  .tab-btn{flex-shrink:0;padding:8px 20px;border-radius:50px;border:2px solid var(--gray-200);background:#fff;font-size:.88rem;font-weight:600;cursor:pointer;transition:.2s;white-space:nowrap;color:var(--gray-600)}
+  .tab-btn.active,.tab-btn:hover{border-color:var(--primary);background:var(--primary);color:#fff}
+  .category-section{margin-bottom:56px}
+  .category-title{font-size:1.3rem;font-weight:800;color:var(--dark);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+  .category-title::after{content:'';flex:1;height:2px;background:var(--gray-100)}
+  .food-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+  .food-card{background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);transition:transform .2s,box-shadow .2s;position:relative}
+  .food-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+  .food-card img{width:100%;height:180px;object-fit:cover}
+  .food-badge{position:absolute;top:12px;left:12px;background:var(--primary);color:#fff;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:50px;text-transform:uppercase}
+  .food-body{padding:16px}
+  .food-name{font-weight:700;font-size:1rem;color:var(--dark);margin-bottom:6px}
+  .food-meta{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .rating{display:flex;align-items:center;gap:3px;color:#F59E0B;font-size:.82rem;font-weight:600}
+  .delivery{color:var(--gray-400);font-size:.82rem}
+  .size-selector{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+  .size-btn{padding:4px 12px;border-radius:50px;border:1.5px solid var(--gray-200);font-size:.78rem;font-weight:600;cursor:pointer;transition:.15s;background:#fff;color:var(--gray-600)}
+  .size-btn.active{border-color:var(--primary);background:rgba(255,107,0,.08);color:var(--primary)}
+  .food-footer{display:flex;align-items:center;justify-content:space-between}
+  .food-price{font-size:1.1rem;font-weight:800;color:var(--dark)}
+  .add-btn{background:var(--primary);color:#fff;border:none;border-radius:50px;padding:8px 18px;font-size:.85rem;font-weight:700;cursor:pointer;transition:background .15s,transform .1s}
+  .add-btn:hover{background:var(--primary-dark);transform:scale(1.05)}
+  .no-results{text-align:center;padding:48px;color:var(--gray-400);font-size:1rem;display:none}
+
+  /* FEATURES */
+  .features-section{padding:64px 5%;background:#fff}
+  .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;margin-top:40px}
+  .feature-card{text-align:center;padding:32px 24px;border-radius:var(--radius);background:var(--gray-50);border:1.5px solid var(--gray-100);transition:.2s}
+  .feature-card:hover{border-color:var(--primary);transform:translateY(-3px)}
+  .feature-icon{font-size:2.4rem;margin-bottom:16px}
+  .feature-card h3{font-weight:700;font-size:1rem;margin-bottom:8px;color:var(--dark)}
+  .feature-card p{color:var(--gray-600);font-size:.88rem;line-height:1.5}
+
+  /* FOOTER */
+  footer{background:var(--dark);color:rgba(255,255,255,.7);padding:48px 5% 24px}
+  .footer-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:36px;margin-bottom:36px}
+  .footer-brand h3{color:#fff;font-weight:800;font-size:1.1rem;margin-bottom:8px}
+  .footer-brand p{font-size:.88rem;line-height:1.6}
+  .footer-col h4{color:#fff;font-weight:700;margin-bottom:14px;font-size:.9rem}
+  .footer-col ul{list-style:none}
+  .footer-col ul li{margin-bottom:8px}
+  .footer-col ul li a{color:rgba(255,255,255,.6);text-decoration:none;font-size:.88rem;transition:color .2s}
+  .footer-col ul li a:hover{color:var(--primary)}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:gap;font-size:.82rem}
+  .footer-primary{color:var(--primary);font-weight:600}
+
+  /* TOAST */
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e293b;color:#fff;padding:12px 24px;border-radius:50px;font-size:.9rem;font-weight:600;z-index:9999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none;white-space:nowrap;box-shadow:var(--shadow-lg)}
+  #toast.show{transform:translateX(-50%) translateY(0)}
+
+  /* BACK TO TOP */
+  #btt{position:fixed;bottom:80px;right:24px;width:44px;height:44px;background:var(--primary);color:#fff;border:none;border-radius:50%;font-size:1.1rem;cursor:pointer;z-index:500;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;box-shadow:var(--shadow-md)}
+  #btt.show{opacity:1;pointer-events:all}
+  #btt:hover{transform:scale(1.1)}
+
+  /* RESPONSIVE */
+  @media(max-width:768px){
+    .hero{flex-direction:column;padding:80px 5% 48px;min-height:auto}
+    .hero-image{display:none}
+    .hero-stats{gap:24px}
+    .nav-links,.cart-btn-desktop{display:none}
+    .hamburger{display:flex}
+    .footer-grid{grid-template-columns:1fr}
+  }
+  @media(min-width:769px){
+    .hero{display:flex;gap:40px}
+    .hero-content{flex:1}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="logo.png" alt="KashRun" onerror="this.style.display='none'">
+    <span>KashRun</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="track-order.html">Track Order</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="cart-btn cart-btn-desktop" onclick="window.location='cart.html'">
+    🛒 Cart <span class="cart-count" id="cartCount">0</span>
+  </button>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="close-btn" id="closeMenu">✕</button>
+  <a href="index.html" onclick="closeMobileMenu()">Home</a>
+  <a href="track-order.html" onclick="closeMobileMenu()">Track Order</a>
+  <a href="#about" onclick="closeMobileMenu()">About</a>
+  <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+  <button class="btn-primary" onclick="window.location='cart.html'">🛒 Cart (<span id="mCartCount">0</span>)</button>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🚀 Fast Delivery · Kashmir</div>
+    <h1>Food at Your<br><span>Doorstep</span></h1>
+    <p>Hot, fresh meals delivered fast across Kulgam and nearby villages. Real food, real quick.</p>
+    <div class="hero-cta">
+      <a href="#menu" class="btn-primary">Order Now</a>
+      <a href="track-order.html" class="btn-outline">Track Order</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">22+</div><div class="stat-label">Villages Served</div></div>
+      <div class="stat"><div class="stat-num">30 min</div><div class="stat-label">Avg Delivery</div></div>
+      <div class="stat"><div class="stat-num">4.8★</div><div class="stat-label">Customer Rating</div></div>
+    </div>
+  </div>
+  <div class="hero-image">
+    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&q=80" alt="Delicious food">
+    <div class="floating-card card1">
+      <div class="card-icon">✅</div>
+      <div><div class="card-text">Order Confirmed</div><div class="card-sub">Estimated 25 mins</div></div>
+    </div>
+    <div class="floating-card card2">
+      <div class="card-icon">🛵</div>
+      <div><div class="card-text">Out for Delivery</div><div class="card-sub">Near your location</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- VILLAGE SEARCH -->
+<section class="search-section">
+  <div class="section-header">
+    <h2>Check Delivery Availability</h2>
+    <p>Enter your village to see if KashRun delivers to you</p>
+  </div>
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <input type="text" id="villageInput" placeholder="Search your village..." autocomplete="off">
+      <span class="search-icon">📍</span>
+    </div>
+    <div class="autocomplete-list" id="autoList"></div>
+    <div class="village-result" id="villageResult"></div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section class="menu-section" id="menu">
+  <div class="section-header">
+    <h2>Our Menu</h2>
+    <p>Fresh ingredients, bold flavors, quick delivery</p>
+  </div>
+  <div class="search-food-wrap">
+    <input type="text" id="foodSearch" placeholder="Search food items...">
+    <span class="si">🔍</span>
+  </div>
+  <div class="category-tabs" id="categoryTabs"></div>
+  <div id="menuContainer"></div>
+  <div class="no-results" id="noResults">😕 No items found. Try a different search.</div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section" id="about">
+  <div class="section-header">
+    <h2>Why KashRun?</h2>
+    <p>We built KashRun for the people of Kulgam</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card"><div class="feature-icon">⚡</div><h3>Lightning Fast</h3><p>Average delivery in under 30 minutes. We move quick so your food stays hot.</p></div>
+    <div class="feature-card"><div class="feature-icon">🧑‍🍳</div><h3>Fresh Every Time</h3><p>Cooked to order. No reheated food, no compromises on quality.</p></div>
+    <div class="feature-card"><div class="feature-icon">📱</div><h3>Easy Ordering</h3><p>Browse, pick, and order in seconds. No apps, no hassle.</p></div>
+    <div class="feature-card"><div class="feature-icon">🗺️</div><h3>22+ Villages</h3><p>Serving Kulgam, Qaimoh, Yaripora, and many more areas across the region.</p></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="contact">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3>KashRun</h3>
+      <p>Delivering happiness to your doorstep across Kulgam. Fast, fresh, and reliable food delivery in Kashmir.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="track-order.html">Track Order</a></li>
+        <li><a href="cart.html">Cart</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="#">📞 +91-XXXXXXXXXX</a></li>
+        <li><a href="#">📧 support@kashrun.in</a></li>
+        <li><a href="#">📍 Kulgam, J&K</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 <span class="footer-primary">KashRun</span>. All rights reserved.</span>
+    <span>Made with ❤️ in Kashmir</span>
+  </div>
+</footer>
+
+<div id="toast"></div>
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ── DATA ───────────────────────────────────────────────────────────────────
+const VILLAGES = ["Kulgam","Qaimoh","Khudwani","Yaripora","Frisal","Devsar","DH Pora","Behibagh","Mirbazar","Manzgam","Aharbal","Ashmuji","Pombay","Arwani","Damhal Hanjipora","Nillow","Katrasoo","Watoo","Bugam","Chowgam","Chawalgam","Tarigam"];
+
+const MENU = [
+  // MOMOS
+  {id:1,cat:"Momos",name:"Steam Momos",price:80,rating:4.7,time:"20 min",img:"https://images.unsplash.com/photo-1626100134895-0c33b5e55a45?w=400&q=80",badge:"Popular"},
+  {id:2,cat:"Momos",name:"Fried Momos",price:90,rating:4.6,time:"22 min",img:"https://images.unsplash.com/photo-1574894709920-11b28e7367e3?w=400&q=80"},
+  {id:3,cat:"Momos",name:"Paneer Momos",price:100,rating:4.8,time:"20 min",img:"https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=400&q=80",badge:"Chef's Pick"},
+  {id:4,cat:"Momos",name:"Chicken Momos",price:110,rating:4.9,time:"22 min",img:"https://images.unsplash.com/photo-1584278773523-8e44eba43eb5?w=400&q=80",badge:"Bestseller"},
+  // STARTERS
+  {id:5,cat:"Starters",name:"Chicken Tikka",price:180,rating:4.8,time:"25 min",img:"https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=400&q=80",badge:"Bestseller"},
+  {id:6,cat:"Starters",name:"Veg Spring Roll",price:120,rating:4.5,time:"20 min",img:"https://images.unsplash.com/photo-1515669097368-22e68427d265?w=400&q=80"},
+  {id:7,cat:"Starters",name:"Paneer Tikka",price:160,rating:4.7,time:"22 min",img:"https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=400&q=80"},
+  {id:8,cat:"Starters",name:"French Fries",price:90,rating:4.4,time:"15 min",img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&q=80"},
+  // ROLLS
+  {id:9,cat:"Rolls",name:"Chicken Roll",price:130,rating:4.6,time:"18 min",img:"https://images.unsplash.com/photo-1551248429-40975aa4de74?w=400&q=80",badge:"Popular"},
+  {id:10,cat:"Rolls",name:"Paneer Roll",price:120,rating:4.5,time:"18 min",img:"https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&q=80"},
+  {id:11,cat:"Rolls",name:"Egg Roll",price:100,rating:4.4,time:"15 min",img:"https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400&q=80"},
+  // SOUPS
+  {id:12,cat:"Soups",name:"Chicken Clear Soup",price:90,rating:4.6,time:"15 min",img:"https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80"},
+  {id:13,cat:"Soups",name:"Veg Sweet Corn Soup",price:80,rating:4.4,time:"15 min",img:"https://images.unsplash.com/photo-1603105037880-880cd4edfb0d?w=400&q=80"},
+  {id:14,cat:"Soups",name:"Hot & Sour Soup",price:85,rating:4.5,time:"15 min",img:"https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80"},
+  // SALAD
+  {id:15,cat:"Salad",name:"Garden Fresh Salad",price:80,rating:4.3,time:"10 min",img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80"},
+  {id:16,cat:"Salad",name:"Caesar Salad",price:110,rating:4.5,time:"12 min",img:"https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=400&q=80"},
+  // BREAD
+  {id:17,cat:"Bread",name:"Butter Naan",price:40,rating:4.6,time:"12 min",img:"https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&q=80"},
+  {id:18,cat:"Bread",name:"Garlic Naan",price:50,rating:4.7,time:"12 min",img:"https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400&q=80",badge:"Popular"},
+  {id:19,cat:"Bread",name:"Tandoori Roti",price:35,rating:4.4,time:"10 min",img:"https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&q=80"},
+  // CHINESE
+  {id:20,cat:"Chinese",name:"Veg Fried Rice",price:120,rating:4.5,time:"20 min",img:"https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&q=80"},
+  {id:21,cat:"Chinese",name:"Chicken Fried Rice",price:150,rating:4.7,time:"22 min",img:"https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&q=80",badge:"Popular"},
+  {id:22,cat:"Chinese",name:"Hakka Noodles",price:130,rating:4.6,time:"20 min",img:"https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&q=80"},
+  {id:23,cat:"Chinese",name:"Chilli Chicken",price:180,rating:4.8,time:"25 min",img:"https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400&q=80",badge:"Bestseller"},
+  // SHAKES
+  {id:24,cat:"Shakes",name:"Mango Shake",price:100,rating:4.7,time:"10 min",img:"https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=400&q=80"},
+  {id:25,cat:"Shakes",name:"Chocolate Shake",price:110,rating:4.8,time:"10 min",img:"https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400&q=80",badge:"Popular"},
+  {id:26,cat:"Shakes",name:"Strawberry Shake",price:110,rating:4.6,time:"10 min",img:"https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=400&q=80"},
+  {id:27,cat:"Shakes",name:"Mixed Fruit Shake",price:120,rating:4.5,time:"10 min",img:"https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?w=400&q=80"},
+  // MAIN COURSES
+  {id:28,cat:"Main Courses",name:"Butter Chicken",price:{Half:200,Full:360},rating:4.9,time:"30 min",img:"https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=400&q=80",badge:"Bestseller",sizeType:"hf"},
+  {id:29,cat:"Main Courses",name:"Dal Makhani",price:{Half:150,Full:270},rating:4.7,time:"28 min",img:"https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400&q=80",sizeType:"hf"},
+  {id:30,cat:"Main Courses",name:"Mutton Rogan Josh",price:{Half:260,Full:460},rating:4.8,time:"35 min",img:"https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&q=80",badge:"Chef's Pick",sizeType:"hf"},
+  {id:31,cat:"Main Courses",name:"Paneer Butter Masala",price:{Half:180,Full:320},rating:4.8,time:"28 min",img:"https://images.unsplash.com/photo-1631452180539-96aca7d48617?w=400&q=80",sizeType:"hf"},
+  // VEG PIZZAS
+  {id:32,cat:"Veg Pizzas",name:"Margherita Pizza",price:{R:160,M:240,L:320,XL:400},rating:4.6,time:"30 min",img:"https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&q=80",sizeType:"pizza"},
+  {id:33,cat:"Veg Pizzas",name:"Farmhouse Pizza",price:{R:180,M:260,L:350,XL:430},rating:4.7,time:"32 min",img:"https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&q=80",badge:"Popular",sizeType:"pizza"},
+  {id:34,cat:"Veg Pizzas",name:"Paneer Special Pizza",price:{R:190,M:270,L:360,XL:450},rating:4.8,time:"32 min",img:"https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=400&q=80",sizeType:"pizza"},
+  // NON-VEG PIZZAS
+  {id:35,cat:"Non-Veg Pizzas",name:"Chicken BBQ Pizza",price:{R:200,M:290,L:380,XL:470},rating:4.8,time:"35 min",img:"https://images.unsplash.com/photo-1588315029754-2dd089d39a1a?w=400&q=80",badge:"Bestseller",sizeType:"pizza"},
+  {id:36,cat:"Non-Veg Pizzas",name:"Keema Pizza",price:{R:210,M:300,L:390,XL:480},rating:4.9,time:"35 min",img:"https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=400&q=80",badge:"Chef's Pick",sizeType:"pizza"},
+  {id:37,cat:"Non-Veg Pizzas",name:"Chicken Tikka Pizza",price:{R:210,M:300,L:400,XL:490},rating:4.8,time:"35 min",img:"https://images.unsplash.com/photo-1628840042765-356cda07504e?w=400&q=80",sizeType:"pizza"},
+];
+
+const CATEGORIES = ["Momos","Starters","Rolls","Soups","Salad","Bread","Chinese","Shakes","Main Courses","Veg Pizzas","Non-Veg Pizzas"];
+const selectedSizes = {};
+let activeCategory = "All";
+let searchQuery = "";
+
+// ── CART ───────────────────────────────────────────────────────────────────
+function getCart(){return JSON.parse(localStorage.getItem('kashrun_cart')||'[]')}
+function saveCart(c){localStorage.setItem('kashrun_cart',JSON.stringify(c))}
+function updateCartCount(){
+  const c=getCart().reduce((s,i)=>s+i.quantity,0);
+  document.querySelectorAll('#cartCount,#mCartCount').forEach(el=>el.textContent=c);
+}
+function addToCart(id){
+  const item=MENU.find(m=>m.id===id);
+  if(!item)return;
+  let size=null,price=item.price;
+  if(item.sizeType){
+    size=selectedSizes[id];
+    if(!size){showToast('Please select a size first');return;}
+    price=item.price[size];
+  }
+  const cart=getCart();
+  const existing=cart.find(c=>c.id===id&&c.selectedSize===size);
+  if(existing){existing.quantity++;}else{
+    cart.push({id,name:item.name,price,selectedSize:size,quantity:1,image:item.img});
+  }
+  saveCart(cart);
+  updateCartCount();
+  showToast(`✅ ${item.name} added to cart`);
+}
+
+// ── TOAST ──────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ── VILLAGE SEARCH ─────────────────────────────────────────────────────────
+const villageInput=document.getElementById('villageInput');
+const autoList=document.getElementById('autoList');
+const villageResult=document.getElementById('villageResult');
+villageInput.addEventListener('input',function(){
+  const val=this.value.trim().toLowerCase();
+  villageResult.className='village-result';villageResult.textContent='';
+  if(!val){autoList.classList.remove('show');return;}
+  const matches=VILLAGES.filter(v=>v.toLowerCase().includes(val));
+  if(matches.length){
+    autoList.innerHTML=matches.map(v=>`<div class="autocomplete-item" onclick="selectVillage('${v}')">📍 ${v}</div>`).join('');
+    autoList.classList.add('show');
+  }else{autoList.classList.remove('show');checkVillage(val);}
+});
+function selectVillage(v){
+  villageInput.value=v;autoList.classList.remove('show');
+  const found=VILLAGES.some(vi=>vi.toLowerCase()===v.toLowerCase());
+  villageResult.className='village-result '+(found?'available':'unavailable');
+  villageResult.textContent=found?'✅ KashRun is available in your area!':'🚧 Currently unavailable in your area.';
+}
+function checkVillage(val){
+  const found=VILLAGES.some(v=>v.toLowerCase()===val);
+  if(val.length>=3){
+    villageResult.className='village-result '+(found?'available':'unavailable');
+    villageResult.textContent=found?'✅ KashRun is available in your area!':'🚧 Currently unavailable in your area.';
+  }
+}
+document.addEventListener('click',e=>{if(!e.target.closest('.search-box'))autoList.classList.remove('show')});
+
+// ── MENU RENDER ────────────────────────────────────────────────────────────
+function getPrice(item){
+  if(!item.sizeType)return item.price;
+  const s=selectedSizes[item.id];
+  if(s)return item.price[s];
+  const keys=Object.keys(item.price);
+  return item.price[keys[0]];
+}
+function renderSizeSelector(item){
+  if(item.sizeType==='pizza'){
+    const keys=['R','M','L','XL'];
+    return `<div class="size-selector">${keys.map(k=>`<button class="size-btn${(selectedSizes[item.id]||'R')===k?' active':''}" onclick="selectSize(${item.id},'${k}',this)">${k}</button>`).join('')}</div>`;
+  }
+  if(item.sizeType==='hf'){
+    const keys=['Half','Full'];
+    return `<div class="size-selector">${keys.map(k=>`<button class="size-btn${(selectedSizes[item.id]||'Half')===k?' active':''}" onclick="selectSize(${item.id},'${k}',this)">${k}</button>`).join('')}</div>`;
+  }
+  return '';
+}
+function selectSize(id,size,btn){
+  selectedSizes[id]=size;
+  btn.closest('.size-selector').querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const priceEl=document.getElementById(`price-${id}`);
+  if(priceEl){
+    const item=MENU.find(m=>m.id===id);
+    priceEl.textContent='₹'+item.price[size];
+  }
+}
+function renderCard(item){
+  // set default size
+  if(item.sizeType==='pizza'&&!selectedSizes[item.id])selectedSizes[item.id]='R';
+  if(item.sizeType==='hf'&&!selectedSizes[item.id])selectedSizes[item.id]='Half';
+  return `<div class="food-card">
+    ${item.badge?`<div class="food-badge">${item.badge}</div>`:''}
+    <img src="${item.img}" alt="${item.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80'">
+    <div class="food-body">
+      <div class="food-name">${item.name}</div>
+      <div class="food-meta">
+        <span class="rating">⭐ ${item.rating}</span>
+        <span class="delivery">🕐 ${item.time}</span>
+      </div>
+      ${renderSizeSelector(item)}
+      <div class="food-footer">
+        <span class="food-price" id="price-${item.id}">₹${getPrice(item)}</span>
+        <button class="add-btn" onclick="addToCart(${item.id})">Add +</button>
+      </div>
+    </div>
+  </div>`;
+}
+function renderMenu(){
+  const container=document.getElementById('menuContainer');
+  const noResults=document.getElementById('noResults');
+  const q=searchQuery.toLowerCase();
+  let html='';let total=0;
+  CATEGORIES.forEach(cat=>{
+    if(activeCategory!=='All'&&activeCategory!==cat)return;
+    const items=MENU.filter(item=>{
+      const matchCat=item.cat===cat;
+      const matchQ=!q||item.name.toLowerCase().includes(q)||item.cat.toLowerCase().includes(q);
+      return matchCat&&matchQ;
+    });
+    if(!items.length)return;
+    total+=items.length;
+    html+=`<div class="category-section" id="cat-${cat.replace(/\s+/g,'-')}">
+      <div class="category-title">${cat}</div>
+      <div class="food-grid">${items.map(renderCard).join('')}</div>
+    </div>`;
+  });
+  container.innerHTML=html;
+  noResults.style.display=total?'none':'block';
+}
+
+// ── CATEGORY TABS ──────────────────────────────────────────────────────────
+function renderTabs(){
+  const el=document.getElementById('categoryTabs');
+  const all=['All',...CATEGORIES];
+  el.innerHTML=all.map(c=>`<button class="tab-btn${c===activeCategory?' active':''}" onclick="setCategory('${c}')">${c}</button>`).join('');
+}
+function setCategory(cat){
+  activeCategory=cat;renderTabs();renderMenu();
+  if(cat!=='All'){
+    const sec=document.getElementById('cat-'+cat.replace(/\s+/g,'-'));
+    if(sec)sec.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+
+// ── FOOD SEARCH ────────────────────────────────────────────────────────────
+document.getElementById('foodSearch').addEventListener('input',function(){
+  searchQuery=this.value;renderMenu();
+});
+
+// ── SCROLL ─────────────────────────────────────────────────────────────────
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>40);
+  document.getElementById('btt').classList.toggle('show',window.scrollY>300);
+});
+
+// ── MOBILE MENU ────────────────────────────────────────────────────────────
+document.getElementById('hamburger').addEventListener('click',()=>document.getElementById('mobileMenu').classList.add('open'));
+document.getElementById('closeMenu').addEventListener('click',()=>document.getElementById('mobileMenu').classList.remove('open'));
+function closeMobileMenu(){document.getElementById('mobileMenu').classList.remove('open');}
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+updateCartCount();renderTabs();renderMenu();
+</script>
+</body>
+</html>
