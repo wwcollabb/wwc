@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#FF6A1A">
+<title>KashRun Admin · Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0B0D10;
+  --surface:rgba(255,255,255,0.035);
+  --surface-2:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.09);
+  --orange:#FF6A1A;
+  --orange-light:#FFA94D;
+  --amber:#FFB454;
+  --green:#36D399;
+  --red:#FF5470;
+  --wa:#2FD06A;
+  --blue:#60A5FA;
+  --text:#F2F1ED;
+  --text-muted:#9AA0A8;
+  --text-faint:#666C73;
+  --radius:18px;
+  --radius-sm:12px;
+}
+html,body{
+  background:var(--bg);color:var(--text);
+  font-family:'Inter',sans-serif;min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+body{
+  background:
+    radial-gradient(900px 500px at 50% -8%,rgba(255,106,26,0.16),transparent 60%),
+    radial-gradient(700px 400px at 100% 0%,rgba(255,180,84,0.06),transparent 60%),
+    var(--bg);
+  background-attachment:fixed;
+}
+button,input,select{font-family:inherit;}
+a{color:inherit;}
+:focus-visible{outline:2px solid var(--orange-light);outline-offset:2px;}
+
+/* ---------- Lock screen ---------- */
+#lockScreen{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  padding:24px;z-index:200;
+}
+.lock-card{
+  width:100%;max-width:380px;background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:36px 28px;text-align:center;backdrop-filter:blur(20px);
+  box-shadow:0 20px 60px rgba(0,0,0,0.45);
+}
+.lock-logo{font-family:'Sora',sans-serif;font-weight:800;font-size:1.6rem;margin-bottom:6px;}
+.lock-logo span{color:var(--orange);}
+.lock-sub{color:var(--text-muted);font-size:0.85rem;margin-bottom:26px;letter-spacing:0.03em;}
+#unlockForm{display:flex;flex-direction:column;gap:12px;}
+.lock-input{
+  width:100%;padding:13px 14px;border-radius:var(--radius-sm);
+  border:1px solid var(--border);background:var(--surface-2);
+  color:var(--text);font-size:0.95rem;
+}
+.lock-input::placeholder{color:var(--text-faint);}
+.lock-btn{
+  width:100%;padding:13px;border-radius:var(--radius-sm);border:none;
+  background:linear-gradient(135deg,var(--orange),var(--orange-light));
+  color:#1a0f06;font-weight:600;font-size:0.95rem;cursor:pointer;
+  transition:transform .15s ease,box-shadow .15s ease;
+}
+.lock-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,106,26,0.35);}
+.lock-error{display:none;color:var(--red);font-size:0.82rem;margin-top:4px;}
+
+/* ---------- Layout ---------- */
+#dashboard{display:none;min-height:100vh;}
+.wrap{max-width:980px;margin:0 auto;padding:0 18px;}
+
+header.top{
+  position:sticky;top:0;z-index:40;
+  background:rgba(11,13,16,0.80);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:0;
+}
+.top-bar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 18px;max-width:980px;margin:0 auto;
+}
+.brand{display:flex;flex-direction:column;}
+.brand-name{font-family:'Sora',sans-serif;font-weight:800;font-size:1.25rem;line-height:1;}
+.brand-name span{color:var(--orange);}
+.brand-eyebrow{font-size:0.68rem;letter-spacing:0.12em;color:var(--text-faint);text-transform:uppercase;margin-top:3px;}
+.logout-btn{
+  background:transparent;border:1px solid var(--border);color:var(--text-muted);
+  padding:8px 14px;border-radius:var(--radius-sm);font-size:0.8rem;cursor:pointer;
+  transition:border-color .15s,color .15s;flex-shrink:0;
+}
+.logout-btn:hover{border-color:var(--red);color:var(--red);}
+
+/* ---------- Tab Nav ---------- */
+.tab-nav{
+  display:flex;border-bottom:1px solid var(--border);
+  max-width:980px;margin:0 auto;padding:0 18px;
+  gap:2px;
+}
+.tab-btn{
+  padding:12px 20px;background:transparent;border:none;color:var(--text-muted);
+  font-size:0.88rem;font-weight:500;cursor:pointer;position:relative;
+  transition:color .18s;letter-spacing:0.01em;border-radius:0;
+  display:flex;align-items:center;gap:7px;white-space:nowrap;
+}
+.tab-btn::after{
+  content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;
+  background:var(--orange);border-radius:2px 2px 0 0;
+  transform:scaleX(0);transition:transform .2s ease;
+}
+.tab-btn.active{color:var(--orange);}
+.tab-btn.active::after{transform:scaleX(1);}
+.tab-badge{
+  background:rgba(255,106,26,0.18);color:var(--orange);
+  font-size:0.68rem;font-weight:700;padding:2px 7px;border-radius:999px;
+  border:1px solid rgba(255,106,26,0.3);
+}
+
+/* ---------- Tab Panels ---------- */
+main{padding:22px 0 60px;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* ---------- Stats ---------- */
+.stats{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:18px;
+}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--stat-color,var(--orange));
+  border-radius:var(--radius-sm);padding:16px;
+}
+.stat-num{font-family:'Sora',sans-serif;font-weight:800;font-size:1.7rem;line-height:1;}
+.stat-label{font-size:0.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:6px;}
+
+/* ---------- Search ---------- */
+.search-wrap{position:relative;margin-bottom:20px;}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-faint);}
+.search-input{
+  width:100%;padding:13px 14px 13px 42px;border-radius:var(--radius-sm);
+  border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:0.92rem;
+  transition:border-color .15s;
+}
+.search-input:focus{border-color:var(--orange);}
+.search-input::placeholder{color:var(--text-faint);}
+
+/* ---------- Loading / Empty ---------- */
+.loading-state{display:flex;flex-direction:column;align-items:center;gap:14px;padding:80px 0;color:var(--text-muted);}
+.spinner{width:34px;height:34px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--orange);animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.empty-state{display:none;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:80px 20px;}
+.empty-icon{font-size:2.4rem;margin-bottom:6px;opacity:0.8;}
+.empty-title{font-family:'Sora',sans-serif;font-weight:700;font-size:1.05rem;}
+.empty-sub{color:var(--text-muted);font-size:0.85rem;max-width:300px;}
+.no-results{padding:50px 10px;text-align:center;color:var(--text-muted);font-size:0.9rem;}
+
+/* ---------- Cards ---------- */
+.app-list{display:flex;flex-direction:column;gap:12px;}
+.app-card{
+  --accent:var(--orange);
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;animation:cardIn .35s ease both;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:none;}}
+
+/* Restaurant image in card head */
+.rest-thumb{
+  width:40px;height:40px;border-radius:10px;object-fit:cover;flex-shrink:0;
+  border:1px solid var(--border);background:var(--surface-2);
+}
+.rest-thumb-placeholder{
+  width:40px;height:40px;border-radius:10px;flex-shrink:0;
+  background:var(--surface-2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+}
+
+.card-head{
+  width:100%;display:flex;align-items:center;gap:12px;padding:16px;
+  background:transparent;border:none;cursor:pointer;color:var(--text);text-align:left;
+}
+.dispatch-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;box-shadow:0 0 10px currentColor;}
+.head-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;}
+.head-name{font-family:'Sora',sans-serif;font-weight:600;font-size:0.97rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.head-phone{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-muted);}
+.head-sub{font-size:0.75rem;color:var(--text-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.status-pill{
+  flex-shrink:0;padding:4px 11px;border-radius:999px;font-size:0.68rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:0.05em;border:1px solid transparent;
+}
+.st-pending{background:rgba(255,180,84,0.14);color:var(--amber);border-color:rgba(255,180,84,0.35);}
+.st-approved{background:rgba(54,211,153,0.14);color:var(--green);border-color:rgba(54,211,153,0.35);}
+.st-rejected{background:rgba(255,84,112,0.14);color:var(--red);border-color:rgba(255,84,112,0.3);}
+.chevron{flex-shrink:0;color:var(--text-muted);transition:transform .25s ease;}
+.chevron.open{transform:rotate(180deg);}
+
+.card-body-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s ease;overflow:hidden;}
+.card-body-wrap.expanded{grid-template-rows:1fr;}
+.card-body{overflow:hidden;padding:16px 16px 18px;border-top:1px solid var(--border);}
+
+/* Restaurant image full */
+.rest-img-full{
+  width:100%;max-height:200px;object-fit:cover;border-radius:var(--radius-sm);
+  margin-bottom:16px;border:1px solid var(--border);
+}
+
+.detail-grid{display:grid;grid-template-columns:1fr;gap:14px;}
+.detail-item{display:flex;flex-direction:column;gap:4px;}
+.detail-item.wide{grid-column:1/-1;}
+.detail-label{font-size:0.66rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-faint);font-weight:600;}
+.detail-value{font-size:0.9rem;color:var(--text);word-break:break-word;}
+.detail-value.mono{font-family:'JetBrains Mono',monospace;font-size:0.85rem;}
+
+.status-row{
+  margin-top:20px;padding-top:16px;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+}
+.status-row label{font-size:0.78rem;color:var(--text-muted);font-weight:500;}
+.status-select{
+  appearance:none;
+  background:var(--surface-2) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="%239AA0A8" stroke-width="2"><path d="M2 4l5 5 5-5"/></svg>') no-repeat right 12px center;
+  border:1px solid var(--border);color:var(--text);padding:9px 32px 9px 14px;
+  border-radius:var(--radius-sm);font-size:0.85rem;cursor:pointer;min-width:140px;
+}
+
+.action-row{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px;}
+.btn-action{
+  display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:var(--radius-sm);
+  font-weight:600;font-size:0.82rem;cursor:pointer;border:1px solid transparent;
+  text-decoration:none;transition:filter .15s,transform .15s;
+}
+.btn-action:hover{transform:translateY(-1px);}
+.btn-call{background:rgba(54,211,153,0.13);color:var(--green);border-color:rgba(54,211,153,0.3);}
+.btn-wa{background:rgba(47,208,106,0.13);color:var(--wa);border-color:rgba(47,208,106,0.3);}
+.btn-email{background:rgba(96,165,250,0.13);color:var(--blue);border-color:rgba(96,165,250,0.3);}
+.btn-pdf{background:rgba(255,106,26,0.14);color:var(--orange-light);border-color:rgba(255,106,26,0.35);}
+.btn-delete{background:rgba(255,84,112,0.12);color:var(--red);border-color:rgba(255,84,112,0.3);}
+
+/* ---------- Modal ---------- */
+#confirmModal{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.62);backdrop-filter:blur(4px);
+  align-items:center;justify-content:center;padding:20px;z-index:100;
+}
+#confirmModal.open{display:flex;}
+.modal-card{
+  background:#13161a;border:1px solid var(--border);border-radius:var(--radius);
+  padding:26px 24px;max-width:360px;width:100%;text-align:center;
+  box-shadow:0 24px 60px rgba(0,0,0,0.5);
+}
+.modal-title{font-family:'Sora',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:8px;}
+.modal-text{color:var(--text-muted);font-size:0.86rem;margin-bottom:20px;line-height:1.5;}
+.modal-actions{display:flex;gap:10px;}
+.modal-btn{flex:1;padding:11px;border-radius:var(--radius-sm);font-weight:600;font-size:0.85rem;cursor:pointer;border:1px solid var(--border);}
+.modal-cancel{background:transparent;color:var(--text);}
+.modal-delete{background:var(--red);color:#1a0306;border-color:var(--red);}
+
+/* ---------- Responsive ---------- */
+@media(min-width:540px){
+  .tab-btn{padding:13px 28px;font-size:0.9rem;}
+}
+@media(min-width:640px){
+  .stats{grid-template-columns:repeat(4,1fr);}
+  .detail-grid{grid-template-columns:1fr 1fr;}
+}
+@media(min-width:900px){
+  .wrap,.top-bar,.tab-nav{padding-left:24px;padding-right:24px;}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:0.001s !important;transition-duration:0.001s !important;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ LOCK SCREEN ============ -->
+<div id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-logo">Kash<span>Run</span></div>
+    <div class="lock-sub">ADMIN DASHBOARD</div>
+    <form id="unlockForm">
+      <input type="password" id="pwInput" class="lock-input" placeholder="Enter admin password" autocomplete="off" required>
+      <button type="submit" class="lock-btn">Unlock Dashboard</button>
+      <div class="lock-error" id="pwError">Incorrect password. Redirecting…</div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ DASHBOARD ============ -->
+<div id="dashboard">
+  <header class="top">
+    <div class="top-bar">
+      <div class="brand">
+        <div class="brand-name">Kash<span>Run</span></div>
+        <div class="brand-eyebrow">Admin Dashboard</div>
+      </div>
+      <button class="logout-btn" id="logoutBtn" type="button">Logout</button>
+    </div>
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+      <button class="tab-btn active" id="tabDelivery" type="button">
+        🛵 Delivery Partners
+        <span class="tab-badge" id="badgeDelivery">0</span>
+      </button>
+      <button class="tab-btn" id="tabRestaurant" type="button">
+        🍽️ Restaurant Partners
+        <span class="tab-badge" id="badgeRestaurant">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- ===== TAB 1: DELIVERY PARTNERS ===== -->
+    <div class="tab-panel active" id="panelDelivery">
+      <div class="stats" style="margin-top:22px;">
+        <div class="stat-card" style="--stat-color:var(--orange)">
+          <div class="stat-num" id="dpTotal">0</div>
+          <div class="stat-label">Total Applications</div>
+        </div>
+        <div class="stat-card" style="--stat-color:var(--amber)">
+          <div class="stat-num" id="dpPending">0</div>
+          <div class="stat-label">Pending</div>
+        </div>
+        <div class="stat-card" style="--stat-color:var(--green)">
+          <div class="stat-num" id="dpApproved">0</div>
+          <div class="stat-label">Approved</div>
+        </div>
+        <div class="stat-card" style="--stat-color:var(--red)">
+          <div class="stat-num" id="dpRejected">0</div>
+          <div class="stat-label">Rejected</div>
+        </div>
+      </div>
+
+      <div class="search-wrap">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" id="dpSearch" class="search-input" placeholder="Search by Name or Phone…">
+      </div>
+
+      <div class="loading-state" id="dpLoading">
+        <div class="spinner"></div>
+        <span>Loading delivery applications…</span>
+      </div>
+      <div class="empty-state" id="dpEmpty">
+        <div class="empty-icon">🛵</div>
+        <div class="empty-title">No delivery applications yet</div>
+        <div class="empty-sub">Delivery partner applications will appear here once submitted.</div>
+      </div>
+      <div class="app-list" id="dpList"></div>
+    </div>
+
+    <!-- ===== TAB 2: RESTAURANT PARTNERS ===== -->
+    <div class="tab-panel" id="panelRestaurant">
+      <div class="stats" style="margin-top:22px;">
+        <div class="stat-card" style="--stat-color:var(--orange)">
+          <div class="stat-num" id="rpTotal">0</div>
+          <div class="stat-label">Total Applications</div>
+        </div>
+        <div class="stat-card" style="--stat-color:var(--amber)">
+          <div class="stat-num" id="rpPending">0</div>
+          <div class="stat-label">Pending</div>
+        </div>
+        <div class="stat-card" style="--stat-color:var(--green)">
+          <div class="stat-num" id="rpApproved">0</div>
+          <div class="stat-label">Approved</div>
+        </div>
+        <div class="stat-card" style="--stat-color:var(--red)">
+          <div class="stat-num" id="rpRejected">0</div>
+          <div class="stat-label">Rejected</div>
+        </div>
+      </div>
+
+      <div class="search-wrap">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" id="rpSearch" class="search-input" placeholder="Search by Restaurant or Owner…">
+      </div>
+
+      <div class="loading-state" id="rpLoading">
+        <div class="spinner"></div>
+        <span>Loading restaurant applications…</span>
+      </div>
+      <div class="empty-state" id="rpEmpty">
+        <div class="empty-icon">🍽️</div>
+        <div class="empty-title">No restaurant applications yet</div>
+        <div class="empty-sub">Restaurant partner applications will appear here once submitted.</div>
+      </div>
+      <div class="app-list" id="rpList"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ============ CONFIRM DELETE MODAL ============ -->
+<div id="confirmModal">
+  <div class="modal-card">
+    <div class="modal-title">Delete application?</div>
+    <div class="modal-text" id="confirmText">This action cannot be undone.</div>
+    <div class="modal-actions">
+      <button class="modal-btn modal-cancel" id="confirmCancel" type="button">Cancel</button>
+      <button class="modal-btn modal-delete" id="confirmDelete" type="button">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- Auth & Tab switching (non-module) -->
+<script>
+(function(){
+  const ADMIN_PASSWORD = "KashRun@Admin2026";
+  const SESSION_KEY = "kashrun_admin_unlocked";
+
+  function unlock(){
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+  }
+  if(sessionStorage.getItem(SESSION_KEY)==='1') unlock();
+
+  document.getElementById('unlockForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    var val = document.getElementById('pwInput').value;
+    if(val===ADMIN_PASSWORD){
+      sessionStorage.setItem(SESSION_KEY,'1');
+      unlock();
+    } else {
+      document.getElementById('pwError').style.display='block';
+      setTimeout(function(){ window.location.href='index.html'; },1100);
+    }
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click',function(){
+    sessionStorage.removeItem(SESSION_KEY);
+    window.location.reload();
+  });
+
+  // Tab switching
+  var tabDel = document.getElementById('tabDelivery');
+  var tabRes = document.getElementById('tabRestaurant');
+  var panDel = document.getElementById('panelDelivery');
+  var panRes = document.getElementById('panelRestaurant');
+
+  tabDel.addEventListener('click',function(){
+    tabDel.classList.add('active');
+    tabRes.classList.remove('active');
+    panDel.classList.add('active');
+    panRes.classList.remove('active');
+  });
+  tabRes.addEventListener('click',function(){
+    tabRes.classList.add('active');
+    tabDel.classList.remove('active');
+    panRes.classList.add('active');
+    panDel.classList.remove('active');
+  });
+})();
+</script>
+
+<!-- Firebase dashboard logic -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDvViMeJbOdLvNT1163vlp7fPIXK6qJ8Qk",
+  authDomain: "kashrun-6ac6a.firebaseapp.com",
+  projectId: "kashrun-6ac6a",
+  storageBucket: "kashrun-6ac6a.firebasestorage.app",
+  messagingSenderId: "466142826836",
+  appId: "1:466142826836:web:8fbcd0a829d582429ff8c1"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+// ── Shared helpers ────────────────────────────────────────────
+function fv(v, fallback){ fallback = fallback===undefined?'—':fallback; return (v===undefined||v===null||v==='')?fallback:v; }
+function getDate(d){ const c=d.createdAt; if(!c)return null; if(typeof c.toDate==='function')return c.toDate(); if(c.seconds)return new Date(c.seconds*1000); const dt=new Date(c); return isNaN(dt.getTime())?null:dt; }
+function formatDate(d){ if(!d)return'—'; return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' · '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}); }
+function cleanDigits(p){ return(p||'').toString().replace(/\D/g,''); }
+function toTel(p){ let d=cleanDigits(p); if(d.length===10)d='91'+d; return'+'+d; }
+function toWa(p){ let d=cleanDigits(p); if(d.length===10)d='91'+d; return d; }
+function sortNewest(arr){ return arr.sort((x,y)=>{ const dx=getDate(x),dy=getDate(y); if(!dx&&!dy)return 0; if(!dx)return 1; if(!dy)return-1; return dy-dx; }); }
+
+const STATUS_META = {
+  Pending:  {color:'#FFB454',cls:'st-pending'},
+  Approved: {color:'#36D399',cls:'st-approved'},
+  Rejected: {color:'#FF5470',cls:'st-rejected'}
+};
+
+function detailRow(label,value,mono,wide){
+  const item=document.createElement('div');
+  item.className='detail-item'+(wide?' wide':'');
+  const lbl=document.createElement('span');lbl.className='detail-label';lbl.textContent=label;
+  const val=document.createElement('span');val.className='detail-value'+(mono?' mono':'');val.textContent=value;
+  item.appendChild(lbl);item.appendChild(val);
+  return item;
+}
+
+function makeStatusSelect(db, collectionName, docId, currentStatus, stopProp){
+  const row=document.createElement('div');row.className='status-row';
+  const lbl=document.createElement('label');lbl.textContent='Update Status';
+  const sel=document.createElement('select');sel.className='status-select';
+  ['Pending','Approved','Rejected'].forEach(s=>{ const o=document.createElement('option');o.value=s;o.textContent=s;sel.appendChild(o); });
+  sel.value=currentStatus;
+  sel.addEventListener('click',e=>e.stopPropagation());
+  sel.addEventListener('change',async(e)=>{
+    const ns=e.target.value;
+    try{ await updateDoc(doc(db,collectionName,docId),{status:ns}); }
+    catch(err){ console.error(err);alert('Could not update status. Check connection and try again.'); }
+  });
+  row.appendChild(lbl);row.appendChild(sel);
+  return row;
+}
+
+// ── DELETE MODAL shared ───────────────────────────────────────
+const modal=document.getElementById('confirmModal');
+const modalText=document.getElementById('confirmText');
+let pendingDelete=null;
+let pendingDeleteCollection=null;
+
+document.getElementById('confirmCancel').addEventListener('click',()=>{ modal.classList.remove('open');pendingDelete=null; });
+document.getElementById('confirmDelete').addEventListener('click',async()=>{
+  if(!pendingDelete)return;
+  try{ await deleteDoc(doc(db,pendingDeleteCollection,pendingDelete.id)); }
+  catch(err){ console.error(err);alert('Could not delete. Try again.'); }
+  modal.classList.remove('open');pendingDelete=null;pendingDeleteCollection=null;
+});
+
+function confirmDelete(a,collName,displayName){
+  pendingDelete=a;pendingDeleteCollection=collName;
+  modalText.textContent='Delete the application from '+(displayName||'this applicant')+'? This cannot be undone.';
+  modal.classList.add('open');
+}
+
+// ══════════════════════════════════════════════════════════════
+// TAB 1 — DELIVERY PARTNERS
+// ══════════════════════════════════════════════════════════════
+const DP_COL='deliveryPartners';
+const dpListEl=document.getElementById('dpList');
+const dpLoadEl=document.getElementById('dpLoading');
+const dpEmptyEl=document.getElementById('dpEmpty');
+const dpSearch=document.getElementById('dpSearch');
+const dpTotal=document.getElementById('dpTotal');
+const dpPending=document.getElementById('dpPending');
+const dpApproved=document.getElementById('dpApproved');
+const dpRejected=document.getElementById('dpRejected');
+const badgeDelivery=document.getElementById('badgeDelivery');
+
+let dpApps=[],dpExpandedId=null,dpSearchTerm='';
+
+function renderDP(){
+  dpTotal.textContent=dpApps.length;
+  dpPending.textContent=dpApps.filter(a=>(a.status||'Pending')==='Pending').length;
+  dpApproved.textContent=dpApps.filter(a=>a.status==='Approved').length;
+  dpRejected.textContent=dpApps.filter(a=>a.status==='Rejected').length;
+  badgeDelivery.textContent=dpApps.length;
+
+  if(dpApps.length===0){ dpEmptyEl.style.display='flex';dpListEl.style.display='none';dpListEl.innerHTML='';return; }
+  dpEmptyEl.style.display='none';dpListEl.style.display='flex';
+
+  const term=dpSearchTerm.trim().toLowerCase();
+  const filtered=dpApps.filter(a=>{
+    if(!term)return true;
+    return (a.fullName||'').toLowerCase().includes(term)||(a.phone||'').toString().toLowerCase().includes(term);
+  });
+  dpListEl.innerHTML='';
+  if(filtered.length===0){ const d=document.createElement('div');d.className='no-results';d.textContent='No applications match "'+dpSearchTerm+'".';dpListEl.appendChild(d);return; }
+  filtered.forEach(a=>dpListEl.appendChild(buildDPCard(a)));
+}
+
+function buildDPCard(a){
+  const status=a.status||'Pending';
+  const meta=STATUS_META[status]||STATUS_META.Pending;
+  const isOpen=dpExpandedId===a.id;
+
+  const card=document.createElement('div');card.className='app-card';
+  card.style.setProperty('--accent',meta.color);
+
+  const head=document.createElement('button');head.type='button';head.className='card-head';
+  const dot=document.createElement('span');dot.className='dispatch-dot';dot.style.background=meta.color;dot.style.color=meta.color;
+  const hMain=document.createElement('span');hMain.className='head-main';
+  const hName=document.createElement('span');hName.className='head-name';hName.textContent=fv(a.fullName);
+  const hPhone=document.createElement('span');hPhone.className='head-phone';hPhone.textContent=fv(a.phone);
+  hMain.appendChild(hName);hMain.appendChild(hPhone);
+  const pill=document.createElement('span');pill.className='status-pill '+meta.cls;pill.textContent=status;
+  const chev=document.createElement('div');
+  chev.innerHTML='<svg class="chevron'+(isOpen?' open':'')+'" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  head.appendChild(dot);head.appendChild(hMain);head.appendChild(pill);head.appendChild(chev);
+  card.appendChild(head);
+
+  const bodyWrap=document.createElement('div');bodyWrap.className='card-body-wrap'+(isOpen?' expanded':'');
+  const body=document.createElement('div');body.className='card-body';
+
+  const grid=document.createElement('div');grid.className='detail-grid';
+  grid.appendChild(detailRow('Full Name',fv(a.fullName)));
+  grid.appendChild(detailRow('Phone Number',fv(a.phone),true));
+  grid.appendChild(detailRow('Alternative Phone',fv(a.altPhone),true));
+  grid.appendChild(detailRow('Age',fv(a.age)));
+  grid.appendChild(detailRow('Village',fv(a.village)));
+  grid.appendChild(detailRow('Complete Address',fv(a.address),false,true));
+  grid.appendChild(detailRow('Vehicle Type',fv(a.vehicleType)));
+  grid.appendChild(detailRow('License Number',fv(a.licenseNumber),true));
+  grid.appendChild(detailRow('Experience',fv(a.experience)));
+  grid.appendChild(detailRow('Availability',fv(a.availability)));
+  grid.appendChild(detailRow('About',fv(a.about),false,true));
+  grid.appendChild(detailRow('Application Date',formatDate(getDate(a))));
+  grid.appendChild(detailRow('Current Status',status));
+  body.appendChild(grid);
+
+  body.appendChild(makeStatusSelect(db,DP_COL,a.id,status));
+
+  // Actions
+  const actions=document.createElement('div');actions.className='action-row';
+
+  const callBtn=document.createElement('a');callBtn.className='btn-action btn-call';callBtn.href='tel:'+toTel(a.phone);callBtn.textContent='📞 Call';callBtn.addEventListener('click',e=>e.stopPropagation());
+
+  const waBtn=document.createElement('a');waBtn.className='btn-action btn-wa';waBtn.target='_blank';waBtn.rel='noopener';
+  waBtn.href='https://wa.me/'+toWa(a.phone)+'?text='+encodeURIComponent('Hi '+(a.fullName||'')+', this is KashRun regarding your delivery partner application.');
+  waBtn.textContent='💬 WhatsApp';waBtn.addEventListener('click',e=>e.stopPropagation());
+
+  const pdfBtn=document.createElement('button');pdfBtn.type='button';pdfBtn.className='btn-action btn-pdf';pdfBtn.textContent='📄 PDF';
+  pdfBtn.addEventListener('click',e=>{e.stopPropagation();generateDPPdf(a);});
+
+  const delBtn=document.createElement('button');delBtn.type='button';delBtn.className='btn-action btn-delete';delBtn.textContent='🗑 Delete';
+  delBtn.addEventListener('click',e=>{e.stopPropagation();confirmDelete(a,DP_COL,a.fullName);});
+
+  actions.appendChild(callBtn);actions.appendChild(waBtn);actions.appendChild(pdfBtn);actions.appendChild(delBtn);
+  body.appendChild(actions);
+  bodyWrap.appendChild(body);card.appendChild(bodyWrap);
+
+  head.addEventListener('click',()=>{ dpExpandedId=(dpExpandedId===a.id)?null:a.id;renderDP(); });
+  return card;
+}
+
+function generateDPPdf(a){
+  const {jsPDF}=window.jspdf;
+  const pdf=new jsPDF({unit:'pt',format:'a4'});
+  const pw=pdf.internal.pageSize.getWidth();
+  pdf.setFillColor(255,106,26);pdf.rect(0,0,pw,90,'F');
+  pdf.setTextColor(255,255,255);pdf.setFont('helvetica','bold');pdf.setFontSize(22);pdf.text('KashRun',40,45);
+  pdf.setFontSize(11);pdf.setFont('helvetica','normal');pdf.text('Delivery Partner Application',40,65);
+  pdf.setTextColor(30,30,30);let y=130;
+  pdf.setFont('helvetica','bold');pdf.setFontSize(16);pdf.text(String(fv(a.fullName,'Applicant')),40,y);y+=30;
+  const rows=[['Phone Number',fv(a.phone)],['Alternative Phone',fv(a.altPhone)],['Age',fv(a.age)],['Village',fv(a.village)],['Address',fv(a.address)],['Vehicle Type',fv(a.vehicleType)],['License Number',fv(a.licenseNumber)],['Experience',fv(a.experience)],['Availability',fv(a.availability)],['About',fv(a.about)],['Application Date',formatDate(getDate(a))],['Status',fv(a.status||'Pending')]];
+  pdf.setFontSize(11);
+  rows.forEach(([lbl,val])=>{
+    const vs=String(val);pdf.setFont('helvetica','bold');pdf.setTextColor(120,120,120);pdf.text(lbl,40,y);
+    pdf.setFont('helvetica','normal');pdf.setTextColor(30,30,30);
+    const lines=pdf.splitTextToSize(vs,pw-220);pdf.text(lines,220,y);
+    y+=Math.max(20,lines.length*14);if(y>760){pdf.addPage();y=50;}
+  });
+  pdf.setFontSize(9);pdf.setTextColor(150,150,150);pdf.text('Generated by KashRun Admin · '+new Date().toLocaleString('en-IN'),40,810);
+  pdf.save(String(fv(a.fullName,'applicant')).replace(/\s+/g,'_')+'_DP_KashRun.pdf');
+}
+
+dpSearch.addEventListener('input',e=>{dpSearchTerm=e.target.value;renderDP();});
+
+onSnapshot(collection(db,DP_COL),(snap)=>{
+  dpLoadEl.style.display='none';
+  dpApps=snap.docs.map(d=>Object.assign({id:d.id},d.data()));
+  sortNewest(dpApps);renderDP();
+},(err)=>{
+  dpLoadEl.style.display='none';
+  dpListEl.innerHTML='<div class="no-results">Could not load delivery applications. Check connection and refresh.</div>';
+  console.error(err);
+});
+
+
+// ══════════════════════════════════════════════════════════════
+// TAB 2 — RESTAURANT PARTNERS
+// ══════════════════════════════════════════════════════════════
+const RP_COL='restaurantApplications';
+const rpListEl=document.getElementById('rpList');
+const rpLoadEl=document.getElementById('rpLoading');
+const rpEmptyEl=document.getElementById('rpEmpty');
+const rpSearch=document.getElementById('rpSearch');
+const rpTotal=document.getElementById('rpTotal');
+const rpPending=document.getElementById('rpPending');
+const rpApproved=document.getElementById('rpApproved');
+const rpRejected=document.getElementById('rpRejected');
+const badgeRestaurant=document.getElementById('badgeRestaurant');
+
+let rpApps=[],rpExpandedId=null,rpSearchTerm='';
+
+function renderRP(){
+  rpTotal.textContent=rpApps.length;
+  rpPending.textContent=rpApps.filter(a=>(a.status||'Pending')==='Pending').length;
+  rpApproved.textContent=rpApps.filter(a=>a.status==='Approved').length;
+  rpRejected.textContent=rpApps.filter(a=>a.status==='Rejected').length;
+  badgeRestaurant.textContent=rpApps.length;
+
+  if(rpApps.length===0){ rpEmptyEl.style.display='flex';rpListEl.style.display='none';rpListEl.innerHTML='';return; }
+  rpEmptyEl.style.display='none';rpListEl.style.display='flex';
+
+  const term=rpSearchTerm.trim().toLowerCase();
+  const filtered=rpApps.filter(a=>{
+    if(!term)return true;
+    return (a.restaurantName||'').toLowerCase().includes(term)||
+           (a.ownerName||'').toLowerCase().includes(term)||
+           (a.phone||'').toString().toLowerCase().includes(term)||
+           (a.email||'').toLowerCase().includes(term);
+  });
+  rpListEl.innerHTML='';
+  if(filtered.length===0){ const d=document.createElement('div');d.className='no-results';d.textContent='No applications match "'+rpSearchTerm+'".';rpListEl.appendChild(d);return; }
+  filtered.forEach(a=>rpListEl.appendChild(buildRPCard(a)));
+}
+
+function buildRPCard(a){
+  const status=a.status||'Pending';
+  const meta=STATUS_META[status]||STATUS_META.Pending;
+  const isOpen=rpExpandedId===a.id;
+
+  const card=document.createElement('div');card.className='app-card';
+  card.style.setProperty('--accent',meta.color);
+
+  const head=document.createElement('button');head.type='button';head.className='card-head';
+  const dot=document.createElement('span');dot.className='dispatch-dot';dot.style.background=meta.color;dot.style.color=meta.color;
+
+  // Thumbnail
+  if(a.restaurantImage){
+    const img=document.createElement('img');img.className='rest-thumb';img.src=a.restaurantImage;img.alt='';img.loading='lazy';
+    img.onerror=function(){ this.style.display='none'; };
+    head.appendChild(dot);head.appendChild(img);
+  } else {
+    const ph=document.createElement('div');ph.className='rest-thumb-placeholder';ph.textContent='🍽️';
+    head.appendChild(dot);head.appendChild(ph);
+  }
+
+  const hMain=document.createElement('span');hMain.className='head-main';
+  const hName=document.createElement('span');hName.className='head-name';hName.textContent=fv(a.restaurantName);
+  const hSub=document.createElement('span');hSub.className='head-sub';hSub.textContent=fv(a.ownerName);
+  const hPhone=document.createElement('span');hPhone.className='head-phone';hPhone.textContent=fv(a.phone);
+  hMain.appendChild(hName);hMain.appendChild(hSub);hMain.appendChild(hPhone);
+
+  const pill=document.createElement('span');pill.className='status-pill '+meta.cls;pill.textContent=status;
+  const chev=document.createElement('div');
+  chev.innerHTML='<svg class="chevron'+(isOpen?' open':'')+'" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  head.appendChild(hMain);head.appendChild(pill);head.appendChild(chev);
+  card.appendChild(head);
+
+  const bodyWrap=document.createElement('div');bodyWrap.className='card-body-wrap'+(isOpen?' expanded':'');
+  const body=document.createElement('div');body.className='card-body';
+
+  // Full image
+  if(a.restaurantImage){
+    const img=document.createElement('img');img.className='rest-img-full';img.src=a.restaurantImage;img.alt='Restaurant photo';img.loading='lazy';
+    img.onerror=function(){ this.style.display='none'; };
+    body.appendChild(img);
+  }
+
+  const grid=document.createElement('div');grid.className='detail-grid';
+  grid.appendChild(detailRow('Restaurant Name',fv(a.restaurantName)));
+  grid.appendChild(detailRow('Owner Name',fv(a.ownerName)));
+  grid.appendChild(detailRow('Phone',fv(a.phone),true));
+  grid.appendChild(detailRow('Alternative Phone',fv(a.altPhone),true));
+  grid.appendChild(detailRow('Email',fv(a.email)));
+  grid.appendChild(detailRow('Address',fv(a.address),false,true));
+  grid.appendChild(detailRow('Village',fv(a.village)));
+  grid.appendChild(detailRow('Pincode',fv(a.pincode),true));
+  grid.appendChild(detailRow('Restaurant Type',fv(a.restaurantType)));
+  grid.appendChild(detailRow('Opening Time',fv(a.openingTime)));
+  grid.appendChild(detailRow('Closing Time',fv(a.closingTime)));
+  grid.appendChild(detailRow('Own Delivery',fv(a.ownDelivery)));
+  grid.appendChild(detailRow('FSSAI Number',fv(a.fssaiNumber),true));
+  grid.appendChild(detailRow('Years in Business',fv(a.yearsInBusiness)));
+  grid.appendChild(detailRow('Additional Information',fv(a.additionalInfo),false,true));
+  grid.appendChild(detailRow('Application Date',formatDate(getDate(a))));
+  grid.appendChild(detailRow('Current Status',status));
+  body.appendChild(grid);
+
+  body.appendChild(makeStatusSelect(db,RP_COL,a.id,status));
+
+  // Actions
+  const actions=document.createElement('div');actions.className='action-row';
+
+  const callBtn=document.createElement('a');callBtn.className='btn-action btn-call';callBtn.href='tel:'+toTel(a.phone);callBtn.textContent='📞 Call';callBtn.addEventListener('click',e=>e.stopPropagation());
+
+  const waBtn=document.createElement('a');waBtn.className='btn-action btn-wa';waBtn.target='_blank';waBtn.rel='noopener';
+  waBtn.href='https://wa.me/'+toWa(a.phone)+'?text='+encodeURIComponent('Hi '+(a.ownerName||'')+', this is KashRun regarding your restaurant partner application for '+(a.restaurantName||'your restaurant')+'.');
+  waBtn.textContent='💬 WhatsApp';waBtn.addEventListener('click',e=>e.stopPropagation());
+
+  if(a.email){
+    const emailBtn=document.createElement('a');emailBtn.className='btn-action btn-email';
+    emailBtn.href='mailto:'+a.email+'?subject='+encodeURIComponent('KashRun Restaurant Partner Application - '+(a.restaurantName||''));
+    emailBtn.textContent='✉️ Email';emailBtn.addEventListener('click',e=>e.stopPropagation());
+    actions.appendChild(emailBtn);
+  }
+
+  const pdfBtn=document.createElement('button');pdfBtn.type='button';pdfBtn.className='btn-action btn-pdf';pdfBtn.textContent='📄 PDF';
+  pdfBtn.addEventListener('click',e=>{e.stopPropagation();generateRPPdf(a);});
+
+  const delBtn=document.createElement('button');delBtn.type='button';delBtn.className='btn-action btn-delete';delBtn.textContent='🗑 Delete';
+  delBtn.addEventListener('click',e=>{e.stopPropagation();confirmDelete(a,RP_COL,a.restaurantName||a.ownerName);});
+
+  actions.appendChild(callBtn);actions.appendChild(waBtn);actions.appendChild(pdfBtn);actions.appendChild(delBtn);
+  body.appendChild(actions);
+  bodyWrap.appendChild(body);card.appendChild(bodyWrap);
+
+  head.addEventListener('click',()=>{ rpExpandedId=(rpExpandedId===a.id)?null:a.id;renderRP(); });
+  return card;
+}
+
+function generateRPPdf(a){
+  const {jsPDF}=window.jspdf;
+  const pdf=new jsPDF({unit:'pt',format:'a4'});
+  const pw=pdf.internal.pageSize.getWidth();
+  pdf.setFillColor(255,106,26);pdf.rect(0,0,pw,90,'F');
+  pdf.setTextColor(255,255,255);pdf.setFont('helvetica','bold');pdf.setFontSize(22);pdf.text('KashRun',40,45);
+  pdf.setFontSize(11);pdf.setFont('helvetica','normal');pdf.text('Restaurant Partner Application',40,65);
+  pdf.setTextColor(30,30,30);let y=130;
+  pdf.setFont('helvetica','bold');pdf.setFontSize(16);pdf.text(String(fv(a.restaurantName,'Restaurant')),40,y);y+=20;
+  pdf.setFontSize(12);pdf.setTextColor(100,100,100);pdf.text('Owner: '+String(fv(a.ownerName)),40,y);y+=30;
+  const rows=[['Phone',fv(a.phone)],['Alternative Phone',fv(a.altPhone)],['Email',fv(a.email)],['Address',fv(a.address)],['Village',fv(a.village)],['Pincode',fv(a.pincode)],['Restaurant Type',fv(a.restaurantType)],['Opening Time',fv(a.openingTime)],['Closing Time',fv(a.closingTime)],['Own Delivery',fv(a.ownDelivery)],['FSSAI Number',fv(a.fssaiNumber)],['Years in Business',fv(a.yearsInBusiness)],['Additional Info',fv(a.additionalInfo)],['Application Date',formatDate(getDate(a))],['Status',fv(a.status||'Pending')]];
+  pdf.setFontSize(11);
+  rows.forEach(([lbl,val])=>{
+    const vs=String(val);pdf.setFont('helvetica','bold');pdf.setTextColor(120,120,120);pdf.text(lbl,40,y);
+    pdf.setFont('helvetica','normal');pdf.setTextColor(30,30,30);
+    const lines=pdf.splitTextToSize(vs,pw-220);pdf.text(lines,220,y);
+    y+=Math.max(20,lines.length*14);if(y>760){pdf.addPage();y=50;}
+  });
+  pdf.setFontSize(9);pdf.setTextColor(150,150,150);pdf.text('Generated by KashRun Admin · '+new Date().toLocaleString('en-IN'),40,810);
+  pdf.save(String(fv(a.restaurantName,'restaurant')).replace(/\s+/g,'_')+'_RP_KashRun.pdf');
+}
+
+rpSearch.addEventListener('input',e=>{rpSearchTerm=e.target.value;renderRP();});
+
+onSnapshot(collection(db,RP_COL),(snap)=>{
+  rpLoadEl.style.display='none';
+  rpApps=snap.docs.map(d=>Object.assign({id:d.id},d.data()));
+  sortNewest(rpApps);renderRP();
+},(err)=>{
+  rpLoadEl.style.display='none';
+  rpListEl.innerHTML='<div class="no-results">Could not load restaurant applications. Check connection and refresh.</div>';
+  console.error(err);
+});
+</script>
+</body>
+</html>
