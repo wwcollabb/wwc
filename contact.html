@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us | KashRun</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#333;
+}
+
+header{
+    background:linear-gradient(135deg,#ff6b35,#ff914d);
+    color:white;
+    text-align:center;
+    padding:60px 20px;
+}
+
+.logo{
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    background:#fff;
+    padding:10px;
+    margin-bottom:15px;
+}
+
+header h1{
+    font-size:2.5rem;
+}
+
+header p{
+    margin-top:10px;
+    opacity:.9;
+}
+
+.container{
+    max-width:1100px;
+    margin:40px auto;
+    padding:0 20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+}
+
+.card{
+    background:#fff;
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.card h2{
+    color:#ff6b35;
+    margin-bottom:20px;
+}
+
+.info{
+    margin-bottom:25px;
+}
+
+.info h3{
+    margin-bottom:8px;
+}
+
+.info a{
+    text-decoration:none;
+    color:#333;
+}
+
+.buttons{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    text-decoration:none;
+    background:#ff6b35;
+    color:white;
+    padding:12px 18px;
+    border-radius:50px;
+    font-weight:600;
+}
+
+form input,
+form textarea{
+    width:100%;
+    padding:14px;
+    margin-bottom:15px;
+    border:1px solid #ddd;
+    border-radius:12px;
+    outline:none;
+}
+
+form textarea{
+    height:130px;
+    resize:none;
+}
+
+.submit-btn{
+    width:100%;
+    border:none;
+    background:#ff6b35;
+    color:white;
+    padding:15px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:600;
+}
+
+.submit-btn:disabled{
+    opacity:.7;
+}
+
+.success-box,
+.error-box{
+    display:none;
+    margin-top:15px;
+    padding:15px;
+    border-radius:12px;
+    text-align:center;
+    font-weight:600;
+}
+
+.success-box{
+    background:#d4edda;
+    color:#155724;
+}
+
+.error-box{
+    background:#f8d7da;
+    color:#721c24;
+}
+
+.faq{
+    margin-top:50px;
+}
+
+.faq-item{
+    background:#fff;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,.06);
+}
+
+footer{
+    background:#111;
+    color:white;
+    text-align:center;
+    padding:30px 20px;
+    margin-top:50px;
+}
+
+footer a{
+    color:#ff914d;
+    text-decoration:none;
+}
+
+@media(max-width:768px){
+
+.grid{
+    grid-template-columns:1fr;
+}
+
+header h1{
+    font-size:2rem;
+}
+
+}
+</style>
+</head>
+<body>
+
+<header>
+
+<img src="logo.png" class="logo" alt="KashRun">
+
+<h1>Contact Us</h1>
+
+<p>We're here to help. Get in touch anytime.</p>
+
+</header>
+
+<div class="container">
+
+<div class="grid">
+
+<div class="card">
+
+<h2>Contact Information</h2>
+
+<div class="info">
+<h3>📧 Email</h3>
+<a href="mailto:kashrun.in@gmail.com">
+kashrun.in@gmail.com
+</a>
+</div>
+
+<div class="info">
+<h3>📞 Phone</h3>
+<a href="tel:+918082460988">
++91 8082460988
+</a>
+</div>
+
+<div class="info">
+<h3>💬 WhatsApp</h3>
+<a href="https://wa.me/918082460988">
++91 8082460988
+</a>
+</div>
+
+<div class="buttons">
+
+<a href="tel:+918082460988" class="btn">
+📞 Call Now
+</a>
+
+<a href="https://wa.me/918082460988" class="btn">
+💬 WhatsApp
+</a>
+
+<a href="mailto:kashrun.in@gmail.com" class="btn">
+📧 Email
+</a>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Send a Message</h2>
+
+<form id="contactForm">
+
+<input type="text"
+name="name"
+placeholder="Full Name"
+required>
+
+<input type="email"
+name="email"
+placeholder="Email Address"
+required>
+
+<input type="tel"
+name="phone"
+placeholder="Phone Number"
+required>
+
+<input type="text"
+name="subject"
+placeholder="Subject"
+required>
+
+<textarea
+name="message"
+placeholder="Your Message"
+required></textarea>
+
+<button type="submit"
+class="submit-btn"
+id="submitBtn">
+
+Send Message
+
+</button>
+
+</form>
+
+<div class="success-box" id="successBox">
+✅ Message sent successfully!
+</div>
+
+<div class="error-box" id="errorBox">
+❌ Unable to send message. Please try again.
+</div>
+
+</div>
+
+</div>
+
+<div class="faq">
+
+<h2 style="text-align:center;margin-bottom:20px;color:#ff6b35;">
+Frequently Asked Questions
+</h2>
+
+<div class="faq-item">
+<h3>How can I track my order?</h3>
+<p>Visit the Track Order page and enter your Order ID.</p>
+</div>
+
+<div class="faq-item">
+<h3>What payment methods are accepted?</h3>
+<p>Partial Advance, Full Payment and Cash on Delivery.</p>
+</div>
+
+<div class="faq-item">
+<h3>Where is delivery available?</h3>
+<p>Currently delivery is available in selected service areas only.</p>
+</div>
+
+</div>
+
+</div>
+
+<footer>
+
+<h3>KashRun</h3>
+
+<p>Food at Your Doorstep</p>
+
+<br>
+
+<p>
+Email:
+<a href="mailto:kashrun.in@gmail.com">
+kashrun.in@gmail.com
+</a>
+</p>
+
+<p>
+Phone:
+<a href="tel:+918082460988">
++91 8082460988
+</a>
+</p>
+
+<br>
+
+<p>© 2026 KashRun. All Rights Reserved.</p>
+
+</footer>
+
+<script>
+
+document.getElementById("contactForm")
+.addEventListener("submit", async function(e){
+
+e.preventDefault();
+
+const btn = document.getElementById("submitBtn");
+
+btn.disabled = true;
+btn.innerText = "Sending...";
+
+document.getElementById("successBox").style.display = "none";
+document.getElementById("errorBox").style.display = "none";
+
+const data = {
+name:this.name.value,
+email:this.email.value,
+phone:this.phone.value,
+subject:this.subject.value,
+message:this.message.value,
+};
+
+try{
+
+const response = await fetch(
+"https://formsubmit.co/ajax/kashrun.in@gmail.com",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+"Accept":"application/json"
+},
+body:JSON.stringify({
+subject:"New Contact Message - KashRun",
+name:data.name,
+email:data.email,
+phone:data.phone,
+message:
+`Subject: ${data.subject}
+
+Name: ${data.name}
+
+Email: ${data.email}
+
+Phone: ${data.phone}
+
+Message:
+${data.message}`
+})
+}
+);
+
+if(response.ok){
+
+document.getElementById("successBox").style.display="block";
+
+this.reset();
+
+}else{
+
+document.getElementById("errorBox").style.display="block";
+
+}
+
+}catch(error){
+
+document.getElementById("errorBox").style.display="block";
+
+}
+
+btn.disabled = false;
+btn.innerText = "Send Message";
+
+});
+
+</script>
+
+</body>
+</html>
