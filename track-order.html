@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Track Your Order – KashRun</title>
+<meta name="description" content="Track your KashRun food delivery order in real-time. Enter your Order ID or Phone Number to see live order status.">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Track Order – KashRun">
+<meta property="og:description" content="Real-time order tracking for KashRun food delivery in Kulgam.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ===== RESET & ROOT ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary: #FF6B00;
+  --primary-dark: #e55d00;
+  --primary-light: rgba(255,107,0,0.1);
+  --success: #10B981;
+  --danger: #EF4444;
+  --warning: #F59E0B;
+  --dark: #0F172A;
+  --white: #ffffff;
+  --gray-50: #F8FAFC;
+  --gray-100: #F1F5F9;
+  --gray-200: #E2E8F0;
+  --gray-300: #CBD5E1;
+  --gray-400: #94A3B8;
+  --gray-500: #64748B;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow-xs: 0 1px 2px rgba(0,0,0,.06);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,.08);
+  --shadow-md: 0 4px 20px rgba(0,0,0,.10);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,.14);
+  --shadow-primary: 0 4px 20px rgba(255,107,0,.25);
+  --transition: .22s cubic-bezier(.4,0,.2,1);
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --dark: #F1F5F9;
+    --white: #0F172A;
+    --gray-50: #0B1120;
+    --gray-100: #1E293B;
+    --gray-200: #2D3D55;
+    --gray-300: #3D5068;
+    --gray-400: #94A3B8;
+    --gray-600: #94A3B8;
+    --gray-700: #CBD5E1;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,.25);
+    --shadow-md: 0 4px 20px rgba(0,0,0,.35);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,.45);
+  }
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--gray-50);
+  color: var(--dark);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  padding: 0 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-xs);
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.nav-logo img { height: 34px; }
+.nav-logo-text {
+  font-weight: 900;
+  font-size: 1.2rem;
+  color: var(--primary);
+  letter-spacing: -0.5px;
+}
+.nav-logo-sub {
+  font-size: .65rem;
+  font-weight: 600;
+  color: var(--gray-400);
+  display: block;
+  line-height: 1;
+  margin-top: -2px;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+.back-btn {
+  color: var(--gray-600);
+  text-decoration: none;
+  font-size: .85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 50px;
+  border: 1.5px solid var(--gray-200);
+  transition: var(--transition);
+}
+.back-btn:hover { color: var(--primary); border-color: var(--primary); background: var(--primary-light); }
+
+/* ===== PAGE ===== */
+.page { max-width: 740px; margin: 0 auto; padding: 48px 5% 80px; }
+
+.page-header { text-align: center; margin-bottom: 40px; }
+.page-header .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: .78rem;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 50px;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.page-header h1 {
+  font-size: 2.1rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+  margin-bottom: 10px;
+  line-height: 1.15;
+}
+.page-header h1 span { color: var(--primary); }
+.page-header p { color: var(--gray-500); font-size: .95rem; }
+
+/* ===== SEARCH CARD ===== */
+.search-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  padding: 32px;
+  margin-bottom: 32px;
+  border: 1px solid var(--gray-200);
+}
+.search-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.field-wrap { position: relative; }
+.field-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  pointer-events: none;
+  opacity: .6;
+}
+.search-input {
+  width: 100%;
+  padding: 14px 16px 14px 44px;
+  border: 2px solid var(--gray-200);
+  border-radius: 50px;
+  font-size: .95rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: var(--transition);
+  background: var(--gray-50);
+  color: var(--dark);
+  font-weight: 500;
+}
+.search-input:focus {
+  border-color: var(--primary);
+  background: var(--white);
+  box-shadow: 0 0 0 4px rgba(255,107,0,.12);
+}
+.search-input::placeholder { color: var(--gray-400); font-weight: 400; }
+
+.divider-or {
+  text-align: center;
+  position: relative;
+  color: var(--gray-400);
+  font-size: .8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.divider-or::before, .divider-or::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 42%;
+  height: 1px;
+  background: var(--gray-200);
+}
+.divider-or::before { left: 0; }
+.divider-or::after { right: 0; }
+
+.track-btn {
+  width: 100%;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 15px 28px;
+  font-size: 1rem;
+  font-weight: 800;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: var(--shadow-primary);
+  letter-spacing: .2px;
+}
+.track-btn:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(255,107,0,.35); }
+.track-btn:active { transform: translateY(0); }
+
+/* ===== LOADER ===== */
+.loader { display: none; text-align: center; padding: 60px 20px; }
+.spinner {
+  width: 44px;
+  height: 44px;
+  border: 4px solid var(--gray-200);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin .75s linear infinite;
+  margin: 0 auto 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loader p { color: var(--gray-400); font-size: .9rem; font-weight: 500; }
+
+/* ===== RESULTS AREA ===== */
+#results { display: none; }
+
+/* ===== ACCORDION ORDER CARD ===== */
+.order-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 20px;
+  border: 1px solid var(--gray-200);
+  overflow: hidden;
+  animation: slideUp .35s ease both;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card-summary {
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  border-left: 4px solid var(--primary);
+}
+.card-summary-left { flex: 1; min-width: 0; }
+.card-order-id {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--dark);
+  letter-spacing: -.3px;
+}
+.card-order-date {
+  font-size: .78rem;
+  color: var(--gray-400);
+  margin-top: 3px;
+  font-weight: 500;
+}
+.card-summary-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 50px;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+.status-Pending   { background: #FEF3C7; color: #92400E; }
+.status-Confirmed { background: #DBEAFE; color: #1E40AF; }
+.status-Preparing { background: #EDE9FE; color: #5B21B6; }
+.status-Out-For-Delivery { background: #D1FAE5; color: #065F46; }
+.status-Delivered { background: #D1FAE5; color: #065F46; }
+.status-Cancelled { background: #FEE2E2; color: #991B1B; }
+
+.amount-chip {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+/* Accordion Toggle */
+.accordion-toggle {
+  width: 100%;
+  background: var(--gray-50);
+  border: none;
+  border-top: 1px solid var(--gray-200);
+  padding: 13px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: .88rem;
+  font-weight: 700;
+  color: var(--primary);
+  transition: var(--transition);
+}
+.accordion-toggle:hover { background: var(--primary-light); }
+.accordion-toggle .chevron {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .3s ease;
+  flex-shrink: 0;
+}
+.accordion-toggle.open .chevron { transform: rotate(180deg); }
+.accordion-toggle.open { color: var(--primary-dark); }
+
+/* Accordion Body */
+.accordion-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .45s cubic-bezier(.4,0,.2,1);
+}
+.accordion-body.open { max-height: 2400px; }
+.accordion-inner { padding: 28px 24px; }
+
+/* ===== SECTION HEADINGS ===== */
+.section-label {
+  font-size: .73rem;
+  font-weight: 800;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.section-sep { border: none; border-top: 1px solid var(--gray-100); margin: 24px 0; }
+
+/* ===== INFO ROWS ===== */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.info-item label { font-size: .75rem; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: .5px; display: block; margin-bottom: 3px; }
+.info-item .info-val { font-size: .95rem; font-weight: 700; color: var(--dark); }
+
+/* ===== ITEMS TABLE ===== */
+.items-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+.items-table th {
+  text-align: left;
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  padding: 8px 10px;
+  background: var(--gray-50);
+  border-radius: 6px;
+}
+.items-table td { padding: 11px 10px; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+.items-table tr:last-child td { border-bottom: none; }
+.item-name-cell { font-weight: 700; color: var(--dark); }
+.item-size-tag {
+  display: inline-block;
+  background: var(--gray-100);
+  color: var(--gray-600);
+  font-size: .7rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-left: 4px;
+}
+.item-qty { font-weight: 600; color: var(--gray-500); text-align: center; }
+.item-price { font-weight: 800; color: var(--dark); text-align: right; }
+
+/* ===== FINANCIAL SUMMARY ===== */
+.fin-rows { display: flex; flex-direction: column; gap: 10px; }
+.fin-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: .9rem;
+}
+.fin-row .fin-label { color: var(--gray-500); font-weight: 500; }
+.fin-row .fin-val { font-weight: 700; color: var(--dark); }
+.fin-row.fin-total {
+  padding-top: 12px;
+  margin-top: 4px;
+  border-top: 2px solid var(--gray-200);
+}
+.fin-row.fin-total .fin-label { font-weight: 800; color: var(--dark); font-size: .95rem; }
+.fin-row.fin-total .fin-val { font-weight: 900; color: var(--primary); font-size: 1.1rem; }
+.fin-row.fin-remaining .fin-val { color: var(--warning); }
+.fin-row.fin-advance .fin-val { color: var(--success); }
+
+/* ===== PAYMENT DETAILS ===== */
+.pay-details { display: flex; flex-direction: column; gap: 10px; }
+.pay-row { display: flex; justify-content: space-between; align-items: center; font-size: .88rem; }
+.pay-row .pay-label { color: var(--gray-500); font-weight: 500; }
+.pay-row .pay-val { font-weight: 700; color: var(--dark); }
+.pay-status-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 50px;
+  font-size: .78rem;
+  font-weight: 700;
+}
+.pay-chip-paid { background: #D1FAE5; color: #065F46; }
+.pay-chip-pending { background: #FEF3C7; color: #92400E; }
+.pay-chip-partial { background: #DBEAFE; color: #1E40AF; }
+
+/* ===== TIMELINE ===== */
+.timeline-wrap { position: relative; padding-left: 30px; }
+.timeline-wrap::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  bottom: 10px;
+  width: 2px;
+  background: var(--gray-200);
+}
+.tl-step {
+  position: relative;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.tl-step:last-child { margin-bottom: 0; }
+.tl-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 3px solid var(--gray-200);
+  background: var(--white);
+  flex-shrink: 0;
+  margin-left: -32px;
+  margin-top: 1px;
+  position: relative;
+  z-index: 1;
+  transition: var(--transition);
+}
+.tl-dot.done { background: var(--primary); border-color: var(--primary); }
+.tl-dot.current {
+  background: var(--white);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 5px rgba(255,107,0,.18);
+}
+.tl-dot.cancelled { background: var(--danger); border-color: var(--danger); }
+.tl-info .tl-name {
+  font-weight: 700;
+  font-size: .9rem;
+  color: var(--gray-300);
+  transition: var(--transition);
+}
+.tl-info .tl-name.done, .tl-info .tl-name.current { color: var(--dark); }
+.tl-info .tl-name.cancelled { color: var(--danger); }
+.tl-info .tl-desc { font-size: .78rem; color: var(--gray-400); margin-top: 2px; }
+
+/* ===== DOWNLOAD BTN ===== */
+.download-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px;
+  border: 2px solid var(--primary);
+  border-radius: 50px;
+  background: transparent;
+  color: var(--primary);
+  font-size: .9rem;
+  font-weight: 800;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 24px;
+}
+.download-btn:hover { background: var(--primary); color: #fff; box-shadow: var(--shadow-primary); }
+
+/* ===== EMPTY STATE ===== */
+.empty-state { text-align: center; padding: 70px 20px; }
+.empty-icon { font-size: 4rem; margin-bottom: 18px; animation: float 3s ease-in-out infinite; }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.empty-state h3 { font-size: 1.25rem; font-weight: 800; margin-bottom: 10px; }
+.empty-state p { color: var(--gray-400); font-size: .92rem; max-width: 300px; margin: 0 auto; }
+
+/* ===== TOAST ===== */
+#toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(90px);
+  background: #1E293B;
+  color: #fff;
+  padding: 13px 26px;
+  border-radius: 50px;
+  font-size: .88rem;
+  font-weight: 700;
+  z-index: 9999;
+  transition: transform .38s cubic-bezier(.34,1.56,.64,1);
+  pointer-events: none;
+  white-space: nowrap;
+  box-shadow: var(--shadow-lg);
+}
+#toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 520px) {
+  .page { padding: 30px 4% 70px; }
+  .page-header h1 { font-size: 1.65rem; }
+  .search-card { padding: 22px 18px; }
+  .info-grid { grid-template-columns: 1fr; }
+  .accordion-inner { padding: 20px 16px; }
+  .card-summary { padding: 16px 18px; }
+  .accordion-toggle { padding: 12px 18px; }
+  .items-table th, .items-table td { padding: 8px 6px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="logo.png" alt="KashRun" onerror="this.style.display='none'">
+    <span>
+      <span class="nav-logo-text">KashRun</span>
+      <span class="nav-logo-sub">Kulgam Delivery</span>
+    </span>
+  </a>
+  <a href="index.html" class="back-btn">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Home
+  </a>
+</nav>
+
+<!-- ===== PAGE ===== -->
+<div class="page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="badge">
+      <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+      Live Order Tracking
+    </div>
+    <h1>Track Your <span>Order</span></h1>
+    <p>Enter your Order ID or Phone Number to see real-time status</p>
+  </div>
+
+  <!-- Search Card -->
+  <div class="search-card">
+    <div class="search-fields">
+      <!-- Field 1: Order ID -->
+      <div class="field-wrap">
+        <span class="field-icon">📦</span>
+        <input
+          class="search-input"
+          type="text"
+          id="inputOrderId"
+          placeholder="Enter Order ID  (e.g. KR1001)"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+          onkeydown="if(event.key==='Enter')trackOrder()"
+        >
+      </div>
+
+      <div class="divider-or">or</div>
+
+      <!-- Field 2: Phone Number -->
+      <div class="field-wrap">
+        <span class="field-icon">📱</span>
+        <input
+          class="search-input"
+          type="tel"
+          id="inputPhone"
+          placeholder="Enter Phone Number"
+          autocomplete="off"
+          maxlength="10"
+          onkeydown="if(event.key==='Enter')trackOrder()"
+        >
+      </div>
+    </div>
+
+    <button class="track-btn" onclick="trackOrder()">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      Track Order
+    </button>
+  </div>
+
+  <!-- Loader -->
+  <div class="loader" id="loader">
+    <div class="spinner"></div>
+    <p>Looking up your order...</p>
+  </div>
+
+  <!-- Results -->
+  <div id="results"></div>
+
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- jsPDF via CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script type="module">
+import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, query, where }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+/* ── Firebase config ── */
+const firebaseConfig = {
+  apiKey:            "AIzaSyDvViMeJbOdLvNT1163vlp7fPIXK6qJ8Qk",
+  authDomain:        "kashrun-6ac6a.firebaseapp.com",
+  projectId:         "kashrun-6ac6a",
+  storageBucket:     "kashrun-6ac6a.firebasestorage.app",
+  messagingSenderId: "466142826836",
+  appId:             "1:466142826836:web:8fbcd0a829d582429ff8c1"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+/* ── Status timeline steps ── */
+const STEPS = [
+  { key: 'Pending',           label: 'Order Placed',      desc: 'Your order has been received.' },
+  { key: 'Confirmed',         label: 'Confirmed',         desc: 'Restaurant confirmed your order.' },
+  { key: 'Preparing',         label: 'Being Prepared',    desc: 'Your food is being freshly made.' },
+  { key: 'Out For Delivery',  label: 'Out for Delivery',  desc: 'Our rider is heading your way!' },
+  { key: 'Delivered',         label: 'Delivered',         desc: 'Enjoy your meal! 🎉' },
+];
+const CANCELLED_STEP = { key: 'Cancelled', label: 'Cancelled', desc: 'This order has been cancelled.' };
+
+/* ── Address masking ── */
+function maskVillage(village) {
+  if (!village) return '—';
+  return village.substring(0, 4) + '*'.repeat(Math.max(village.length - 4, 4));
+}
+
+/* ── Format date ── */
+function fmtDate(ts) {
+  if (!ts) return '—';
+  try {
+    return new Date(ts).toLocaleString('en-IN', {
+      day: 'numeric', month: 'long', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  } catch { return ts; }
+}
+
+/* ── Status CSS class ── */
+function statusClass(s) {
+  const map = {
+    'Pending': 'status-Pending',
+    'Confirmed': 'status-Confirmed',
+    'Preparing': 'status-Preparing',
+    'Out For Delivery': 'status-Out-For-Delivery',
+    'Delivered': 'status-Delivered',
+    'Cancelled': 'status-Cancelled'
+  };
+  return map[s] || 'status-Pending';
+}
+
+/* ── Status dot class ── */
+function dotClass(stepIdx, curIdx, isCancelled) {
+  if (isCancelled) return '';
+  if (stepIdx < curIdx) return 'done';
+  if (stepIdx === curIdx) return 'current';
+  return '';
+}
+
+/* ── Render timeline ── */
+function renderTimeline(status) {
+  const isCancelled = status === 'Cancelled';
+  const curIdx = STEPS.findIndex(s => s.key === status);
+  let html = '<div class="timeline-wrap">';
+  STEPS.forEach((s, i) => {
+    const dc = dotClass(i, curIdx, isCancelled);
+    const nameClass = dc ? dc : '';
+    html += `<div class="tl-step">
+      <div class="tl-dot ${dc}"></div>
+      <div class="tl-info">
+        <div class="tl-name ${nameClass}">${s.label}</div>
+        ${i === curIdx && !isCancelled ? `<div class="tl-desc">${s.desc}</div>` : ''}
+      </div>
+    </div>`;
+  });
+  if (isCancelled) {
+    html += `<div class="tl-step">
+      <div class="tl-dot cancelled"></div>
+      <div class="tl-info">
+        <div class="tl-name cancelled">${CANCELLED_STEP.label}</div>
+        <div class="tl-desc">${CANCELLED_STEP.desc}</div>
+      </div>
+    </div>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+/* ── Render items table ── */
+function renderItems(items) {
+  if (!items || !items.length) return '<p style="color:var(--gray-400);font-size:.88rem">No items found.</p>';
+  return `<table class="items-table">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th style="text-align:center">Qty</th>
+        <th style="text-align:right">Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${items.map(i => `<tr>
+        <td>
+          <span class="item-name-cell">${i.name || '—'}</span>
+          ${i.selectedSize ? `<span class="item-size-tag">${i.selectedSize}</span>` : ''}
+        </td>
+        <td class="item-qty">×${i.quantity || 1}</td>
+        <td class="item-price">₹${(i.price * (i.quantity || 1)).toLocaleString('en-IN')}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+/* ── Payment status chip ── */
+function payChip(status) {
+  if (!status) return '—';
+  const s = status.toLowerCase();
+  let cls = 'pay-chip-pending';
+  if (s.includes('paid') && !s.includes('partial')) cls = 'pay-chip-paid';
+  else if (s.includes('partial') || s.includes('advance')) cls = 'pay-chip-partial';
+  return `<span class="pay-status-chip ${cls}">${status}</span>`;
+}
+
+/* ── Render one order card ── */
+function renderOrder(o, idx) {
+  const id       = o.orderId || '—';
+  const status   = o.status  || 'Pending';
+  const date     = fmtDate(o.createdAt);
+  const name     = o.customerName || o.name || '—';
+  const village  = maskVillage(o.village || o.deliveryArea || o.area || '');
+  const items    = o.items || [];
+
+  /* Financial */
+  const subtotal  = Number(o.subtotal  || o.itemsTotal || 0);
+  const delivFee  = Number(o.deliveryFee || o.deliveryCharge || 0);
+  const tax       = Number(o.tax || 0);
+  const grand     = Number(o.totalAmount || o.grandTotal || (subtotal + delivFee + tax));
+  const advance   = Number(o.advancePaid || 0);
+  const remaining = Math.max(grand - advance, 0);
+
+  /* Payment */
+  const payType   = o.paymentType   || o.paymentMethod || '—';
+  const payStatus = o.paymentStatus || '—';
+  const utr       = o.utrNumber || o.utr || '—';
+
+  const cardId = `card-${idx}`;
+  const bodyId = `body-${idx}`;
+
+  return `
+  <div class="order-card" id="${cardId}" style="animation-delay:${idx * 0.07}s">
+    <!-- Summary row always visible -->
+    <div class="card-summary">
+      <div class="card-summary-left">
+        <div class="card-order-id">${id}</div>
+        <div class="card-order-date">${date}</div>
+      </div>
+      <div class="card-summary-right">
+        <span class="status-badge ${statusClass(status)}">${status}</span>
+        <span class="amount-chip">₹${grand.toLocaleString('en-IN')}</span>
+      </div>
+    </div>
+
+    <!-- Accordion toggle -->
+    <button class="accordion-toggle" id="toggle-${idx}" onclick="toggleAccordion(${idx})">
+      <span>View Order Details</span>
+      <span class="chevron">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+      </span>
+    </button>
+
+    <!-- Accordion body -->
+    <div class="accordion-body" id="${bodyId}">
+      <div class="accordion-inner">
+
+        <!-- Customer & Delivery Info -->
+        <div class="section-label">
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+          Order Information
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Order ID</label>
+            <div class="info-val">${id}</div>
+          </div>
+          <div class="info-item">
+            <label>Order Date</label>
+            <div class="info-val" style="font-size:.82rem">${date}</div>
+          </div>
+          <div class="info-item">
+            <label>Customer Name</label>
+            <div class="info-val">${name}</div>
+          </div>
+          <div class="info-item">
+            <label>Delivery Area</label>
+            <div class="info-val">${village}</div>
+          </div>
+        </div>
+
+        <hr class="section-sep">
+
+        <!-- Items -->
+        <div class="section-label">
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/></svg>
+          Items Ordered
+        </div>
+        ${renderItems(items)}
+
+        <hr class="section-sep">
+
+        <!-- Financial Summary -->
+        <div class="section-label">
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+          Financial Summary
+        </div>
+        <div class="fin-rows">
+          <div class="fin-row">
+            <span class="fin-label">Subtotal</span>
+            <span class="fin-val">₹${subtotal.toLocaleString('en-IN')}</span>
+          </div>
+          <div class="fin-row">
+            <span class="fin-label">Delivery Fee</span>
+            <span class="fin-val">₹${delivFee.toLocaleString('en-IN')}</span>
+          </div>
+          ${tax > 0 ? `<div class="fin-row">
+            <span class="fin-label">Tax</span>
+            <span class="fin-val">₹${tax.toLocaleString('en-IN')}</span>
+          </div>` : ''}
+          <div class="fin-row fin-total">
+            <span class="fin-label">Grand Total</span>
+            <span class="fin-val">₹${grand.toLocaleString('en-IN')}</span>
+          </div>
+          ${advance > 0 ? `
+          <div class="fin-row fin-advance">
+            <span class="fin-label">Advance Paid</span>
+            <span class="fin-val">- ₹${advance.toLocaleString('en-IN')}</span>
+          </div>
+          <div class="fin-row fin-remaining">
+            <span class="fin-label">Remaining to Pay</span>
+            <span class="fin-val">₹${remaining.toLocaleString('en-IN')}</span>
+          </div>` : ''}
+        </div>
+
+        <hr class="section-sep">
+
+        <!-- Payment Details -->
+        <div class="section-label">
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+          Payment Details
+        </div>
+        <div class="pay-details">
+          <div class="pay-row">
+            <span class="pay-label">Payment Type</span>
+            <span class="pay-val">${payType}</span>
+          </div>
+          <div class="pay-row">
+            <span class="pay-label">Payment Status</span>
+            <span class="pay-val">${payChip(payStatus)}</span>
+          </div>
+          ${utr !== '—' ? `<div class="pay-row">
+            <span class="pay-label">UTR Number</span>
+            <span class="pay-val" style="font-family:monospace;letter-spacing:.5px">${utr}</span>
+          </div>` : ''}
+        </div>
+
+        <hr class="section-sep">
+
+        <!-- Status Timeline -->
+        <div class="section-label">
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+          Delivery Status
+        </div>
+        ${renderTimeline(status)}
+
+        <!-- Download Invoice -->
+        <button class="download-btn" onclick='downloadInvoice(${JSON.stringify(o).replace(/'/g,"&#39;")})'>
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Invoice PDF
+        </button>
+
+      </div><!-- /.accordion-inner -->
+    </div><!-- /.accordion-body -->
+  </div>`;
+}
+
+/* ── Toggle accordion ── */
+window.toggleAccordion = function(idx) {
+  const body   = document.getElementById(`body-${idx}`);
+  const toggle = document.getElementById(`toggle-${idx}`);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  toggle.classList.toggle('open', !isOpen);
+  toggle.querySelector('span:first-child').textContent =
+    isOpen ? 'View Order Details' : 'Hide Order Details';
+};
+
+/* ── Download Invoice PDF ── */
+window.downloadInvoice = function(o) {
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const W = 210, pad = 18;
+    let y = pad;
+
+    /* --- Header --- */
+    doc.setFillColor(255, 107, 0);
+    doc.rect(0, 0, W, 40, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(22);
+    doc.text('KashRun', pad, 18);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Kulgam District Food Delivery', pad, 26);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('ORDER INVOICE', W - pad, 22, { align: 'right' });
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    const id = o.orderId || '—';
+    doc.text(id, W - pad, 30, { align: 'right' });
+    y = 54;
+
+    /* --- Order Meta --- */
+    doc.setTextColor(30, 41, 59);
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Order Information', pad, y);
+    y += 6;
+    doc.setDrawColor(226, 232, 240);
+    doc.line(pad, y, W - pad, y); y += 5;
+
+    const date   = fmtDate(o.createdAt);
+    const name   = o.customerName || o.name || '—';
+    const area   = maskVillage(o.village || o.deliveryArea || o.area || '');
+    const status = o.status || 'Pending';
+
+    const meta = [
+      ['Order ID', id],
+      ['Order Date', date],
+      ['Customer Name', name],
+      ['Delivery Area', area],
+      ['Order Status', status],
+    ];
+    doc.setFontSize(9);
+    meta.forEach(([lbl, val]) => {
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(100, 116, 139);
+      doc.text(lbl + ':', pad, y);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(15, 23, 42);
+      doc.text(String(val), 70, y);
+      y += 7;
+    });
+    y += 4;
+
+    /* --- Items --- */
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(30, 41, 59);
+    doc.text('Items Ordered', pad, y); y += 6;
+    doc.setDrawColor(226, 232, 240);
+    doc.line(pad, y, W - pad, y); y += 5;
+
+    /* Table header */
+    doc.setFillColor(248, 250, 252);
+    doc.rect(pad, y - 3, W - 2 * pad, 8, 'F');
+    doc.setFontSize(8.5);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(100, 116, 139);
+    doc.text('Item', pad + 1, y + 2);
+    doc.text('Size', 110, y + 2);
+    doc.text('Qty', 145, y + 2);
+    doc.text('Price', W - pad - 1, y + 2, { align: 'right' });
+    y += 9;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(15, 23, 42);
+    const items = o.items || [];
+    items.forEach(it => {
+      const linePrice = (it.price || 0) * (it.quantity || 1);
+      doc.setFontSize(8.5);
+      doc.text(String(it.name || '—').substring(0, 30), pad + 1, y);
+      doc.text(String(it.selectedSize || '—'), 110, y);
+      doc.text(String(it.quantity || 1), 145, y);
+      doc.text('₹' + linePrice.toLocaleString('en-IN'), W - pad - 1, y, { align: 'right' });
+      y += 7;
+    });
+    y += 4;
+
+    /* --- Financial Summary --- */
+    const subtotal = Number(o.subtotal || o.itemsTotal || 0);
+    const delivFee = Number(o.deliveryFee || o.deliveryCharge || 0);
+    const tax      = Number(o.tax || 0);
+    const grand    = Number(o.totalAmount || o.grandTotal || (subtotal + delivFee + tax));
+    const advance  = Number(o.advancePaid || 0);
+    const remaining= Math.max(grand - advance, 0);
+
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(30, 41, 59);
+    doc.text('Financial Summary', pad, y); y += 6;
+    doc.setDrawColor(226, 232, 240);
+    doc.line(pad, y, W - pad, y); y += 5;
+
+    const finRows = [
+      ['Subtotal', '₹' + subtotal.toLocaleString('en-IN')],
+      ['Delivery Fee', '₹' + delivFee.toLocaleString('en-IN')],
+      ...(tax > 0 ? [['Tax', '₹' + tax.toLocaleString('en-IN')]] : []),
+      ['Grand Total', '₹' + grand.toLocaleString('en-IN')],
+      ...(advance > 0 ? [
+        ['Advance Paid', '- ₹' + advance.toLocaleString('en-IN')],
+        ['Remaining to Pay', '₹' + remaining.toLocaleString('en-IN')],
+      ] : []),
+    ];
+    doc.setFontSize(9);
+    finRows.forEach(([lbl, val], i) => {
+      const isGrand = lbl === 'Grand Total';
+      if (isGrand) {
+        doc.setDrawColor(226, 232, 240);
+        doc.line(pad, y - 2, W - pad, y - 2);
+      }
+      doc.setFont('helvetica', isGrand ? 'bold' : 'normal');
+      doc.setTextColor(isGrand ? 255 : 100, isGrand ? 107 : 116, isGrand ? 0 : 139);
+      doc.text(lbl, pad, y);
+      doc.setTextColor(isGrand ? 255 : 15, isGrand ? 107 : 23, isGrand ? 0 : 42);
+      doc.text(String(val), W - pad, y, { align: 'right' });
+      y += 7;
+    });
+    y += 4;
+
+    /* --- Payment Details --- */
+    const payType   = o.paymentType   || o.paymentMethod || '—';
+    const payStatus = o.paymentStatus || '—';
+    const utr       = o.utrNumber || o.utr || '';
+
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(30, 41, 59);
+    doc.text('Payment Details', pad, y); y += 6;
+    doc.setDrawColor(226, 232, 240);
+    doc.line(pad, y, W - pad, y); y += 5;
+
+    const payRows = [
+      ['Payment Type', payType],
+      ['Payment Status', payStatus],
+      ...(utr ? [['UTR Number', utr]] : []),
+    ];
+    doc.setFontSize(9);
+    payRows.forEach(([lbl, val]) => {
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(100, 116, 139);
+      doc.text(lbl + ':', pad, y);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(15, 23, 42);
+      doc.text(String(val), 70, y);
+      y += 7;
+    });
+
+    /* --- Footer --- */
+    const pageH = 297;
+    doc.setFillColor(248, 250, 252);
+    doc.rect(0, pageH - 20, W, 20, 'F');
+    doc.setTextColor(148, 163, 184);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.text('KashRun – Kulgam Food Delivery  |  This is a system-generated invoice.', W / 2, pageH - 9, { align: 'center' });
+
+    doc.save(`KashRun-${id}-Invoice.pdf`);
+    showToast('✅ Invoice downloaded!');
+  } catch (err) {
+    console.error('PDF error:', err);
+    showToast('⚠️ Could not generate PDF. Please try again.');
+  }
+};
+
+/* ── Main search ── */
+window.trackOrder = async function() {
+  const rawId    = document.getElementById('inputOrderId').value.trim();
+  const rawPhone = document.getElementById('inputPhone').value.trim();
+
+  if (!rawId && !rawPhone) {
+    showToast('Please enter an Order ID or Phone Number.');
+    return;
+  }
+
+  const loader  = document.getElementById('loader');
+  const results = document.getElementById('results');
+  loader.style.display  = 'block';
+  results.style.display = 'none';
+  results.innerHTML     = '';
+
+  try {
+    let orders = [];
+
+    if (rawId) {
+      /* Search by Order ID (case-insensitive: try uppercase) */
+      const q = query(collection(db, 'orders'), where('orderId', '==', rawId.toUpperCase()));
+      const snap = await getDocs(q);
+      snap.forEach(d => orders.push(d.data()));
+    } else {
+      /* Search by Phone Number – show all orders, newest first */
+      const q = query(collection(db, 'orders'), where('phoneNumber', '==', rawPhone));
+      const snap = await getDocs(q);
+      snap.forEach(d => orders.push(d.data()));
+      orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
+
+    loader.style.display  = 'none';
+    results.style.display = 'block';
+
+    if (!orders.length) {
+      results.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">🔍</div>
+          <h3>No Orders Found</h3>
+          <p>No orders found. Please check your Order ID or Phone Number.</p>
+        </div>`;
+      return;
+    }
+
+    results.innerHTML = orders.map((o, i) => renderOrder(o, i)).join('');
+
+  } catch (err) {
+    loader.style.display  = 'none';
+    results.style.display = 'block';
+    results.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">⚠️</div>
+        <h3>Something Went Wrong</h3>
+        <p>Unable to fetch your order. Please try again.</p>
+      </div>`;
+    console.error('Firestore error:', err);
+    showToast('Error fetching order. Please try again.');
+  }
+};
+
+/* ── Toast ── */
+let toastTimer;
+window.showToast = function(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+};
+
+/* ── Auto-track from URL param ── */
+const params = new URLSearchParams(window.location.search);
+const pid    = params.get('orderId');
+if (pid) {
+  document.getElementById('inputOrderId').value = pid;
+  window.trackOrder();
+}
+</script>
+</body>
+</html>
