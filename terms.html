@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms & Conditions — KashRun Food Delivery</title>
+  <meta name="description" content="Read KashRun's Terms & Conditions for food delivery services across selected areas in Kashmir. Understand our policies on orders, payments, cancellations, and more." />
+  <meta name="keywords" content="KashRun terms, food delivery Kashmir, KashRun conditions, Kulgam food delivery" />
+  <meta property="og:title" content="Terms & Conditions — KashRun" />
+  <meta property="og:description" content="KashRun food delivery service terms, conditions, and policies." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Tokens ── */
+    :root {
+      --bg:        #F7F3EE;
+      --bg-card:   #FFFFFF;
+      --border:    #E8E0D4;
+      --text:      #1A1612;
+      --sub:       #6B6560;
+      --accent:    #FF6B00;
+      --accent-lo: rgba(255,107,0,.10);
+      --accent-glow: rgba(255,107,0,.25);
+      --amber:     #FFB347;
+      --hero-top:  #1A0A00;
+      --hero-bot:  #2D1200;
+      --pill-bg:   #FF6B00;
+      --pill-text: #FFFFFF;
+      --shadow:    0 2px 16px rgba(0,0,0,.07);
+      --radius:    14px;
+      --speed:     0.35s;
+    }
+    [data-theme="dark"] {
+      --bg:        #0F0D0B;
+      --bg-card:   #1C1815;
+      --border:    #2E2822;
+      --text:      #F0EAE0;
+      --sub:       #9A9088;
+      --accent-lo: rgba(255,107,0,.13);
+      --accent-glow: rgba(255,107,0,.30);
+      --shadow:    0 2px 20px rgba(0,0,0,.40);
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background var(--speed), color var(--speed);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Theme Toggle ── */
+    .theme-btn {
+      position: fixed;
+      top: 18px; right: 18px;
+      z-index: 999;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow);
+      transition: background var(--speed), border var(--speed), transform .2s;
+    }
+    .theme-btn:hover { transform: scale(1.08); }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(160deg, var(--hero-top) 0%, var(--hero-bot) 60%, #5C2800 100%);
+      padding: 72px 24px 64px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 80%, rgba(255,107,0,.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,107,0,.15);
+      border: 1px solid rgba(255,107,0,.35);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 24px;
+    }
+    .hero-eyebrow span { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); display: inline-block; }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 6vw, 3.4rem);
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .hero-sub {
+      font-size: .95rem;
+      color: rgba(255,255,255,.55);
+      max-width: 480px;
+      margin: 0 auto 28px;
+      line-height: 1.6;
+      font-weight: 300;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: .8rem;
+      color: rgba(255,255,255,.5);
+      font-weight: 400;
+    }
+    .hero-badge svg { flex-shrink: 0; }
+
+    /* ── Nav breadcrumb ── */
+    .breadcrumb {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      font-size: .78rem;
+      color: var(--sub);
+    }
+    .breadcrumb a { color: var(--accent); font-weight: 500; }
+
+    /* ── Layout ── */
+    .main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    /* ── Intro card ── */
+    .intro-card {
+      background: var(--accent-lo);
+      border: 1px solid var(--accent-glow);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      margin-bottom: 36px;
+      display: flex; gap: 14px; align-items: flex-start;
+    }
+    .intro-card .icon {
+      font-size: 22px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .intro-card p {
+      font-size: .875rem;
+      color: var(--sub);
+      line-height: 1.6;
+    }
+    .intro-card strong { color: var(--text); font-weight: 600; }
+
+    /* ── Section heading (above accordion group) ── */
+    .section-label {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+      padding-left: 2px;
+    }
+
+    /* ── Accordion ── */
+    .accordion { margin-bottom: 10px; }
+
+    .acc-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 8px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: border-color var(--speed), box-shadow var(--speed);
+    }
+    .acc-item.open {
+      border-color: var(--accent-glow);
+      box-shadow: 0 0 0 3px var(--accent-lo), var(--shadow);
+    }
+
+    .acc-trigger {
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+    }
+    .acc-trigger:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+      border-radius: var(--radius);
+    }
+
+    .acc-num {
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: .7rem;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: .02em;
+      transition: transform .2s;
+    }
+    .acc-item.open .acc-num {
+      transform: scale(1.08);
+    }
+
+    .acc-title {
+      flex: 1;
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+    }
+    .acc-item.open .acc-title { color: var(--accent); }
+
+    .acc-chevron {
+      flex-shrink: 0;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--border);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform var(--speed), background var(--speed);
+      color: var(--sub);
+    }
+    .acc-item.open .acc-chevron {
+      transform: rotate(180deg);
+      background: var(--accent-lo);
+      color: var(--accent);
+    }
+    .acc-chevron svg { display: block; }
+
+    .acc-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .4s cubic-bezier(.4,0,.2,1), opacity .3s ease;
+      opacity: 0;
+    }
+    .acc-item.open .acc-body {
+      opacity: 1;
+    }
+
+    .acc-content {
+      padding: 4px 20px 22px 66px;
+      font-size: .875rem;
+      line-height: 1.72;
+      color: var(--sub);
+    }
+    .acc-content p { margin-bottom: 10px; }
+    .acc-content p:last-child { margin-bottom: 0; }
+    .acc-content ul {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .acc-content ul li {
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .acc-content ul li::before {
+      content: '';
+      display: block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      margin-top: 7px;
+    }
+
+    /* ── Contact card ── */
+    .contact-section { margin-top: 48px; }
+    .contact-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .contact-sub {
+      font-size: .83rem;
+      color: var(--sub);
+      margin-bottom: 22px;
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .contact-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      display: flex; align-items: center; gap: 14px;
+      box-shadow: var(--shadow);
+      transition: border-color .2s, transform .2s;
+    }
+    .contact-item:hover {
+      border-color: var(--accent-glow);
+      transform: translateY(-2px);
+    }
+    .contact-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: var(--accent-lo);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .contact-label {
+      font-size: .7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      color: var(--sub);
+      margin-bottom: 3px;
+    }
+    .contact-val {
+      font-size: .85rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .contact-val a { color: var(--accent); }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: 28px 24px;
+      text-align: center;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .footer-meta {
+      font-size: .75rem;
+      color: var(--sub);
+      line-height: 1.7;
+    }
+    .footer-meta a { color: var(--sub); text-decoration: underline; }
+
+    /* ── Progress bar ── */
+    .progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--amber));
+      width: 0%;
+      z-index: 1000;
+      transition: width .1s linear;
+      border-radius: 0 2px 2px 0;
+    }
+
+    /* ── Back to top ── */
+    .back-top {
+      position: fixed;
+      bottom: 24px; right: 18px;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px var(--accent-glow);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity .3s, transform .3s;
+      z-index: 998;
+    }
+    .back-top.visible { opacity: 1; transform: translateY(0); }
+    .back-top:hover { filter: brightness(1.1); }
+
+    /* ── Reduced motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      .acc-body { transition: none; }
+      .acc-chevron { transition: none; }
+    }
+
+    /* ── Mobile tweaks ── */
+    @media (max-width: 520px) {
+      .acc-content { padding-left: 20px; }
+      .hero { padding: 56px 20px 48px; }
+      .acc-trigger { padding: 16px; gap: 12px; }
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .animate-in {
+      animation: fadeUp .5s ease both;
+    }
+    .acc-item { animation: fadeUp .4s ease both; }
+  </style>
+</head>
+<body>
+
+  <!-- Progress bar -->
+  <div class="progress-bar" id="progress"></div>
+
+  <!-- Theme toggle -->
+  <button class="theme-btn" id="themeBtn" aria-label="Toggle dark mode">🌙</button>
+
+  <!-- Back to top -->
+  <button class="back-top" id="backTop" aria-label="Back to top">↑</button>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-eyebrow"><span></span>Legal Document</div>
+    <h1>Terms &amp; <em>Conditions</em></h1>
+    <p class="hero-sub">Please read these terms carefully before using KashRun's food delivery services.</p>
+    <div class="hero-badge">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.5" stroke="rgba(255,255,255,.4)" stroke-width="1"/><path d="M6.5 4v3.5L8 9" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round"/></svg>
+      Last Updated: June 2026
+    </div>
+  </section>
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="index.html">Home</a> &rsaquo; Terms &amp; Conditions
+  </nav>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Intro notice -->
+    <div class="intro-card animate-in">
+      <div class="icon">📋</div>
+      <p>By accessing or using KashRun's services, you agree to be bound by these Terms and Conditions. <strong>If you do not agree with any part of these terms, you may not use our services.</strong> Tap any section below to expand it.</p>
+    </div>
+
+    <!-- Accordion -->
+    <div class="section-label">All Sections — Tap to Expand</div>
+    <div class="accordion" id="accordion">
+
+      <div class="acc-item" style="animation-delay:.05s">
+        <button class="acc-trigger" aria-expanded="false" data-idx="0">
+          <span class="acc-num">01</span>
+          <span class="acc-title">Acceptance of Terms</span>
+          <span class="acc-chevron"><svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p>By accessing or using KashRun's services, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, you may not use our services.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" style="animation-delay:.1s">
+        <button class="acc-trigger" aria-expanded="false" data-idx="1">
+          <span class="acc-num">02</span>
+          <span class="acc-title">Service Description</span>
+          <span class="acc-chevron"><svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p>KashRun is a food delivery platform that connects customers with local food providers and facilitates the ordering and delivery of food items across selected areas in Kashmir.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" style="animation-delay:.15s">
+        <button class="acc-trigger" aria-expanded="false" data-idx="2">
+          <span class="acc-num">03</span>
+          <span class="acc-title">Service Availability</span>
+          <span class="acc-chevron"><svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p>Currently, KashRun delivery services are available only in selected serviceable areas. Orders outside our service area may not be accepted.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" style="animation-delay:.2s">
+        <button class="acc-trigger" aria-expanded="false" data-idx="3">
+          <span class="acc-num">04</span>
+          <span class="acc-title">Orders and Payments</span>
+          <span class="acc-chevron"><svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content">
+            <ul>
+              <li>Customers may order food items through the KashRun platform.</li>
+              <li>A small advance payment may be required to confirm orders.</li>
+              <li>Remaining payment, if any, must be paid at the time of delivery.</li>
+              <li>Customers are responsible for providing accurate payment and delivery information.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" style="animation-delay:.25s">
+        <button class="acc-trigger" aria-expanded="false" data-idx="4">
+          <span class="acc-num">05</span>
+          <span class="acc-title">Delivery</span>
+          <span class="acc-chevron"><svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content">
+            <ul>
+              <li>Estimated delivery time is approximately 1 hour but may vary depending on weather, traffic, restaurant preparation time, and other unforeseen circumstances.</li>
+              <li>KashRun is not responsible for delays beyond our reasonable control.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" style="animation-delay:.3s">
+        <button class="acc-trigger" aria-expanded="false" data-idx="5">
+          <span class="acc-num">06</span>
+          <span class="acc-title">Cancellation and Refund</span>
+          <span class="acc-chevron"><svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content">
+            <ul>
+              <li>Orders may be cancelled only before the restaurant starts preparing the order.</li>
+              <li>Advance payments for confirmed and prepared orders are non-refundable.</li>
+              <li>Refund requests will be reviewed on a case-by-case basis.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" style="animation-delay:.35s">
+        <button class="acc-trigger" aria-expanded="false" data-idx="6">
+          <span class="acc-num">07</span>
+          <span class="acc-title">User Conduct</span>
+          <span class="acc-chevron"><svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content">
+            <ul>
+              <li>Users must provide accurate information while placing orders.</li>
+              <li>Users agree not to misuse the platform or engage in fraudulent activities.</li>
+              <li>KashRun reserves the right to suspend or permanently block accounts involved in suspicious activities or fake orders.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" style="animation-delay:.4s">
+        <button class="acc-trigger" aria-expanded="false" data-idx="7">
+          <span class="acc-num">08</span>
+          <span class="acc-title">Privacy</span>
+          <span class="acc-chevron"><svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p>Customer information is collected solely for order processing, delivery, and customer support purposes. Please review our Privacy Policy for more details.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" style="animation-delay:.45s">
+        <button class="acc-trigger" aria-expanded="false" data-idx="8">
+          <span class="acc-num">09</span>
+          <span class="acc-title">Intellectual Property</span>
+          <span class="acc-chevron"><svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p>All content, logos, designs, text, and materials available on KashRun are the property of KashRun and are protected under applicable intellectual property laws.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" style="animation-delay:.5s">
+        <button class="acc-trigger" aria-expanded="false" data-idx="9">
+          <span class="acc-num">10</span>
+          <span class="acc-title">Limitation of Liability</span>
+          <span class="acc-chevron"><svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p>KashRun shall not be liable for any direct, indirect, incidental, or consequential damages arising from the use or inability to use our services.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" style="animation-delay:.55s">
+        <button class="acc-trigger" aria-expanded="false" data-idx="10">
+          <span class="acc-num">11</span>
+          <span class="acc-title">Changes to Terms</span>
+          <span class="acc-chevron"><svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p>KashRun reserves the right to update or modify these Terms &amp; Conditions at any time without prior notice.</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /accordion -->
+
+    <!-- Contact Section -->
+    <section class="contact-section animate-in">
+      <div class="contact-title">Get in Touch</div>
+      <p class="contact-sub">Have a question about these terms? Reach out to us directly.</p>
+      <div class="contact-grid">
+        <div class="contact-item">
+          <div class="contact-icon">✉️</div>
+          <div>
+            <div class="contact-label">Email</div>
+            <div class="contact-val"><a href="mailto:kashrun.in@gmail.com">kashrun.in@gmail.com</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📞</div>
+          <div>
+            <div class="contact-label">Phone</div>
+            <div class="contact-val"><a href="tel:+918082460988">+91 8082460988</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">💬</div>
+          <div>
+            <div class="contact-label">WhatsApp</div>
+            <div class="contact-val"><a href="https://wa.me/918082460988" target="_blank" rel="noopener">+91 8082460988</a></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-logo">🍱 KashRun</div>
+    <div class="footer-meta">
+      &copy; 2026 KashRun. All rights reserved.<br/>
+      Last Updated: <strong>June 2026</strong><br/>
+      <small>Delivering taste across Kashmir</small>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Dark mode ── */
+    const themeBtn = document.getElementById('themeBtn');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    let dark = prefersDark.matches;
+
+    function applyTheme() {
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      themeBtn.textContent = dark ? '☀️' : '🌙';
+    }
+    applyTheme();
+    themeBtn.addEventListener('click', () => { dark = !dark; applyTheme(); });
+
+    /* ── Accordion ── */
+    document.querySelectorAll('.acc-trigger').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.acc-item');
+        const body = item.querySelector('.acc-body');
+        const isOpen = item.classList.contains('open');
+
+        // Close all
+        document.querySelectorAll('.acc-item.open').forEach(el => {
+          el.classList.remove('open');
+          el.querySelector('.acc-trigger').setAttribute('aria-expanded', 'false');
+          const b = el.querySelector('.acc-body');
+          b.style.maxHeight = '0';
+        });
+
+        // Open clicked
+        if (!isOpen) {
+          item.classList.add('open');
+          btn.setAttribute('aria-expanded', 'true');
+          body.style.maxHeight = body.scrollHeight + 'px';
+        }
+      });
+    });
+
+    /* ── Progress bar ── */
+    const progress = document.getElementById('progress');
+    window.addEventListener('scroll', () => {
+      const doc = document.documentElement;
+      const pct = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
+      progress.style.width = Math.min(pct, 100) + '%';
+
+      // Back to top
+      document.getElementById('backTop').classList.toggle('visible', doc.scrollTop > 300);
+    }, { passive: true });
+
+    document.getElementById('backTop').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    /* ── URL hash: auto-open a section ── */
+    const hash = location.hash;
+    if (hash) {
+      const idx = parseInt(hash.replace('#section-', '')) - 1;
+      const trigger = document.querySelectorAll('.acc-trigger')[idx];
+      if (trigger) {
+        setTimeout(() => trigger.click(), 300);
+        trigger.closest('.acc-item').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  </script>
+</body>
+</html>
