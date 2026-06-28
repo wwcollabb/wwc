@@ -665,7 +665,7 @@ body {
     <img src="logo.png" alt="KashRun" onerror="this.style.display='none'">
     <span>
       <span class="nav-logo-text">KashRun</span>
-      <span class="nav-logo-sub">Kulgam Delivery</span>
+      <span class="nav-logo-sub">Food At Your Doorstep</span>
     </span>
   </a>
   <a href="index.html" class="back-btn">
@@ -697,7 +697,7 @@ body {
           class="search-input"
           type="text"
           id="inputOrderId"
-          placeholder="Enter Order ID  (e.g. KR1001)"
+          placeholder="Enter Order ID"
           autocomplete="off"
           autocorrect="off"
           spellcheck="false"
@@ -1253,7 +1253,7 @@ window.downloadInvoice = function(o) {
     doc.setTextColor(148, 163, 184);
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
-    doc.text('KashRun – Kulgam Food Delivery  |  This is a system-generated invoice.', W / 2, pageH - 9, { align: 'center' });
+    doc.text('KashRun – Food At Your Doorstep|  This is a system-generated invoice.', W / 2, pageH - 9, { align: 'center' });
 
     doc.save(`KashRun-${id}-Invoice.pdf`);
     showToast('✅ Invoice downloaded!');
