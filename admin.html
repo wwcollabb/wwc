@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore, collection, addDoc, getDocs, doc,
+      updateDoc, deleteDoc, query, orderBy, serverTimestamp, onSnapshot
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // ─── YOUR FIREBASE CONFIG ────────────────────────────────────────────────
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    // ─────────────────────────────────────────────────────────────────────────
+
+    const app  = initializeApp(firebaseConfig);
+    const db   = getFirestore(app);
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       PRODUCT MANAGEMENT
+    ═══════════════════════════════════════════════════════════════════════ */
+    let allProducts   = [];
+    let editingId     = null;
+
+    // ── Live listener ──────────────────────────────────────────────────────
+    const productsRef = collection(db, "products");
+
+    onSnapshot(query(productsRef, orderBy("createdAt", "desc")), (snap) => {
+      allProducts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderProducts(allProducts);
+      updateStats(allProducts);
+    });
+
+    // ── Save / Update ──────────────────────────────────────────────────────
+    window.saveProduct = async () => {
+      const name      = document.getElementById("p-name").value.trim();
+      const category  = document.getElementById("p-category").value.trim();
+      const fullPrice = parseFloat(document.getElementById("p-full-price").value);
+      const halfPrice = parseFloat(document.getElementById("p-half-price").value);
+      const image     = document.getElementById("p-image").value.trim();
+      const available = document.getElementById("p-available").value === "true";
+
+      if (!name || !category || isNaN(fullPrice) || isNaN(halfPrice)) {
+        showToast("Please fill in all required fields.", "error");
+        return;
+      }
+
+      const payload = { name, category, fullPrice, halfPrice, image, available };
+
+      try {
+        if (editingId) {
+          await updateDoc(doc(db, "products", editingId), payload);
+          showToast("Product updated!", "success");
+          editingId = null;
+          document.getElementById("form-title").textContent  = "Add Product";
+          document.getElementById("save-btn-text").textContent = "Save Product";
+          document.getElementById("cancel-edit-btn").style.display = "none";
+        } else {
+          payload.createdAt = serverTimestamp();
+          await addDoc(productsRef, payload);
+          showToast("Product added!", "success");
+        }
+        clearForm();
+      } catch (e) {
+        showToast("Error: " + e.message, "error");
+      }
+    };
+
+    // ── Edit ───────────────────────────────────────────────────────────────
+    window.editProduct = (id) => {
+      const p = allProducts.find(x => x.id === id);
+      if (!p) return;
+      editingId = id;
+      document.getElementById("p-name").value       = p.name       || "";
+      document.getElementById("p-category").value   = p.category   || "";
+      document.getElementById("p-full-price").value = p.fullPrice  || "";
+      document.getElementById("p-half-price").value = p.halfPrice  || "";
+      document.getElementById("p-image").value      = p.image      || "";
+      document.getElementById("p-available").value  = p.available ? "true" : "false";
+      document.getElementById("form-title").textContent   = "Edit Product";
+      document.getElementById("save-btn-text").textContent = "Update Product";
+      document.getElementById("cancel-edit-btn").style.display = "inline-flex";
+      document.getElementById("product-form-section").scrollIntoView({ behavior: "smooth" });
+    };
+
+    window.cancelEdit = () => {
+      editingId = null;
+      clearForm();
+      document.getElementById("form-title").textContent   = "Add Product";
+      document.getElementById("save-btn-text").textContent = "Save Product";
+      document.getElementById("cancel-edit-btn").style.display = "none";
+    };
+
+    // ── Delete ─────────────────────────────────────────────────────────────
+    window.deleteProduct = async (id) => {
+      if (!confirm("Permanently delete this product?")) return;
+      try {
+        await deleteDoc(doc(db, "products", id));
+        showToast("Product deleted.", "info");
+      } catch (e) {
+        showToast("Error: " + e.message, "error");
+      }
+    };
+
+    // ── Toggle availability ────────────────────────────────────────────────
+    window.toggleAvailability = async (id, current) => {
+      try {
+        await updateDoc(doc(db, "products", id), { available: !current });
+        showToast(!current ? "Marked as Available." : "Marked as Out of Stock.", "success");
+      } catch (e) {
+        showToast("Error: " + e.message, "error");
+      }
+    };
+
+    // ── Search ─────────────────────────────────────────────────────────────
+    window.searchProducts = () => {
+      const q = document.getElementById("search-input").value.toLowerCase();
+      const filtered = allProducts.filter(p =>
+        p.name?.toLowerCase().includes(q) ||
+        p.category?.toLowerCase().includes(q)
+      );
+      renderProducts(filtered);
+    };
+
+    // ── Render cards ───────────────────────────────────────────────────────
+    function renderProducts(list) {
+      const grid = document.getElementById("products-grid");
+      if (!list.length) {
+        grid.innerHTML = `<div class="empty-state">
+          <span class="empty-icon">📦</span>
+          <p>No products found.</p>
+        </div>`;
+        return;
+      }
+      grid.innerHTML = list.map(p => `
+        <div class="product-card ${p.available ? "" : "unavailable"}">
+          <div class="product-img-wrap">
+            ${p.image
+              ? `<img src="${escHtml(p.image)}" alt="${escHtml(p.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />`
+              : ""}
+            <div class="product-img-placeholder" style="${p.image ? "display:none" : "display:flex"}">🖼️</div>
+            <span class="availability-badge ${p.available ? "badge-available" : "badge-oos"}">
+              ${p.available ? "Available" : "Out of Stock"}
+            </span>
+          </div>
+          <div class="product-info">
+            <p class="product-category">${escHtml(p.category)}</p>
+            <h3 class="product-name">${escHtml(p.name)}</h3>
+            <div class="product-prices">
+              <span class="price-full">Full: <strong>$${Number(p.fullPrice).toFixed(2)}</strong></span>
+              <span class="price-half">Half: <strong>$${Number(p.halfPrice).toFixed(2)}</strong></span>
+            </div>
+          </div>
+          <div class="product-actions">
+            <button class="btn btn-toggle ${p.available ? "btn-oos" : "btn-avail"}"
+              onclick="toggleAvailability('${p.id}', ${p.available})">
+              ${p.available ? "Mark Out of Stock" : "Mark Available"}
+            </button>
+            <div class="product-actions-row">
+              <button class="btn btn-edit" onclick="editProduct('${p.id}')">✏️ Edit</button>
+              <button class="btn btn-delete" onclick="deleteProduct('${p.id}')">🗑️ Delete</button>
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // ── Stats ──────────────────────────────────────────────────────────────
+    function updateStats(list) {
+      const total = list.length;
+      const avail = list.filter(p => p.available).length;
+      const oos   = total - avail;
+      document.getElementById("stat-total").textContent = total;
+      document.getElementById("stat-avail").textContent = avail;
+      document.getElementById("stat-oos").textContent   = oos;
+    }
+
+    // ── Helpers ────────────────────────────────────────────────────────────
+    function clearForm() {
+      ["p-name","p-category","p-full-price","p-half-price","p-image"].forEach(id => {
+        document.getElementById(id).value = "";
+      });
+      document.getElementById("p-available").value = "true";
+    }
+
+    function escHtml(str) {
+      return String(str ?? "")
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+
+    function showToast(msg, type = "success") {
+      const t = document.getElementById("toast");
+      t.textContent  = msg;
+      t.className    = `toast toast-${type} show`;
+      setTimeout(() => t.classList.remove("show"), 3000);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       ORDER MANAGEMENT  (add your existing order logic below)
+    ═══════════════════════════════════════════════════════════════════════ */
+    // Attach to window so inline handlers work
+    window.showSection = (id) => {
+      document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+      document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+      document.getElementById(id)?.classList.add("active");
+      document.querySelector(`[data-target="${id}"]`)?.classList.add("active");
+      document.getElementById("mobile-menu").classList.remove("open");
+    };
+  </script>
+
+  <style>
+    /* ── Reset & base ───────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary:    #6c47ff;
+      --primary-dk: #4f32c0;
+      --accent:     #ff6b35;
+      --success:    #22c55e;
+      --danger:     #ef4444;
+      --warn:       #f59e0b;
+      --bg:         #0f0f14;
+      --surface:    #1a1a24;
+      --surface2:   #22222e;
+      --border:     #2e2e3e;
+      --text:       #f0f0f5;
+      --text-muted: #9090a8;
+      --radius:     12px;
+      --radius-sm:  8px;
+      --shadow:     0 4px 24px rgba(0,0,0,.45);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ── Layout ─────────────────────────────────────────────────────────── */
+    .app { display: flex; min-height: 100vh; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px; flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      position: sticky; top: 0; height: 100vh;
+      overflow-y: auto;
+    }
+    .sidebar-logo {
+      padding: 24px 20px 16px;
+      font-size: 1.25rem; font-weight: 700;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+      letter-spacing: -.3px;
+    }
+    .sidebar-logo span { color: var(--text); font-weight: 400; }
+    .nav { padding: 12px 0; flex: 1; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 20px; cursor: pointer;
+      color: var(--text-muted); font-size: .93rem;
+      border-left: 3px solid transparent;
+      transition: all .18s;
+    }
+    .nav-item:hover { color: var(--text); background: var(--surface2); }
+    .nav-item.active { color: var(--primary); border-left-color: var(--primary); background: rgba(108,71,255,.1); }
+    .nav-icon { font-size: 1.1rem; }
+
+    /* Main */
+    .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px; display: flex;
+      align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .topbar-title { font-size: 1.1rem; font-weight: 600; }
+    .hamburger {
+      display: none; background: none; border: none;
+      color: var(--text); font-size: 1.4rem; cursor: pointer;
+    }
+    .content { flex: 1; padding: 24px; max-width: 1280px; width: 100%; margin: 0 auto; }
+
+    /* Mobile sidebar overlay */
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.6); z-index: 200;
+    }
+    .sidebar.mobile-open { position: fixed; inset: 0 auto 0 0; z-index: 201; }
+
+    /* ── Sections ───────────────────────────────────────────────────────── */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* ── Page header ────────────────────────────────────────────────────── */
+    .page-header { margin-bottom: 24px; }
+    .page-header h1 { font-size: 1.5rem; font-weight: 700; }
+    .page-header p { color: var(--text-muted); font-size: .9rem; margin-top: 4px; }
+
+    /* ── Stats ──────────────────────────────────────────────────────────── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px; margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 16px; text-align: center;
+    }
+    .stat-value { font-size: 2rem; font-weight: 800; line-height: 1; }
+    .stat-label { font-size: .8rem; color: var(--text-muted); margin-top: 4px; }
+    .stat-total .stat-value  { color: var(--primary); }
+    .stat-avail .stat-value  { color: var(--success); }
+    .stat-oos   .stat-value  { color: var(--danger); }
+
+    /* ── Form card ──────────────────────────────────────────────────────── */
+    .form-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px; margin-bottom: 28px;
+    }
+    .form-card-title {
+      font-size: 1rem; font-weight: 700;
+      margin-bottom: 20px; display: flex;
+      align-items: center; gap: 8px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: .82rem; color: var(--text-muted); font-weight: 500; }
+    input, select, textarea {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      padding: 10px 14px;
+      font-size: .92rem;
+      transition: border-color .18s;
+      width: 100%;
+      font-family: inherit;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(108,71,255,.2);
+    }
+    input::placeholder { color: var(--text-muted); }
+    .form-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+
+    /* ── Buttons ────────────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 6px; border: none; border-radius: var(--radius-sm);
+      padding: 10px 18px; font-size: .88rem; font-weight: 600;
+      cursor: pointer; transition: all .18s; white-space: nowrap;
+    }
+    .btn-primary  { background: var(--primary); color: #fff; }
+    .btn-primary:hover  { background: var(--primary-dk); }
+    .btn-outline  { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover  { background: var(--surface2); }
+    .btn-edit     { background: rgba(108,71,255,.15); color: var(--primary); font-size:.82rem; padding:7px 12px; }
+    .btn-edit:hover   { background: rgba(108,71,255,.3); }
+    .btn-delete   { background: rgba(239,68,68,.12); color: var(--danger); font-size:.82rem; padding:7px 12px; }
+    .btn-delete:hover { background: rgba(239,68,68,.25); }
+    .btn-avail    { background: rgba(34,197,94,.12); color: var(--success); font-size:.8rem; padding:6px 12px; }
+    .btn-avail:hover { background: rgba(34,197,94,.25); }
+    .btn-oos      { background: rgba(245,158,11,.12); color: var(--warn); font-size:.8rem; padding:6px 12px; }
+    .btn-oos:hover { background: rgba(245,158,11,.25); }
+    .btn-toggle   { width: 100%; border-radius: var(--radius-sm); }
+
+    /* ── Search ─────────────────────────────────────────────────────────── */
+    .search-wrap {
+      position: relative; margin-bottom: 24px;
+    }
+    .search-icon {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted); pointer-events: none; font-size: 1rem;
+    }
+    #search-input { padding-left: 40px; }
+
+    /* ── Products grid ──────────────────────────────────────────────────── */
+    #products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .product-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .product-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+    .product-card.unavailable { opacity: .75; }
+
+    .product-img-wrap {
+      position: relative; height: 180px;
+      background: var(--surface2);
+    }
+    .product-img-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+      display: block; border-radius: 0;
+      border: none; padding: 0;
+    }
+    .product-img-placeholder {
+      width: 100%; height: 100%;
+      align-items: center; justify-content: center;
+      font-size: 3rem; color: var(--text-muted);
+    }
+    .availability-badge {
+      position: absolute; top: 10px; right: 10px;
+      border-radius: 20px; padding: 3px 10px;
+      font-size: .72rem; font-weight: 700; letter-spacing: .3px;
+    }
+    .badge-available { background: rgba(34,197,94,.2); color: var(--success); }
+    .badge-oos       { background: rgba(239,68,68,.2); color: var(--danger); }
+
+    .product-info { padding: 14px 16px; flex: 1; }
+    .product-category {
+      font-size: .73rem; text-transform: uppercase;
+      letter-spacing: .8px; color: var(--primary); font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .product-name { font-size: 1rem; font-weight: 700; margin-bottom: 10px; line-height: 1.3; }
+    .product-prices { display: flex; gap: 12px; font-size: .84rem; color: var(--text-muted); }
+    .product-prices strong { color: var(--text); }
+
+    .product-actions { padding: 12px 16px 16px; display: flex; flex-direction: column; gap: 8px; }
+    .product-actions-row { display: flex; gap: 8px; }
+    .product-actions-row .btn { flex: 1; }
+
+    /* ── Empty state ────────────────────────────────────────────────────── */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center; padding: 60px 20px;
+      color: var(--text-muted);
+    }
+    .empty-icon { font-size: 3rem; display: block; margin-bottom: 12px; }
+
+    /* ── Orders section ─────────────────────────────────────────────────── */
+    .orders-placeholder {
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 60px 24px; text-align: center;
+      color: var(--text-muted);
+    }
+    .orders-placeholder .big-icon { font-size: 3rem; display: block; margin-bottom: 16px; }
+
+    /* ── Toast ──────────────────────────────────────────────────────────── */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+      padding: 12px 20px; border-radius: var(--radius-sm);
+      font-size: .88rem; font-weight: 600;
+      opacity: 0; transform: translateY(12px);
+      transition: all .25s; pointer-events: none;
+      max-width: 320px;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast-success { background: var(--success); color: #fff; }
+    .toast-error   { background: var(--danger);  color: #fff; }
+    .toast-info    { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+
+    /* ── Responsive ─────────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .sidebar.mobile-open { display: flex; width: 240px; }
+      .sidebar-overlay.visible { display: block; }
+      .hamburger { display: block; }
+      .content { padding: 16px; }
+      .topbar { padding: 12px 16px; }
+      .stats-row { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+      .stat-card { padding: 14px 8px; }
+      .stat-value { font-size: 1.5rem; }
+      .form-card { padding: 16px; }
+      #products-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 400px) {
+      .stats-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeMobileMenu()"></div>
+
+<div class="app">
+
+  <!-- ── Sidebar ──────────────────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">Admin <span>Panel</span></div>
+    <nav class="nav">
+      <div class="nav-item active" data-target="orders-section" onclick="showSection('orders-section')">
+        <span class="nav-icon">📋</span> Orders
+      </div>
+      <div class="nav-item" data-target="products-section" onclick="showSection('products-section')">
+        <span class="nav-icon">📦</span> Products
+      </div>
+    </nav>
+  </aside>
+
+  <!-- ── Main ─────────────────────────────────────────────────────────── -->
+  <div class="main">
+    <header class="topbar">
+      <button class="hamburger" onclick="openMobileMenu()">☰</button>
+      <div class="topbar-title" id="topbar-title">Orders</div>
+      <div style="width:32px"></div><!-- spacer -->
+    </header>
+
+    <div class="content">
+
+      <!-- ── Orders Section ─────────────────────────────────────────── -->
+      <div class="section active" id="orders-section">
+        <div class="page-header">
+          <h1>Order Management</h1>
+          <p>Track and manage all customer orders.</p>
+        </div>
+        <!-- ↓ Replace this placeholder with your existing order management HTML ↓ -->
+        <div class="orders-placeholder">
+          <span class="big-icon">📋</span>
+          <p style="font-size:1.05rem;font-weight:600;color:var(--text)">Your Order Management content goes here.</p>
+          <p style="margin-top:8px;font-size:.88rem">Paste your existing order management HTML & JS into this section.</p>
+        </div>
+        <!-- ↑ End of order management placeholder ↑ -->
+      </div>
+
+      <!-- ── Products Section ───────────────────────────────────────── -->
+      <div class="section" id="products-section">
+        <div class="page-header">
+          <h1>Product Management</h1>
+          <p>Add, edit, and manage your product catalog in real time.</p>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-row">
+          <div class="stat-card stat-total">
+            <div class="stat-value" id="stat-total">0</div>
+            <div class="stat-label">Total Products</div>
+          </div>
+          <div class="stat-card stat-avail">
+            <div class="stat-value" id="stat-avail">0</div>
+            <div class="stat-label">Available</div>
+          </div>
+          <div class="stat-card stat-oos">
+            <div class="stat-value" id="stat-oos">0</div>
+            <div class="stat-label">Out of Stock</div>
+          </div>
+        </div>
+
+        <!-- Add / Edit Form -->
+        <div class="form-card" id="product-form-section">
+          <div class="form-card-title">
+            <span>➕</span>
+            <span id="form-title">Add Product</span>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="p-name">Product Name *</label>
+              <input id="p-name" type="text" placeholder="e.g. Margherita Pizza" />
+            </div>
+            <div class="form-group">
+              <label for="p-category">Category *</label>
+              <input id="p-category" type="text" placeholder="e.g. Pizza, Drinks…" />
+            </div>
+            <div class="form-group">
+              <label for="p-full-price">Full Price ($) *</label>
+              <input id="p-full-price" type="number" min="0" step="0.01" placeholder="12.99" />
+            </div>
+            <div class="form-group">
+              <label for="p-half-price">Half Price ($) *</label>
+              <input id="p-half-price" type="number" min="0" step="0.01" placeholder="7.99" />
+            </div>
+            <div class="form-group full">
+              <label for="p-image">Image URL</label>
+              <input id="p-image" type="url" placeholder="https://example.com/image.jpg" />
+            </div>
+            <div class="form-group">
+              <label for="p-available">Availability *</label>
+              <select id="p-available">
+                <option value="true">Available</option>
+                <option value="false">Out of Stock</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="saveProduct()">
+              <span>💾</span> <span id="save-btn-text">Save Product</span>
+            </button>
+            <button class="btn btn-outline" id="cancel-edit-btn" style="display:none"
+              onclick="cancelEdit()">✕ Cancel Edit</button>
+          </div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input id="search-input" type="text"
+            placeholder="Search by name or category…"
+            oninput="searchProducts()" />
+        </div>
+
+        <!-- Products Grid -->
+        <div id="products-grid">
+          <div class="empty-state">
+            <span class="empty-icon">📦</span>
+            <p>No products yet. Add your first product above.</p>
+          </div>
+        </div>
+      </div><!-- /products-section -->
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── Section switcher title updater ────────────────────────────────────
+  const sectionTitles = {
+    "orders-section":   "Orders",
+    "products-section": "Products"
+  };
+  const _origShow = window.showSection;
+  window.showSection = (id) => {
+    _origShow(id);
+    document.getElementById("topbar-title").textContent = sectionTitles[id] || "Admin";
+  };
+
+  // ── Mobile menu ────────────────────────────────────────────────────────
+  window.openMobileMenu = () => {
+    document.getElementById("sidebar").classList.add("mobile-open");
+    document.getElementById("sidebar-overlay").classList.add("visible");
+  };
+  window.closeMobileMenu = () => {
+    document.getElementById("sidebar").classList.remove("mobile-open");
+    document.getElementById("sidebar-overlay").classList.remove("visible");
+  };
+</script>
+</body>
+</html>
