@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Partner With KashRun | Restaurant Registration</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:#f5f7fb;
+color:#333;
+}
+
+header{
+background:linear-gradient(135deg,#ff6b35,#ff914d);
+padding:60px 20px;
+text-align:center;
+color:#fff;
+}
+
+.logo{
+width:100px;
+height:100px;
+background:#fff;
+border-radius:50%;
+padding:10px;
+margin-bottom:15px;
+}
+
+.container{
+max-width:850px;
+margin:40px auto;
+padding:20px;
+}
+
+.card{
+background:#fff;
+padding:30px;
+border-radius:25px;
+box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+h1,h2{
+text-align:center;
+}
+
+h2{
+color:#ff6b35;
+margin-bottom:25px;
+}
+
+form{
+display:grid;
+gap:15px;
+}
+
+input,select,textarea{
+width:100%;
+padding:15px;
+border:1px solid #ddd;
+border-radius:12px;
+font-size:15px;
+outline:none;
+}
+
+textarea{
+min-height:120px;
+resize:vertical;
+}
+
+button{
+background:#ff6b35;
+color:#fff;
+border:none;
+padding:16px;
+border-radius:12px;
+font-size:16px;
+cursor:pointer;
+font-weight:600;
+}
+
+.success{
+display:none;
+padding:15px;
+background:#d4edda;
+color:#155724;
+border-radius:10px;
+text-align:center;
+margin-top:15px;
+}
+
+footer{
+margin-top:50px;
+background:#111;
+color:#fff;
+padding:30px;
+text-align:center;
+}
+
+@media(max-width:768px){
+.card{
+padding:20px;
+}
+}
+</style>
+</head>
+<body>
+
+<header>
+
+<img src="logo.png" class="logo">
+
+<h1>Partner With KashRun</h1>
+
+<p>Join KashRun and grow your restaurant business across Kashmir.</p>
+
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Restaurant Registration Form</h2>
+
+<form id="restaurantForm">
+
+<input type="text" id="restaurantName" placeholder="Restaurant Name" required>
+
+<input type="text" id="ownerName" placeholder="Owner Name" required>
+
+<input type="tel" id="phone" placeholder="Phone Number" required>
+
+<input type="tel" id="altPhone" placeholder="Alternative Phone Number">
+
+<input type="email" id="email" placeholder="Email Address" required>
+
+<input type="text" id="address" placeholder="Complete Restaurant Address" required>
+
+<input type="text" id="village" placeholder="Village / Town" required>
+
+<input type="number" id="pincode" placeholder="Pincode" required>
+
+<select id="restaurantType" required>
+<option value="">Restaurant Type</option>
+<option>Restaurant</option>
+<option>Cafe</option>
+<option>Bakery</option>
+<option>Fast Food</option>
+<option>Cloud Kitchen</option>
+<option>Sweet Shop</option>
+</select>
+
+<input type="time" id="openingTime" required>
+
+<input type="time" id="closingTime" required>
+
+<select id="deliveryAvailable" required>
+<option value="">Own Delivery Available?</option>
+<option>Yes</option>
+<option>No</option>
+</select>
+
+<input type="text" id="fssai" placeholder="FSSAI License Number (Optional)">
+
+<input type="number" id="experience" placeholder="Years in Business">
+
+<input type="url" id="imageUrl" placeholder="Restaurant Image URL">
+
+<textarea id="additionalInfo" placeholder="Additional Information"></textarea>
+
+<button type="submit" id="submitBtn">
+Submit Application
+</button>
+
+</form>
+
+<div class="success" id="successBox">
+✅ Application Submitted Successfully. Our team will contact you soon.
+</div>
+
+</div>
+
+</div>
+
+<footer>
+
+<h3>KashRun</h3>
+<p>Food at Your Doorstep</p>
+
+<br>
+
+<p>Email: kashrun.in@gmail.com</p>
+<p>Phone: +91 8082460988</p>
+
+</footer>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyDvViMeJbOdLvNT1163vlp7fPIXK6qJ8Qk",
+authDomain: "kashrun-6ac6a.firebaseapp.com",
+projectId: "kashrun-6ac6a",
+storageBucket: "kashrun-6ac6a.firebasestorage.app",
+messagingSenderId: "466142826836",
+appId: "1:466142826836:web:8fbcd0a829d582429ff8c1"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.getElementById("restaurantForm")
+.addEventListener("submit", async(e)=>{
+
+e.preventDefault();
+
+const btn=document.getElementById("submitBtn");
+btn.disabled=true;
+btn.innerText="Submitting...";
+
+try{
+
+await addDoc(collection(db,"restaurantApplications"),{
+
+restaurantName:restaurantName.value,
+ownerName:ownerName.value,
+phone:phone.value,
+alternativePhone:altPhone.value,
+email:email.value,
+address:address.value,
+village:village.value,
+pincode:pincode.value,
+restaurantType:restaurantType.value,
+openingTime:openingTime.value,
+closingTime:closingTime.value,
+deliveryAvailable:deliveryAvailable.value,
+fssai:fssai.value,
+experience:experience.value,
+imageUrl:imageUrl.value,
+additionalInfo:additionalInfo.value,
+
+status:"Pending",
+
+createdAt:serverTimestamp()
+
+});
+
+document.getElementById("successBox").style.display="block";
+
+document.getElementById("restaurantForm").reset();
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}catch(error){
+alert("Something went wrong.");
+console.log(error);
+}
+
+btn.disabled=false;
+btn.innerText="Submit Application";
+
+});
+
+</script>
+
+</body>
+</html>
