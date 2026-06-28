@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Page Not Found | KashRun</title>
+  <meta name="description" content="Oops! The page you are looking for does not exist.">
+  
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial,sans-serif;
+    }
+
+    body{
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background:linear-gradient(135deg,#ff6b35,#ff914d);
+      color:#fff;
+      text-align:center;
+      padding:20px;
+    }
+
+    .container{
+      max-width:500px;
+      width:100%;
+      background:rgba(255,255,255,0.1);
+      backdrop-filter:blur(10px);
+      border-radius:25px;
+      padding:40px 25px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .logo{
+      width:90px;
+      height:90px;
+      object-fit:contain;
+      margin-bottom:20px;
+    }
+
+    h1{
+      font-size:100px;
+      font-weight:700;
+      line-height:1;
+      margin-bottom:10px;
+    }
+
+    h2{
+      font-size:28px;
+      margin-bottom:15px;
+    }
+
+    p{
+      font-size:16px;
+      line-height:1.6;
+      opacity:0.9;
+      margin-bottom:30px;
+    }
+
+    .btn-group{
+      display:flex;
+      gap:15px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      text-decoration:none;
+      background:#fff;
+      color:#ff6b35;
+      padding:14px 22px;
+      border-radius:50px;
+      font-weight:bold;
+      transition:.3s;
+    }
+
+    .btn:hover{
+      transform:translateY(-3px);
+      box-shadow:0 8px 20px rgba(0,0,0,.2);
+    }
+
+    .food{
+      font-size:50px;
+      margin:20px 0;
+      animation:float 3s infinite ease-in-out;
+    }
+
+    @keyframes float{
+      0%,100%{
+        transform:translateY(0);
+      }
+      50%{
+        transform:translateY(-10px);
+      }
+    }
+
+    footer{
+      margin-top:30px;
+      font-size:14px;
+      opacity:.8;
+    }
+
+    @media(max-width:500px){
+      h1{
+        font-size:80px;
+      }
+
+      h2{
+        font-size:24px;
+      }
+
+      .btn{
+        width:100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <img src="logo.png" alt="KashRun Logo" class="logo">
+
+    <h1>404</h1>
+
+    <div class="food">🍔🍕🍟</div>
+
+    <h2>Oops! Page Not Found</h2>
+
+    <p>
+      The page you are looking for does not exist or may have been moved.
+      Let's get you back to delicious food!
+    </p>
+
+    <div class="btn-group">
+      <a href="index.html" class="btn">🏠 Back Home</a>
+      <a href="track-order.html" class="btn">📦 Track Order</a>
+    </div>
+
+    <footer>
+      <p>KashRun - Food at Your Doorstep ❤️</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
