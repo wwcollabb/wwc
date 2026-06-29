@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="KashRun – Fast food delivery across Kashmir. Order your favourite meals and get them delivered to your doorstep." />
+<meta name="theme-color" content="#ff6b35" />
+<title>KashRun – Food Delivery Across Kashmir</title>
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="logo.png" type="image/png" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+/* ══════════════════════════════════════
+   TOKENS
+══════════════════════════════════════ */
+:root {
+  --orange: #ff6b35;
+  --orange-dark: #e85a24;
+  --orange-glow: rgba(255,107,53,.18);
+  --orange-pale: #fff4ef;
+  --black: #111111;
+  --dark: #1a1a1a;
+  --dark-2: #2a2a2a;
+  --mid: #666666;
+  --light: #aaaaaa;
+  --lighter: #f4f4f4;
+  --white: #ffffff;
+  --green: #22c55e;
+  --green-pale: #dcfce7;
+  --red: #ef4444;
+  --shadow-card: 0 2px 20px rgba(0,0,0,.07);
+  --shadow-float: 0 -4px 32px rgba(0,0,0,.14);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-pill: 100px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--white);
+  color: var(--black);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ══════════════════════════════════════
+   NAVBAR
+══════════════════════════════════════ */
+nav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(0,0,0,.06);
+  padding: 0 20px;
+  transition: box-shadow .3s;
+}
+nav.scrolled { box-shadow: 0 4px 24px rgba(0,0,0,.1); }
+
+.nav-inner {
+  max-width: 1280px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+}
+
+/* Logo */
+.logo {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.logo img {
+  height: 42px; width: 42px;
+  object-fit: contain;
+  display: block;
+  border-radius: 10px;
+}
+.logo img.hidden { display: none; }
+/* Brand text — always visible next to image */
+.logo-text {
+  display: flex; align-items: center; gap: 0;
+  line-height: 1;
+}
+.logo-kash {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px; font-weight: 800;
+  color: var(--black); letter-spacing: -.5px;
+}
+.logo-run {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px; font-weight: 800;
+  color: var(--orange); letter-spacing: -.5px;
+}
+
+/* Desktop links */
+.nav-links {
+  display: flex; align-items: center; gap: 6px;
+  list-style: none;
+}
+.nav-links a {
+  text-decoration: none; color: var(--dark);
+  font-size: 14px; font-weight: 500;
+  padding: 8px 12px; border-radius: var(--radius-sm);
+  transition: all .2s; white-space: nowrap;
+}
+.nav-links a:hover { background: var(--orange-pale); color: var(--orange); }
+.nav-links a.active { color: var(--orange); font-weight: 700; }
+
+/* Right side icons */
+.nav-right { display: flex; align-items: center; gap: 8px; }
+
+.cart-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--orange); color: white;
+  border: none; border-radius: var(--radius-pill);
+  padding: 9px 16px; cursor: pointer; font-family: 'Inter', sans-serif;
+  font-size: 13px; font-weight: 700; transition: all .2s;
+  text-decoration: none;
+}
+.cart-btn:hover { background: var(--orange-dark); transform: translateY(-1px); }
+.cart-count {
+  background: white; color: var(--orange);
+  font-size: 11px; font-weight: 800;
+  min-width: 18px; height: 18px;
+  border-radius: 9px; display: inline-flex;
+  align-items: center; justify-content: center;
+  padding: 0 4px;
+}
+.cart-count-nav { display: none; }
+.cart-count-nav.has-items { display: inline-flex; }
+
+/* Hamburger */
+.hamburger {
+  display: none; flex-direction: column;
+  gap: 5px; cursor: pointer; padding: 6px; background: none; border: none;
+}
+.hamburger span {
+  width: 22px; height: 2px; background: var(--black);
+  border-radius: 2px; transition: all .3s;
+  display: block;
+}
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+/* Mobile drawer */
+.mobile-menu {
+  display: none; position: fixed;
+  top: 64px; left: 0; right: 0;
+  background: white; z-index: 199;
+  padding: 12px 20px 24px;
+  box-shadow: 0 12px 32px rgba(0,0,0,.12);
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  animation: slideDown .25s ease;
+}
+.mobile-menu.open { display: block; }
+.mobile-menu a {
+  display: block; padding: 13px 12px;
+  text-decoration: none; color: var(--dark);
+  font-size: 15px; font-weight: 500;
+  border-bottom: 1px solid var(--lighter);
+  transition: color .15s;
+}
+.mobile-menu a:last-child { border-bottom: none; }
+.mobile-menu a:hover { color: var(--orange); }
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+.hero {
+  position: relative; overflow: hidden;
+  background: var(--black);
+  min-height: calc(100svh - 64px);
+  display: flex; align-items: center;
+}
+
+/* Kashmir-themed SVG background */
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 70% 50%, rgba(255,107,53,.12) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 80% at 20% 80%, rgba(255,107,53,.06) 0%, transparent 60%),
+    var(--black);
+}
+
+/* Floating food emojis – decorative, aria-hidden */
+.hero-floats {
+  position: absolute; inset: 0; pointer-events: none;
+  overflow: hidden;
+}
+.float-item {
+  position: absolute;
+  font-size: 2.8rem;
+  opacity: .13;
+  animation: floatDrift linear infinite;
+}
+.float-item:nth-child(1)  { left: 75%; top: 10%; animation-duration: 18s; animation-delay: 0s; }
+.float-item:nth-child(2)  { left: 85%; top: 35%; animation-duration: 22s; animation-delay: -4s; font-size: 2.2rem; }
+.float-item:nth-child(3)  { left: 60%; top: 65%; animation-duration: 16s; animation-delay: -8s; font-size: 3.4rem; }
+.float-item:nth-child(4)  { left: 80%; top: 80%; animation-duration: 20s; animation-delay: -12s; }
+.float-item:nth-child(5)  { left: 55%; top: 20%; animation-duration: 24s; animation-delay: -6s; font-size: 2rem; opacity: .08; }
+.float-item:nth-child(6)  { left: 90%; top: 55%; animation-duration: 19s; animation-delay: -2s; font-size: 2.5rem; opacity: .1; }
+
+.hero-inner {
+  position: relative; z-index: 1;
+  max-width: 1280px; margin: 0 auto;
+  padding: 60px 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  width: 100%;
+}
+
+.hero-content { animation: heroIn .8s cubic-bezier(.16,1,.3,1) both; }
+
+.hero-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,107,53,.15);
+  border: 1px solid rgba(255,107,53,.3);
+  color: var(--orange);
+  font-size: 12px; font-weight: 700;
+  padding: 6px 14px; border-radius: var(--radius-pill);
+  margin-bottom: 24px; text-transform: uppercase; letter-spacing: .8px;
+}
+
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 800;
+  color: white;
+  line-height: 1.08;
+  letter-spacing: -.5px;
+  margin-bottom: 20px;
+}
+.hero-title .accent { color: var(--orange); }
+
+.hero-sub {
+  font-size: clamp(15px, 2vw, 17px);
+  color: rgba(255,255,255,.65);
+  line-height: 1.65;
+  max-width: 440px;
+  margin-bottom: 36px;
+}
+
+.hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.btn-hero-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--orange); color: white;
+  text-decoration: none; font-weight: 700; font-size: 15px;
+  padding: 14px 28px; border-radius: var(--radius-pill);
+  transition: all .22s;
+  box-shadow: 0 4px 20px rgba(255,107,53,.4);
+}
+.btn-hero-primary:hover { background: var(--orange-dark); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(255,107,53,.5); }
+
+.btn-hero-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.18);
+  color: white; text-decoration: none;
+  font-weight: 700; font-size: 15px;
+  padding: 14px 28px; border-radius: var(--radius-pill);
+  transition: all .22s;
+}
+.btn-hero-secondary:hover { background: rgba(255,255,255,.14); transform: translateY(-2px); }
+
+/* Hero visual – SVG illustration */
+.hero-visual {
+  display: flex; align-items: center; justify-content: center;
+  animation: heroVisualIn 1s cubic-bezier(.16,1,.3,1) .15s both;
+}
+
+.hero-illustration {
+  width: 100%; max-width: 460px;
+  position: relative;
+}
+
+.hero-plate {
+  width: 280px; height: 280px;
+  background: linear-gradient(135deg, #ff6b35 0%, #e85a24 100%);
+  border-radius: 50%;
+  margin: 0 auto;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 110px;
+  box-shadow: 0 0 0 24px rgba(255,107,53,.12), 0 0 0 48px rgba(255,107,53,.06);
+  animation: pulsePlate 3s ease-in-out infinite;
+  position: relative; z-index: 1;
+}
+
+.hero-orbits {
+  position: absolute; inset: -40px;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+
+.orbit-item {
+  position: absolute;
+  width: 54px; height: 54px;
+  background: rgba(255,255,255,.08);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  animation: orbitSpin linear infinite;
+}
+.orbit-item:nth-child(1) { animation-duration: 12s; transform-origin: 180px 0; top: calc(50% - 180px); left: calc(50% - 27px); }
+.orbit-item:nth-child(2) { animation-duration: 16s; animation-direction: reverse; transform-origin: -150px 0; top: calc(50% - 27px); left: calc(50% + 150px); }
+.orbit-item:nth-child(3) { animation-duration: 10s; transform-origin: 0 160px; top: calc(50% + 160px); left: calc(50% - 27px); }
+
+/* Hero stats */
+.hero-stats {
+  display: flex; gap: 28px; margin-top: 40px; flex-wrap: wrap;
+}
+.hero-stat { }
+.hero-stat-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px; font-weight: 800; color: white;
+}
+.hero-stat-value span { color: var(--orange); }
+.hero-stat-label { font-size: 12px; color: rgba(255,255,255,.5); font-weight: 500; margin-top: 2px; }
+
+/* ══════════════════════════════════════
+   SERVICE NOTICE
+══════════════════════════════════════ */
+.notice-section { padding: 28px 20px; background: var(--orange-pale); }
+.notice-inner { max-width: 1280px; margin: 0 auto; }
+.notice-card {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: white;
+  border-left: 4px solid var(--orange);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  box-shadow: var(--shadow-card);
+}
+.notice-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+.notice-text { font-size: 14px; line-height: 1.55; color: var(--dark); }
+.notice-text strong { color: var(--orange-dark); font-weight: 700; }
+
+/* ══════════════════════════════════════
+   SECTION SHARED
+══════════════════════════════════════ */
+.section { padding: 72px 20px; }
+.section-inner { max-width: 1280px; margin: 0 auto; }
+.section-header { text-align: center; margin-bottom: 48px; }
+
+.section-eyebrow {
+  display: inline-block;
+  font-size: 11px; font-weight: 800; letter-spacing: 1.2px;
+  text-transform: uppercase; color: var(--orange);
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 800; letter-spacing: -.4px;
+  color: var(--black); line-height: 1.15;
+}
+
+.section-sub {
+  font-size: 15px; color: var(--mid);
+  margin-top: 12px; max-width: 500px;
+  margin-left: auto; margin-right: auto;
+  line-height: 1.6;
+}
+
+/* ══════════════════════════════════════
+   PRODUCTS
+══════════════════════════════════════ */
+.products-section { background: var(--lighter); }
+
+/* Spinner */
+.spinner-wrap { display: flex; align-items: center; justify-content: center; padding: 80px; }
+.spinner {
+  width: 48px; height: 48px;
+  border: 4px solid rgba(255,107,53,.15);
+  border-top-color: var(--orange);
+  border-radius: 50%;
+  animation: spin .75s linear infinite;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center; padding: 72px 20px;
+  background: white; border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+.empty-icon { font-size: 64px; margin-bottom: 16px; }
+.empty-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--black); margin-bottom: 8px; }
+.empty-sub { font-size: 14px; color: var(--mid); }
+
+/* Search bar */
+.product-search-wrap {
+  position: relative; margin-bottom: 20px;
+}
+.product-search-wrap input {
+  width: 100%;
+  padding: 14px 20px 14px 48px;
+  border: 2px solid #e8e8e8;
+  border-radius: var(--radius-pill);
+  font-size: 15px; font-family: 'Inter', sans-serif;
+  background: white; color: var(--black);
+  outline: none; transition: border-color .2s, box-shadow .2s;
+  box-shadow: 0 2px 12px rgba(0,0,0,.05);
+}
+.product-search-wrap input::placeholder { color: #aaa; }
+.product-search-wrap input:focus {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 4px rgba(255,107,53,.1);
+}
+.search-icon {
+  position: absolute; left: 17px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px; pointer-events: none;
+}
+.search-clear {
+  position: absolute; right: 16px; top: 50%;
+  transform: translateY(-50%);
+  background: #eee; border: none; border-radius: 50%;
+  width: 24px; height: 24px; font-size: 12px;
+  cursor: pointer; display: none; align-items: center; justify-content: center;
+  color: var(--mid); transition: background .15s;
+}
+.search-clear.show { display: flex; }
+.search-clear:hover { background: var(--orange); color: white; }
+
+/* Category filter pills */
+.category-filters {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 24px; justify-content: center;
+}
+.cat-pill {
+  padding: 7px 16px; border-radius: var(--radius-pill);
+  border: 2px solid #e0e0e0;
+  background: white; color: var(--mid);
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all .18s;
+  font-family: 'Inter', sans-serif;
+}
+.cat-pill:hover { border-color: var(--orange); color: var(--orange); }
+.cat-pill.active { background: var(--orange); border-color: var(--orange); color: white; }
+
+/* Products grid — 3 cols on mobile, 4 on desktop */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+@media (min-width: 640px) {
+  .products-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+}
+@media (min-width: 900px) {
+  .products-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+}
+@media (min-width: 1200px) {
+  .products-grid { grid-template-columns: repeat(5, 1fr); gap: 20px; }
+}
+
+.product-card {
+  background: white; border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: transform .22s, box-shadow .22s;
+  animation: cardIn .4s ease both;
+}
+.product-card:hover { transform: translateY(-4px); box-shadow: 0 8px 36px rgba(0,0,0,.11); }
+
+.product-img-wrap {
+  height: 90px; overflow: hidden;
+  background: var(--lighter);
+  position: relative; display: flex;
+  align-items: center; justify-content: center;
+}
+@media (min-width: 480px) { .product-img-wrap { height: 120px; } }
+@media (min-width: 900px) { .product-img-wrap { height: 180px; } }
+
+.product-img-wrap img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .4s;
+}
+.product-card:hover .product-img-wrap img { transform: scale(1.05); }
+.product-img-placeholder { font-size: 40px; color: #ccc; }
+
+.product-body { padding: 7px 8px 10px; }
+@media (min-width: 480px) { .product-body { padding: 10px 12px 14px; } }
+
+.product-category {
+  font-size: 9px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .7px;
+  color: var(--orange); margin-bottom: 4px;
+}
+.product-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 12px; font-weight: 700;
+  color: var(--black); line-height: 1.25;
+  margin-bottom: 6px;
+}
+@media (min-width: 480px) { .product-name { font-size: 13px; } }
+@media (min-width: 900px) { .product-name { font-size: 16px; } }
+
+.product-prices { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.price-tag { display: flex; flex-direction: column; gap: 1px; }
+.price-label { font-size: 9px; font-weight: 700; color: var(--mid); text-transform: uppercase; letter-spacing: .5px; }
+.price-amount {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px; font-weight: 800; color: var(--orange);
+}
+@media (min-width: 480px) { .price-amount { font-size: 18px; } }
+@media (min-width: 900px) { .price-amount { font-size: 20px; } }
+
+.product-btns { display: flex; gap: 6px; }
+.btn-add {
+  flex: 1; min-width: 0;
+  padding: 6px 3px;
+  border: 2px solid var(--orange);
+  border-radius: var(--radius-sm);
+  background: white; color: var(--orange);
+  font-size: 10px; font-weight: 700;
+  cursor: pointer; font-family: 'Inter', sans-serif;
+  transition: all .18s;
+  display: flex; align-items: center; justify-content: center; gap: 2px;
+  white-space: nowrap;
+}
+@media (min-width: 480px) { .btn-add { font-size: 11px; padding: 7px 6px; } }
+@media (min-width: 900px) { .btn-add { font-size: 13px; padding: 10px 12px; gap: 5px; } }
+.btn-add:hover { background: var(--orange); color: white; }
+.btn-add:active { transform: scale(.97); }
+.btn-add.added { background: var(--green-pale); border-color: var(--green); color: #16a34a; }
+
+/* ══════════════════════════════════════
+   WHY KASHRUN
+══════════════════════════════════════ */
+.features-section { background: white; }
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.feature-card {
+  background: var(--lighter);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  text-align: center;
+  transition: all .22s;
+  cursor: default;
+  border: 2px solid transparent;
+}
+.feature-card:hover {
+  background: var(--orange-pale);
+  border-color: var(--orange);
+  transform: translateY(-3px);
+}
+
+.feature-icon {
+  font-size: 42px; margin-bottom: 14px;
+  display: block;
+  transition: transform .3s;
+}
+.feature-card:hover .feature-icon { transform: scale(1.12) rotate(-4deg); }
+
+.feature-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px; font-weight: 800;
+  color: var(--black); margin-bottom: 8px;
+}
+.feature-desc { font-size: 13px; color: var(--mid); line-height: 1.55; }
+
+/* ══════════════════════════════════════
+   PARTNER SECTION
+══════════════════════════════════════ */
+.partner-section {
+  background: var(--black);
+  padding: 72px 20px;
+}
+
+.partner-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 0;
+}
+
+.partner-card {
+  background: var(--dark-2);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--radius);
+  padding: 36px 28px;
+  transition: all .22s;
+  position: relative; overflow: hidden;
+}
+.partner-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--orange);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .3s;
+}
+.partner-card:hover { border-color: rgba(255,107,53,.2); transform: translateY(-3px); }
+.partner-card:hover::before { transform: scaleX(1); }
+
+.partner-icon { font-size: 44px; margin-bottom: 16px; display: block; }
+.partner-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px; font-weight: 800;
+  color: white; margin-bottom: 10px;
+}
+.partner-desc { font-size: 14px; color: rgba(255,255,255,.55); line-height: 1.6; margin-bottom: 24px; }
+.btn-partner {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--orange); color: white;
+  text-decoration: none; font-weight: 700; font-size: 14px;
+  padding: 12px 24px; border-radius: var(--radius-pill);
+  transition: all .2s;
+}
+.btn-partner:hover { background: var(--orange-dark); transform: translateY(-1px); }
+
+/* ══════════════════════════════════════
+   FLOATING CART BAR
+══════════════════════════════════════ */
+#floatingCart {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  z-index: 300;
+  transform: translateY(100%);
+  transition: transform .35s cubic-bezier(.16,1,.3,1);
+}
+#floatingCart.visible { transform: translateY(0); }
+
+.float-cart-inner {
+  background: var(--black);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  padding: 14px 20px 20px;
+  box-shadow: var(--shadow-float);
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+}
+
+.float-cart-info {
+  display: flex; align-items: center; gap: 10px;
+}
+
+.float-cart-icon {
+  width: 42px; height: 42px; border-radius: 12px;
+  background: var(--orange); display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+
+.float-cart-text { }
+.float-cart-count { font-size: 13px; color: rgba(255,255,255,.6); font-weight: 500; }
+.float-cart-total { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: white; }
+
+.btn-view-cart {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--orange); color: white;
+  text-decoration: none; font-weight: 700; font-size: 14px;
+  padding: 12px 22px; border-radius: var(--radius-pill);
+  transition: all .2s; white-space: nowrap; flex-shrink: 0;
+}
+.btn-view-cart:hover { background: var(--orange-dark); }
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+footer {
+  background: #0a0a0a;
+  color: rgba(255,255,255,.6);
+  padding: 60px 20px 28px;
+}
+
+.footer-inner { max-width: 1280px; margin: 0 auto; }
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 48px;
+}
+
+.footer-brand-col { }
+.footer-logo {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px; text-decoration: none;
+}
+.footer-logo img { height: 40px; width: 40px; object-fit: contain; border-radius: 10px; }
+.footer-logo img.hidden { display: none; }
+.footer-logo-text { display: flex; align-items: center; gap: 0; font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; }
+.flt-kash { color: white; }
+.flt-run { color: var(--orange); }
+
+.footer-tagline { font-size: 14px; line-height: 1.65; max-width: 280px; margin-bottom: 20px; }
+
+.footer-contact-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: rgba(255,255,255,.7);
+  margin-bottom: 8px; text-decoration: none;
+  transition: color .15s;
+}
+.footer-contact-item:hover { color: var(--orange); }
+
+.footer-col h4 {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px; font-weight: 800;
+  color: white; text-transform: uppercase;
+  letter-spacing: .6px; margin-bottom: 18px;
+}
+
+.footer-col a {
+  display: block; font-size: 13px; color: rgba(255,255,255,.55);
+  text-decoration: none; margin-bottom: 10px;
+  transition: color .15s;
+}
+.footer-col a:hover { color: var(--orange); }
+
+.footer-divider { border: none; border-top: 1px solid rgba(255,255,255,.07); margin-bottom: 24px; }
+
+.footer-bottom {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+  font-size: 12px; color: rgba(255,255,255,.3);
+}
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+#toast {
+  position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
+  background: var(--dark); color: white;
+  padding: 12px 22px; border-radius: var(--radius-pill);
+  font-size: 14px; font-weight: 600;
+  z-index: 999; opacity: 0; pointer-events: none;
+  transition: opacity .25s; white-space: nowrap;
+  max-width: calc(100vw - 40px);
+}
+#toast.show { opacity: 1; }
+
+/* ══════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════ */
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes floatDrift {
+  0%   { transform: translateY(0) rotate(0deg); }
+  50%  { transform: translateY(-28px) rotate(8deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+@keyframes pulsePlate {
+  0%, 100% { box-shadow: 0 0 0 24px rgba(255,107,53,.12), 0 0 0 48px rgba(255,107,53,.06); }
+  50%       { box-shadow: 0 0 0 30px rgba(255,107,53,.08), 0 0 0 56px rgba(255,107,53,.03); }
+}
+@keyframes orbitSpin { to { transform: rotate(360deg); } }
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes heroVisualIn {
+  from { opacity: 0; transform: scale(.88); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Scroll-reveal */
+.reveal {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .hero-inner { grid-template-columns: 1fr; text-align: center; padding: 48px 20px; }
+  .hero-visual { display: none; }
+  .hero-sub { margin-left: auto; margin-right: auto; }
+  .hero-btns { justify-content: center; }
+  .hero-stats { justify-content: center; }
+  .partner-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+  .section { padding: 52px 16px; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .hero-plate { width: 200px; height: 200px; font-size: 80px; }
+  .float-cart-inner { border-radius: 16px 16px 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════ NAVBAR ══════ -->
+<nav id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <img src="logo.png" alt="KashRun Logo" onerror="this.classList.add('hidden')" />
+      <span class="logo-text">
+        <span class="logo-kash">Kash</span><span class="logo-run">Run</span>
+      </span>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="track-order.html">Track Order</a></li>
+      <li><a href="partner.html">Become Delivery Partner</a></li>
+      <li><a href="Partner.html">Partner With KashRun</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+
+    <div class="nav-right">
+      <a href="cart.html" class="cart-btn" id="navCartBtn">
+        🛒 Cart
+        <span class="cart-count cart-count-nav" id="navCartCount">0</span>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile drawer -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">🏠 Home</a>
+  <a href="track-order.html">📍 Track Order</a>
+  <a href="partner.html">🚴 Become Delivery Partner</a>
+  <a href="Partner.html">🤝 Partner With KashRun</a>
+  <a href="about.html">ℹ️ About</a>
+  <a href="contact.html">📞 Contact</a>
+  <a href="cart.html">🛒 View Cart</a>
+</div>
+
+<!-- ══════ HERO ══════ -->
+<section class="hero" aria-label="Hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+
+  <div class="hero-floats" aria-hidden="true">
+    <span class="float-item">🍜</span>
+    <span class="float-item">🍔</span>
+    <span class="float-item">🍕</span>
+    <span class="float-item">🥘</span>
+    <span class="float-item">🍱</span>
+    <span class="float-item">🍛</span>
+  </div>
+
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-pill">🚀 Fast Delivery · Pincode 192231</div>
+      <h1 class="hero-title">
+        Food Delivery<br>
+        Across <span class="accent">Kashmir</span>
+      </h1>
+      <p class="hero-sub">
+        Order your favourite food from KashRun and get it delivered quickly at your doorstep.
+      </p>
+      <div class="hero-btns">
+        <a href="#menu" class="btn-hero-primary">🍽️ Order Now</a>
+        <a href="track-order.html" class="btn-hero-secondary">📍 Track Order</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-value">30<span>min</span></div>
+          <div class="hero-stat-label">Avg Delivery</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value">100<span>%</span></div>
+          <div class="hero-stat-label">Fresh Food</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value">24<span>/7</span></div>
+          <div class="hero-stat-label">Support</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="hero-illustration">
+        <div style="position:relative;display:inline-block;">
+          <div class="hero-plate">🍛</div>
+          <div class="hero-orbits">
+            <div class="orbit-item">🛵</div>
+            <div class="orbit-item">⭐</div>
+            <div class="orbit-item">📦</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ NOTICE ══════ -->
+<div class="notice-section">
+  <div class="notice-inner">
+    <div class="notice-card">
+      <div class="notice-icon">📍</div>
+      <div class="notice-text">
+        <strong>Delivery Area Notice:</strong> Currently delivery is available only for <strong>Pincode 192231</strong>. More areas coming soon across Kashmir. Stay tuned!
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MENU / PRODUCTS ══════ -->
+<section class="section products-section" id="menu">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <span class="section-eyebrow">Fresh & Hot</span>
+      <h2 class="section-title">Popular Menu</h2>
+      <p class="section-sub">Freshly prepared meals from local kitchens, delivered right to you.</p>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="product-search-wrap" style="max-width:520px;margin:0 auto 20px;">
+      <span class="search-icon">🔍</span>
+      <input type="search" id="productSearch" placeholder="Search menu items…" oninput="handleSearch(this.value)" autocomplete="off" />
+      <button class="search-clear" id="searchClear" onclick="clearSearch()" aria-label="Clear search">✕</button>
+    </div>
+
+    <div class="category-filters" id="categoryFilters" style="display:none;"></div>
+
+    <div id="productsWrap">
+      <div class="spinner-wrap"><div class="spinner"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ WHY KASHRUN ══════ -->
+<section class="section features-section" id="why">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <span class="section-eyebrow">Why Us</span>
+      <h2 class="section-title">Why Choose KashRun?</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <span class="feature-icon">⚡</span>
+        <div class="feature-title">Fast Delivery</div>
+        <div class="feature-desc">Your order reaches you hot and fresh — we don't make you wait.</div>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">🍔</span>
+        <div class="feature-title">Quality Food</div>
+        <div class="feature-desc">Every meal is prepared with fresh local ingredients and genuine Kashmiri flavours.</div>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">💰</span>
+        <div class="feature-title">Affordable Prices</div>
+        <div class="feature-desc">Premium food at prices that respect your budget — no hidden charges.</div>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">📍</span>
+        <div class="feature-title">Local Restaurants</div>
+        <div class="feature-desc">We partner with the best local restaurants so your favourites are always available.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ PARTNER ══════ -->
+<section class="partner-section" id="partner">
+  <div class="section-inner">
+    <div class="section-header reveal" style="margin-bottom:36px;">
+      <span class="section-eyebrow" style="color:rgba(255,107,53,.9);">Grow With Us</span>
+      <h2 class="section-title" style="color:white;">Become a Partner</h2>
+      <p class="section-sub" style="color:rgba(255,255,255,.5);">Join KashRun's growing network and earn more every day.</p>
+    </div>
+    <div class="partner-grid reveal">
+      <div class="partner-card">
+        <span class="partner-icon">🛵</span>
+        <div class="partner-title">Delivery Partner</div>
+        <div class="partner-desc">Ride your own schedule. Earn per delivery with flexible hours across Kashmir.</div>
+        <a href="partner.html" class="btn-partner">Apply Now →</a>
+      </div>
+      <div class="partner-card">
+        <span class="partner-icon">🏪</span>
+        <div class="partner-title">Restaurant Partner</div>
+        <div class="partner-desc">Reach more customers in your area. List your restaurant on KashRun today.</div>
+        <a href="Partner.html" class="btn-partner">Join Now →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ FOOTER ══════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand-col">
+        <a href="index.html" class="footer-logo">
+          <img src="logo.png" alt="KashRun Logo" onerror="this.classList.add('hidden')" />
+          <span class="footer-logo-text"><span class="flt-kash">Kash</span><span class="flt-run">Run</span></span>
+        </a>
+        <p class="footer-tagline">Delivering happiness, fast. Your favourite Kashmiri food at your doorstep in minutes.</p>
+        <a href="mailto:kashrun.in@gmail.com" class="footer-contact-item">📧 kashrun.in@gmail.com</a>
+        <a href="tel:+918082460988" class="footer-contact-item">📞 +91 8082460988</a>
+        <a href="https://wa.me/918082460988" target="_blank" rel="noopener" class="footer-contact-item">💬 WhatsApp Us</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="index.html">🏠 Home</a>
+        <a href="track-order.html">📍 Track Order</a>
+        <a href="about.html">ℹ️ About Us</a>
+        <a href="contact.html">📞 Contact Us</a>
+        <a href="cart.html">🛒 Cart</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Partner & Legal</h4>
+        <a href="partner.html">🛵 Become Delivery Partner</a>
+        <a href="Partner.html">🤝 Partner With KashRun</a>
+        <a href="privacy-policy.html">🔒 Privacy Policy</a>
+        <a href="terms.html">📄 Terms & Conditions</a>
+        <a href="refund-policy.html">↩️ Refund Policy</a>
+      </div>
+    </div>
+    <hr class="footer-divider" />
+    <div class="footer-bottom">
+      <span>© 2026 KashRun. All Rights Reserved.</span>
+      <span>Made with ❤️ in Kashmir</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════ FLOATING CART ══════ -->
+<div id="floatingCart" aria-live="polite">
+  <div class="float-cart-inner">
+    <div class="float-cart-info">
+      <div class="float-cart-icon">🛒</div>
+      <div class="float-cart-text">
+        <div class="float-cart-count" id="fcCount">0 items</div>
+        <div class="float-cart-total" id="fcTotal">₹0</div>
+      </div>
+    </div>
+    <a href="cart.html" class="btn-view-cart">View Cart →</a>
+  </div>
+</div>
+
+<!-- ══════ TOAST ══════ -->
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- ══════ FIREBASE ══════ -->
+<script type="module">
+import { initializeApp }       from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, onSnapshot, query, where, orderBy }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDvViMeJbOdLvNT1163vlp7fPIXK6qJ8Qk",
+  authDomain: "kashrun-6ac6a.firebaseapp.com",
+  projectId: "kashrun-6ac6a",
+  storageBucket: "kashrun-6ac6a.firebasestorage.app",
+  messagingSenderId: "466142826836",
+  appId: "1:466142826836:web:8fbcd0a829d582429ff8c1"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+// ── Global product state
+window._products    = [];
+window._activeCategory = 'All';
+window._searchQuery = '';
+
+// ── Listen for available products
+const q = query(collection(db, 'products'), where('available', '==', true));
+onSnapshot(q, snap => {
+  window._products = snap.docs
+    .map(d => ({ id: d.id, ...d.data() }))
+    .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+  buildCategoryFilters();
+  renderProducts();
+}, _err => {
+  document.getElementById('productsWrap').innerHTML =
+    `<div class="empty-state"><div class="empty-icon">😕</div><div class="empty-title">Couldn't load menu</div><div class="empty-sub">Check your connection and try again.</div></div>`;
+});
+
+function buildCategoryFilters () {
+  const cats = ['All', ...new Set(window._products.map(p => p.category).filter(Boolean))];
+  const cf = document.getElementById('categoryFilters');
+  if (cats.length <= 2) { cf.style.display = 'none'; return; }
+  cf.style.display = 'flex';
+  cf.innerHTML = cats.map(c =>
+    `<button class="cat-pill${c === window._activeCategory ? ' active' : ''}" onclick="setCat('${c}')">${c}</button>`
+  ).join('');
+}
+
+window.setCat = function (cat) {
+  window._activeCategory = cat;
+  buildCategoryFilters();
+  renderProducts();
+};
+
+function renderProducts () {
+  const wrap = document.getElementById('productsWrap');
+  let list = window._products;
+  if (window._activeCategory !== 'All') {
+    list = list.filter(p => p.category === window._activeCategory);
+  }
+  if (window._searchQuery) {
+    const q = window._searchQuery.toLowerCase();
+    list = list.filter(p =>
+      (p.name || '').toLowerCase().includes(q) ||
+      (p.category || '').toLowerCase().includes(q)
+    );
+  }
+  if (!list.length) {
+    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">🍽️</div><div class="empty-title">${window._searchQuery ? 'No results found' : 'Menu coming soon'}</div><div class="empty-sub">${window._searchQuery ? 'Try a different search term.' : 'We\'re adding delicious items. Check back shortly!'}</div></div>`;
+    return;
+  }
+  wrap.innerHTML = `<div class="products-grid">${list.map((p, i) => productCard(p, i)).join('')}</div>`;
+}
+
+window.handleSearch = function (val) {
+  window._searchQuery = val.trim();
+  const clearBtn = document.getElementById('searchClear');
+  if (clearBtn) clearBtn.classList.toggle('show', val.length > 0);
+  renderProducts();
+};
+
+window.clearSearch = function () {
+  const inp = document.getElementById('productSearch');
+  if (inp) inp.value = '';
+  window._searchQuery = '';
+  const clearBtn = document.getElementById('searchClear');
+  if (clearBtn) clearBtn.classList.remove('show');
+  renderProducts();
+};
+
+function productCard (p, idx) {
+  const hasHalf = p.halfPrice > 0;
+  const hasFull = p.fullPrice > 0;
+  const imgHTML = p.image
+    ? `<img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=product-img-placeholder>🍽️</div>'" />`
+    : `<div class="product-img-placeholder">🍽️</div>`;
+
+  const pricesHTML = [
+    hasHalf ? `<div class="price-tag"><div class="price-label">Half</div><div class="price-amount">₹${p.halfPrice}</div></div>` : '',
+    hasFull ? `<div class="price-tag"><div class="price-label">Full</div><div class="price-amount">₹${p.fullPrice}</div></div>` : ''
+  ].join('');
+
+  const halfBtn = hasHalf
+    ? `<button class="btn-add" id="btn-half-${p.id}" onclick="addToCart('${p.id}','half')" aria-label="Add half ${p.name} to cart">➕ Half</button>`
+    : '';
+  const fullBtn = hasFull
+    ? `<button class="btn-add" id="btn-full-${p.id}" onclick="addToCart('${p.id}','full')" aria-label="Add full ${p.name} to cart">➕ Full</button>`
+    : '';
+
+  return `
+  <div class="product-card" style="animation-delay:${idx * 0.06}s">
+    <div class="product-img-wrap">${imgHTML}</div>
+    <div class="product-body">
+      <div class="product-category">${p.category || 'Menu'}</div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-prices">${pricesHTML}</div>
+      <div class="product-btns">${halfBtn}${fullBtn}</div>
+    </div>
+  </div>`;
+}
+
+// ── Cart
+window.addToCart = function (productId, size) {
+  const product = window._products.find(p => p.id === productId);
+  if (!product) return;
+
+  const price = size === 'half' ? product.halfPrice : product.fullPrice;
+  const sizeName = size === 'half' ? 'Half' : 'Full';
+
+  let cart = getCart();
+  const key = productId + '-' + size;
+  const existing = cart.find(i => i.key === key);
+
+  if (existing) {
+    existing.quantity += 1;
+  } else {
+    cart.push({ key, id: productId, name: product.name, selectedSize: sizeName, price, quantity: 1, image: product.image || '' });
+  }
+  saveCart(cart);
+  updateFloatingCart();
+  updateNavCart();
+
+  // Button feedback
+  const btnId = `btn-${size}-${productId}`;
+  const btn = document.getElementById(btnId);
+  if (btn) {
+    btn.classList.add('added');
+    btn.textContent = '✔ Added';
+    setTimeout(() => {
+      btn.classList.remove('added');
+      btn.innerHTML = `➕ ${sizeName}`;
+    }, 1200);
+  }
+
+  showToast(`✅ ${product.name} (${sizeName}) added to cart!`);
+};
+
+function getCart ()    { try { return JSON.parse(localStorage.getItem('kashrun_cart') || '[]'); } catch { return []; } }
+function saveCart (c)  { localStorage.setItem('kashrun_cart', JSON.stringify(c)); }
+
+function updateFloatingCart () {
+  const cart  = getCart();
+  const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+  const count = cart.reduce((s, i) => s + i.quantity, 0);
+  const fc    = document.getElementById('floatingCart');
+  if (count > 0) {
+    fc.classList.add('visible');
+    document.getElementById('fcCount').textContent = count + (count === 1 ? ' item' : ' items');
+    document.getElementById('fcTotal').textContent  = '₹' + total.toLocaleString('en-IN');
+  } else {
+    fc.classList.remove('visible');
+  }
+}
+
+function updateNavCart () {
+  const count = getCart().reduce((s, i) => s + i.quantity, 0);
+  const el    = document.getElementById('navCartCount');
+  el.textContent = count;
+  if (count > 0) el.classList.add('has-items');
+  else           el.classList.remove('has-items');
+}
+
+// Init cart UI
+updateFloatingCart();
+updateNavCart();
+</script>
+
+<!-- ══════ SCRIPTS (non-module) ══════ -->
+<script>
+// ── Navbar scroll
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// ── Mobile menu
+function toggleMenu () {
+  const hb = document.getElementById('hamburger');
+  const mm = document.getElementById('mobileMenu');
+  hb.classList.toggle('open');
+  mm.classList.toggle('open');
+}
+
+// Click outside closes menu
+document.addEventListener('click', (e) => {
+  const mm = document.getElementById('mobileMenu');
+  const hb = document.getElementById('hamburger');
+  if (mm.classList.contains('open') && !mm.contains(e.target) && !hb.contains(e.target)) {
+    mm.classList.remove('open');
+    hb.classList.remove('open');
+  }
+});
+
+// ── Toast
+window.showToast = function (msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+};
+
+// ── Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: .12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+<!-- ══════ PWA SERVICE WORKER ══════ -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+
+</body>
+</html>
