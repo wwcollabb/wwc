@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Become a Delivery Partner | KashRun</title>
+<meta name="description" content="Join KashRun as a Delivery Partner and earn by delivering food, groceries, shopping orders and much more across Kashmir.">
+<meta name="theme-color" content="#FF7A00">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<!-- AOS Animation Library -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/[email protected]/dist/umd/lucide.min.js"></script>
+
+<style>
+  :root{
+    --primary:#FF7A00;
+    --primary-light:#FF9A40;
+    --primary-dark:#E56A00;
+    --secondary:#111111;
+    --bg:#F8F8F8;
+    --white:#ffffff;
+    --gray-500:#6b7280;
+    --gray-400:#9ca3af;
+    --gray-100:#f3f4f6;
+    --success:#16C784;
+    --danger:#E53935;
+    --shadow-sm:0 2px 8px rgba(17,17,17,0.06);
+    --shadow-md:0 8px 30px rgba(17,17,17,0.08);
+    --shadow-lg:0 20px 60px rgba(17,17,17,0.12);
+    --shadow-orange: 0 10px 30px rgba(255,122,0,0.25);
+    --radius-sm:12px;
+    --radius-md:20px;
+    --radius-lg:28px;
+    --radius-full:999px;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    font-family:'Poppins',sans-serif;
+    background:var(--bg);
+    color:var(--secondary);
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  img{max-width:100%;display:block;}
+
+  a{text-decoration:none;color:inherit;}
+
+  ul{list-style:none;}
+
+  button{font-family:inherit;border:none;cursor:pointer;background:none;}
+
+  .container{
+    width:100%;
+    max-width:1200px;
+    margin:0 auto;
+    padding:0 20px;
+  }
+
+  /* ============ SCROLLBAR ============ */
+  ::-webkit-scrollbar{width:8px;}
+  ::-webkit-scrollbar-track{background:var(--gray-100);}
+  ::-webkit-scrollbar-thumb{background:var(--primary);border-radius:10px;}
+
+  /* ============ NAVBAR ============ */
+  .navbar{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:1000;
+    background:rgba(248,248,248,0.75);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border-bottom:1px solid rgba(17,17,17,0.06);
+    transition:all .3s ease;
+  }
+
+  .navbar-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 20px;
+    max-width:1200px;
+    margin:0 auto;
+  }
+
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-weight:800;
+    font-size:22px;
+    letter-spacing:-0.5px;
+  }
+
+  .logo span{color:var(--primary);}
+
+  .nav-cta{
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    color:#fff;
+    padding:10px 22px;
+    border-radius:var(--radius-full);
+    font-weight:600;
+    font-size:14px;
+    box-shadow:var(--shadow-orange);
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .nav-cta:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 14px 34px rgba(255,122,0,0.35);}
+
+  /* ============ HERO ============ */
+  .hero{
+    position:relative;
+    padding:140px 0 90px;
+    background:
+      radial-gradient(circle at 85% 15%, rgba(255,122,0,0.14), transparent 55%),
+      radial-gradient(circle at 10% 90%, rgba(255,122,0,0.10), transparent 45%),
+      var(--bg);
+    overflow:hidden;
+  }
+
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.1fr .9fr;
+    gap:50px;
+    align-items:center;
+  }
+
+  .hero-eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:rgba(255,122,0,0.1);
+    color:var(--primary-dark);
+    padding:8px 16px;
+    border-radius:var(--radius-full);
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:22px;
+  }
+
+  .hero h1{
+    font-size:clamp(2.2rem,5vw,3.6rem);
+    font-weight:800;
+    line-height:1.1;
+    letter-spacing:-1.5px;
+    margin-bottom:18px;
+  }
+
+  .hero h1 .highlight{
+    color:var(--primary);
+    position:relative;
+    white-space:nowrap;
+  }
+
+  .hero .tagline{
+    font-size:20px;
+    font-weight:600;
+    color:var(--primary-dark);
+    margin-bottom:16px;
+  }
+
+  .hero p.subtitle{
+    font-size:16.5px;
+    color:var(--gray-500);
+    line-height:1.7;
+    max-width:520px;
+    margin-bottom:34px;
+  }
+
+  .hero-btns{
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:16px 32px;
+    border-radius:var(--radius-full);
+    font-weight:600;
+    font-size:15.5px;
+    cursor:pointer;
+    transition:all .3s cubic-bezier(.4,0,.2,1);
+    position:relative;
+    overflow:hidden;
+  }
+
+  .btn-primary{
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    color:#fff;
+    box-shadow:var(--shadow-orange);
+  }
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(255,122,0,0.35);}
+  .btn-primary:active{transform:translateY(-1px);}
+
+  .btn-outline{
+    background:#fff;
+    color:var(--secondary);
+    border:2px solid rgba(17,17,17,0.1);
+  }
+  .btn-outline:hover{border-color:var(--primary);color:var(--primary-dark);transform:translateY(-3px);box-shadow:var(--shadow-md);}
+
+  .hero-stats{
+    display:flex;
+    gap:34px;
+    margin-top:44px;
+  }
+  .hero-stat b{display:block;font-size:26px;font-weight:800;color:var(--secondary);}
+  .hero-stat span{font-size:13px;color:var(--gray-500);font-weight:500;}
+
+  /* Hero illustration */
+  .hero-visual{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .rider-card{
+    width:100%;
+    aspect-ratio:1/1.05;
+    max-width:440px;
+    background:linear-gradient(160deg,#1a1a1a,#111);
+    border-radius:36px;
+    position:relative;
+    box-shadow:var(--shadow-lg);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    animation:float 5s ease-in-out infinite;
+  }
+
+  @keyframes float{
+    0%,100%{transform:translateY(0px);}
+    50%{transform:translateY(-16px);}
+  }
+
+  .rider-glow{
+    position:absolute;
+    inset:-40px;
+    background:radial-gradient(circle,rgba(255,122,0,0.35),transparent 65%);
+    filter:blur(20px);
+    z-index:-1;
+  }
+
+  .rider-svg{width:78%;height:78%;}
+
+  .floating-badge{
+    position:absolute;
+    background:#fff;
+    border-radius:var(--radius-md);
+    padding:14px 18px;
+    box-shadow:var(--shadow-md);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:600;
+    font-size:14px;
+    animation:float 4s ease-in-out infinite;
+  }
+  .badge-1{top:6%;left:-8%;animation-delay:.3s;}
+  .badge-2{bottom:10%;right:-6%;animation-delay:.8s;}
+  .badge-icon{
+    width:38px;height:38px;
+    border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(255,122,0,0.12);
+    color:var(--primary);
+  }
+
+  /* ============ SECTION HEADERS ============ */
+  .section{padding:90px 0;}
+  .section-tag{
+    display:inline-block;
+    color:var(--primary-dark);
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    background:rgba(255,122,0,0.1);
+    padding:6px 16px;
+    border-radius:var(--radius-full);
+    margin-bottom:16px;
+  }
+  .section-header{text-align:center;max-width:640px;margin:0 auto 56px;}
+  .section-header h2{
+    font-size:clamp(1.8rem,3.6vw,2.6rem);
+    font-weight:800;
+    letter-spacing:-1px;
+    margin-bottom:14px;
+  }
+  .section-header p{color:var(--gray-500);font-size:16px;line-height:1.7;}
+
+  /* ============ WHY JOIN CARDS ============ */
+  .why-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:26px;
+  }
+
+  .glass-card{
+    background:rgba(255,255,255,0.7);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,0.6);
+    border-radius:var(--radius-lg);
+    padding:36px 30px;
+    box-shadow:var(--shadow-sm);
+    transition:transform .35s cubic-bezier(.4,0,.2,1), box-shadow .35s ease;
+  }
+  .glass-card:hover{
+    transform:translateY(-10px);
+    box-shadow:var(--shadow-lg);
+  }
+
+  .card-icon{
+    width:56px;height:56px;
+    border-radius:16px;
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;
+    margin-bottom:22px;
+    box-shadow:var(--shadow-orange);
+  }
+
+  .glass-card h3{font-size:19px;font-weight:700;margin-bottom:10px;letter-spacing:-.3px;}
+  .glass-card p{color:var(--gray-500);font-size:14.5px;line-height:1.6;}
+
+  /* ============ WHO CAN APPLY ============ */
+  .eligibility-wrap{
+    background:linear-gradient(135deg,#151515,#000);
+    border-radius:var(--radius-lg);
+    padding:56px 40px;
+    position:relative;
+    overflow:hidden;
+  }
+  .eligibility-wrap::before{
+    content:"";
+    position:absolute;
+    top:-80px;right:-80px;
+    width:300px;height:300px;
+    background:radial-gradient(circle,rgba(255,122,0,0.35),transparent 70%);
+    filter:blur(10px);
+  }
+  .eligibility-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:20px;
+    position:relative;
+    z-index:1;
+  }
+  .elig-item{
+    text-align:center;
+    color:#fff;
+  }
+  .elig-icon{
+    width:64px;height:64px;
+    border-radius:18px;
+    background:rgba(255,122,0,0.15);
+    border:1px solid rgba(255,122,0,0.3);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 16px;
+    color:var(--primary);
+  }
+  .elig-item h4{font-size:14.5px;font-weight:600;line-height:1.4;}
+
+  /* ============ HOW IT WORKS ============ */
+  .steps-wrap{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:0;
+    position:relative;
+  }
+  .step-item{
+    text-align:center;
+    padding:0 18px;
+    position:relative;
+  }
+  .step-num{
+    width:74px;height:74px;
+    border-radius:50%;
+    background:#fff;
+    border:2px solid var(--primary);
+    color:var(--primary);
+    font-size:26px;
+    font-weight:800;
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 20px;
+    box-shadow:var(--shadow-md);
+    position:relative;
+    z-index:2;
+    transition:all .3s ease;
+  }
+  .step-item:hover .step-num{
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    color:#fff;
+    transform:scale(1.1);
+  }
+  .step-item h4{font-weight:700;font-size:17px;margin-bottom:8px;}
+  .step-item p{color:var(--gray-500);font-size:13.5px;}
+  .step-connector{
+    position:absolute;
+    top:37px;left:calc(50% + 55px);
+    width:calc(100% - 110px);
+    height:2px;
+    background:repeating-linear-gradient(90deg,var(--primary) 0 8px,transparent 8px 16px);
+    z-index:1;
+  }
+  .step-item:last-child .step-connector{display:none;}
+
+  /* ============ APPLICATION FORM ============ */
+  .form-section{
+    background:linear-gradient(180deg,#fff,var(--bg));
+  }
+  .form-shell{
+    max-width:880px;
+    margin:0 auto;
+    background:#fff;
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-lg);
+    padding:50px;
+    position:relative;
+    overflow:hidden;
+  }
+  .form-shell::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:6px;
+    background:linear-gradient(90deg,var(--primary),var(--primary-light),var(--primary));
+  }
+
+  .form-group-title{
+    font-size:15px;
+    font-weight:700;
+    color:var(--primary-dark);
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin:36px 0 18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .form-group-title:first-child{margin-top:0;}
+  .form-group-title::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:rgba(17,17,17,0.08);
+  }
+
+  .form-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin-bottom:20px;
+  }
+  .form-row.full{grid-template-columns:1fr;}
+
+  .field{position:relative;}
+  .field label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    color:var(--secondary);
+    margin-bottom:8px;
+  }
+  .field label .req{color:var(--primary);}
+
+  .field input,.field select,.field textarea{
+    width:100%;
+    padding:14px 16px;
+    border-radius:var(--radius-sm);
+    border:1.5px solid rgba(17,17,17,0.1);
+    background:var(--gray-100);
+    font-family:inherit;
+    font-size:14.5px;
+    color:var(--secondary);
+    transition:all .25s ease;
+  }
+  .field input:focus,.field select:focus,.field textarea:focus{
+    outline:none;
+    border-color:var(--primary);
+    background:#fff;
+    box-shadow:0 0 0 4px rgba(255,122,0,0.12);
+  }
+  .field input.invalid,.field select.invalid{border-color:var(--danger);}
+  .field-error{
+    font-size:12px;
+    color:var(--danger);
+    margin-top:6px;
+    display:none;
+  }
+  .field-error.show{display:block;}
+
+  .vehicle-options{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+  }
+  .vehicle-opt{
+    border:1.5px solid rgba(17,17,17,0.1);
+    border-radius:var(--radius-sm);
+    padding:16px 10px;
+    text-align:center;
+    cursor:pointer;
+    background:var(--gray-100);
+    transition:all .25s ease;
+  }
+  .vehicle-opt i{margin-bottom:8px;color:var(--gray-500);}
+  .vehicle-opt span{display:block;font-size:12.5px;font-weight:600;}
+  .vehicle-opt.selected{
+    border-color:var(--primary);
+    background:rgba(255,122,0,0.08);
+  }
+  .vehicle-opt.selected i{color:var(--primary);}
+
+  .checkbox-row{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    margin:30px 0;
+    font-size:13.5px;
+    color:var(--gray-500);
+  }
+  .checkbox-row input{
+    margin-top:3px;
+    width:18px;height:18px;
+    accent-color:var(--primary);
+    flex-shrink:0;
+  }
+  .checkbox-row a{color:var(--primary-dark);font-weight:600;}
+
+  .submit-btn{
+    width:100%;
+    padding:18px;
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    color:#fff;
+    font-weight:700;
+    font-size:16px;
+    border-radius:var(--radius-full);
+    box-shadow:var(--shadow-orange);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    transition:all .3s ease;
+  }
+  .submit-btn:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(255,122,0,0.35);}
+  .submit-btn:disabled{opacity:.7;cursor:not-allowed;transform:none;}
+
+  .spinner{
+    width:20px;height:20px;
+    border:2.5px solid rgba(255,255,255,0.4);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+    display:none;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* ============ SUCCESS MODAL ============ */
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(17,17,17,0.6);
+    backdrop-filter:blur(6px);
+    z-index:3000;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+  .modal-overlay.active{display:flex;}
+
+  .modal-card{
+    background:#fff;
+    border-radius:var(--radius-lg);
+    padding:44px 34px;
+    max-width:440px;
+    width:100%;
+    text-align:center;
+    position:relative;
+    transform:scale(.85);
+    opacity:0;
+    transition:all .4s cubic-bezier(.34,1.56,.64,1);
+    box-shadow:var(--shadow-lg);
+  }
+  .modal-overlay.active .modal-card{transform:scale(1);opacity:1;}
+
+  .success-tick{
+    width:90px;height:90px;
+    border-radius:50%;
+    background:rgba(22,199,132,0.12);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 22px;
+    position:relative;
+  }
+  .success-tick svg{width:46px;height:46px;}
+  .success-tick circle{
+    stroke:var(--success);
+    stroke-width:3;
+    fill:none;
+    stroke-dasharray:166;
+    stroke-dashoffset:166;
+    animation:circleDraw .6s ease forwards;
+  }
+  .success-tick path{
+    stroke:var(--success);
+    stroke-width:4;
+    fill:none;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    stroke-dasharray:48;
+    stroke-dashoffset:48;
+    animation:tickDraw .4s ease forwards .5s;
+  }
+  @keyframes circleDraw{to{stroke-dashoffset:0;}}
+  @keyframes tickDraw{to{stroke-dashoffset:0;}}
+
+  .modal-card h2{font-size:22px;font-weight:800;margin-bottom:10px;}
+  .modal-card .app-number{
+    background:var(--gray-100);
+    border-radius:var(--radius-sm);
+    padding:16px;
+    margin:20px 0;
+  }
+  .app-number span{display:block;font-size:12px;color:var(--gray-500);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+  .app-number b{font-size:20px;color:var(--primary-dark);letter-spacing:1px;}
+
+  .status-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:rgba(255,122,0,0.1);
+    color:var(--primary-dark);
+    padding:6px 16px;
+    border-radius:var(--radius-full);
+    font-size:12.5px;
+    font-weight:700;
+    margin-bottom:18px;
+  }
+  .status-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--primary);animation:pulse 1.4s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+  .modal-card p.note{color:var(--gray-500);font-size:13.5px;line-height:1.6;margin-bottom:24px;}
+
+  .whatsapp-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    background:#25D366;
+    color:#fff;
+    padding:15px;
+    border-radius:var(--radius-full);
+    font-weight:700;
+    font-size:15px;
+    margin-bottom:12px;
+    transition:all .25s ease;
+  }
+  .whatsapp-btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(37,211,102,0.35);}
+
+  .modal-close{
+    color:var(--gray-500);
+    font-size:13.5px;
+    font-weight:600;
+    text-decoration:underline;
+  }
+
+  /* ============ ERROR TOAST ============ */
+  .error-toast{
+    position:fixed;
+    bottom:100px;
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:#fff;
+    border-left:4px solid var(--danger);
+    padding:16px 22px;
+    border-radius:var(--radius-sm);
+    box-shadow:var(--shadow-lg);
+    display:flex;
+    align-items:center;
+    gap:12px;
+    z-index:4000;
+    opacity:0;
+    pointer-events:none;
+    transition:all .35s ease;
+    max-width:90vw;
+  }
+  .error-toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;}
+  .error-toast i{color:var(--danger);flex-shrink:0;}
+  .error-toast div b{display:block;font-size:14px;margin-bottom:2px;}
+  .error-toast div span{font-size:12.5px;color:var(--gray-500);}
+
+  /* ============ FLOATING WHATSAPP ============ */
+  .float-whatsapp{
+    position:fixed;
+    bottom:26px;
+    right:26px;
+    width:60px;height:60px;
+    background:#25D366;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 10px 30px rgba(37,211,102,0.4);
+    z-index:900;
+    animation:pulseWa 2.2s infinite;
+    transition:transform .25s ease;
+  }
+  .float-whatsapp:hover{transform:scale(1.1);}
+  .float-whatsapp svg{width:30px;height:30px;fill:#fff;}
+  @keyframes pulseWa{
+    0%{box-shadow:0 0 0 0 rgba(37,211,102,0.5);}
+    70%{box-shadow:0 0 0 16px rgba(37,211,102,0);}
+    100%{box-shadow:0 0 0 0 rgba(37,211,102,0);}
+  }
+
+  /* ============ FOOTER ============ */
+  footer{
+    background:var(--secondary);
+    color:#fff;
+    padding:70px 0 30px;
+  }
+  .footer-grid{
+    display:grid;
+    grid-template-columns:1.4fr 1fr 1fr 1fr;
+    gap:40px;
+    margin-bottom:50px;
+  }
+  .footer-brand .logo{color:#fff;margin-bottom:14px;}
+  .footer-brand p{color:#9ca3af;font-size:14px;line-height:1.7;max-width:280px;margin-bottom:20px;}
+  .social-icons{display:flex;gap:12px;}
+  .social-icons a{
+    width:40px;height:40px;
+    border-radius:12px;
+    background:rgba(255,255,255,0.06);
+    display:flex;align-items:center;justify-content:center;
+    transition:all .25s ease;
+  }
+  .social-icons a:hover{background:var(--primary);transform:translateY(-3px);}
+  footer h5{font-size:14px;font-weight:700;margin-bottom:20px;text-transform:uppercase;letter-spacing:1px;color:#fff;}
+  footer ul li{margin-bottom:12px;}
+  footer ul li a{color:#9ca3af;font-size:14.5px;transition:color .2s ease;}
+  footer ul li a:hover{color:var(--primary);}
+  .footer-bottom{
+    border-top:1px solid rgba(255,255,255,0.08);
+    padding-top:26px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:12px;
+    color:#6b7280;
+    font-size:13px;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media(max-width:960px){
+    .hero-grid{grid-template-columns:1fr;}
+    .hero-visual{order:-1;max-width:340px;margin:0 auto;}
+    .why-grid{grid-template-columns:repeat(2,1fr);}
+    .eligibility-grid{grid-template-columns:repeat(3,1fr);}
+    .steps-wrap{grid-template-columns:repeat(2,1fr);row-gap:40px;}
+    .step-connector{display:none;}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+  }
+
+  @media(max-width:640px){
+    .why-grid{grid-template-columns:1fr;}
+    .eligibility-grid{grid-template-columns:repeat(2,1fr);}
+    .steps-wrap{grid-template-columns:1fr;}
+    .form-row{grid-template-columns:1fr;}
+    .vehicle-options{grid-template-columns:repeat(2,1fr);}
+    .form-shell{padding:30px 20px;}
+    .footer-grid{grid-template-columns:1fr;}
+    .hero-stats{gap:22px;}
+    .section{padding:60px 0;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ NAVBAR ============ -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <div class="logo">Kash<span>Run</span></div>
+    <a href="#apply" class="nav-cta">Apply Now</a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div data-aos="fade-up">
+      <div class="hero-eyebrow"><i data-lucide="zap" style="width:15px;height:15px;"></i> Now Hiring Across Kulgam</div>
+      <h1>Become a <span class="highlight">KashRun</span> Delivery Partner</h1>
+      <p class="tagline">Everything Kashmir Needs.</p>
+      <p class="subtitle">Deliver food, grocery, medicines, shopping orders and much more while earning on your own schedule across Kashmir.</p>
+      <div class="hero-btns">
+        <a href="#apply" class="btn btn-primary"><i data-lucide="rocket"></i> Apply Now</a>
+        <a href="#why" class="btn btn-outline"><i data-lucide="chevron-down"></i> Learn More</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><b>Weekly</b><span>Guaranteed Payouts</span></div>
+        <div class="hero-stat"><b>100%</b><span>Flexible Hours</span></div>
+        <div class="hero-stat"><b>24/7</b><span>Partner Support</span></div>
+      </div>
+    </div>
+    <div class="hero-visual" data-aos="zoom-in" data-aos-delay="150">
+      <div class="rider-card">
+        <div class="rider-glow"></div>
+        <svg class="rider-svg" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="150" cy="150" r="130" fill="url(#g1)" opacity="0.12"/>
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="300" y2="300">
+              <stop stop-color="#FF7A00"/>
+              <stop offset="1" stop-color="#FF9A40"/>
+            </linearGradient>
+          </defs>
+          <!-- Wheel -->
+          <circle cx="95" cy="215" r="28" stroke="#FF7A00" stroke-width="7"/>
+          <circle cx="215" cy="215" r="28" stroke="#FF7A00" stroke-width="7"/>
+          <!-- Scooter body -->
+          <path d="M95 215 L150 215 L175 165 L205 165" stroke="#FF7A00" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M150 215 L215 215" stroke="#FF7A00" stroke-width="7" stroke-linecap="round"/>
+          <path d="M175 165 L175 130" stroke="#FF7A00" stroke-width="7" stroke-linecap="round"/>
+          <path d="M160 130 L192 130" stroke="#FF7A00" stroke-width="7" stroke-linecap="round"/>
+          <!-- Delivery box -->
+          <rect x="80" y="150" width="40" height="34" rx="6" fill="#FF7A00"/>
+          <path d="M85 158 H115 M85 168 H115" stroke="#111" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+          <!-- Rider -->
+          <circle cx="182" cy="105" r="14" fill="#111"/>
+          <path d="M182 119 L182 150" stroke="#111" stroke-width="9" stroke-linecap="round"/>
+          <path d="M182 128 L160 145" stroke="#111" stroke-width="8" stroke-linecap="round"/>
+          <path d="M182 128 L195 132" stroke="#111" stroke-width="8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="floating-badge badge-1">
+        <div class="badge-icon"><i data-lucide="wallet" style="width:18px;height:18px;"></i></div>
+        Earn ₹18,000+/mo
+      </div>
+      <div class="floating-badge badge-2">
+        <div class="badge-icon"><i data-lucide="map-pin" style="width:18px;height:18px;"></i></div>
+        Near Your Area
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHY JOIN KASHRUN ============ -->
+<section class="section" id="why">
+  <div class="container">
+    <div class="section-header" data-aos="fade-up">
+      <div class="section-tag">Why KashRun</div>
+      <h2>Why Join KashRun</h2>
+      <p>Everything you need for a rewarding delivery career, built for Kashmir's roads and rhythm.</p>
+    </div>
+    <div class="why-grid">
+      <div class="glass-card" data-aos="fade-up" data-aos-delay="0">
+        <div class="card-icon"><i data-lucide="clock"></i></div>
+        <h3>Flexible Working Hours</h3>
+        <p>Work whenever suits you — mornings, evenings or weekends. You're always in control of your schedule.</p>
+      </div>
+      <div class="glass-card" data-aos="fade-up" data-aos-delay="80">
+        <div class="card-icon"><i data-lucide="banknote"></i></div>
+        <h3>Weekly Earnings</h3>
+        <p>Get paid every week, on time, with full transparency on every delivery and incentive.</p>
+      </div>
+      <div class="glass-card" data-aos="fade-up" data-aos-delay="160">
+        <div class="card-icon"><i data-lucide="zap"></i></div>
+        <h3>Instant Payout Support</h3>
+        <p>Need funds urgently? Our instant payout support has your back when it matters most.</p>
+      </div>
+      <div class="glass-card" data-aos="fade-up" data-aos-delay="0">
+        <div class="card-icon"><i data-lucide="map-pin"></i></div>
+        <h3>Work Near Your Area</h3>
+        <p>Get orders assigned close to your village or locality — less travel, more deliveries.</p>
+      </div>
+      <div class="glass-card" data-aos="fade-up" data-aos-delay="80">
+        <div class="card-icon"><i data-lucide="layers"></i></div>
+        <h3>Multiple Delivery Categories</h3>
+        <p>Deliver food, groceries, medicines and shopping orders — more categories, more earning opportunities.</p>
+      </div>
+      <div class="glass-card" data-aos="fade-up" data-aos-delay="160">
+        <div class="card-icon"><i data-lucide="headphones"></i></div>
+        <h3>Dedicated Partner Support</h3>
+        <p>A real support team on WhatsApp and call, ready to help whenever you need it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHO CAN APPLY ============ -->
+<section class="section">
+  <div class="container">
+    <div class="section-header" data-aos="fade-up">
+      <div class="section-tag">Eligibility</div>
+      <h2>Who Can Apply</h2>
+      <p>Simple requirements. If you meet these, you're ready to start.</p>
+    </div>
+    <div class="eligibility-wrap" data-aos="fade-up">
+      <div class="eligibility-grid">
+        <div class="elig-item">
+          <div class="elig-icon"><i data-lucide="calendar"></i></div>
+          <h4>18+ Years of Age</h4>
+        </div>
+        <div class="elig-item">
+          <div class="elig-icon"><i data-lucide="bike"></i></div>
+          <h4>Bike / Scooter Preferred</h4>
+        </div>
+        <div class="elig-item">
+          <div class="elig-icon"><i data-lucide="smartphone"></i></div>
+          <h4>Smartphone Required</h4>
+        </div>
+        <div class="elig-item">
+          <div class="elig-icon"><i data-lucide="id-card"></i></div>
+          <h4>Valid Government ID</h4>
+        </div>
+        <div class="elig-item">
+          <div class="elig-icon"><i data-lucide="landmark"></i></div>
+          <h4>Bank Account or UPI</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="section">
+  <div class="container">
+    <div class="section-header" data-aos="fade-up">
+      <div class="section-tag">Process</div>
+      <h2>How It Works</h2>
+      <p>From application to your first delivery in four simple steps.</p>
+    </div>
+    <div class="steps-wrap">
+      <div class="step-item" data-aos="fade-up" data-aos-delay="0">
+        <div class="step-num">1</div>
+        <h4>Apply Online</h4>
+        <p>Fill out the short application form below.</p>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step-item" data-aos="fade-up" data-aos-delay="100">
+        <div class="step-num">2</div>
+        <h4>Verification</h4>
+        <p>Our team verifies your documents and details.</p>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step-item" data-aos="fade-up" data-aos-delay="200">
+        <div class="step-num">3</div>
+        <h4>Approval</h4>
+        <p>Get approved and receive your partner ID.</p>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step-item" data-aos="fade-up" data-aos-delay="300">
+        <div class="step-num">4</div>
+        <h4>Start Delivering</h4>
+        <p>Go live and start earning across Kashmir.</p>
+        <div class="step-connector"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ APPLICATION FORM ============ -->
+<section class="section form-section" id="apply">
+  <div class="container">
+    <div class="section-header" data-aos="fade-up">
+      <div class="section-tag">Application</div>
+      <h2>Apply to Become a Partner</h2>
+      <p>Fill in your details accurately — this speeds up your verification.</p>
+    </div>
+
+    <form class="form-shell" id="partnerForm" data-aos="fade-up" novalidate>
+
+      <div class="form-group-title"><i data-lucide="user"></i> Personal Details</div>
+      <div class="form-row">
+        <div class="field">
+          <label>Full Name <span class="req">*</span></label>
+          <input type="text" id="fullName" required placeholder="e.g. Aamir Hussain">
+          <div class="field-error">Please enter your full name.</div>
+        </div>
+        <div class="field">
+          <label>Phone Number <span class="req">*</span></label>
+          <input type="tel" id="phone" required placeholder="10-digit mobile number" maxlength="10">
+          <div class="field-error">Enter a valid 10-digit phone number.</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>Alternative Phone Number</label>
+          <input type="tel" id="altPhone" placeholder="Optional" maxlength="10">
+        </div>
+        <div class="field">
+          <label>Email Address</label>
+          <input type="email" id="email" placeholder="[email protected]">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>Date of Birth</label>
+          <input type="date" id="dob">
+        </div>
+        <div class="field">
+          <label>Gender</label>
+          <select id="gender">
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group-title"><i data-lucide="map-pin"></i> Location Details</div>
+      <div class="form-row">
+        <div class="field">
+          <label>District <span class="req">*</span></label>
+          <select id="district" required>
+            <option value="">Select District</option>
+            <option value="Kulgam">Kulgam</option>
+            <option value="Anantnag">Anantnag</option>
+            <option value="Shopian">Shopian</option>
+            <option value="Pulwama">Pulwama</option>
+            <option value="Srinagar">Srinagar</option>
+            <option value="Other">Other</option>
+          </select>
+          <div class="field-error">Please select your district.</div>
+        </div>
+        <div class="field">
+          <label>Village / Area <span class="req">*</span></label>
+          <input type="text" id="area" required placeholder="e.g. Qaimoh">
+          <div class="field-error">Please enter your village or area.</div>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="field">
+          <label>Pincode <span class="req">*</span></label>
+          <input type="text" id="pincode" required maxlength="6" placeholder="e.g. 192231">
+          <div class="field-error">Please enter a valid 6-digit pincode.</div>
+        </div>
+      </div>
+
+      <div class="form-group-title"><i data-lucide="bike"></i> Vehicle Details</div>
+      <div class="field" style="margin-bottom:20px;">
+        <label>Vehicle Type <span class="req">*</span></label>
+        <div class="vehicle-options" id="vehicleOptions">
+          <div class="vehicle-opt" data-value="Bike">
+            <i data-lucide="bike"></i>
+            <span>Bike</span>
+          </div>
+          <div class="vehicle-opt" data-value="Scooter">
+            <i data-lucide="zap"></i>
+            <span>Scooter</span>
+          </div>
+          <div class="vehicle-opt" data-value="Cycle">
+            <i data-lucide="bike"></i>
+            <span>Cycle</span>
+          </div>
+          <div class="vehicle-opt" data-value="Walking">
+            <i data-lucide="footprints"></i>
+            <span>Walking</span>
+          </div>
+        </div>
+        <div class="field-error" id="vehicleError">Please select a vehicle type.</div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>Vehicle Number</label>
+          <input type="text" id="vehicleNumber" placeholder="e.g. JK03 A 1234">
+        </div>
+        <div class="field">
+          <label>Driving License Number</label>
+          <input type="text" id="drivingLicense" placeholder="Optional">
+        </div>
+      </div>
+
+      <div class="form-group-title"><i data-lucide="shield-check"></i> Identity & Payment</div>
+      <div class="form-row">
+        <div class="field">
+          <label>Aadhaar Number</label>
+          <input type="text" id="aadhaar" maxlength="12" placeholder="12-digit Aadhaar number">
+        </div>
+        <div class="field">
+          <label>UPI ID</label>
+          <input type="text" id="upiId" placeholder="e.g. name@upi">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>Bank Account Holder Name</label>
+          <input type="text" id="bankHolderName" placeholder="As per bank records">
+        </div>
+        <div class="field">
+          <label>Bank Name</label>
+          <input type="text" id="bankName" placeholder="e.g. J&K Bank">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>Account Number</label>
+          <input type="text" id="accountNumber" placeholder="Bank account number">
+        </div>
+        <div class="field">
+          <label>IFSC Code</label>
+          <input type="text" id="ifscCode" placeholder="e.g. JAKA0KULGAM">
+        </div>
+      </div>
+
+      <div class="form-group-title"><i data-lucide="phone-call"></i> Emergency & Experience</div>
+      <div class="form-row">
+        <div class="field">
+          <label>Emergency Contact Name</label>
+          <input type="text" id="emergencyName" placeholder="Full name">
+        </div>
+        <div class="field">
+          <label>Emergency Contact Number</label>
+          <input type="tel" id="emergencyNumber" maxlength="10" placeholder="10-digit mobile number">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>Previous Delivery Experience</label>
+          <select id="experience">
+            <option value="None">None</option>
+            <option value="Less than 1 year">Less than 1 year</option>
+            <option value="1-2 years">1-2 years</option>
+            <option value="2+ years">2+ years</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Profile Photo URL (Optional)</label>
+          <input type="url" id="profilePhoto" placeholder="https://...">
+        </div>
+      </div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="agreeTerms">
+        <label for="agreeTerms">I agree to <a href="#terms">KashRun Terms &amp; Conditions</a> and confirm that all the information provided above is accurate.</label>
+      </div>
+      <div class="field-error" id="termsError" style="margin-bottom:16px;">Please accept the Terms &amp; Conditions to continue.</div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">
+        <span class="spinner" id="spinner"></span>
+        <span id="submitLabel">Submit Application</span>
+        <i data-lucide="arrow-right" id="submitArrow"></i>
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer id="terms">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">Kash<span style="color:var(--primary);">Run</span></div>
+        <p>Everything Kashmir Needs. Delivering food, groceries, medicines and more across Kulgam and beyond.</p>
+        <div class="social-icons">
+          <a href="https://instagram.com/kashrun.in" target="_blank" aria-label="Instagram"><i data-lucide="instagram" style="width:18px;height:18px;"></i></a>
+          <a href="mailto:kashrun.in@gmail.com" aria-label="Email"><i data-lucide="mail" style="width:18px;height:18px;"></i></a>
+          <a href="tel:+918082460988" aria-label="Phone"><i data-lucide="phone" style="width:18px;height:18px;"></i></a>
+          <a href="https://wa.me/918082460988" target="_blank" aria-label="WhatsApp"><i data-lucide="message-circle" style="width:18px;height:18px;"></i></a>
+        </div>
+      </div>
+      <div>
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">Refund Policy</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Partner With Us</h5>
+        <ul>
+          <li><a href="#apply">Become Delivery Partner</a></li>
+          <li><a href="#">Become Seller</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="mailto:kashrun.in@gmail.com">kashrun.in@gmail.com</a></li>
+          <li><a href="tel:+918082460988">+91 8082460988</a></li>
+          <li><a href="https://instagram.com/kashrun.in" target="_blank">@kashrun.in</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 KashRun. All rights reserved.</span>
+      <span>Made for Kashmir, with care.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ SUCCESS MODAL ============ -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal-card">
+    <div class="success-tick">
+      <svg viewBox="0 0 60 60">
+        <circle cx="30" cy="30" r="26"/>
+        <path d="M18 31 L26 39 L42 21"/>
+      </svg>
+    </div>
+    <h2>Application Submitted Successfully</h2>
+    <div class="status-pill"><span class="dot"></span> Pending Verification</div>
+    <div class="app-number">
+      <span>Application Number</span>
+      <b id="appNumberDisplay">KP-000001</b>
+    </div>
+    <p class="note">Our team will review your application and contact you shortly.</p>
+    <a href="#" target="_blank" class="whatsapp-btn" id="whatsappBtn">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.28-1.38a9.9 9.9 0 0 0 4.76 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.86 9.86 0 0 0 12.04 2m0 1.67c2.2 0 4.26.86 5.82 2.42a8.2 8.2 0 0 1 2.41 5.82c0 4.54-3.7 8.24-8.24 8.24a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.13.82.84-3.05-.2-.32a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24M8.53 6.9c-.17 0-.45.06-.68.32-.24.25-.9.88-.9 2.15s.92 2.5 1.05 2.67c.13.17 1.8 2.87 4.45 3.91 2.2.87 2.65.7 3.13.65.48-.04 1.53-.62 1.75-1.22.22-.6.22-1.11.15-1.22-.06-.1-.24-.16-.5-.3-.25-.12-1.53-.75-1.77-.84-.24-.09-.4-.13-.58.13-.17.26-.66.84-.81 1-.15.17-.3.19-.56.07-.26-.13-1.08-.4-2.06-1.27-.76-.68-1.27-1.5-1.42-1.76-.15-.26-.02-.4.11-.53.12-.12.26-.3.4-.46.13-.15.17-.26.26-.43.09-.17.04-.33-.02-.46-.06-.13-.58-1.42-.8-1.94-.2-.5-.42-.44-.58-.44Z"/></svg>
+      Contact on WhatsApp
+    </a>
+    <a href="#" class="modal-close" id="closeModalBtn">Close</a>
+  </div>
+</div>
+
+<!-- ============ ERROR TOAST ============ -->
+<div class="error-toast" id="errorToast">
+  <i data-lucide="alert-circle" style="width:22px;height:22px;"></i>
+  <div><b>Something went wrong.</b><span>Please try again.</span></div>
+</div>
+
+<!-- ============ FLOATING WHATSAPP ============ -->
+<a href="https://wa.me/918082460988" target="_blank" class="float-whatsapp" aria-label="WhatsApp us">
+  <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.28-1.38a9.9 9.9 0 0 0 4.76 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.86 9.86 0 0 0 12.04 2m0 1.67c2.2 0 4.26.86 5.82 2.42a8.2 8.2 0 0 1 2.41 5.82c0 4.54-3.7 8.24-8.24 8.24a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.13.82.84-3.05-.2-.32a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24M8.53 6.9c-.17 0-.45.06-.68.32-.24.25-.9.88-.9 2.15s.92 2.5 1.05 2.67c.13.17 1.8 2.87 4.45 3.91 2.2.87 2.65.7 3.13.65.48-.04 1.53-.62 1.75-1.22.22-.6.22-1.11.15-1.22-.06-.1-.24-.16-.5-.3-.25-.12-1.53-.75-1.77-.84-.24-.09-.4-.13-.58.13-.17.26-.66.84-.81 1-.15.17-.3.19-.56.07-.26-.13-1.08-.4-2.06-1.27-.76-.68-1.27-1.5-1.42-1.76-.15-.26-.02-.4.11-.53.12-.12.26-.3.4-.46.13-.15.17-.26.26-.43.09-.17.04-.33-.02-.46-.06-.13-.58-1.42-.8-1.94-.2-.5-.42-.44-.58-.44Z"/></svg>
+</a>
+
+<!-- ============ CANVAS CONFETTI ============ -->
+<canvas id="confettiCanvas" style="position:fixed;inset:0;pointer-events:none;z-index:3500;display:none;"></canvas>
+
+<!-- ============ SCRIPTS ============ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
+<script type="module">
+  // ============ FIREBASE MODULAR SDK ============
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDvViMeJbOdLvNT1163vlp7fPIXK6qJ8Qk",
+    authDomain: "kashrun-6ac6a.firebaseapp.com",
+    projectId: "kashrun-6ac6a",
+    storageBucket: "kashrun-6ac6a.firebasestorage.app",
+    messagingSenderId: "466142826836",
+    appId: "1:466142826836:web:8fbcd0a829d582429ff8c1"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // ============ INIT AOS + LUCIDE ============
+  AOS.init({ duration: 700, once: true, offset: 60 });
+  lucide.createIcons();
+
+  // ============ VEHICLE SELECT ============
+  let selectedVehicle = "";
+  const vehicleOptions = document.querySelectorAll(".vehicle-opt");
+  vehicleOptions.forEach(opt => {
+    opt.addEventListener("click", () => {
+      vehicleOptions.forEach(o => o.classList.remove("selected"));
+      opt.classList.add("selected");
+      selectedVehicle = opt.dataset.value;
+      document.getElementById("vehicleError").classList.remove("show");
+    });
+  });
+
+  // ============ FORM VALIDATION HELPERS ============
+  function showFieldError(input, show) {
+    const errorEl = input.parentElement.querySelector(".field-error");
+    if (show) {
+      input.classList.add("invalid");
+      if (errorEl) errorEl.classList.add("show");
+    } else {
+      input.classList.remove("invalid");
+      if (errorEl) errorEl.classList.remove("show");
+    }
+  }
+
+  function isValidPhone(val) {
+    return /^[6-9]\d{9}$/.test(val.trim());
+  }
+
+  // ============ FORM SUBMIT ============
+  const form = document.getElementById("partnerForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const spinner = document.getElementById("spinner");
+  const submitLabel = document.getElementById("submitLabel");
+  const submitArrow = document.getElementById("submitArrow");
+  const errorToast = document.getElementById("errorToast");
+
+  function showErrorToast() {
+    errorToast.classList.add("show");
+    setTimeout(() => errorToast.classList.remove("show"), 4200);
+  }
+
+  function setLoading(loading) {
+    submitBtn.disabled = loading;
+    spinner.style.display = loading ? "inline-block" : "none";
+    submitLabel.textContent = loading ? "Submitting..." : "Submit Application";
+    submitArrow.style.display = loading ? "none" : "inline-block";
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const fullName = document.getElementById("fullName");
+    const phone = document.getElementById("phone");
+    const district = document.getElementById("district");
+    const area = document.getElementById("area");
+    const pincode = document.getElementById("pincode");
+    const agreeTerms = document.getElementById("agreeTerms");
+    const termsError = document.getElementById("termsError");
+
+    let valid = true;
+
+    if (!fullName.value.trim()) { showFieldError(fullName, true); valid = false; } else showFieldError(fullName, false);
+    if (!isValidPhone(phone.value)) { showFieldError(phone, true); valid = false; } else showFieldError(phone, false);
+    if (!district.value) { showFieldError(district, true); valid = false; } else showFieldError(district, false);
+    if (!area.value.trim()) { showFieldError(area, true); valid = false; } else showFieldError(area, false);
+    if (!/^\d{6}$/.test(pincode.value.trim())) { showFieldError(pincode, true); valid = false; } else showFieldError(pincode, false);
+    if (!selectedVehicle) { document.getElementById("vehicleError").classList.add("show"); valid = false; } else document.getElementById("vehicleError").classList.remove("show");
+
+    termsError.classList.remove("show");
+    if (!agreeTerms.checked) { termsError.classList.add("show"); valid = false; }
+
+    if (!valid) {
+      const firstInvalid = form.querySelector(".invalid, .show");
+      if (firstInvalid) firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
+    setLoading(true);
+
+    const applicationData = {
+      applicationId: "",
+      fullName: fullName.value.trim(),
+      phone: phone.value.trim(),
+      alternativePhone: document.getElementById("altPhone").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      dateOfBirth: document.getElementById("dob").value,
+      gender: document.getElementById("gender").value,
+      district: district.value,
+      area: area.value.trim(),
+      pincode: pincode.value.trim(),
+      vehicleType: selectedVehicle,
+      vehicleNumber: document.getElementById("vehicleNumber").value.trim(),
+      drivingLicenseNumber: document.getElementById("drivingLicense").value.trim(),
+      aadhaarNumber: document.getElementById("aadhaar").value.trim(),
+      upiId: document.getElementById("upiId").value.trim(),
+      bankHolderName: document.getElementById("bankHolderName").value.trim(),
+      bankName: document.getElementById("bankName").value.trim(),
+      accountNumber: document.getElementById("accountNumber").value.trim(),
+      ifscCode: document.getElementById("ifscCode").value.trim(),
+      emergencyContactName: document.getElementById("emergencyName").value.trim(),
+      emergencyContactNumber: document.getElementById("emergencyNumber").value.trim(),
+      experience: document.getElementById("experience").value,
+      profilePhoto: document.getElementById("profilePhoto").value.trim(),
+      status: "Pending",
+      approved: false,
+      createdAt: serverTimestamp()
+    };
+
+    try {
+      const docRef = await addDoc(collection(db, "deliveryPartners"), applicationData);
+      const appId = docRef.id;
+
+      // Show application number as KP-XXXXXX derived from doc id, fallback readable
+      const shortId = appId.slice(-6).toUpperCase();
+      const appNumber = "KP-" + shortId;
+
+      document.getElementById("appNumberDisplay").textContent = appNumber;
+
+      const waMessage =
+`Hello KashRun Team,
+
+My Delivery Partner Application has been submitted successfully.
+
+Application Number:
+${appNumber}
+
+Name:
+${applicationData.fullName}
+
+Phone:
+${applicationData.phone}
+
+Please review my application.
+
+Thank you.`;
+
+      document.getElementById("whatsappBtn").href =
+        "https://wa.me/918082460988?text=" + encodeURIComponent(waMessage);
+
+      openSuccessModal();
+      form.reset();
+      vehicleOptions.forEach(o => o.classList.remove("selected"));
+      selectedVehicle = "";
+
+    } catch (err) {
+      console.error("Firestore submission error:", err);
+      showErrorToast();
+    } finally {
+      setLoading(false);
+    }
+  });
+
+  // ============ SUCCESS MODAL + CONFETTI ============
+  const modal = document.getElementById("successModal");
+  document.getElementById("closeModalBtn").addEventListener("click", (e) => {
+    e.preventDefault();
+    closeSuccessModal();
+  });
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeSuccessModal();
+  });
+
+  function openSuccessModal() {
+    modal.classList.add("active");
+    fireConfetti();
+    document.body.style.overflow = "hidden";
+  }
+  function closeSuccessModal() {
+    modal.classList.remove("active");
+    document.body.style.overflow = "";
+  }
+
+  // Lightweight confetti using canvas
+  const canvas = document.getElementById("confettiCanvas");
+  const ctx = canvas.getContext("2d");
+  let confettiPieces = [];
+  let confettiAnimId = null;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener("resize", resizeCanvas);
+  resizeCanvas();
+
+  const confettiColors = ["#FF7A00", "#FF9A40", "#111111", "#16C784", "#FFD166"];
+
+  function fireConfetti() {
+    canvas.style.display = "block";
+    confettiPieces = [];
+    const count = 140;
+    for (let i = 0; i < count; i++) {
+      confettiPieces.push({
+        x: Math.random() * canvas.width,
+        y: -20 - Math.random() * canvas.height * 0.5,
+        w: 6 + Math.random() * 6,
+        h: 8 + Math.random() * 10,
+        color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+        speedY: 2 + Math.random() * 3,
+        speedX: -1.5 + Math.random() * 3,
+        rotation: Math.random() * 360,
+        rotationSpeed: -6 + Math.random() * 12
+      });
+    }
+    let frames = 0;
+    const maxFrames = 220;
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confettiPieces.forEach(p => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+        p.rotation += p.rotationSpeed;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+      });
+      frames++;
+      if (frames < maxFrames) {
+        confettiAnimId = requestAnimationFrame(animate);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.style.display = "none";
+      }
+    }
+    if (confettiAnimId) cancelAnimationFrame(confettiAnimId);
+    animate();
+  }
+
+  // ============ NAVBAR SCROLL EFFECT ============
+  const navbar = document.querySelector(".navbar");
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 20) {
+      navbar.style.boxShadow = "0 4px 20px rgba(17,17,17,0.06)";
+    } else {
+      navbar.style.boxShadow = "none";
+    }
+  });
+</script>
+
+</body>
+</html>
