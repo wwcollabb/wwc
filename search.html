@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search — KashRun</title>
+<link rel="icon" href="assets/logo.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-top">
+    <a href="index.html" class="brand">
+      <img src="assets/logo.png" alt="KashRun logo" onerror="this.style.display='none'">
+      <div class="brand-text"><span class="brand-name">KashRun</span><span class="brand-tagline">Everything Kashmir Needs</span></div>
+    </a>
+    <form class="header-search" action="search.html" role="search">
+      <input type="search" name="q" id="search-input-desktop" placeholder="Search products, categories…" aria-label="Search">
+      <button type="submit" aria-label="Search">🔍</button>
+    </form>
+    <div class="header-actions">
+      <a class="icon-btn" href="wishlist.html" aria-label="Wishlist">♡<span class="icon-badge" data-wishlist-count style="display:none">0</span></a>
+      <a class="icon-btn" href="cart.html" aria-label="Cart">🛍<span class="icon-badge" data-cart-count style="display:none">0</span></a>
+      <a class="icon-btn" href="login.html" data-account-link aria-label="Account"><span data-account-label>👤</span></a>
+    </div>
+  </div>
+  <form class="container header-search-mobile" action="search.html" role="search">
+    <input type="search" name="q" id="search-input-mobile" placeholder="Search products, categories…" aria-label="Search">
+    <button type="submit" aria-label="Search">🔍</button>
+  </form>
+</header>
+
+<main class="section">
+  <div class="container">
+    <nav class="crumbs"><a href="index.html">Home</a> / <span>Search</span></nav>
+    <h1 class="page-title" id="search-heading" style="font-size:1.8rem">Search results</h1>
+    <div class="prod-grid" id="product-grid"><div class="spinner"></div></div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div><div class="footer-brand">KashRun</div><p class="footer-tag">Everything Kashmir Needs</p></div>
+    <div class="footer-col"><h4>Customer Service</h4><ul><li><a href="#">About KashRun</a></li><li><a href="#">Contact</a></li></ul></div>
+    <div class="footer-col"><h4>Policies</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms &amp; Conditions</a></li></ul></div>
+    <div class="footer-col"><h4>Delivery</h4><ul><li><a href="#">Shipping Policy</a></li><li><a href="#">Return Policy</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">© 2026 KashRun. Serving Jammu &amp; Kashmir.</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/wishlist.js"></script>
+<script>
+  async function init() {
+    const q = krQueryParam("q") || "";
+    document.getElementById("search-input-desktop").value = q;
+    document.getElementById("search-input-mobile").value = q;
+    document.getElementById("search-heading").textContent = q ? `Results for “${q}”` : "Search";
+
+    const grid = document.getElementById("product-grid");
+    if (!q) {
+      grid.innerHTML = `<div class="empty-state"><h3>Type something to search</h3><p>Try a product name or category.</p></div>`;
+      return;
+    }
+    const products = await krFetchProducts({ search: q });
+    grid.innerHTML = products.length ? products.map(krRenderProductCard).join("")
+      : `<div class="empty-state"><h3>No results for “${q}”</h3><p>Try a different keyword.</p></div>`;
+    krWireProductGridEvents(grid);
+  }
+  init();
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wishlist — KashRun</title>
+<link rel="icon" href="assets/logo.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-top">
+    <a href="index.html" class="brand">
+      <img src="assets/logo.png" alt="KashRun logo" onerror="this.style.display='none'">
+      <div class="brand-text"><span class="brand-name">KashRun</span><span class="brand-tagline">Everything Kashmir Needs</span></div>
+    </a>
+    <div class="header-actions">
+      <a class="icon-btn" href="cart.html" aria-label="Cart">🛍<span class="icon-badge" data-cart-count style="display:none">0</span></a>
+      <a class="icon-btn" href="login.html" data-account-link aria-label="Account"><span data-account-label>👤</span></a>
+    </div>
+  </div>
+</header>
+
+<main class="section">
+  <div class="container">
+    <h1 class="page-title" style="font-size:1.8rem">Wishlist</h1>
+    <div class="prod-grid" id="wish-grid"><div class="spinner"></div></div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/wishlist.js"></script>
+<script>
+  async function init() {
+    const products = await krWishlistFetchProducts();
+    const grid = document.getElementById("wish-grid");
+    grid.innerHTML = products.length ? products.map(krRenderProductCard).join("")
+      : `<div class="empty-state"><h3>Your wishlist is empty</h3><p>Tap the heart on any product to save it here.</p><a href="products.html" class="btn btn-primary" style="margin-top:16px">Browse Products</a></div>`;
+    krWireProductGridEvents(grid);
+    grid.querySelectorAll("[data-wish]").forEach(btn => {
+      btn.addEventListener("click", () => setTimeout(init, 150));
+    });
+  }
+  init();
+</script>
+</body>
+</html>

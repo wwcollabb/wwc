@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Details — KashRun</title>
+<link rel="icon" href="assets/logo.png">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .timeline{display:flex;flex-direction:column;gap:0;margin:20px 0}
+  .tl-step{display:flex;gap:14px;position:relative;padding-bottom:28px}
+  .tl-step:last-child{padding-bottom:0}
+  .tl-dot{width:14px;height:14px;border-radius:50%;background:var(--stone-200);flex-shrink:0;margin-top:2px;position:relative;z-index:1}
+  .tl-step.done .tl-dot{background:var(--valley)}
+  .tl-step::before{content:'';position:absolute;left:6px;top:16px;bottom:0;width:2px;background:var(--stone-200)}
+  .tl-step:last-child::before{display:none}
+  .tl-step.done::before{background:var(--valley)}
+  .tl-label{font-weight:600;font-size:.9rem}
+  .order-line{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--stone-200)}
+  .order-line img{width:56px;height:56px;border-radius:8px;object-fit:cover;background:var(--paper-dim)}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-top">
+    <a href="index.html" class="brand">
+      <img src="assets/logo.png" alt="KashRun logo" onerror="this.style.display='none'">
+      <div class="brand-text"><span class="brand-name">KashRun</span><span class="brand-tagline">Everything Kashmir Needs</span></div>
+    </a>
+  </div>
+</header>
+
+<main class="section">
+  <div class="container">
+    <nav class="crumbs"><a href="orders.html">My Orders</a> / <span>Order Details</span></nav>
+    <div id="banner"></div>
+    <div id="order-root"><div class="spinner"></div></div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/products.js"></script>
+<script src="js/orders.js"></script>
+<script>
+  async function init() {
+    const user = await krRequireAuth();
+    if (!user) return;
+
+    if (krQueryParam("placed")) {
+      document.getElementById("banner").innerHTML = `<div class="card" style="background:var(--valley-bg);border-color:var(--valley);margin-bottom:20px"><strong>Order placed successfully!</strong> We'll keep you posted as it moves through delivery.</div>`;
+    }
+
+    const id = krQueryParam("id");
+    const order = id ? await krFetchOrderDetails(id) : null;
+    const root = document.getElementById("order-root");
+
+    if (!order) {
+      root.innerHTML = `<div class="empty-state"><h3>Order not found</h3></div>`;
+      return;
+    }
+
+    const addr = order.address || {};
+    const isCancelled = order.status === "cancelled" || order.status === "returned";
+
+    root.innerHTML = `
+      <div class="grid-2">
+        <div>
+          <div class="card" style="margin-bottom:20px">
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px">
+              <div>
+                <strong style="font-family:var(--font-mono)">#${order.id.slice(0, 8).toUpperCase()}</strong>
+                <div style="font-size:.82rem;color:var(--stone);margin-top:4px">${new Date(order.created_at).toLocaleString("en-IN")}</div>
+              </div>
+              ${krStatusBadge(order.status)}
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:20px">
+            <h3 style="margin-bottom:8px">Items</h3>
+            ${(order.order_items || []).map(oi => `
+              <div class="order-line">
+                <img src="${krPrimaryImage(oi.products || {})}" onerror="this.src='assets/logo.png'">
+                <div style="flex:1">
+                  <div style="font-weight:600;font-size:.9rem">${oi.products?.name || "Product"}</div>
+                  <div style="font-size:.8rem;color:var(--stone)">Qty ${oi.quantity}</div>
+                </div>
+                <div style="font-family:var(--font-mono);font-weight:600">${krFormatPrice(oi.price * oi.quantity)}</div>
+              </div>`).join("")}
+          </div>
+
+          <div class="card">
+            <h3 style="margin-bottom:6px">Delivery Address</h3>
+            <p style="font-size:.9rem;color:var(--ink-soft)">
+              ${addr.full_name || ""} — ${addr.mobile || ""}<br>
+              ${addr.house || ""}, ${addr.area || ""}<br>
+              ${addr.city || ""}, ${addr.district || ""} – <strong>${addr.pincode || ""}</strong><br>
+              ${addr.state || "Jammu & Kashmir"}
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <div class="card" style="margin-bottom:20px">
+            <h3 style="margin-bottom:6px">Payment</h3>
+            <p style="font-size:.9rem;color:var(--ink-soft);text-transform:uppercase">${order.payment_method === "cod" ? "Cash on Delivery" : order.payment_method}</p>
+            <div class="summary-row total"><span>Total</span><span>${krFormatPrice(order.total_amount)}</span></div>
+          </div>
+
+          <div class="card">
+            <h3 style="margin-bottom:6px">Status</h3>
+            ${isCancelled ? `<p style="margin-top:10px">${krStatusBadge(order.status)}</p>` : `
+            <div class="timeline">
+              ${KR_STATUS_SEQUENCE.map(s => {
+                const doneIdx = KR_STATUS_SEQUENCE.indexOf(order.status);
+                const idx = KR_STATUS_SEQUENCE.indexOf(s);
+                const done = idx <= doneIdx;
+                return `<div class="tl-step ${done ? "done" : ""}"><div class="tl-dot"></div><div class="tl-label">${KR_STATUS_LABEL[s]}</div></div>`;
+              }).join("")}
+            </div>`}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  init();
+</script>
+</body>
+</html>
