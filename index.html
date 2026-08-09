@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KashmirOne — Everything Kashmir, One Place</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+:root{
+  --green:#087443;
+  --dark:#063b25;
+  --light:#f4faf7;
+  --text:#17231d;
+  --muted:#718078;
+  --white:#fff;
+  --border:#e3ebe6;
+}
+
+body{
+  background:var(--light);
+  color:var(--text);
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+.container{
+  width:92%;
+  max-width:1180px;
+  margin:auto;
+}
+
+/* NAVBAR */
+
+header{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:rgba(255,255,255,.96);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(10px);
+}
+
+.nav{
+  height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:21px;
+  font-weight:900;
+  color:var(--dark);
+}
+
+.logo-icon{
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:var(--green);
+  color:white;
+  font-size:22px;
+}
+
+.nav-links{
+  display:flex;
+  gap:25px;
+  font-size:14px;
+  font-weight:600;
+}
+
+.nav-links a:hover{
+  color:var(--green);
+}
+
+.nav-button{
+  background:var(--green);
+  color:white;
+  padding:11px 17px;
+  border-radius:10px;
+  font-weight:700;
+  font-size:13px;
+}
+
+/* HERO */
+
+.hero{
+  padding:75px 0;
+  background:
+  radial-gradient(circle at 90% 20%,#cdebd9 0,transparent 30%),
+  linear-gradient(135deg,#e8f7ee,#f8fcfa);
+}
+
+.hero-grid{
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:45px;
+  align-items:center;
+}
+
+.badge{
+  display:inline-block;
+  padding:8px 13px;
+  border-radius:50px;
+  background:white;
+  border:1px solid var(--border);
+  color:var(--green);
+  font-size:12px;
+  font-weight:800;
+  margin-bottom:18px;
+}
+
+.hero h1{
+  font-size:clamp(42px,6vw,70px);
+  line-height:1;
+  letter-spacing:-3px;
+  margin-bottom:20px;
+}
+
+.hero h1 span{
+  color:var(--green);
+}
+
+.hero p{
+  color:var(--muted);
+  font-size:18px;
+  max-width:620px;
+  line-height:1.6;
+}
+
+.search-box{
+  margin-top:28px;
+  background:white;
+  padding:8px;
+  border-radius:15px;
+  display:flex;
+  max-width:650px;
+  border:1px solid var(--border);
+  box-shadow:0 15px 40px rgba(0,0,0,.08);
+}
+
+.search-box input{
+  flex:1;
+  border:0;
+  outline:none;
+  padding:14px;
+  font-size:15px;
+}
+
+.search-box button{
+  border:0;
+  background:var(--green);
+  color:white;
+  padding:0 22px;
+  border-radius:10px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+/* HERO CARD */
+
+.hero-card{
+  min-height:340px;
+  border-radius:28px;
+  padding:28px;
+  background:linear-gradient(145deg,#063b25,#118151);
+  color:white;
+  box-shadow:0 25px 55px rgba(0,80,45,.25);
+}
+
+.hero-card h2{
+  font-size:27px;
+  margin-bottom:8px;
+}
+
+.hero-card p{
+  color:#d9eee3;
+  font-size:14px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:28px;
+}
+
+.stat{
+  padding:18px;
+  border-radius:16px;
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.15);
+}
+
+.stat strong{
+  display:block;
+  font-size:21px;
+}
+
+.stat small{
+  color:#cbe5d8;
+}
+
+/* SECTIONS */
+
+section{
+  padding:60px 0;
+}
+
+.section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  margin-bottom:25px;
+}
+
+.section-title h2{
+  font-size:30px;
+}
+
+.section-title p{
+  color:var(--muted);
+  margin-top:5px;
+  font-size:14px;
+}
+
+.view{
+  color:var(--green);
+  font-weight:800;
+  font-size:14px;
+}
+
+/* SERVICE CARDS */
+
+.services{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+}
+
+.card{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:21px;
+  transition:.2s;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 15px 35px rgba(0,0,0,.08);
+}
+
+.icon{
+  width:50px;
+  height:50px;
+  border-radius:14px;
+  background:#eaf7ef;
+  display:grid;
+  place-items:center;
+  font-size:24px;
+  margin-bottom:15px;
+}
+
+.card h3{
+  font-size:17px;
+  margin-bottom:7px;
+}
+
+.card p{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+}
+
+/* LISTINGS */
+
+.listings{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+
+.listing{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:18px;
+  overflow:hidden;
+}
+
+.list-image{
+  height:145px;
+  display:grid;
+  place-items:center;
+  font-size:55px;
+  background:linear-gradient(135deg,#d9eee1,#b7d8c5);
+}
+
+.list-content{
+  padding:18px;
+}
+
+.tag{
+  display:inline-block;
+  background:#eaf7ef;
+  color:var(--green);
+  padding:5px 8px;
+  border-radius:6px;
+  font-size:10px;
+  font-weight:900;
+  margin-bottom:9px;
+}
+
+.list-content h3{
+  font-size:17px;
+}
+
+.meta{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:7px;
+}
+
+/* UPDATES */
+
+.updates{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+
+.update-box{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:20px;
+}
+
+.update{
+  display:flex;
+  gap:15px;
+  padding:15px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.update:last-child{
+  border-bottom:0;
+}
+
+.update-date{
+  color:var(--green);
+  font-weight:900;
+  font-size:11px;
+  min-width:50px;
+}
+
+.update h4{
+  font-size:14px;
+}
+
+.update p{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:4px;
+}
+
+/* CTA */
+
+.cta{
+  background:linear-gradient(135deg,#063b25,#0b7746);
+  color:white;
+  padding:40px;
+  border-radius:24px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:25px;
+}
+
+.cta h2{
+  font-size:30px;
+}
+
+.cta p{
+  color:#d5e9de;
+  margin-top:7px;
+}
+
+.cta a{
+  background:white;
+  color:var(--green);
+  padding:13px 19px;
+  border-radius:10px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+/* FOOTER */
+
+footer{
+  background:#05291a;
+  color:#c5d9ce;
+  padding:45px 0 25px;
+}
+
+.footer-grid{
+  display:grid;
+  grid-template-columns:1.5fr 1fr 1fr 1fr;
+  gap:30px;
+}
+
+footer h3{
+  color:white;
+  margin-bottom:12px;
+}
+
+footer a{
+  display:block;
+  font-size:13px;
+  margin:8px 0;
+}
+
+.copyright{
+  border-top:1px solid rgba(255,255,255,.1);
+  margin-top:30px;
+  padding-top:20px;
+  font-size:12px;
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+  .nav-links{
+    display:none;
+  }
+
+  .hero-grid{
+    grid-template-columns:1fr;
+  }
+
+  .services{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .footer-grid{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media(max-width:600px){
+
+  .hero{
+    padding:50px 0;
+  }
+
+  .hero h1{
+    font-size:45px;
+  }
+
+  .search-box{
+    flex-direction:column;
+    gap:7px;
+  }
+
+  .search-box button{
+    height:48px;
+  }
+
+  .services,
+  .listings,
+  .updates,
+  .footer-grid{
+    grid-template-columns:1fr;
+  }
+
+  .section-title{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .cta{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+}
+
+/* TOAST */
+
+.toast{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:#10231a;
+  color:white;
+  padding:13px 18px;
+  border-radius:10px;
+  opacity:0;
+  pointer-events:none;
+  transition:.3s;
+  z-index:999;
+  font-size:13px;
+}
+
+.toast.show{
+  opacity:1;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="container nav">
+
+<a href="#" class="logo">
+<div class="logo-icon">🏔️</div>
+KashmirOne
+</a>
+
+<div class="nav-links">
+<a href="#services">Services</a>
+<a href="#jobs">Jobs</a>
+<a href="#market">Buy & Sell</a>
+<a href="#updates">Updates</a>
+</div>
+
+<a href="#business" class="nav-button">
+List Your Business
+</a>
+
+</div>
+</header>
+
+
+<main>
+
+<!-- HERO -->
+
+<section class="hero">
+
+<div class="container hero-grid">
+
+<div>
+
+<div class="badge">
+✦ Built for Kashmir • Local & Useful
+</div>
+
+<h1>
+Everything Kashmir,<br>
+<span>One Place.</span>
+</h1>
+
+<p>
+Jobs, students, local services, marketplace,
+important updates and places — everything
+Kashmir needs in one simple platform.
+</p>
+
+<div class="search-box">
+
+<input
+id="searchInput"
+type="text"
+placeholder="Search jobs, shops, services, places..."
+>
+
+<button onclick="searchSite()">
+Search
+</button>
+
+</div>
+
+</div>
+
+
+<div class="hero-card">
+
+<h2>📍 Kashmir Local</h2>
+
+<p>
+Discover useful services, opportunities and
+local listings around Kashmir.
+</p>
+
+<div class="stats">
+
+<div class="stat">
+<strong>Jobs</strong>
+<small>Find opportunities</small>
+</div>
+
+<div class="stat">
+<strong>Services</strong>
+<small>Find local experts</small>
+</div>
+
+<div class="stat">
+<strong>Market</strong>
+<small>Buy & Sell</small>
+</div>
+
+<div class="stat">
+<strong>Updates</strong>
+<small>Stay informed</small>
+</div>
+
+</div>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- SERVICES -->
+
+<section id="services">
+
+<div class="container">
+
+<div class="section-title">
+
+<div>
+<h2>What do you need?</h2>
+<p>Quick access to everyday services.</p>
+</div>
+
+</div>
+
+
+<div class="services">
+
+<div class="card">
+<div class="icon">🎓</div>
+<h3>Students</h3>
+<p>Admissions, scholarships, notes, results and important notices.</p>
+</div>
+
+<div class="card">
+<div class="icon">💼</div>
+<h3>Jobs & Careers</h3>
+<p>Government jobs, private jobs, internships and apprenticeships.</p>
+</div>
+
+<div class="card">
+<div class="icon">🛠️</div>
+<h3>Local Services</h3>
+<p>Electricians, plumbers, tutors, mechanics, repair and more.</p>
+</div>
+
+<div class="card">
+<div class="icon">🛍️</div>
+<h3>Buy & Sell</h3>
+<p>Phones, vehicles, rooms, furniture and other local listings.</p>
+</div>
+
+<div class="card">
+<div class="icon">🆘</div>
+<h3>Emergency</h3>
+<p>Hospitals, ambulance, blood help and important contacts.</p>
+</div>
+
+<div class="card">
+<div class="icon">📢</div>
+<h3>Public Updates</h3>
+<p>Important local announcements and public information.</p>
+</div>
+
+<div class="card">
+<div class="icon">🏔️</div>
+<h3>Explore Kashmir</h3>
+<p>Tourist places, hotels, restaurants, guides and travel.</p>
+</div>
+
+<div class="card">
+<div class="icon">🚀</div>
+<h3>Youth Hub</h3>
+<p>Skills, freelancing, startups, events and opportunities.</p>
+</div>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- JOBS -->
+
+<section id="jobs">
+
+<div class="container">
+
+<div class="section-title">
+
+<div>
+<h2>Latest Opportunities</h2>
+<p>Demo listings — real database can be connected later.</p>
+</div>
+
+<a class="view" href="#">
+View All →
+</a>
+
+</div>
+
+
+<div class="listings">
+
+<div class="listing">
+
+<div class="list-image">💻</div>
+
+<div class="list-content">
+
+<span class="tag">PRIVATE JOB</span>
+
+<h3>Computer Operator</h3>
+
+<div class="meta">
+📍 Srinagar • Full Time
+</div>
+
+</div>
+
+</div>
+
+
+<div class="listing">
+
+<div class="list-image">📚</div>
+
+<div class="list-content">
+
+<span class="tag">INTERNSHIP</span>
+
+<h3>Social Media Intern</h3>
+
+<div class="meta">
+📍 Kashmir • Hybrid
+</div>
+
+</div>
+
+</div>
+
+
+<div class="listing">
+
+<div class="list-image">🏢</div>
+
+<div class="list-content">
+
+<span class="tag">APPRENTICESHIP</span>
+
+<h3>Office Assistant</h3>
+
+<div class="meta">
+📍 Anantnag • Entry Level
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- MARKET -->
+
+<section id="market">
+
+<div class="container">
+
+<div class="section-title">
+
+<div>
+<h2>Kashmir Marketplace</h2>
+<p>Buy, sell and rent locally.</p>
+</div>
+
+<a class="view" href="#">
+Browse All →
+</a>
+
+</div>
+
+
+<div class="listings">
+
+<div class="listing">
+
+<div class="list-image">📱</div>
+
+<div class="list-content">
+
+<span class="tag">FOR SALE</span>
+
+<h3>Used Smartphone</h3>
+
+<div class="meta">
+📍 Kulgam • ₹12,500
+</div>
+
+</div>
+
+</div>
+
+
+<div class="listing">
+
+<div class="list-image">🏠</div>
+
+<div class="list-content">
+
+<span class="tag">FOR RENT</span>
+
+<h3>Room / PG</h3>
+
+<div class="meta">
+📍 Srinagar • ₹5,000/month
+</div>
+
+</div>
+
+</div>
+
+
+<div class="listing">
+
+<div class="list-image">🏍️</div>
+
+<div class="list-content">
+
+<span class="tag">FOR SALE</span>
+
+<h3>Used Bike</h3>
+
+<div class="meta">
+📍 Anantnag • ₹48,000
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- UPDATES -->
+
+<section id="updates">
+
+<div class="container">
+
+<div class="section-title">
+
+<div>
+<h2>Kashmir Updates</h2>
+<p>Important information in one place.</p>
+</div>
+
+<a class="view" href="#">
+All Updates →
+</a>
+
+</div>
+
+
+<div class="updates">
+
+<div class="update-box">
+
+<div class="update">
+
+<div class="update-date">
+TODAY
+</div>
+
+<div>
+<h4>College Admission Notice</h4>
+<p>
+Check latest admission dates and requirements.
+</p>
+</div>
+
+</div>
+
+
+<div class="update">
+
+<div class="update-date">
+AUG 08
+</div>
+
+<div>
+<h4>Local Services Updated</h4>
+<p>
+New local service providers added.
+</p>
+</div>
+
+</div>
+
+
+<div class="update">
+
+<div class="update-date">
+AUG 07
+</div>
+
+<div>
+<h4>Youth Opportunity Alert</h4>
+<p>
+New internship and training opportunities.
+</p>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="update-box">
+
+<div class="update">
+
+<div class="update-date">
+HELP
+</div>
+
+<div>
+<h4>Emergency Contacts</h4>
+<p>
+Keep verified emergency information available.
+</p>
+</div>
+
+</div>
+
+
+<div class="update">
+
+<div class="update-date">
+LOCAL
+</div>
+
+<div>
+<h4>Find Services Near You</h4>
+<p>
+Search businesses and service providers.
+</p>
+</div>
+
+</div>
+
+
+<div class="update">
+
+<div class="update-date">
+NEW
+</div>
+
+<div>
+<h4>List Your Business</h4>
+<p>
+Help customers discover your service.
+</p>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- CTA -->
+
+<section id="business">
+
+<div class="container">
+
+<div class="cta">
+
+<div>
+
+<h2>Are you a local business?</h2>
+
+<p>
+Get discovered by people searching
+for services in Kashmir.
+</p>
+
+</div>
+
+<a href="#" onclick="businessDemo(event)">
+List Your Business →
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+<div class="container">
+
+<div class="footer-grid">
+
+<div>
+
+<div class="logo" style="color:white">
+
+<div class="logo-icon">
+🏔️
+</div>
+
+KashmirOne
+
+</div>
+
+<p style="margin-top:12px;font-size:13px">
+A Kashmir-focused digital utility platform.
+</p>
+
+</div>
+
+
+<div>
+
+<h3>Explore</h3>
+
+<a href="#jobs">Jobs</a>
+<a href="#market">Marketplace</a>
+<a href="#services">Services</a>
+
+</div>
+
+
+<div>
+
+<h3>Community</h3>
+
+<a href="#">Students</a>
+<a href="#">Youth Hub</a>
+<a href="#">Businesses</a>
+
+</div>
+
+
+<div>
+
+<h3>Help</h3>
+
+<a href="#">Contact</a>
+<a href="#">Report Listing</a>
+<a href="#">Privacy</a>
+
+</div>
+
+</div>
+
+
+<div class="copyright">
+
+© 2026 KashmirOne • Demo Version • Made for Kashmir
+
+</div>
+
+</div>
+
+</footer>
+
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+
+function showToast(message){
+
+const toast=document.getElementById("toast");
+
+toast.innerText=message;
+
+toast.classList.add("show");
+
+setTimeout(()=>{
+toast.classList.remove("show");
+},2200);
+
+}
+
+
+function searchSite(){
+
+const value=document.getElementById("searchInput").value.trim();
+
+if(!value){
+
+showToast("Please type something to search 🔎");
+
+return;
+
+}
+
+showToast('Demo search: "'+value+'"');
+
+}
+
+
+function businessDemo(event){
+
+event.preventDefault();
+
+showToast("Business listing form — coming soon 🚀");
+
+}
+
+
+document
+.getElementById("searchInput")
+.addEventListener("keydown",function(event){
+
+if(event.key==="Enter"){
+searchSite();
+}
+
+});
+
+</script>
+
+</body>
+</html>
