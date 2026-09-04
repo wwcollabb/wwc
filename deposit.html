@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit - WinKom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        success: '#10b981',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dark .glass-morphism {
+            background: rgba(17, 24, 39, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 350px;
+        }
+        .notification-success { background-color: #10b981; }
+        .notification-info { background-color: #6366f1; }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    
+    <!-- Navigation -->
+    <nav class="glass-morphism fixed top-0 w-full z-40 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="dashboard.html" class="text-2xl font-bold gradient-bg bg-clip-text text-transparent">WinKom</a>
+            
+            <div class="flex items-center space-x-4">
+                <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                    <span class="dark:hidden">🌙</span>
+                    <span class="hidden dark:inline">☀️</span>
+                </button>
+                <a href="dashboard.html" class="hover:text-primary">Dashboard</a>
+                <button onclick="logout()" class="bg-danger text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-3xl mx-auto px-4 py-8 pt-24">
+        <h1 class="text-4xl font-bold text-center mb-8">Deposit Funds</h1>
+        
+        <div class="glass-morphism rounded-2xl p-8">
+            <!-- UPI QR Section -->
+            <div class="mb-8 text-center">
+                <h3 class="text-xl font-semibold mb-4">Scan QR Code to Pay</h3>
+                <div class="bg-white p-4 rounded-lg inline-block mb-4">
+                    <!-- Mock QR Code -->
+                    <div class="w-48 h-48 bg-gray-200 flex items-center justify-center border-2 border-dashed border-gray-400">
+                        <span class="text-gray-500 text-center">QR Code<br>WinKom@upi</span>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Scan using any UPI app or transfer to:<br>
+                    <strong class="text-lg">WinKom@upi</strong>
+                </p>
+            </div>
+
+            <!-- Deposit Form -->
+            <form id="depositForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Select Investment Plan</label>
+                    <select id="planId" required 
+                            class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                        <option value="">Select Investment Plan</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Transaction ID / UTR Number</label>
+                    <input type="text" id="utr" required placeholder="Enter UPI Transaction ID" 
+                           class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                </div>
+                <button type="submit" class="w-full gradient-bg text-white font-bold py-3 rounded-lg hover:opacity-90 transition">
+                    Submit Deposit Request
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, Timestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+            authDomain: "winkom-da4c2.firebaseapp.com",
+            projectId: "winkom-da4c2",
+            storageBucket: "winkom-da4c2.firebasestorage.app",
+            messagingSenderId: "629229462242",
+            appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        let currentUser = null;
+
+        // Auth check
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            currentUser = user;
+            await loadPlans();
+        });
+
+        async function loadPlans() {
+            try {
+                const plansCollection = collection(db, 'plans');
+                const plansSnapshot = await getDocs(plansCollection);
+                const plans = plansSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                
+                const select = document.getElementById('planId');
+                select.innerHTML = '<option value="">Select Investment Plan</option>' + 
+                    plans.map(plan => `<option value="${plan.id}">${plan.name} - ₹${plan.amount}</option>`).join('');
+                
+                // Check if plan ID in URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const planId = urlParams.get('plan');
+                if (planId) {
+                    select.value = planId;
+                }
+            } catch (error) {
+                console.log('Error loading plans');
+            }
+        }
+
+        // Handle deposit form
+        document.getElementById('depositForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const planId = document.getElementById('planId').value;
+            const utr = document.getElementById('utr').value;
+            
+            if (!planId || !utr) {
+                return;
+            }
+            
+            try {
+                await addDoc(collection(db, 'transactions'), {
+                    userId: currentUser.uid,
+                    userEmail: currentUser.email,
+                    planId: planId,
+                    utr: utr,
+                    status: 'pending',
+                    createdAt: Timestamp.now()
+                });
+                
+                showNotification('Deposit request submitted. Balance will reflect in your wallet within 5-10 minutes after admin approval.', 'info');
+                e.target.reset();
+            } catch (error) {
+                console.log('Error submitting deposit');
+            }
+        });
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        window.logout = async () => {
+            try {
+                await signOut(auth);
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.log('Logout error');
+            }
+        };
+
+        window.toggleTheme = () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        };
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+</body>
+</html>

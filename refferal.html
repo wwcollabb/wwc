@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referral Program - WinKom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        success: '#10b981',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dark .glass-morphism {
+            background: rgba(17, 24, 39, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 350px;
+        }
+        .notification-success { background-color: #10b981; }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    
+    <!-- Navigation -->
+    <nav class="glass-morphism fixed top-0 w-full z-40 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="dashboard.html" class="text-2xl font-bold gradient-bg bg-clip-text text-transparent">WinKom</a>
+            
+            <div class="flex items-center space-x-4">
+                <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                    <span class="dark:hidden">🌙</span>
+                    <span class="hidden dark:inline">☀️</span>
+                </button>
+                <a href="dashboard.html" class="hover:text-primary">Dashboard</a>
+                <button onclick="logout()" class="bg-danger text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-3xl mx-auto px-4 py-8 pt-24">
+        <h1 class="text-4xl font-bold text-center mb-8">Referral Program</h1>
+        
+        <div class="glass-morphism rounded-2xl p-8">
+            <!-- Referral Link -->
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold mb-2">Your Referral Link</h3>
+                <div class="flex space-x-2">
+                    <input type="text" id="referralLink" readonly 
+                           class="flex-1 px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600">
+                    <button onclick="copyReferralLink()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">
+                        Copy
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bonus Info -->
+            <div class="bg-success bg-opacity-10 border border-success rounded-lg p-4 mb-6">
+                <p class="text-success font-semibold text-center text-lg">
+                    🎉 Earn ₹79 instantly for every referral who signs up!
+                </p>
+            </div>
+
+            <!-- How It Works -->
+            <div class="space-y-4">
+                <h3 class="text-xl font-semibold">How It Works</h3>
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                    <p class="font-semibold mb-2">Step 1: Share Your Link</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                        Copy your unique referral link and share it with friends and family.
+                    </p>
+                </div>
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                    <p class="font-semibold mb-2">Step 2: Friend Signs Up</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                        When they sign up using your link, they'll be automatically connected to your account.
+                    </p>
+                </div>
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                    <p class="font-semibold mb-2">Step 3: Get ₹79 Bonus</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                        You'll instantly receive ₹79 in your wallet as a referral bonus.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+            authDomain: "winkom-da4c2.firebaseapp.com",
+            projectId: "winkom-da4c2",
+            storageBucket: "winkom-da4c2.firebasestorage.app",
+            messagingSenderId: "629229462242",
+            appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Auth check
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            document.getElementById('referralLink').value = `https://winkom.site/?ref=${user.uid}`;
+        });
+
+        window.copyReferralLink = async () => {
+            const link = document.getElementById('referralLink').value;
+            try {
+                await navigator.clipboard.writeText(link);
+                showNotification('Referral link copied to clipboard!');
+            } catch (error) {
+                // Fallback
+                document.getElementById('referralLink').select();
+                document.execCommand('copy');
+                showNotification('Referral link copied to clipboard!');
+            }
+        };
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification notification-success';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        window.logout = async () => {
+            try {
+                await signOut(auth);
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.log('Logout error');
+            }
+        };
+
+        window.toggleTheme = () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        };
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - WinKom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        success: '#10b981',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dark .glass-morphism {
+            background: rgba(17, 24, 39, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    
+    <!-- Navigation -->
+    <nav class="glass-morphism fixed top-0 w-full z-40 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold gradient-bg bg-clip-text text-transparent">WinKom</a>
+            
+            <div class="flex items-center space-x-4">
+                <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                    <span class="dark:hidden">🌙</span>
+                    <span class="hidden dark:inline">☀️</span>
+                </button>
+                <a href="about.html" class="text-primary font-semibold">About</a>
+                <a href="support.html" class="hover:text-primary">Support</a>
+                <a href="dashboard.html" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-8 pt-24">
+        <h1 class="text-4xl font-bold text-center mb-12">About WinKom</h1>
+        
+        <!-- Mission Section -->
+        <div class="glass-morphism rounded-2xl p-8 mb-8">
+            <h2 class="text-3xl font-bold mb-4">Our Mission</h2>
+            <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+                WinKom is dedicated to democratizing investment opportunities for everyone. 
+                We believe that financial growth should be accessible, transparent, and secure 
+                for all individuals, regardless of their investment experience.
+            </p>
+        </div>
+
+        <!-- Why Choose Us -->
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold mb-6 text-center">Why Choose WinKom?</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glass-morphism rounded-xl p-6">
+                    <div class="text-4xl mb-4">🔒</div>
+                    <h3 class="text-xl font-semibold mb-2">Secure Platform</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Your investments are protected with enterprise-grade security protocols.
+                    </p>
+                </div>
+                <div class="glass-morphism rounded-xl p-6">
+                    <div class="text-4xl mb-4">📊</div>
+                    <h3 class="text-xl font-semibold mb-2">Transparent Growth</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Real-time tracking and transparent reporting of all your investments.
+                    </p>
+                </div>
+                <div class="glass-morphism rounded-xl p-6">
+                    <div class="text-4xl mb-4">⚡</div>
+                    <h3 class="text-xl font-semibold mb-2">Fast Processing</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Quick deposit and withdrawal processing with minimal wait times.
+                    </p>
+                </div>
+                <div class="glass-morphism rounded-xl p-6">
+                    <div class="text-4xl mb-4">🤝</div>
+                    <h3 class="text-xl font-semibold mb-2">Expert Support</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Dedicated customer support team available to assist you 24/7.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crypto & Fiat Management -->
+        <div class="glass-morphism rounded-2xl p-8 mb-8">
+            <h2 class="text-3xl font-bold mb-4">Secure Crypto & Fiat Management</h2>
+            <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                WinKom provides a seamless platform for managing both cryptocurrency and 
+                traditional fiat investments. Our advanced technology ensures that your 
+                assets are always secure and accessible.
+            </p>
+            <div class="grid md:grid-cols-2 gap-4 mt-6">
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                    <h3 class="font-semibold mb-2">💎 Cryptocurrency Support</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                        Invest in popular cryptocurrencies with ease and security.
+                    </p>
+                </div>
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                    <h3 class="font-semibold mb-2">💵 Fiat Currency Support</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                        Traditional currency investments with competitive returns.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <div class="glass-morphism rounded-xl p-6 text-center">
+                <h3 class="text-3xl font-bold text-primary">10,000+</h3>
+                <p class="text-gray-600 dark:text-gray-400 mt-2">Active Investors</p>
+            </div>
+            <div class="glass-morphism rounded-xl p-6 text-center">
+                <h3 class="text-3xl font-bold text-success">₹50Cr+</h3>
+                <p class="text-gray-600 dark:text-gray-400 mt-2">Total Investments</p>
+            </div>
+            <div class="glass-morphism rounded-xl p-6 text-center">
+                <h3 class="text-3xl font-bold text-warning">99.9%</h3>
+                <p class="text-gray-600 dark:text-gray-400 mt-2">Uptime Guarantee</p>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="text-center">
+            <h2 class="text-3xl font-bold mb-4">Ready to Start Your Journey?</h2>
+            <p class="text-lg text-gray-600 dark:text-gray-400 mb-6">
+                Join thousands of successful investors on WinKom today.
+            </p>
+            <a href="signup.html" class="gradient-bg text-white font-bold py-3 px-8 rounded-lg hover:opacity-90 transition text-lg inline-block">
+                Get Started Now
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        }
+        
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+</body>
+</html>

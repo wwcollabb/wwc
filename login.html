@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - WinKom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        success: '#10b981',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dark .glass-morphism {
+            background: rgba(17, 24, 39, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+        .password-wrapper {
+            position: relative;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            color: #6b7280;
+            z-index: 10;
+        }
+        .password-toggle:hover {
+            color: #6366f1;
+        }
+        #successMessage {
+            display: none;
+            background-color: #10b981;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    
+    <div class="min-h-screen flex items-center justify-center px-4">
+        <div class="max-w-md w-full">
+            <a href="index.html" class="block text-center mb-8">
+                <span class="text-3xl font-bold gradient-bg bg-clip-text text-transparent">WinKom</span>
+            </a>
+            
+            <div class="glass-morphism rounded-2xl p-8">
+                <h2 class="text-3xl font-bold text-center mb-8">Welcome Back</h2>
+                
+                <div id="successMessage"></div>
+                
+                <form id="loginForm" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Email</label>
+                        <input type="email" id="email" required 
+                               class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="password" required 
+                                   class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none pr-12">
+                            <button type="button" class="password-toggle" onclick="togglePassword('password', this)">
+                                👁️
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full gradient-bg text-white font-bold py-3 rounded-lg hover:opacity-90 transition">
+                        Sign In
+                    </button>
+                </form>
+                
+                <button onclick="googleLogin()" class="mt-4 w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-bold py-3 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition">
+                    <span class="mr-2">🔐</span> Sign in with Google
+                </button>
+                
+                <p class="mt-6 text-center">
+                    Don't have an account? 
+                    <a href="signup.html" class="text-primary hover:underline">Sign Up</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+            authDomain: "winkom-da4c2.firebaseapp.com",
+            projectId: "winkom-da4c2",
+            storageBucket: "winkom-da4c2.firebasestorage.app",
+            messagingSenderId: "629229462242",
+            appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        // Check if already logged in
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                if (user.email.toLowerCase() === 'admin@wk.in') {
+                    window.location.href = 'admin.html';
+                } else {
+                    window.location.href = 'dashboard.html';
+                }
+            }
+        });
+
+        // Handle login form
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const successMessage = document.getElementById('successMessage');
+            
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                successMessage.style.display = 'block';
+                successMessage.textContent = 'Login successful! Redirecting...';
+                
+                setTimeout(() => {
+                    if (email.toLowerCase() === 'admin@wk.in') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
+                }, 1000);
+                
+            } catch (error) {
+                // Silent error handling - no display
+                console.log('Login error handled');
+            }
+        });
+
+        // Google login
+        window.googleLogin = async () => {
+            try {
+                await signInWithPopup(auth, googleProvider);
+                window.location.href = 'dashboard.html';
+            } catch (error) {
+                console.log('Google login error handled');
+            }
+        };
+
+        // Toggle password visibility
+        window.togglePassword = (inputId, button) => {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = '👁️‍🗨️';
+            } else {
+                input.type = 'password';
+                button.textContent = '👁️';
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - WinKom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        danger: '#ef4444',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dark .glass-morphism {
+            background: rgba(17, 24, 39, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 350px;
+            word-wrap: break-word;
+        }
+        .notification-success { background-color: #10b981; }
+        .notification-error { background-color: #ef4444; }
+        .notification-info { background-color: #6366f1; }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .tab-button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    
+    <!-- Navigation -->
+    <nav class="glass-morphism fixed top-0 w-full z-40 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold gradient-bg bg-clip-text text-transparent">WinKom Admin</a>
+            
+            <div class="flex items-center space-x-4">
+                <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                    <span class="dark:hidden">🌙</span>
+                    <span class="hidden dark:inline">☀️</span>
+                </button>
+                <button onclick="logout()" class="bg-danger text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-8 pt-20">
+        <h2 class="text-3xl font-bold mb-8">Admin Control Panel</h2>
+        
+        <!-- Tabs -->
+        <div class="flex space-x-4 mb-8 overflow-x-auto">
+            <button class="tab-button active" onclick="showTab('overview', this)">Overview</button>
+            <button class="tab-button" onclick="showTab('users', this)">Users</button>
+            <button class="tab-button" onclick="showTab('transactions', this)">Transactions</button>
+            <button class="tab-button" onclick="showTab('withdrawals', this)">Withdrawals</button>
+            <button class="tab-button" onclick="showTab('plans', this)">Plans</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="overviewTab" class="tab-content">
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="glass-morphism rounded-xl p-6">
+                    <h3 class="text-lg font-semibold mb-2">Total Users</h3>
+                    <p class="text-3xl font-bold text-primary" id="totalUsers">0</p>
+                </div>
+                <div class="glass-morphism rounded-xl p-6">
+                    <h3 class="text-lg font-semibold mb-2">Pending Transactions</h3>
+                    <p class="text-3xl font-bold text-warning" id="pendingTransactions">0</p>
+                </div>
+                <div class="glass-morphism rounded-xl p-6">
+                    <h3 class="text-lg font-semibold mb-2">Pending Withdrawals</h3>
+                    <p class="text-3xl font-bold text-danger" id="pendingWithdrawals">0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="usersTab" class="tab-content hidden">
+            <h3 class="text-2xl font-bold mb-4">Registered Users</h3>
+            <div class="glass-morphism rounded-xl overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-100 dark:bg-gray-800">
+                        <tr>
+                            <th class="py-3 px-4 text-left">Name</th>
+                            <th class="py-3 px-4 text-left">Email</th>
+                            <th class="py-3 px-4 text-left">Balance</th>
+                            <th class="py-3 px-4 text-left">Referred By</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Transactions Tab -->
+        <div id="transactionsTab" class="tab-content hidden">
+            <h3 class="text-2xl font-bold mb-4">Pending Transactions</h3>
+            <div id="transactionsList" class="space-y-4"></div>
+        </div>
+
+        <!-- Withdrawals Tab -->
+        <div id="withdrawalsTab" class="tab-content hidden">
+            <h3 class="text-2xl font-bold mb-4">Pending Withdrawals</h3>
+            <div id="withdrawalsList" class="space-y-4"></div>
+        </div>
+
+        <!-- Plans Tab -->
+        <div id="plansTab" class="tab-content hidden">
+            <h3 class="text-2xl font-bold mb-4">Manage Investment Plans</h3>
+            
+            <div class="glass-morphism rounded-xl p-6 mb-8">
+                <h4 class="text-xl font-semibold mb-4">Add New Plan</h4>
+                <form id="addPlanForm" class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Plan Name</label>
+                        <input type="text" id="planName" required 
+                               class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Investment Amount (₹)</label>
+                        <input type="number" id="planAmount" required min="1" 
+                               class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Duration (Days)</label>
+                        <input type="number" id="planDuration" required min="1" 
+                               class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Daily Return (%)</label>
+                        <input type="number" id="planDailyReturn" required min="0.1" step="0.1" 
+                               class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                    </div>
+                    <button type="submit" class="md:col-span-2 gradient-bg text-white font-bold py-3 rounded-lg hover:opacity-90 transition">
+                        Add Plan
+                    </button>
+                </form>
+            </div>
+
+            <div class="glass-morphism rounded-xl p-6">
+                <h4 class="text-xl font-semibold mb-4">Existing Plans</h4>
+                <div id="plansList" class="space-y-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, getDocs, query, where, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+            authDomain: "winkom-da4c2.firebaseapp.com",
+            projectId: "winkom-da4c2",
+            storageBucket: "winkom-da4c2.firebasestorage.app",
+            messagingSenderId: "629229462242",
+            appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        let allUsers = [];
+        let pendingTransactions = [];
+        let pendingWithdrawals = [];
+        let allPlans = [];
+
+        // Auth check
+        onAuthStateChanged(auth, async (user) => {
+            if (!user || user.email.toLowerCase() !== 'admin@wk.in') {
+                window.location.href = 'login.html';
+                return;
+            }
+            await loadAllData();
+        });
+
+        async function loadAllData() {
+            await loadUsers();
+            await loadTransactions();
+            await loadWithdrawals();
+            await loadPlans();
+        }
+
+        async function loadUsers() {
+            try {
+                const usersCollection = collection(db, 'users');
+                const usersSnapshot = await getDocs(usersCollection);
+                allUsers = usersSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                
+                document.getElementById('totalUsers').textContent = allUsers.length;
+                document.getElementById('usersList').innerHTML = allUsers.map(user => `
+                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <td class="py-3 px-4">${user.name || 'N/A'}</td>
+                        <td class="py-3 px-4">${user.email}</td>
+                        <td class="py-3 px-4">₹${user.balance || 0}</td>
+                        <td class="py-3 px-4">${user.referredBy || 'N/A'}</td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.log('Error loading users');
+            }
+        }
+
+        async function loadTransactions() {
+            try {
+                const transactionsQuery = query(
+                    collection(db, 'transactions'),
+                    where('status', '==', 'pending')
+                );
+                const transactionsSnapshot = await getDocs(transactionsQuery);
+                pendingTransactions = transactionsSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                
+                document.getElementById('pendingTransactions').textContent = pendingTransactions.length;
+                document.getElementById('transactionsList').innerHTML = pendingTransactions.map(transaction => `
+                    <div class="glass-morphism rounded-lg p-4 mb-3">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="font-semibold">${transaction.userEmail}</p>
+                                <p class="text-sm">UTR: ${transaction.utr}</p>
+                                <p class="text-sm">Date: ${transaction.createdAt?.toDate?.().toLocaleString() || 'N/A'}</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="approveTransaction('${transaction.id}', '${transaction.userId}', '${transaction.planId}')" 
+                                        class="bg-success text-white px-3 py-1 rounded">Approve</button>
+                                <button onclick="rejectTransaction('${transaction.id}')" 
+                                        class="bg-danger text-white px-3 py-1 rounded">Reject</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('') || '<p class="text-center text-gray-500">No pending transactions</p>';
+            } catch (error) {
+                console.log('Error loading transactions');
+            }
+        }
+
+        async function loadWithdrawals() {
+            try {
+                const withdrawalsQuery = query(
+                    collection(db, 'withdrawals'),
+                    where('status', '==', 'pending')
+                );
+                const withdrawalsSnapshot = await getDocs(withdrawalsQuery);
+                pendingWithdrawals = withdrawalsSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                
+                document.getElementById('pendingWithdrawals').textContent = pendingWithdrawals.length;
+                document.getElementById('withdrawalsList').innerHTML = pendingWithdrawals.map(withdrawal => `
+                    <div class="glass-morphism rounded-lg p-4 mb-3">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="font-semibold">${withdrawal.userEmail}</p>
+                                <p class="text-sm">Amount: ₹${withdrawal.amount}</p>
+                                <p class="text-sm">Method: ${withdrawal.method}</p>
+                                <p class="text-sm">Account: ${withdrawal.account}</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="approveWithdrawal('${withdrawal.id}')" 
+                                        class="bg-success text-white px-3 py-1 rounded">Approve</button>
+                                <button onclick="rejectWithdrawal('${withdrawal.id}')" 
+                                        class="bg-danger text-white px-3 py-1 rounded">Reject</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('') || '<p class="text-center text-gray-500">No pending withdrawals</p>';
+            } catch (error) {
+                console.log('Error loading withdrawals');
+            }
+        }
+
+        async function loadPlans() {
+            try {
+                const plansCollection = collection(db, 'plans');
+                const plansSnapshot = await getDocs(plansCollection);
+                allPlans = plansSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                
+                document.getElementById('plansList').innerHTML = allPlans.map(plan => `
+                    <div class="glass-morphism rounded-lg p-4 mb-3 flex justify-between items-center">
+                        <div>
+                            <p class="font-semibold">${plan.name}</p>
+                            <p class="text-sm">Amount: ₹${plan.amount}</p>
+                            <p class="text-sm">Duration: ${plan.duration} days</p>
+                            <p class="text-sm">Daily Return: ${plan.dailyReturn}%</p>
+                        </div>
+                        <button onclick="deletePlan('${plan.id}')" 
+                                class="bg-danger text-white px-3 py-1 rounded">Delete</button>
+                    </div>
+                `).join('') || '<p class="text-center text-gray-500">No plans available</p>';
+            } catch (error) {
+                console.log('Error loading plans');
+            }
+        }
+
+        // Add plan
+        document.getElementById('addPlanForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('planName').value;
+            const amount = parseFloat(document.getElementById('planAmount').value);
+            const duration = parseInt(document.getElementById('planDuration').value);
+            const dailyReturn = parseFloat(document.getElementById('planDailyReturn').value);
+            
+            const totalReturn = amount + (amount * dailyReturn * duration / 100);
+            
+            try {
+                await addDoc(collection(db, 'plans'), {
+                    name: name,
+                    amount: amount,
+                    duration: duration,
+                    dailyReturn: dailyReturn,
+                    totalReturn: totalReturn,
+                    createdAt: Timestamp.now()
+                });
+                
+                showNotification('Plan added successfully!', 'success');
+                e.target.reset();
+                await loadPlans();
+            } catch (error) {
+                console.log('Error adding plan');
+            }
+        });
+
+        // Approve transaction
+        window.approveTransaction = async (transactionId, userId, planId) => {
+            try {
+                const plan = allPlans.find(p => p.id === planId);
+                const userDoc = await getDoc(doc(db, 'users', userId));
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    await updateDoc(doc(db, 'users', userId), {
+                        balance: (userData.balance || 0) + (plan?.amount || 0)
+                    });
+                }
+                await updateDoc(doc(db, 'transactions', transactionId), {
+                    status: 'approved'
+                });
+                showNotification('Transaction approved!', 'success');
+                await loadTransactions();
+                await loadUsers();
+            } catch (error) {
+                console.log('Error approving transaction');
+            }
+        };
+
+        // Reject transaction
+        window.rejectTransaction = async (transactionId) => {
+            try {
+                await updateDoc(doc(db, 'transactions', transactionId), {
+                    status: 'rejected'
+                });
+                showNotification('Transaction rejected', 'error');
+                await loadTransactions();
+            } catch (error) {
+                console.log('Error rejecting transaction');
+            }
+        };
+
+        // Approve withdrawal
+        window.approveWithdrawal = async (withdrawalId) => {
+            try {
+                await updateDoc(doc(db, 'withdrawals', withdrawalId), {
+                    status: 'approved'
+                });
+                showNotification('Withdrawal approved!', 'success');
+                await loadWithdrawals();
+            } catch (error) {
+                console.log('Error approving withdrawal');
+            }
+        };
+
+        // Reject withdrawal
+        window.rejectWithdrawal = async (withdrawalId) => {
+            try {
+                const withdrawalDoc = await getDoc(doc(db, 'withdrawals', withdrawalId));
+                if (withdrawalDoc.exists()) {
+                    const withdrawal = withdrawalDoc.data();
+                    const userDoc = await getDoc(doc(db, 'users', withdrawal.userId));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        await updateDoc(doc(db, 'users', withdrawal.userId), {
+                            balance: (userData.balance || 0) + withdrawal.amount
+                        });
+                    }
+                }
+                await updateDoc(doc(db, 'withdrawals', withdrawalId), {
+                    status: 'rejected'
+                });
+                showNotification('Withdrawal rejected and amount refunded', 'error');
+                await loadWithdrawals();
+                await loadUsers();
+            } catch (error) {
+                console.log('Error rejecting withdrawal');
+            }
+        };
+
+        // Delete plan
+        window.deletePlan = async (planId) => {
+            try {
+                await deleteDoc(doc(db, 'plans', planId));
+                showNotification('Plan deleted successfully', 'success');
+                await loadPlans();
+            } catch (error) {
+                console.log('Error deleting plan');
+            }
+        };
+
+        // Tab switching
+        window.showTab = (tabName, button) => {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`${tabName}Tab`).classList.remove('hidden');
+            
+            document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+            button.classList.add('active');
+        };
+
+        // Logout
+        window.logout = async () => {
+            try {
+                await signOut(auth);
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.log('Logout error');
+            }
+        };
+
+        // Theme toggle
+        window.toggleTheme = () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        };
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+</body>
+</html>
