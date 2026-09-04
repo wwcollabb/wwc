@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WinKom - Smart Investment Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        danger: '#ef4444',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dark .glass-morphism {
+            background: rgba(17, 24, 39, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+    
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, where, getDocs, Timestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+            authDomain: "winkom-da4c2.firebaseapp.com",
+            projectId: "winkom-da4c2",
+            storageBucket: "winkom-da4c2.firebasestorage.app",
+            messagingSenderId: "629229462242",
+            appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        // Make available globally
+        window.auth = auth;
+        window.db = db;
+        window.googleProvider = googleProvider;
+        window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+        window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+        window.signInWithPopup = signInWithPopup;
+        window.signOut = signOut;
+        window.onAuthStateChanged = onAuthStateChanged;
+        window.doc = doc;
+        window.getDoc = getDoc;
+        window.setDoc = setDoc;
+        window.updateDoc = updateDoc;
+        window.collection = collection;
+        window.addDoc = addDoc;
+        window.query = query;
+        window.where = where;
+        window.getDocs = getDocs;
+        window.Timestamp = Timestamp;
+        window.deleteDoc = deleteDoc;
+
+        // Initialize the application
+        window.dispatchEvent(new Event('firebase-ready'));
+    </script>
+
+    <!-- Main Application Script -->
+    <script>
+        // Global state management
+        class WinKomApp {
+            constructor() {
+                this.currentUser = null;
+                this.userData = null;
+                this.plans = [];
+                this.transactions = [];
+                this.withdrawals = [];
+                this.isAdmin = false;
+                this.currentPage = 'dashboard';
+                this.init();
+            }
+
+            async init() {
+                this.setupEventListeners();
+                this.setupAuthListener();
+                this.checkReferral();
+                await this.loadPlans();
+            }
+
+            setupEventListeners() {
+                // Theme toggle
+                document.getElementById('themeToggle')?.addEventListener('click', () => this.toggleTheme());
+                
+                // Navigation
+                document.querySelectorAll('[data-page]').forEach(el => {
+                    el.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.navigateTo(el.dataset.page);
+                    });
+                });
+
+                // Auth forms
+                document.getElementById('loginForm')?.addEventListener('submit', (e) => this.handleLogin(e));
+                document.getElementById('signupForm')?.addEventListener('submit', (e) => this.handleSignup(e));
+                document.getElementById('googleLogin')?.addEventListener('click', () => this.handleGoogleLogin());
+                document.getElementById('googleSignup')?.addEventListener('click', () => this.handleGoogleLogin());
+                document.getElementById('logoutBtn')?.addEventListener('click', () => this.handleLogout());
+
+                // Transaction forms
+                document.getElementById('depositForm')?.addEventListener('submit', (e) => this.handleDeposit(e));
+                document.getElementById('withdrawalForm')?.addEventListener('submit', (e) => this.handleWithdrawal(e));
+                document.getElementById('contactForm')?.addEventListener('submit', (e) => this.handleContactForm(e));
+
+                // Admin forms
+                document.getElementById('adminPlanForm')?.addEventListener('submit', (e) => this.handleAdminAddPlan(e));
+            }
+
+            setupAuthListener() {
+                window.addEventListener('firebase-ready', () => {
+                    window.onAuthStateChanged(window.auth, async (user) => {
+                        if (user) {
+                            this.currentUser = user;
+                            this.isAdmin = user.email === 'Admin@wk.in';
+                            await this.loadUserData();
+                            this.updateUI();
+                            if (this.isAdmin) {
+                                await this.loadAdminData();
+                            }
+                        } else {
+                            this.currentUser = null;
+                            this.userData = null;
+                            this.isAdmin = false;
+                            this.showAuthPage();
+                        }
+                    });
+                });
+            }
+
+            async loadUserData() {
+                if (!this.currentUser) return;
+                const userDoc = await window.getDoc(window.doc(window.db, 'users', this.currentUser.uid));
+                if (userDoc.exists()) {
+                    this.userData = userDoc.data();
+                } else {
+                    // Check if referral code exists
+                    const refCode = localStorage.getItem('refCode');
+                    const newUserData = {
+                        email: this.currentUser.email,
+                        name: this.currentUser.displayName || '',
+                        balance: refCode ? 79 : 0,
+                        referralCode: this.currentUser.uid,
+                        referredBy: refCode || null,
+                        createdAt: window.Timestamp.now()
+                    };
+                    await window.setDoc(window.doc(window.db, 'users', this.currentUser.uid), newUserData);
+                    this.userData = newUserData;
+                    
+                    // Credit referral bonus if applicable
+                    if (refCode) {
+                        await this.creditReferralBonus(refCode);
+                        localStorage.removeItem('refCode');
+                    }
+                }
+            }
+
+            async creditReferralBonus(refCode) {
+                const referrerDoc = await window.getDoc(window.doc(window.db, 'users', refCode));
+                if (referrerDoc.exists()) {
+                    const referrerData = referrerDoc.data();
+                    await window.updateDoc(window.doc(window.db, 'users', refCode), {
+                        balance: (referrerData.balance || 0) + 79
+                    });
+                }
+            }
+
+            checkReferral() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const refCode = urlParams.get('ref');
+                if (refCode) {
+                    localStorage.setItem('refCode', refCode);
+                }
+            }
+
+            async loadPlans() {
+                window.addEventListener('firebase-ready', async () => {
+                    const plansCollection = window.collection(window.db, 'plans');
+                    const plansSnapshot = await window.getDocs(plansCollection);
+                    this.plans = plansSnapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                    this.renderPlans();
+                });
+            }
+
+            async loadAdminData() {
+                // Load all users
+                const usersCollection = window.collection(window.db, 'users');
+                const usersSnapshot = await window.getDocs(usersCollection);
+                const users = usersSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                // Load pending transactions
+                const transactionsQuery = window.query(
+                    window.collection(window.db, 'transactions'),
+                    window.where('status', '==', 'pending')
+                );
+                const transactionsSnapshot = await window.getDocs(transactionsQuery);
+                this.transactions = transactionsSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                // Load pending withdrawals
+                const withdrawalsQuery = window.query(
+                    window.collection(window.db, 'withdrawals'),
+                    window.where('status', '==', 'pending')
+                );
+                const withdrawalsSnapshot = await window.getDocs(withdrawalsQuery);
+                this.withdrawals = withdrawalsSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                this.renderAdminDashboard(users);
+            }
+
+            updateUI() {
+                if (!this.currentUser) {
+                    this.showAuthPage();
+                    return;
+                }
+
+                document.getElementById('authContainer').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                
+                if (this.isAdmin) {
+                    document.getElementById('adminPanel').classList.remove('hidden');
+                    document.getElementById('userDashboard').classList.add('hidden');
+                } else {
+                    document.getElementById('adminPanel').classList.add('hidden');
+                    document.getElementById('userDashboard').classList.remove('hidden');
+                }
+
+                this.updateUserInfo();
+                this.renderPlans();
+            }
+
+            showAuthPage() {
+                document.getElementById('authContainer').classList.remove('hidden');
+                document.getElementById('mainApp').classList.add('hidden');
+                this.navigateTo('login');
+            }
+
+            updateUserInfo() {
+                if (!this.userData) return;
+                document.getElementById('userBalance').textContent = `₹${this.userData.balance || 0}`;
+                document.getElementById('userName').textContent = this.userData.name || this.currentUser.email;
+                document.getElementById('referralLink').value = `https://winkom.site/?ref=${this.currentUser.uid}`;
+            }
+
+            navigateTo(page) {
+                this.currentPage = page;
+                document.querySelectorAll('.page-section').forEach(el => el.classList.add('hidden'));
+                const targetPage = document.getElementById(`${page}Page`);
+                if (targetPage) {
+                    targetPage.classList.remove('hidden');
+                    targetPage.classList.add('fade-in');
+                }
+            }
+
+            toggleTheme() {
+                document.documentElement.classList.toggle('dark');
+                localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+            }
+
+            async handleLogin(e) {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                try {
+                    await window.signInWithEmailAndPassword(window.auth, email, password);
+                    this.showNotification('Login successful!', 'success');
+                } catch (error) {
+                    this.showNotification('Login failed: ' + error.message, 'error');
+                }
+            }
+
+            async handleSignup(e) {
+                e.preventDefault();
+                const email = document.getElementById('signupEmail').value;
+                const password = document.getElementById('signupPassword').value;
+                const name = document.getElementById('signupName').value;
+                
+                try {
+                    const userCredential = await window.createUserWithEmailAndPassword(window.auth, email, password);
+                    await window.updateDoc(window.doc(window.db, 'users', userCredential.user.uid), {
+                        name: name,
+                        email: email
+                    });
+                    this.showNotification('Account created successfully!', 'success');
+                } catch (error) {
+                    this.showNotification('Signup failed: ' + error.message, 'error');
+                }
+            }
+
+            async handleGoogleLogin() {
+                try {
+                    await window.signInWithPopup(window.auth, window.googleProvider);
+                    this.showNotification('Google login successful!', 'success');
+                } catch (error) {
+                    this.showNotification('Google login failed: ' + error.message, 'error');
+                }
+            }
+
+            async handleLogout() {
+                try {
+                    await window.signOut(window.auth);
+                    this.showNotification('Logged out successfully!', 'success');
+                } catch (error) {
+                    this.showNotification('Logout failed: ' + error.message, 'error');
+                }
+            }
+
+            async handleDeposit(e) {
+                e.preventDefault();
+                if (!this.currentUser) return;
+                
+                const planId = document.getElementById('depositPlan').value;
+                const utr = document.getElementById('transactionId').value;
+                
+                const transaction = {
+                    userId: this.currentUser.uid,
+                    userEmail: this.currentUser.email,
+                    planId: planId,
+                    utr: utr,
+                    status: 'pending',
+                    createdAt: window.Timestamp.now()
+                };
+                
+                await window.addDoc(window.collection(window.db, 'transactions'), transaction);
+                this.showNotification('Deposit request submitted. Balance will reflect in your wallet within 5-10 minutes after admin approval.', 'info');
+                e.target.reset();
+            }
+
+            async handleWithdrawal(e) {
+                e.preventDefault();
+                if (!this.currentUser) return;
+                
+                const amount = parseFloat(document.getElementById('withdrawalAmount').value);
+                const method = document.getElementById('withdrawalMethod').value;
+                const account = document.getElementById('withdrawalAccount').value;
+                
+                if (amount > (this.userData.balance || 0)) {
+                    this.showNotification('Insufficient balance!', 'error');
+                    return;
+                }
+                
+                const withdrawal = {
+                    userId: this.currentUser.uid,
+                    userEmail: this.currentUser.email,
+                    amount: amount,
+                    method: method,
+                    account: account,
+                    status: 'pending',
+                    createdAt: window.Timestamp.now()
+                };
+                
+                await window.addDoc(window.collection(window.db, 'withdrawals'), withdrawal);
+                
+                // Deduct from balance
+                await window.updateDoc(window.doc(window.db, 'users', this.currentUser.uid), {
+                    balance: (this.userData.balance || 0) - amount
+                });
+                
+                this.showNotification('Withdrawal request submitted. Processing time: 30 to 60 minutes.', 'info');
+                e.target.reset();
+                await this.loadUserData();
+                this.updateUserInfo();
+            }
+
+            async handleContactForm(e) {
+                e.preventDefault();
+                const name = document.getElementById('contactName').value;
+                const email = document.getElementById('contactEmail').value;
+                const message = document.getElementById('contactMessage').value;
+                
+                const contactMessage = {
+                    name: name,
+                    email: email,
+                    message: message,
+                    createdAt: window.Timestamp.now()
+                };
+                
+                await window.addDoc(window.collection(window.db, 'contact_messages'), contactMessage);
+                this.showNotification('Message sent! We will respond to you at ' + email, 'success');
+                e.target.reset();
+            }
+
+            async handleAdminAddPlan(e) {
+                e.preventDefault();
+                const name = document.getElementById('planName').value;
+                const amount = parseFloat(document.getElementById('planAmount').value);
+                const duration = parseInt(document.getElementById('planDuration').value);
+                const dailyReturn = parseFloat(document.getElementById('planDailyReturn').value);
+                
+                const totalReturn = amount * dailyReturn * duration / 100;
+                
+                const plan = {
+                    name: name,
+                    amount: amount,
+                    duration: duration,
+                    dailyReturn: dailyReturn,
+                    totalReturn: totalReturn,
+                    createdAt: window.Timestamp.now()
+                };
+                
+                await window.addDoc(window.collection(window.db, 'plans'), plan);
+                this.showNotification('Plan added successfully!', 'success');
+                e.target.reset();
+                await this.loadPlans();
+            }
+
+            renderPlans() {
+                const plansContainer = document.getElementById('plansContainer');
+                if (!plansContainer) return;
+                
+                if (this.plans.length === 0) {
+                    plansContainer.innerHTML = '<p class="text-center text-gray-500">No plans available. Please check back later.</p>';
+                    return;
+                }
+                
+                plansContainer.innerHTML = this.plans.map(plan => `
+                    <div class="glass-morphism rounded-xl p-6 hover-scale cursor-pointer">
+                        <h3 class="text-xl font-bold mb-2">${plan.name}</h3>
+                        <div class="space-y-2">
+                            <p class="text-3xl font-bold text-primary">₹${plan.amount}</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">Duration: ${plan.duration} days</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">Daily Return: ${plan.dailyReturn}%</p>
+                            <p class="text-lg font-semibold text-success">Total Return: ₹${plan.totalReturn}</p>
+                        </div>
+                        <button onclick="app.selectPlan('${plan.id}')" class="mt-4 w-full bg-primary hover:bg-secondary text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+                            Invest Now
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            selectPlan(planId) {
+                const plan = this.plans.find(p => p.id === planId);
+                if (plan) {
+                    document.getElementById('depositPlan').value = planId;
+                    this.navigateTo('deposit');
+                }
+            }
+
+            renderAdminDashboard(users) {
+                // Render users
+                const usersContainer = document.getElementById('adminUsersList');
+                if (usersContainer) {
+                    usersContainer.innerHTML = users.map(user => `
+                        <tr class="border-b border-gray-200 dark:border-gray-700">
+                            <td class="py-3 px-4">${user.name || 'N/A'}</td>
+                            <td class="py-3 px-4">${user.email}</td>
+                            <td class="py-3 px-4">₹${user.balance || 0}</td>
+                            <td class="py-3 px-4">${user.referredBy || 'N/A'}</td>
+                            <td class="py-3 px-4">
+                                <button onclick="app.manageUser('${user.id}')" class="text-primary hover:text-secondary">Manage</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+
+                // Render pending transactions
+                const transactionsContainer = document.getElementById('adminTransactionsList');
+                if (transactionsContainer) {
+                    transactionsContainer.innerHTML = this.transactions.map(transaction => `
+                        <div class="glass-morphism rounded-lg p-4 mb-3">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="font-semibold">${transaction.userEmail}</p>
+                                    <p class="text-sm">UTR: ${transaction.utr}</p>
+                                    <p class="text-sm">Date: ${transaction.createdAt?.toDate?.().toLocaleString() || 'N/A'}</p>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button onclick="app.approveTransaction('${transaction.id}', '${transaction.userId}', '${transaction.planId}')" class="bg-success text-white px-3 py-1 rounded">Approve</button>
+                                    <button onclick="app.rejectTransaction('${transaction.id}')" class="bg-danger text-white px-3 py-1 rounded">Reject</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                // Render pending withdrawals
+                const withdrawalsContainer = document.getElementById('adminWithdrawalsList');
+                if (withdrawalsContainer) {
+                    withdrawalsContainer.innerHTML = this.withdrawals.map(withdrawal => `
+                        <div class="glass-morphism rounded-lg p-4 mb-3">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="font-semibold">${withdrawal.userEmail}</p>
+                                    <p class="text-sm">Amount: ₹${withdrawal.amount}</p>
+                                    <p class="text-sm">Method: ${withdrawal.method}</p>
+                                    <p class="text-sm">Account: ${withdrawal.account}</p>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button onclick="app.approveWithdrawal('${withdrawal.id}')" class="bg-success text-white px-3 py-1 rounded">Approve</button>
+                                    <button onclick="app.rejectWithdrawal('${withdrawal.id}')" class="bg-danger text-white px-3 py-1 rounded">Reject</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            async approveTransaction(transactionId, userId, planId) {
+                const plan = this.plans.find(p => p.id === planId);
+                const userDoc = await window.getDoc(window.doc(window.db, 'users', userId));
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    await window.updateDoc(window.doc(window.db, 'users', userId), {
+                        balance: (userData.balance || 0) + (plan?.amount || 0)
+                    });
+                }
+                await window.updateDoc(window.doc(window.db, 'transactions', transactionId), {
+                    status: 'approved'
+                });
+                this.showNotification('Transaction approved and balance updated!', 'success');
+                await this.loadAdminData();
+                await this.loadPlans();
+            }
+
+            async rejectTransaction(transactionId) {
+                await window.updateDoc(window.doc(window.db, 'transactions', transactionId), {
+                    status: 'rejected'
+                });
+                this.showNotification('Transaction rejected!', 'error');
+                await this.loadAdminData();
+            }
+
+            async approveWithdrawal(withdrawalId) {
+                await window.updateDoc(window.doc(window.db, 'withdrawals', withdrawalId), {
+                    status: 'approved'
+                });
+                this.showNotification('Withdrawal approved!', 'success');
+                await this.loadAdminData();
+            }
+
+            async rejectWithdrawal(withdrawalId) {
+                const withdrawalDoc = await window.getDoc(window.doc(window.db, 'withdrawals', withdrawalId));
+                if (withdrawalDoc.exists()) {
+                    const withdrawal = withdrawalDoc.data();
+                    const userDoc = await window.getDoc(window.doc(window.db, 'users', withdrawal.userId));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        await window.updateDoc(window.doc(window.db, 'users', withdrawal.userId), {
+                            balance: (userData.balance || 0) + withdrawal.amount
+                        });
+                    }
+                }
+                await window.updateDoc(window.doc(window.db, 'withdrawals', withdrawalId), {
+                    status: 'rejected'
+                });
+                this.showNotification('Withdrawal rejected and amount refunded!', 'error');
+                await this.loadAdminData();
+            }
+
+            async manageUser(userId) {
+                // Implement user management modal or actions here
+                this.showNotification('User management feature coming soon!', 'info');
+            }
+
+            showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `fixed top-20 right-4 p-4 rounded-lg shadow-lg text-white z-50 ${
+                    type === 'success' ? 'bg-success' : 
+                    type === 'error' ? 'bg-danger' : 
+                    'bg-primary'
+                }`;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+            }
+        }
+
+        // Initialize the app
+        let app;
+        window.addEventListener('firebase-ready', () => {
+            app = new WinKomApp();
+            window.app = app;
+        });
+    </script>
+
+    <!-- Navigation Bar -->
+    <nav class="glass-morphism fixed top-0 w-full z-40 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold gradient-bg bg-clip-text text-transparent">WinKom</a>
+            
+            <div class="flex items-center space-x-4">
+                <button id="themeToggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                    <span class="dark:hidden">🌙</span>
+                    <span class="hidden dark:inline">☀️</span>
+                </button>
+                
+                <button onclick="app?.navigateTo('about')" class="hidden md:inline hover:text-primary">About</button>
+                <button onclick="app?.navigateTo('contact')" class="hidden md:inline hover:text-primary">Support</button>
+                
+                <button id="logoutBtn" class="hidden bg-danger text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Authentication Container -->
+    <div id="authContainer" class="min-h-screen flex items-center justify-center px-4 pt-20">
+        <div class="max-w-md w-full space-y-8">
+            <!-- Login Page -->
+            <div id="loginPage" class="page-section glass-morphism rounded-2xl p-8">
+                <h2 class="text-3xl font-bold text-center mb-8">Welcome Back</h2>
+                <form id="loginForm" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Email</label>
+                        <input type="email" id="loginEmail" required class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Password</label>
+                        <input type="password" id="loginPassword" required class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                    </div>
+                    <button type="submit" class="w-full gradient-bg text-white font-bold py-3 rounded-lg hover:opacity-90 transition">
+                        Sign In
+                    </button>
+                </form>
+                <button id="googleLogin" class="mt-4 w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-bold py-3 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition">
+                    <span class="mr-2">🔐</span> Sign in with Google
+                </button>
+                <p class="mt-6 text-center">
+                    Don't have an account? 
+                    <button onclick="app?.navigateTo('signup')" class="text-primary hover:underline">Sign Up</button>
+                </p>
+            </div>
+
+            <!-- Signup Page -->
+            <div id="signupPage" class="page-section hidden glass-morphism rounded-2xl p-8">
+                <h2 class="text-3xl font-bold text-center mb-8">Create Account</h2>
+                <form id="signupForm" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Full Name</label>
+                        <input type="text" id="signupName" required class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Email</label>
+                        <input type="email" id="signupEmail" required class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Password</label>
+                        <input type="password" id="signupPassword" required minlength="6" class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                    </div>
+                    <button type="submit" class="w-full gradient-bg text-white font-bold py-3 rounded-lg hover:opacity-90 transition">
+                        Create Account
+                    </button>
+                </form>
+                <button id="googleSignup" class="mt-4 w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-bold py-3 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition">
+                    <span class="mr-2">🔐</span> Sign up with Google
+                </button>
+                <p class="mt-6 text-center">
+                    Already have an account? 
+                    <button onclick="app?.navigateTo('login')" class="text-primary hover:underline">Sign In</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="hidden min-h-screen pt-20">
+        <!-- User Dashboard -->
+        <div id="userDashboard" class="hidden max-w-7xl mx-auto px-4 py-8">
+            <!-- Dashboard Page -->
+            <div id="dashboardPage" class="page-section">
+                <div class="flex justify-between items-center mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold">Welcome, <span id="userName"></span></h2>
+                        <p class="text-gray-600 dark:text-gray-400">Your Investment Dashboard</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Available Balance</p>
+                        <p class="text-3xl font-bold text-success" id="userBalance">₹0</p>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    <button onclick="app?.navigateTo('deposit')" class="glass-morphism rounded-xl p-6 text-center hover-scale">
+                        <span class="text-3xl">💰</span>
+                        <p class="mt-2 font-semibold">Deposit</p>
+                    </button>
+                    <button onclick="app?.navigateTo('withdraw')" class="glass-morphism rounded-xl p-6 text-center hover-scale">
+                        <span class="text-3xl">💸</span>
+                        <p class="mt-2 font-semibold">Withdraw</p>
+                    </button>
+                    <button onclick="app?.navigateTo('referral')" class="glass-morphism rounded-xl p-6 text-center hover-scale">
+                        <span class="text-3xl">🤝</span>
+                        <p class="mt-2 font-semibold">Referral</p>
+                    </button>
+                    <button onclick="app?.navigateTo('plans')" class="glass-morphism rounded-xl p-6 text-center hover-scale">
+                        <span class="text-3xl">📈</span>
+                        <p class="mt-2 font-semibold">Plans</p>
+                    </button>
+                </div>
+
+                <!-- Investment Plans -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-bold mb-4">Investment Plans</h3>
+                    <div id="plansContainer" class="grid md:grid-cols-3 gap-6">
+                        <!-- Plans will be rendered here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plans Page -->
+            <div id="plansPage" class="page-section hidden">
+                <h2 class="text-3xl font-bold mb-6">Investment Plans</h2>
+                <div id="plansContainerFull" class="grid md:grid-cols-3 gap-6"></div>
+            </div>
+
+            <!-- Deposit Page -->
+            <div id="depositPage" class="page-section hidden">
+                <h2 class="text-3xl font-bold mb-6">Deposit Funds</h2>
+                <div class="glass-morphism rounded-2xl p-8 max-w-2xl">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold mb-4">UPI Payment QR Code</h3>
+                        <div class="bg-white p-4 rounded-lg inline-block">
+                            <!-- Mock QR Code -->
+                            <div class="w-48 h-48 bg-gray-200 flex items-center justify-center">
+                                <span class="text-gray-500">QR Code</span>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                            Scan the QR code using any UPI app or transfer to:<br>
+                            <strong>WinKom@upi</strong>
+                        </p>
+                    </div>
+                    
+                    <form id="depositForm" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Select Plan</label>
+                            <select id="depositPlan" required class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                                <option value="">Select Investment Plan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Transaction ID / UTR Number</label>
+                            <input type="text" id="transactionId" required placeholder="Enter UPI Transaction ID" class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                        </div>
+                        <button type="submit" class="w-full gradient-bg text-white font-bold py-3 rounded-lg hover:opacity-90 transition">
+                            Submit Deposit Request
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Withdraw Page -->
+            <div id="withdrawPage" class="page-section hidden">
+                <h2 class="text-3xl font-bold mb-6">Withdraw Funds</h2>
+                <div class="glass-morphism rounded-2xl p-8 max-w-2xl">
+                    <div class="mb-6 bg-warning bg-opacity-10 border border-warning rounded-lg p-4">
+                        <p class="text-warning font-semibold">
+                            ⏱️ Withdrawal processing time: 30 to 60 minutes
+                        </p>
+                    </div>
+                    
+                    <form id="withdrawalForm" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Amount</label>
+                            <input type="number" id="withdrawalAmount" required min="1" placeholder="Enter amount" class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Withdrawal Method</label>
+                            <select id="withdrawalMethod" required class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                                <option value="bank">Bank Account</option>
+                                <option value="upi">UPI</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Account Details</label>
+                            <input type="text" id="withdrawalAccount" required placeholder="Bank Account Number or UPI ID" class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                        </div>
+                        <button type="submit" class="w-full bg-danger text-white font-bold py-3 rounded-lg hover:bg-red-700 transition">
+                            Request Withdrawal
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Referral Page -->
+            <div id="referralPage" class="page-section hidden">
+                <h2 class="text-3xl font-bold mb-6">Referral Program</h2>
+                <div class="glass-morphism rounded-2xl p-8 max-w-2xl">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold mb-2">Your Referral Link</h3>
+                        <div class="flex space-x-2">
+                            <input type="text" id="referralLink" readonly class="flex-1 px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600">
+                            <button onclick="navigator.clipboard.writeText(document.getElementById('referralLink').value)" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-success bg-opacity-10 border border-success rounded-lg p-4">
+                        <p class="text-success font-semibold">
+                            🎉 Earn ₹79 instantly for every referral who signs up!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Page -->
+            <div id="aboutPage" class="page-section hidden">
+                <h2 class="text-3xl font-bold mb-6">About WinKom</h2>
+                <div class="glass-morphism rounded-2xl p-8 space-y-6">
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-4">Our Mission</h3>
+                        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                            WinKom is dedicated to democratizing investment opportunities for everyone. 
+                            We believe that financial growth should be accessible, transparent, and secure 
+                            for all individuals, regardless of their investment experience.
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-4">Why Choose WinKom?</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                                <h4 class="font-semibold mb-2">🔒 Secure Platform</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    Your investments are protected with enterprise-grade security protocols.
+                                </p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                                <h4 class="font-semibold mb-2">📊 Transparent Growth</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    Real-time tracking and transparent reporting of all your investments.
+                                </p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                                <h4 class="font-semibold mb-2">⚡ Fast Processing</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    Quick deposit and withdrawal processing with minimal wait times.
+                                </p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                                <h4 class="font-semibold mb-2">🤝 Expert Support</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    Dedicated customer support team available to assist you 24/7.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Page -->
+            <div id="contactPage" class="page-section hidden">
+                <h2 class="text-3xl font-bold mb-6">Customer Support</h2>
+                <div class="glass-morphism rounded-2xl p-8 max-w-2xl">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold mb-2">Contact Us</h3>
+                        <p class="text-gray-600 dark:text-gray-400">
+                            For any queries or support, email us at:
+                        </p>
+                        <a href="mailto:WinKom@gmail.com" class="text-primary hover:underline text-lg font-semibold">
+                            WinKom@gmail.com
+                        </a>
+                    </div>
+                    
+                    <form id="contactForm" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Your Name</label>
+                            <input type="text" id="contactName" required class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Your Email</label>
+                            <input type="email" id="contactEmail" required class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Message</label>
+                            <textarea id="contactMessage" required rows="4" class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none"></textarea>
+                        </div>
+                        <button type="submit" class="w-full gradient-bg text-white font-bold py-3 rounded-lg hover:opacity-90 transition">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Panel -->
+        <div id="adminPanel" class="hidden max-w-7xl mx-auto px-4 py-8">
+            <h2 class="text-3xl font-bold mb-8">Admin Control Panel</h2>
+            
+            <!-- Admin Navigation -->
+            <div class="flex space-x-4 mb-8 overflow-x-auto">
+                <button onclick="app?.navigateTo('adminOverview')" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition whitespace-nowrap">Overview</button>
+                <button onclick="app?.navigateTo('adminUsers')" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition whitespace-nowrap">Users</button>
+                <button onclick="app?.navigateTo('adminTransactions')" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition whitespace-nowrap">Transactions</button>
+                <button onclick="app?.navigateTo('adminWithdrawals')" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition whitespace-nowrap">Withdrawals</button>
+                <button onclick="app?.navigateTo('adminPlans')" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition whitespace-nowrap">Plans</button>
+            </div>
+
+            <!-- Admin Overview -->
+            <div id="adminOverviewPage" class="page-section">
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="glass-morphism rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-2">Total Users</h3>
+                        <p class="text-3xl font-bold text-primary" id="totalUsers">0</p>
+                    </div>
+                    <div class="glass-morphism rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-2">Pending Transactions</h3>
+                        <p class="text-3xl font-bold text-warning" id="pendingTransactions">0</p>
+                    </div>
+                    <div class="glass-morphism rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-2">Pending Withdrawals</h3>
+                        <p class="text-3xl font-bold text-danger" id="pendingWithdrawals">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Users -->
+            <div id="adminUsersPage" class="page-section hidden">
+                <h3 class="text-2xl font-bold mb-4">Registered Users</h3>
+                <div class="glass-morphism rounded-xl overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-100 dark:bg-gray-800">
+                            <tr>
+                                <th class="py-3 px-4 text-left">Name</th>
+                                <th class="py-3 px-4 text-left">Email</th>
+                                <th class="py-3 px-4 text-left">Balance</th>
+                                <th class="py-3 px-4 text-left">Referred By</th>
+                                <th class="py-3 px-4 text-left">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminUsersList"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Admin Transactions -->
+            <div id="adminTransactionsPage" class="page-section hidden">
+                <h3 class="text-2xl font-bold mb-4">Pending Transactions</h3>
+                <div id="adminTransactionsList" class="space-y-4"></div>
+            </div>
+
+            <!-- Admin Withdrawals -->
+            <div id="adminWithdrawalsPage" class="page-section hidden">
+                <h3 class="text-2xl font-bold mb-4">Pending Withdrawals</h3>
+                <div id="adminWithdrawalsList" class="space-y-4"></div>
+            </div>
+
+            <!-- Admin Plans -->
+            <div id="adminPlansPage" class="page-section hidden">
+                <h3 class="text-2xl font-bold mb-4">Manage Investment Plans</h3>
+                
+                <div class="glass-morphism rounded-xl p-6 mb-8">
+                    <h4 class="text-xl font-semibold mb-4">Add New Plan</h4>
+                    <form id="adminPlanForm" class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Plan Name</label>
+                            <input type="text" id="planName" required class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Investment Amount (₹)</label>
+                            <input type="number" id="planAmount" required min="1" class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Duration (Days)</label>
+                            <input type="number" id="planDuration" required min="1" class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Daily Return (%)</label>
+                            <input type="number" id="planDailyReturn" required min="0.1" step="0.1" class="w-full px-4 py-3 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 focus:border-primary outline-none">
+                        </div>
+                        <button type="submit" class="md:col-span-2 gradient-bg text-white font-bold py-3 rounded-lg hover:opacity-90 transition">
+                            Add Plan
+                        </button>
+                    </form>
+                </div>
+
+                <div class="glass-morphism rounded-xl p-6">
+                    <h4 class="text-xl font-semibold mb-4">Existing Plans</h4>
+                    <div id="adminPlansList" class="space-y-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize theme from localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+            } else {
+                document.documentElement.classList.add('dark');
+            }
+            
+            // Show logout button when logged in
+            window.addEventListener('firebase-ready', () => {
+                window.onAuthStateChanged(window.auth, (user) => {
+                    const logoutBtn = document.getElementById('logoutBtn');
+                    if (user) {
+                        logoutBtn?.classList.remove('hidden');
+                    } else {
+                        logoutBtn?.classList.add('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
