@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdraw | WinKom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, addDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+            authDomain: "winkom-da4c2.firebaseapp.com",
+            projectId: "winkom-da4c2",
+            storageBucket: "winkom-da4c2.firebasestorage.app",
+            messagingSenderId: "629229462242",
+            appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let savedKyc = false;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) window.location.href = 'login.html';
+
+            const userRef = doc(db, 'users', user.uid);
+            const userSnap = await getDoc(userRef);
+            const data = userSnap.data();
+
+            // Check if KYC already saved
+            if (data.kycSaved) {
+                savedKyc = true;
+                document.getElementById('kycForm').classList.add('hidden');
+                document.getElementById('kycLocked').classList.remove('hidden');
+                // Show saved details
+                let display = '';
+                if (data.withdrawMethod === 'upi') {
+                    display = `UPI ID: ${data.upiId}`;
+                } else {
+                    display = `Bank: ${data.bankName}, Account: ${data.accountNo}, IFSC: ${data.ifsc}`;
+                }
+                document.getElementById('savedKyc').innerHTML = display;
+            } else {
+                document.getElementById('kycForm').classList.remove('hidden');
+            }
+
+            // Toggle method selection
+            const methodRadios = document.getElementsByName('withdrawMethod');
+            const upiFields = document.getElementById('upiFields');
+            const bankFields = document.getElementById('bankFields');
+
+            function toggleFields() {
+                const selected = document.querySelector('input[name="withdrawMethod"]:checked').value;
+                if (selected === 'upi') {
+                    upiFields.classList.remove('hidden');
+                    bankFields.classList.add('hidden');
+                } else {
+                    upiFields.classList.add('hidden');
+                    bankFields.classList.remove('hidden');
+                }
+            }
+
+            methodRadios.forEach(radio => radio.addEventListener('change', toggleFields));
+            // Initialize based on previously saved method (if any)
+            if (data.withdrawMethod === 'upi') {
+                document.getElementById('methodUpi').checked = true;
+            } else {
+                document.getElementById('methodBank').checked = true;
+            }
+            toggleFields();
+
+            // Save KYC button
+            document.getElementById('saveKyc').addEventListener('click', async () => {
+                const method = document.querySelector('input[name="withdrawMethod"]:checked').value;
+                let kycData = { withdrawMethod: method, kycSaved: true };
+
+                if (method === 'upi') {
+                    kycData.upiId = document.getElementById('upi').value;
+                    kycData.name = document.getElementById('upiName').value;
+                } else {
+                    kycData.bankName = document.getElementById('bank').value;
+                    kycData.accountNo = document.getElementById('acc').value;
+                    kycData.ifsc = document.getElementById('ifsc').value;
+                    kycData.name = document.getElementById('accName').value;
+                }
+
+                // Check required fields
+                if (method === 'upi' && (!kycData.upiId || !kycData.name)) {
+                    alert('Please fill UPI ID and Name');
+                    return;
+                }
+                if (method === 'bank' && (!kycData.bankName || !kycData.accountNo || !kycData.ifsc || !kycData.name)) {
+                    alert('Please fill all bank details');
+                    return;
+                }
+
+                await updateDoc(userRef, kycData);
+                alert('Details saved! Now locked. Contact admin to change.');
+                location.reload();
+            });
+
+            // Withdrawal form
+            document.getElementById('withdrawForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!savedKyc) {
+                    alert('Please save your KYC details first.');
+                    return;
+                }
+                const amount = parseFloat(document.getElementById('amount').value);
+                if (amount < 109) {
+                    alert('Minimum withdrawal amount is ₹109');
+                    return;
+                }
+                if (amount > data.balance) {
+                    alert('Insufficient balance!');
+                    return;
+                }
+                await addDoc(collection(db, 'withdrawals'), {
+                    userId: user.uid,
+                    amount,
+                    method: data.withdrawMethod,
+                    status: 'pending',
+                    timestamp: Timestamp.now()
+                });
+                alert('Withdrawal request submitted. Processing time: 30-60 minutes.');
+                location.reload();
+            });
+
+            // Load withdrawal history
+            const wdRef = collection(db, 'withdrawals');
+            const q = query(wdRef, where('userId', '==', user.uid));
+            const querySnapshot = await getDocs(q);
+            const wdHistory = document.getElementById('wdHistory');
+            wdHistory.innerHTML = '';
+            querySnapshot.forEach((doc) => {
+                const d = doc.data();
+                wdHistory.innerHTML += `
+                    <tr class="border-b">
+                        <td>₹${d.amount}</td>
+                        <td>${d.method.toUpperCase()}</td>
+                        <td class="text-blue-500">${d.status}</td>
+                        <td>${new Date(d.timestamp.toDate()).toLocaleString()}</td>
+                    </tr>`;
+            });
+        });
+    </script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
+    <header class="bg-white p-4 shadow flex justify-between items-center">
+        <img src="logo.png" class="h-10">
+        <a href="index.html" class="text-blue-500">Back</a>
+    </header>
+    <main class="p-4 max-w-4xl mx-auto">
+        <!-- KYC Form -->
+        <div id="kycForm" class="bg-white p-6 rounded-xl shadow mb-6">
+            <h2 class="text-xl font-bold mb-4">Save Withdrawal Details</h2>
+            <div class="mb-4">
+                <label class="block mb-2">Select Method:</label>
+                <label class="mr-4"><input type="radio" name="withdrawMethod" value="upi" id="methodUpi" checked> UPI</label>
+                <label><input type="radio" name="withdrawMethod" value="bank" id="methodBank"> Bank</label>
+            </div>
+
+            <!-- UPI Fields -->
+            <div id="upiFields" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" id="upi" placeholder="Your UPI ID" class="p-2 border rounded">
+                <input type="text" id="upiName" placeholder="Account Holder Name" class="p-2 border rounded">
+            </div>
+
+            <!-- Bank Fields -->
+            <div id="bankFields" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" id="bank" placeholder="Bank Name" class="p-2 border rounded">
+                <input type="text" id="acc" placeholder="Account Number" class="p-2 border rounded">
+                <input type="text" id="ifsc" placeholder="IFSC Code" class="p-2 border rounded">
+                <input type="text" id="accName" placeholder="Account Holder Name" class="p-2 border rounded">
+            </div>
+
+            <button id="saveKyc" class="bg-blue-600 text-white px-6 py-2 rounded mt-4">Save Details</button>
+        </div>
+
+        <!-- KYC Locked -->
+        <div id="kycLocked" class="hidden bg-green-100 p-6 rounded-xl shadow mb-6">
+            <p class="font-bold">✅ Details Saved (Locked)</p>
+            <p id="savedKyc" class="text-gray-700 mt-2"></p>
+            <p class="text-red-500 text-sm mt-2">To change, please contact support.</p>
+        </div>
+
+        <!-- Withdrawal Form -->
+        <div class="bg-white p-6 rounded-xl shadow mb-6">
+            <h2 class="text-xl font-bold mb-4">Request Withdrawal</h2>
+            <form id="withdrawForm">
+                <input type="number" id="amount" placeholder="Amount (Minimum ₹109)" required min="109" class="w-full p-2 border rounded mb-2">
+                <button type="submit" class="bg-orange-500 text-white px-6 py-2 rounded">Submit</button>
+            </form>
+            <p class="text-red-500 text-sm mt-2">Withdrawal processing time: 30 to 60 minutes.</p>
+        </div>
+
+        <!-- Withdrawal History -->
+        <h2 class="text-xl font-bold mb-4">Withdrawal History</h2>
+        <table class="w-full bg-white rounded-xl shadow">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="p-3 text-left">Amount</th>
+                    <th class="p-3 text-left">Method</th>
+                    <th class="p-3 text-left">Status</th>
+                    <th class="p-3 text-left">Date</th>
+                </tr>
+            </thead>
+            <tbody id="wdHistory"></tbody>
+        </table>
+    </main>
+</body>
+</html>

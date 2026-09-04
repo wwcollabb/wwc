@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | WinKom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+            authDomain: "winkom-da4c2.firebaseapp.com",
+            projectId: "winkom-da4c2",
+            storageBucket: "winkom-da4c2.firebasestorage.app",
+            messagingSenderId: "629229462242",
+            appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        // Generate unique referral code (first 3 letters of name + random 2 digits)
+        function generateReferralCode(name) {
+            const letters = name.replace(/[^a-zA-Z]/g, '').substring(0, 3).toUpperCase();
+            const digits = Math.floor(10 + Math.random() * 90); // 10-99
+            return letters + digits;
+        }
+
+        // Email/Password Signup
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const referralCode = document.getElementById('referralCode').value.trim().toUpperCase();
+
+            try {
+                // Create user
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                await updateProfile(user, { displayName: name });
+
+                // Generate unique referral code
+                let code;
+                let codeExists = true;
+                while (codeExists) {
+                    code = generateReferralCode(name);
+                    const q = query(collection(db, 'users'), where('referralCode', '==', code));
+                    const snap = await getDocs(q);
+                    if (snap.empty) codeExists = false;
+                }
+
+                // Prepare user data
+                const userData = {
+                    email: email,
+                    name: name,
+                    balance: 51, // new user gets ₹51
+                    activeInvestments: 0,
+                    referralEarnings: 0,
+                    kycSaved: false,
+                    withdrawMethod: null,
+                    referralCode: code,
+                    referredBy: null
+                };
+
+                // Check if referral code was provided and valid
+                if (referralCode) {
+                    const q = query(collection(db, 'users'), where('referralCode', '==', referralCode));
+                    const snap = await getDocs(q);
+                    if (!snap.empty) {
+                        const referrerDoc = snap.docs[0];
+                        const referrerRef = referrerDoc.ref;
+                        const referrerData = referrerDoc.data();
+                        // Credit ₹79 to referrer
+                        await setDoc(referrerRef, {
+                            ...referrerData,
+                            balance: (referrerData.balance || 0) + 79,
+                            referralEarnings: (referrerData.referralEarnings || 0) + 79
+                        });
+                        userData.referredBy = referrerRef.id;
+                    }
+                }
+
+                // Save user data
+                await setDoc(doc(db, 'users', user.uid), userData);
+
+                window.location.href = 'index.html';
+            } catch (err) {
+                alert(err.message);
+            }
+        });
+
+        // Google Signup (also handle referral bonus)
+        document.getElementById('googleBtn').addEventListener('click', async () => {
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                const userRef = doc(db, 'users', user.uid);
+                const userSnap = await getDoc(userRef);
+                if (!userSnap.exists()) {
+                    // Generate referral code
+                    let code;
+                    let codeExists = true;
+                    while (codeExists) {
+                        code = generateReferralCode(user.displayName || 'User');
+                        const q = query(collection(db, 'users'), where('referralCode', '==', code));
+                        const snap = await getDocs(q);
+                        if (snap.empty) codeExists = false;
+                    }
+                    await setDoc(userRef, {
+                        email: user.email,
+                        name: user.displayName || 'User',
+                        balance: 51,
+                        activeInvestments: 0,
+                        referralEarnings: 0,
+                        kycSaved: false,
+                        withdrawMethod: null,
+                        referralCode: code,
+                        referredBy: null
+                    });
+                }
+                window.location.href = 'index.html';
+            } catch (err) {
+                alert(err.message);
+            }
+        });
+    </script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 flex items-center justify-center min-h-screen">
+    <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg w-full max-w-md">
+        <img src="logo.png" alt="WinKom" class="h-12 mx-auto mb-6">
+        <h2 class="text-2xl font-bold text-center mb-6">Create Your Account</h2>
+        <form id="signupForm">
+            <div class="mb-4">
+                <input type="text" id="name" placeholder="Full Name" required class="w-full p-3 border rounded-lg">
+            </div>
+            <div class="mb-4">
+                <input type="email" id="email" placeholder="Email Address" required class="w-full p-3 border rounded-lg">
+            </div>
+            <div class="mb-4">
+                <input type="password" id="password" placeholder="Password (min 6)" required minlength="6" class="w-full p-3 border rounded-lg">
+            </div>
+            <div class="mb-6">
+                <input type="text" id="referralCode" placeholder="Referral Code (optional)" class="w-full p-3 border rounded-lg">
+            </div>
+            <button type="submit" class="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition">Sign Up</button>
+        </form>
+        <div class="text-center my-4 text-gray-500">OR</div>
+        <button id="googleBtn" class="w-full bg-red-500 text-white p-3 rounded-lg hover:bg-red-600 transition flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+            Sign up with Google
+        </button>
+        <p class="text-center mt-4 text-gray-600">Already have an account? <a href="login.html" class="text-blue-500">Login</a></p>
+    </div>
+</body>
+</html>

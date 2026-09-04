@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WinKom – Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+            authDomain: "winkom-da4c2.firebaseapp.com",
+            projectId: "winkom-da4c2",
+            storageBucket: "winkom-da4c2.firebasestorage.app",
+            messagingSenderId: "629229462242",
+            appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Toggle Drawer
+        const toggleBtn = document.getElementById('toggleBtn');
+        const closeBtn = document.getElementById('closeBtn');
+        const drawer = document.getElementById('drawer');
+
+        toggleBtn.addEventListener('click', () => drawer.classList.remove('hidden'));
+        closeBtn.addEventListener('click', () => drawer.classList.add('hidden'));
+
+        // Load user data
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html'; // Redirect if not logged in
+            } else {
+                document.getElementById('userName').textContent = user.displayName || 'User';
+                const userRef = doc(db, 'users', user.uid);
+                const userSnap = await getDoc(userRef);
+                if (userSnap.exists()) {
+                    const data = userSnap.data();
+                    document.getElementById('balance').textContent = `₹${data.balance}`;
+                    document.getElementById('activeInv').textContent = data.activeInvestments || 0;
+                    document.getElementById('referralEarn').textContent = `₹${data.referralEarnings}`;
+                }
+            }
+        });
+
+        // Load Investment Plans from Firestore
+        async function loadPlans() {
+            const plansRef = collection(db, 'plans');
+            const q = query(plansRef, where('active', '==', true));
+            const querySnapshot = await getDocs(q);
+            const plansDiv = document.getElementById('plans');
+            plansDiv.innerHTML = '';
+            querySnapshot.forEach((doc) => {
+                const plan = doc.data();
+                plansDiv.innerHTML += `
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-xl font-bold">${plan.name}</h3>
+                        <p class="text-gray-600">Amount: ₹${plan.amount}</p>
+                        <p class="text-gray-600">Duration: ${plan.duration} days</p>
+                        <p class="text-green-600 font-bold">Daily Return: ${plan.dailyReturn}%</p>
+                        <button onclick="buyPlan('${doc.id}', ${plan.amount})" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded">Invest</button>
+                    </div>`;
+            });
+        }
+        loadPlans();
+
+        // Buy Plan: deduct balance, add to investments, and schedule daily credits
+        window.buyPlan = async (planId, amount) => {
+            const user = auth.currentUser;
+            const userRef = doc(db, 'users', user.uid);
+            const userSnap = await getDoc(userRef);
+            const balance = userSnap.data().balance;
+            if (balance < amount) {
+                alert('Insufficient balance! Please deposit first.');
+                return;
+            }
+            // Deduct amount
+            await updateDoc(userRef, {
+                balance: balance - amount,
+                activeInvestments: (userSnap.data().activeInvestments || 0) + 1
+            });
+            // Add investment record
+            await addDoc(collection(db, 'investments'), {
+                userId: user.uid,
+                planId: planId,
+                amount: amount,
+                startDate: Timestamp.now(),
+                status: 'active'
+            });
+            // Daily return will be handled by a cloud function or on each login (simplified)
+            alert('Investment successful!');
+            window.location.reload();
+        };
+    </script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
+    <header class="bg-white dark:bg-gray-800 shadow p-4 flex justify-between items-center">
+        <img src="logo.png" alt="WinKom" class="h-10">
+        <span id="userName" class="font-bold"></span>
+        <button id="toggleBtn" class="text-3xl">☰</button>
+    </header>
+    
+    <!-- Drawer -->
+    <div id="drawer" class="hidden fixed inset-0 z-50">
+        <div class="absolute right-0 w-64 bg-white dark:bg-gray-800 h-full p-4 shadow-lg">
+            <button id="closeBtn" class="absolute top-4 right-4 text-red-500 font-bold text-2xl">❌</button>
+            <ul class="mt-8 space-y-2">
+                <li><a href="index.html" class="block p-2 hover:bg-gray-200">Dashboard</a></li>
+                <li><a href="deposit.html" class="block p-2 hover:bg-gray-200">Deposit & History</a></li>
+                <li><a href="withdraw.html" class="block p-2 hover:bg-gray-200">Withdraw</a></li>
+                <li><a href="about.html" class="block p-2 hover:bg-gray-200">About</a></li>
+                <li><a href="support.html" class="block p-2 hover:bg-gray-200">Support</a></li>
+                <li><button onclick="logout()" class="block w-full text-left p-2 text-red-500">Logout</button></li>
+            </ul>
+        </div>
+        <div class="absolute inset-0 bg-black opacity-50" onclick="document.getElementById('drawer').classList.add('hidden')"></div>
+    </div>
+
+    <main class="p-4 max-w-6xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+                <h3 class="text-gray-500">Total Balance</h3>
+                <p id="balance" class="text-3xl font-bold">₹0</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+                <h3 class="text-gray-500">Active Investments</h3>
+                <p id="activeInv" class="text-3xl font-bold">0</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+                <h3 class="text-gray-500">Referral Earnings</h3>
+                <p id="referralEarn" class="text-3xl font-bold">₹0</p>
+            </div>
+        </div>
+
+        <h2 class="text-2xl font-bold mt-8 mb-4">Available Investment Plans</h2>
+        <div id="plans" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </main>
+
+    <script>
+        function logout() {
+            signOut(auth).then(() => {
+                window.location.href = 'login.html';
+            });
+        }
+    </script>
+</body>
+</html>

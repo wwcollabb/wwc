@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit & History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, addDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = { /* same config */ };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) window.location.href = 'login.html';
+
+            // Deposit form
+            document.getElementById('depositForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const utr = document.getElementById('utr').value;
+                const amount = parseFloat(document.getElementById('amount').value);
+                await addDoc(collection(db, 'deposits'), {
+                    userId: user.uid,
+                    utr,
+                    amount,
+                    status: 'pending',
+                    timestamp: Timestamp.now()
+                });
+                alert('Deposit request submitted! Will reflect after admin approval.');
+                location.reload();
+            });
+
+            // Load history
+            async function loadHistory() {
+                const deposits = await getDocs(query(collection(db, 'deposits'), where('userId', '==', user.uid)));
+                const investments = await getDocs(query(collection(db, 'investments'), where('userId', '==', user.uid)));
+                const historyDiv = document.getElementById('history');
+                historyDiv.innerHTML = '';
+
+                // Deposit entries
+                deposits.forEach((doc) => {
+                    const d = doc.data();
+                    historyDiv.innerHTML += `
+                        <tr class="border-b">
+                            <td>Deposit</td>
+                            <td>₹${d.amount}</td>
+                            <td class="text-blue-500">${d.status}</td>
+                            <td>${new Date(d.timestamp.toDate()).toLocaleString()}</td>
+                        </tr>`;
+                });
+
+                // Investment entries
+                investments.forEach((doc) => {
+                    const inv = doc.data();
+                    historyDiv.innerHTML += `
+                        <tr class="border-b">
+                            <td>Investment</td>
+                            <td>₹${inv.amount}</td>
+                            <td class="text-green-500">${inv.status}</td>
+                            <td>${new Date(inv.startDate.toDate()).toLocaleString()}</td>
+                        </tr>`;
+                });
+
+                // Daily return credits (simulated – will appear after plan purchase)
+                // For simplicity, we skip complex daily credits in this demo
+            }
+            loadHistory();
+        });
+    </script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
+    <header class="bg-white p-4 shadow flex justify-between items-center">
+        <img src="logo.png" class="h-10">
+        <a href="index.html" class="text-blue-500">Back to Dashboard</a>
+    </header>
+    <main class="p-4 max-w-4xl mx-auto">
+        <h2 class="text-2xl font-bold mb-4">Add Cash via UPI</h2>
+        <div class="bg-white p-6 rounded-xl shadow mb-6">
+            <p class="text-gray-600 mb-4">Scan this QR code (insert your UPI QR image here)</p>
+            <img src="qr.png" alt="UPI QR" class="w-40 h-40 mx-auto mb-4">
+            <form id="depositForm">
+                <input type="text" id="utr" placeholder="Enter UTR/Transaction ID" required class="w-full p-2 border rounded mb-2">
+                <input type="number" id="amount" placeholder="Enter Amount" required class="w-full p-2 border rounded mb-2">
+                <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded">Submit Deposit</button>
+            </form>
+            <p class="text-red-500 text-sm mt-2">Deposit request will reflect within 5-10 minutes after admin approval.</p>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Combined History</h2>
+        <table class="w-full bg-white rounded-xl shadow overflow-hidden">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="p-3 text-left">Type</th>
+                    <th class="p-3 text-left">Amount</th>
+                    <th class="p-3 text-left">Status</th>
+                    <th class="p-3 text-left">Date</th>
+                </tr>
+            </thead>
+            <tbody id="history"></tbody>
+        </table>
+    </main>
+</body>
+</html>

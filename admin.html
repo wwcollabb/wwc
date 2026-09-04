@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, updateDoc, doc, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = { /* same */ };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Admin login check – only Admin@wk.in allowed
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                // Show login form
+                document.getElementById('adminLogin').classList.remove('hidden');
+            } else if (user.email === 'Admin@wk.in') {
+                document.getElementById('adminLogin').classList.add('hidden');
+                document.getElementById('adminPanel').classList.remove('hidden');
+                loadPendingDeposits();
+                loadPendingWithdrawals();
+                loadPlans();
+            } else {
+                alert('Not authorized!');
+                signOut(auth);
+            }
+        });
+
+        // Login form
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (err) {
+                alert(err.message);
+            }
+        });
+
+        // Approve/Reject deposit
+        window.approveDeposit = async (id, userId, amount) => {
+            await updateDoc(doc(db, 'deposits', id), { status: 'approved' });
+            // Add to user's balance
+            const userRef = doc(db, 'users', userId);
+            const userSnap = await getDoc(userRef);
+            await updateDoc(userRef, { balance: userSnap.data().balance + amount });
+            alert('Approved & balance added.');
+            location.reload();
+        };
+
+        window.rejectDeposit = async (id) => {
+            await updateDoc(doc(db, 'deposits', id), { status: 'rejected' });
+            location.reload();
+        };
+
+        // Withdrawals similar functions (approve deducts balance, reject just status)
+
+        // Add new plan
+        document.getElementById('planForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await addDoc(collection(db, 'plans'), {
+                name: document.getElementById('planName').value,
+                amount: parseFloat(document.getElementById('planAmount').value),
+                duration: parseInt(document.getElementById('planDuration').value),
+                dailyReturn: parseFloat(document.getElementById('planReturn').value),
+                active: true
+            });
+            alert('Plan added!');
+            location.reload();
+        });
+
+        async function loadPendingDeposits() {
+            const q = query(collection(db, 'deposits'), where('status', '==', 'pending'));
+            const snap = await getDocs(q);
+            const div = document.getElementById('depositsList');
+            snap.forEach((doc) => {
+                const d = doc.data();
+                div.innerHTML += `
+                    <div class="border p-4 mb-2">
+                        <p>User: ${d.userId}</p>
+                        <p>Amount: ₹${d.amount}</p>
+                        <p>UTR: ${d.utr}</p>
+                        <button onclick="approveDeposit('${doc.id}', '${d.userId}', ${d.amount})" class="bg-green-500 text-white px-3 py-1 rounded">Approve</button>
+                        <button onclick="rejectDeposit('${doc.id}')" class="bg-red-500 text-white px-3 py-1 rounded">Reject</button>
+                    </div>`;
+            });
+        }
+    </script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
+    <!-- Login -->
+    <div id="adminLogin" class="hidden p-6 max-w-md mx-auto mt-20 bg-white rounded-xl shadow">
+        <h2 class="text-2xl font-bold mb-4">Admin Login</h2>
+        <form id="loginForm">
+            <input type="email" id="email" placeholder="Email" class="w-full p-2 border rounded mb-2" required>
+            <input type="password" id="password" placeholder="Password" class="w-full p-2 border rounded mb-2" required>
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded">Login</button>
+        </form>
+    </div>
+
+    <!-- Panel -->
+    <div id="adminPanel" class="hidden p-6 max-w-5xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">Admin Control Panel</h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-xl shadow">
+                <h2 class="text-xl font-bold mb-4">Pending Deposits</h2>
+                <div id="depositsList"></div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow">
+                <h2 class="text-xl font-bold mb-4">Pending Withdrawals</h2>
+                <div id="withdrawalsList"></div>
+            </div>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow mt-6">
+            <h2 class="text-xl font-bold mb-4">Add New Investment Plan</h2>
+            <form id="planForm" class="grid grid-cols-2 gap-4">
+                <input type="text" id="planName" placeholder="Plan Name" class="p-2 border rounded">
+                <input type="number" id="planAmount" placeholder="Amount (₹)" class="p-2 border rounded">
+                <input type="number" id="planDuration" placeholder="Duration (days)" class="p-2 border rounded">
+                <input type="number" id="planReturn" placeholder="Daily Return (%)" class="p-2 border rounded">
+                <button type="submit" class="col-span-2 bg-blue-600 text-white px-6 py-2 rounded">Add Plan</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
