@@ -16,6 +16,10 @@
         .fade-in { animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @media (min-width: 768px) { .sidebar-closed { transform: translateX(0); } }
+        .transaction-row { cursor: pointer; transition: background 0.2s; }
+        .transaction-row:hover { background: rgba(255,255,255,0.03); }
+        .transaction-details { display: none; }
+        .transaction-details.open { display: block; }
     </style>
 </head>
 <body class="min-h-screen">
@@ -59,24 +63,12 @@
         <main class="p-4 md:p-6 fade-in">
             <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20 mb-6">
                 <h3 class="text-lg font-bold text-white mb-4">💰 Current Balance: ₹<span id="currentBalance">0</span></h3>
-                <p class="text-gray-400 text-sm">All your transactions in one place</p>
+                <p class="text-gray-400 text-sm">Tap on any transaction to see details</p>
             </div>
 
             <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="border-b border-gray-700 text-gray-400">
-                                <th class="py-3 px-2 text-left">Date</th>
-                                <th class="py-3 px-2 text-left">Description</th>
-                                <th class="py-3 px-2 text-right">Amount</th>
-                                <th class="py-3 px-2 text-right">Balance After</th>
-                            </tr>
-                        </thead>
-                        <tbody id="transactionsTable">
-                            <tr><td colspan="4" class="text-center py-8 text-gray-500">Loading transactions...</td></tr>
-                        </tbody>
-                    </table>
+                <div id="transactionsList" class="space-y-2">
+                    <p class="text-gray-500 text-center py-8">Loading transactions...</p>
                 </div>
             </div>
         </main>
@@ -121,32 +113,128 @@
             window.location.href = 'login.html';
         };
 
+        window.toggleTransactionDetails = function(id) {
+            const details = document.getElementById(`details-${id}`);
+            if (details) {
+                details.classList.toggle('open');
+            }
+        };
+
+        function formatDate(date) {
+            if (!date) return 'N/A';
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        }
+
         async function loadTransactions() {
             if (!currentUser) return;
-            const tableBody = document.getElementById('transactionsTable');
+            const container = document.getElementById('transactionsList');
             
-            const q = query(collection(db, 'transactions'), where('uid', '==', currentUser.uid), orderBy('createdAt', 'desc'));
-            const snap = await getDocs(q);
+            // Fetch all relevant data
+            const [transactionsSnap, withdrawalsSnap, depositsSnap] = await Promise.all([
+                getDocs(query(collection(db, 'transactions'), where('uid', '==', currentUser.uid), orderBy('createdAt', 'desc'))),
+                getDocs(query(collection(db, 'withdrawals'), where('uid', '==', currentUser.uid), where('status', '==', 'pending'))),
+                getDocs(query(collection(db, 'deposits'), where('uid', '==', currentUser.uid), where('status', '==', 'pending')))
+            ]);
 
             let records = [];
-            snap.forEach(d => records.push({ id: d.id, ...d.data() }));
+
+            // Add completed transactions
+            transactionsSnap.forEach(d => {
+                const data = d.data();
+                records.push({
+                    id: d.id,
+                    type: data.type,
+                    description: data.description,
+                    amount: data.amount,
+                    balanceAfter: data.balanceAfter,
+                    createdAt: data.createdAt?.toDate?.() || new Date(),
+                    status: 'completed'
+                });
+            });
+
+            // Add pending withdrawals
+            withdrawalsSnap.forEach(d => {
+                const data = d.data();
+                records.push({
+                    id: d.id,
+                    type: 'withdrawal',
+                    description: 'Withdrawal Request',
+                    amount: -data.amount, // negative because money will be deducted
+                    balanceAfter: null, // not yet deducted
+                    createdAt: data.createdAt?.toDate?.() || new Date(),
+                    status: 'pending'
+                });
+            });
+
+            // Add pending deposits
+            depositsSnap.forEach(d => {
+                const data = d.data();
+                records.push({
+                    id: d.id,
+                    type: 'deposit',
+                    description: 'Deposit Request',
+                    amount: data.amount,
+                    balanceAfter: null, // not yet credited
+                    createdAt: data.createdAt?.toDate?.() || new Date(),
+                    status: 'pending'
+                });
+            });
+
+            // Sort by date descending
+            records.sort((a, b) => b.createdAt - a.createdAt);
 
             if (records.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-gray-500">No transactions yet.</td></tr>';
+                container.innerHTML = '<p class="text-gray-500 text-center py-8">No transactions yet.</p>';
                 return;
             }
 
-            tableBody.innerHTML = records.map(t => {
-                const amountClass = t.amount >= 0 ? 'text-green-400' : 'text-red-400';
-                const sign = t.amount >= 0 ? '+' : '-';
-                const absAmount = Math.abs(t.amount);
+            container.innerHTML = records.map(rec => {
+                const isCredit = rec.amount >= 0;
+                const amountClass = isCredit ? 'text-green-400' : 'text-red-400';
+                const sign = isCredit ? '+' : '-';
+                const absAmount = Math.abs(rec.amount);
+                const balanceText = rec.balanceAfter != null ? `₹${rec.balanceAfter.toFixed(2)}` : '—';
+                const statusLabel = rec.status === 'pending' ? 'Processing' : 'Completed';
+                const statusColor = rec.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-green-500/20 text-green-400';
+
+                let detailMessage = '';
+                if (rec.type === 'withdrawal' && rec.status === 'pending') {
+                    detailMessage = '🔄 Your withdrawal request is being processed. It will be credited within 30-60 minutes.';
+                } else if (rec.type === 'withdrawal' && rec.status === 'completed') {
+                    detailMessage = '✅ Your money has been credited to your UPI/Bank account.';
+                } else if (rec.type === 'deposit' && rec.status === 'pending') {
+                    detailMessage = '⏳ Your deposit is pending approval. It will reflect within 5-10 minutes.';
+                } else if (rec.type === 'deposit' && rec.status === 'completed') {
+                    detailMessage = '✅ Your deposit has been approved and added to your balance.';
+                } else if (rec.type === 'investment') {
+                    detailMessage = '📈 Your investment is now active and earning returns.';
+                } else if (rec.type === 'signup_bonus') {
+                    detailMessage = '🎉 Signup bonus credited to your wallet.';
+                } else if (rec.type === 'referral_bonus') {
+                    detailMessage = '🤝 Referral bonus credited for friend joining.';
+                } else {
+                    detailMessage = 'Transaction completed.';
+                }
+
                 return `
-                <tr class="border-b border-gray-800 hover:bg-gray-800/30 transition">
-                    <td class="py-3 px-2 text-gray-400 text-xs">${t.createdAt?.toDate?.().toLocaleDateString() || 'N/A'} ${t.createdAt?.toDate?.().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || ''}</td>
-                    <td class="py-3 px-2 text-gray-200">${t.description || t.type}</td>
-                    <td class="py-3 px-2 text-right font-medium ${amountClass}">${sign}₹${absAmount.toFixed(2)}</td>
-                    <td class="py-3 px-2 text-right text-white">₹${(t.balanceAfter || 0).toFixed(2)}</td>
-                </tr>`;
+                <div class="transaction-row bg-gray-800/30 rounded-lg p-4" onclick="toggleTransactionDetails('${rec.id}')">
+                    <div class="flex flex-wrap justify-between items-center gap-2">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-white font-medium truncate">${rec.description}</p>
+                            <p class="text-gray-400 text-xs">${formatDate(rec.createdAt)}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold ${amountClass}">${sign}₹${absAmount.toFixed(2)}</p>
+                            <p class="text-gray-500 text-xs">Bal: ${balanceText}</p>
+                        </div>
+                        <span class="px-2 py-1 rounded-full text-xs ${statusColor}">${statusLabel}</span>
+                    </div>
+                    <div id="details-${rec.id}" class="transaction-details mt-2">
+                        <div class="bg-gray-700/20 rounded-lg p-3 text-sm text-gray-300">
+                            ${detailMessage}
+                        </div>
+                    </div>
+                </div>`;
             }).join('');
         }
 
