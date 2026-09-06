@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>WinKom - About Us</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #0a0a0f; font-family: 'Segoe UI', sans-serif; }
+        .glow-card { box-shadow: 0 0 30px rgba(34, 211, 238, 0.1); }
+        .sidebar { transition: transform 0.3s ease; }
+        .sidebar-open { transform: translateX(0); }
+        .sidebar-closed { transform: translateX(-100%); }
+        .fade-in { animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @media (min-width: 768px) { .sidebar-closed { transform: translateX(0); } }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div id="sidebar" class="sidebar sidebar-closed fixed top-0 left-0 h-full w-64 bg-[#12121a] border-r border-cyan-500/20 z-50 overflow-y-auto">
+        <div class="p-5">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-lg" onerror="this.style.display='none'"/>
+                    <span class="text-xl font-bold text-white">Win<span class="text-cyan-400">Kom</span></span>
+                </div>
+                <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white">✕</button>
+            </div>
+            <nav class="space-y-1">
+                <a href="index.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">📊 Dashboard</a>
+                <a href="deposit.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">💰 Deposit</a>
+                <a href="withdraw.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">🏦 Withdraw</a>
+                <a href="transactions.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">📋 My Transactions</a>
+                <a href="settings.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">⚙️ Settings</a>
+                <a href="about.html" class="block px-4 py-3 rounded-lg bg-cyan-500/20 text-cyan-400 font-medium">ℹ️ About</a>
+                <a href="support.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">🎧 Support</a>
+                <button onclick="handleLogout()" class="block w-full text-left px-4 py-3 rounded-lg text-red-400 hover:bg-red-500/10 transition">🚪 Logout</button>
+            </nav>
+        </div>
+    </div>
+
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
+    <div class="md:ml-64">
+        <header class="bg-[#12121a] border-b border-cyan-500/20 p-4 sticky top-0 z-30">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="md:hidden text-gray-300 hover:text-white">☰</button>
+                <h2 class="text-lg font-bold text-white">ℹ️ About WinKom</h2>
+            </div>
+        </header>
+
+        <main class="p-4 md:p-6 fade-in max-w-4xl mx-auto">
+            <div class="text-center mb-8">
+                <img src="logo.png" alt="WinKom Logo" class="mx-auto mb-4 w-24 h-24 rounded-2xl" onerror="this.style.display='none'"/>
+                <h1 class="text-3xl md:text-4xl font-bold text-white">Win<span class="text-cyan-400">Kom</span></h1>
+                <p class="text-gray-400 mt-2">Your Trusted Investment Partner</p>
+            </div>
+
+            <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20 mb-6">
+                <h3 class="text-xl font-bold text-white mb-3">💎 About WinKom</h3>
+                <p class="text-gray-300 leading-relaxed">
+                    WinKom is a next-generation investment platform designed to empower individuals with smart, secure, and profitable investment opportunities. Our mission is to make wealth creation accessible to everyone, regardless of their financial background.
+                </p>
+            </div>
+
+            <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20 mb-6">
+                <h3 class="text-xl font-bold text-white mb-3">🎯 Our Mission</h3>
+                <p class="text-gray-300 leading-relaxed">
+                    To democratize investment opportunities and enable financial growth for millions of users worldwide.
+                </p>
+            </div>
+
+            <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20 mb-6">
+                <h3 class="text-xl font-bold text-white mb-3">🔒 Security Standards</h3>
+                <ul class="text-gray-300 space-y-2 leading-relaxed">
+                    <li>✅ <strong>SSL Encryption:</strong> 256-bit SSL encryption on all data transmissions.</li>
+                    <li>✅ <strong>Secure Transactions:</strong> Trusted and verified payment gateways.</li>
+                    <li>✅ <strong>Data Protection:</strong> Personal information stored securely, never shared.</li>
+                    <li>✅ <strong>Google Authentication:</strong> Enhanced account security.</li>
+                    <li>✅ <strong>24/7 Monitoring:</strong> Continuous system monitoring for suspicious activity.</li>
+                </ul>
+            </div>
+
+            <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20 mb-6">
+                <h3 class="text-xl font-bold text-white mb-3">🏆 Why Choose WinKom?</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="p-4 bg-gray-800/30 rounded-lg">
+                        <p class="text-2xl mb-2">⚡</p>
+                        <p class="text-white font-semibold">Fast Processing</p>
+                        <p class="text-gray-400 text-sm">Deposits in 5-10 minutes, withdrawals in 30-60 minutes.</p>
+                    </div>
+                    <div class="p-4 bg-gray-800/30 rounded-lg">
+                        <p class="text-2xl mb-2">💰</p>
+                        <p class="text-white font-semibold">High Returns</p>
+                        <p class="text-gray-400 text-sm">Competitive daily returns on all investment plans.</p>
+                    </div>
+                    <div class="p-4 bg-gray-800/30 rounded-lg">
+                        <p class="text-2xl mb-2">🤝</p>
+                        <p class="text-white font-semibold">Referral Rewards</p>
+                        <p class="text-gray-400 text-sm">Earn ₹79 per referral, friend gets ₹59.</p>
+                    </div>
+                    <div class="p-4 bg-gray-800/30 rounded-lg">
+                        <p class="text-2xl mb-2">📱</p>
+                        <p class="text-white font-semibold">Mobile-First</p>
+                        <p class="text-gray-400 text-sm">Optimized for all devices.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center text-gray-500 text-sm pb-8">
+                <p>© 2024 WinKom. All rights reserved.</p>
+                <p>wwcollab.site</p>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+            authDomain: "winkom-da4c2.firebaseapp.com",
+            projectId: "winkom-da4c2",
+            storageBucket: "winkom-da4c2.firebasestorage.app",
+            messagingSenderId: "629229462242",
+            appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        window.toggleSidebar = function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            if (sidebar.classList.contains('sidebar-closed')) {
+                sidebar.classList.remove('sidebar-closed');
+                sidebar.classList.add('sidebar-open');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('sidebar-closed');
+                sidebar.classList.remove('sidebar-open');
+                overlay.classList.add('hidden');
+            }
+        };
+
+        window.handleLogout = async function() {
+            await signOut(auth);
+            window.location.href = 'login.html';
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>
