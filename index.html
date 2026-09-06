@@ -247,14 +247,14 @@
 
         window.shareWhatsApp = function() {
             if (!currentUserData || !currentUserData.referralCode) return;
-            const link = `https://wwcollab.site/signup.html?ref=${currentUserData.referralCode}`;
+            const link = `https://winkom.site/signup.html?ref=${currentUserData.referralCode}`;
             const msg = `🎉 Join WinKom today and get ₹59 bonus instantly! ✨\n💰 Sign up with my referral link and start earning:\n🔗 ${link}\n\n💎 WinKom - Your Trusted Investment Platform`;
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
         window.copyReferralLink = function() {
             if (!currentUserData || !currentUserData.referralCode) return;
-            const link = `https://wwcollab.site/signup.html?ref=${currentUserData.referralCode}`;
+            const link = `https://winkom.site/signup.html?ref=${currentUserData.referralCode}`;
             navigator.clipboard.writeText(link).then(() => {
                 alert('✅ Referral link copied! Share it with your friends.');
             }).catch(() => {
