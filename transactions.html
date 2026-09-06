@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>WinKom - My Transactions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #0a0a0f; font-family: 'Segoe UI', sans-serif; }
+        .glow-card { box-shadow: 0 0 30px rgba(34, 211, 238, 0.1); }
+        .glow-btn { box-shadow: 0 0 20px rgba(34, 211, 238, 0.3); transition: all 0.3s; }
+        .glow-btn:hover { box-shadow: 0 0 40px rgba(34, 211, 238, 0.6); transform: translateY(-2px); }
+        .sidebar { transition: transform 0.3s ease; }
+        .sidebar-open { transform: translateX(0); }
+        .sidebar-closed { transform: translateX(-100%); }
+        .fade-in { animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @media (min-width: 768px) { .sidebar-closed { transform: translateX(0); } }
+        .transaction-row { cursor: pointer; transition: background 0.2s; }
+        .transaction-row:hover { background: rgba(255,255,255,0.03); }
+        .transaction-details { display: none; }
+        .transaction-details.open { display: block; }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar sidebar-closed fixed top-0 left-0 h-full w-64 bg-[#12121a] border-r border-cyan-500/20 z-50 overflow-y-auto">
+        <div class="p-5">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-lg" onerror="this.style.display='none'"/>
+                    <span class="text-xl font-bold text-white">Win<span class="text-cyan-400">Kom</span></span>
+                </div>
+                <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white">✕</button>
+            </div>
+            <nav class="space-y-1">
+                <a href="index.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">📊 Dashboard</a>
+                <a href="deposit.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">💰 Deposit</a>
+                <a href="withdraw.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">🏦 Withdraw</a>
+                <a href="transactions.html" class="block px-4 py-3 rounded-lg bg-cyan-500/20 text-cyan-400 font-medium">📋 My Transactions</a>
+                <a href="settings.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">⚙️ Settings</a>
+                <a href="about.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">ℹ️ About</a>
+                <a href="support.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">🎧 Support</a>
+                <button onclick="handleLogout()" class="block w-full text-left px-4 py-3 rounded-lg text-red-400 hover:bg-red-500/10 transition">🚪 Logout</button>
+            </nav>
+        </div>
+    </div>
+
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
+    <div class="md:ml-64">
+        <header class="bg-[#12121a] border-b border-cyan-500/20 p-4 sticky top-0 z-30">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleSidebar()" class="md:hidden text-gray-300 hover:text-white">☰</button>
+                    <div>
+                        <h2 class="text-lg font-bold text-white">📋 My Transactions</h2>
+                        <p class="text-xs text-gray-400">Welcome, <span id="userName" class="text-cyan-400">Loading...</span></p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="p-4 md:p-6 fade-in">
+            <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20 mb-6">
+                <h3 class="text-lg font-bold text-white mb-4">💰 Current Balance: ₹<span id="currentBalance">0</span></h3>
+                <p class="text-gray-400 text-sm">Tap on any transaction to see details</p>
+            </div>
+
+            <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20">
+                <div id="transactionsList" class="space-y-2">
+                    <p class="text-gray-500 text-center py-8">Loading transactions...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+            authDomain: "winkom-da4c2.firebaseapp.com",
+            projectId: "winkom-da4c2",
+            storageBucket: "winkom-da4c2.firebasestorage.app",
+            messagingSenderId: "629229462242",
+            appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+
+        window.toggleSidebar = function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            if (sidebar.classList.contains('sidebar-closed')) {
+                sidebar.classList.remove('sidebar-closed');
+                sidebar.classList.add('sidebar-open');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('sidebar-closed');
+                sidebar.classList.remove('sidebar-open');
+                overlay.classList.add('hidden');
+            }
+        };
+
+        window.handleLogout = async function() {
+            await signOut(auth);
+            window.location.href = 'login.html';
+        };
+
+        window.toggleTransactionDetails = function(id) {
+            const details = document.getElementById(`details-${id}`);
+            if (details) {
+                details.classList.toggle('open');
+            }
+        };
+
+        function formatDate(date) {
+            if (!date) return 'N/A';
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        }
+
+        async function loadTransactions() {
+            if (!currentUser) return;
+            const container = document.getElementById('transactionsList');
+            container.innerHTML = '<p class="text-gray-500 text-center py-8">Loading transactions...</p>';
+
+            try {
+                // Fetch all three collections in parallel
+                const [transactionsSnap, withdrawalsSnap, depositsSnap] = await Promise.all([
+                    getDocs(query(collection(db, 'transactions'), where('uid', '==', currentUser.uid))),
+                    getDocs(query(collection(db, 'withdrawals'), where('uid', '==', currentUser.uid))),
+                    getDocs(query(collection(db, 'deposits'), where('uid', '==', currentUser.uid)))
+                ]);
+
+                let records = [];
+
+                // Add completed transactions (already recorded in 'transactions' collection)
+                transactionsSnap.forEach(d => {
+                    const data = d.data();
+                    records.push({
+                        id: d.id,
+                        type: data.type,
+                        description: data.description || data.type,
+                        amount: data.amount,
+                        balanceAfter: data.balanceAfter,
+                        createdAt: data.createdAt?.toDate?.() || new Date(),
+                        status: 'completed'
+                    });
+                });
+
+                // Add pending and rejected withdrawals from 'withdrawals' collection
+                // (approved ones are already in 'transactions' collection)
+                withdrawalsSnap.forEach(d => {
+                    const data = d.data();
+                    if (data.status === 'pending' || data.status === 'rejected') {
+                        records.push({
+                            id: d.id,
+                            type: 'withdrawal',
+                            description: data.status === 'rejected' ? 'Withdrawal Rejected' : 'Withdrawal Request',
+                            amount: -data.amount, // negative because money will be deducted
+                            balanceAfter: null, // not yet deducted / not deducted
+                            createdAt: data.createdAt?.toDate?.() || new Date(),
+                            status: data.status,
+                            rejectionReason: data.rejectionReason || null
+                        });
+                    }
+                });
+
+                // Add pending and rejected deposits from 'deposits' collection
+                // (approved ones are already in 'transactions' collection)
+                depositsSnap.forEach(d => {
+                    const data = d.data();
+                    if (data.status === 'pending' || data.status === 'rejected') {
+                        records.push({
+                            id: d.id,
+                            type: 'deposit',
+                            description: data.status === 'rejected' ? 'Deposit Rejected' : 'Deposit Request',
+                            amount: data.amount,
+                            balanceAfter: null, // not yet credited
+                            createdAt: data.createdAt?.toDate?.() || new Date(),
+                            status: data.status,
+                            rejectionReason: data.rejectionReason || null
+                        });
+                    }
+                });
+
+                // Sort by date descending (latest first)
+                records.sort((a, b) => b.createdAt - a.createdAt);
+
+                if (records.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500 text-center py-8">No transactions yet.</p>';
+                    return;
+                }
+
+                container.innerHTML = records.map(rec => {
+                    const isCredit = rec.amount >= 0;
+                    const amountClass = isCredit ? 'text-green-400' : 'text-red-400';
+                    const sign = isCredit ? '+' : '-';
+                    const absAmount = Math.abs(rec.amount);
+                    const balanceText = rec.balanceAfter != null ? `₹${rec.balanceAfter.toFixed(2)}` : '—';
+                    let statusLabel = 'Completed';
+                    let statusColor = 'bg-green-500/20 text-green-400';
+                    if (rec.status === 'pending') {
+                        statusLabel = 'Processing';
+                        statusColor = 'bg-yellow-500/20 text-yellow-400';
+                    } else if (rec.status === 'rejected') {
+                        statusLabel = 'Rejected';
+                        statusColor = 'bg-red-500/20 text-red-400';
+                    }
+
+                    let detailMessage = '';
+                    if (rec.type === 'withdrawal' && rec.status === 'pending') {
+                        detailMessage = '🔄 Your withdrawal request is being processed. It will be credited within 30-60 minutes.';
+                    } else if (rec.type === 'withdrawal' && rec.status === 'completed') {
+                        detailMessage = '✅ Your money has been credited to your UPI/Bank account.';
+                    } else if (rec.type === 'withdrawal' && rec.status === 'rejected') {
+                        detailMessage = '❌ Your withdrawal request was rejected due to a technical issue. Please try again after some time or contact customer support if the amount was already deducted.';
+                    } else if (rec.type === 'deposit' && rec.status === 'pending') {
+                        detailMessage = '⏳ Your deposit is pending approval. It will reflect within 5-10 minutes.';
+                    } else if (rec.type === 'deposit' && rec.status === 'completed') {
+                        detailMessage = '✅ Your deposit has been approved and added to your balance.';
+                    } else if (rec.type === 'deposit' && rec.status === 'rejected') {
+                        detailMessage = '❌ Your deposit was rejected because we did not receive your payment. If you have already made the payment, please contact customer support with your payment proof.';
+                    } else if (rec.type === 'investment') {
+                        detailMessage = '📈 Your investment is now active and earning returns.';
+                    } else if (rec.type === 'signup_bonus') {
+                        detailMessage = '🎉 Signup bonus credited to your wallet.';
+                    } else if (rec.type === 'referral_bonus') {
+                        detailMessage = '🤝 Referral bonus credited for friend joining.';
+                    } else {
+                        detailMessage = 'Transaction completed.';
+                    }
+
+                    return `
+                    <div class="transaction-row bg-gray-800/30 rounded-lg p-4" onclick="toggleTransactionDetails('${rec.id}')">
+                        <div class="flex flex-wrap justify-between items-center gap-2">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-white font-medium truncate">${rec.description}</p>
+                                <p class="text-gray-400 text-xs">${formatDate(rec.createdAt)}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-bold ${amountClass}">${sign}₹${absAmount.toFixed(2)}</p>
+                                <p class="text-gray-500 text-xs">Bal: ${balanceText}</p>
+                            </div>
+                            <span class="px-2 py-1 rounded-full text-xs ${statusColor}">${statusLabel}</span>
+                        </div>
+                        <div id="details-${rec.id}" class="transaction-details mt-2">
+                            <div class="bg-gray-700/20 rounded-lg p-3 text-sm text-gray-300">
+                                ${detailMessage}
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+
+            } catch (err) {
+                console.error('Error loading transactions:', err);
+                container.innerHTML = `<p class="text-red-400 text-center py-8">Error loading transactions: ${err.message}</p>`;
+            }
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            currentUser = user;
+            const userSnap = await getDoc(doc(db, 'users', user.uid));
+            if (userSnap.exists()) {
+                document.getElementById('userName').textContent = userSnap.data().name || 'User';
+                document.getElementById('currentBalance').textContent = (userSnap.data().balance || 0).toFixed(2);
+            }
+            await loadTransactions();
+        });
+    </script>
+</body>
+</html>
