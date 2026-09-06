@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>WWCollab - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #0a0a0f; font-family: 'Segoe UI', sans-serif; }
+        .glow-card { box-shadow: 0 0 30px rgba(34, 211, 238, 0.1); }
+        .glow-btn { box-shadow: 0 0 20px rgba(34, 211, 238, 0.3); transition: all 0.3s; }
+        .glow-btn:hover { box-shadow: 0 0 40px rgba(34, 211, 238, 0.6); transform: translateY(-2px); }
+        .sidebar { transition: transform 0.3s ease; }
+        .sidebar-open { transform: translateX(0); }
+        .sidebar-closed { transform: translateX(-100%); }
+        .fade-in { animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @media (min-width: 768px) { .sidebar-closed { transform: translateX(0); } }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar sidebar-closed fixed top-0 left-0 h-full w-64 bg-[#12121a] border-r border-cyan-500/20 z-50 overflow-y-auto">
+        <div class="p-5">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-lg" onerror="this.style.display='none'"/>
+                    <span class="text-xl font-bold text-white">WW<span class="text-cyan-400">Collab</span></span>
+                </div>
+                <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <nav class="space-y-1">
+                <a href="index.html" class="block px-4 py-3 rounded-lg bg-cyan-500/20 text-cyan-400 font-medium">📊 Dashboard</a>
+                <a href="deposit.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">💰 Deposit</a>
+                <a href="withdraw.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">🏦 Withdraw</a>
+                <a href="settings.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">⚙️ Settings</a>
+                <a href="about.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">ℹ️ About</a>
+                <a href="support.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">🎧 Support</a>
+                <button onclick="handleLogout()" class="block w-full text-left px-4 py-3 rounded-lg text-red-400 hover:bg-red-500/10 transition">🚪 Logout</button>
+            </nav>
+        </div>
+    </div>
+
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
+    <div class="md:ml-64">
+        <header class="bg-[#12121a] border-b border-cyan-500/20 p-4 sticky top-0 z-30">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleSidebar()" class="md:hidden text-gray-300 hover:text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    </button>
+                    <div>
+                        <h2 class="text-lg font-bold text-white">Welcome, <span id="userName" class="text-cyan-400">Loading...</span></h2>
+                        <p class="text-xs text-gray-400">Your Investment Dashboard</p>
+                    </div>
+                </div>
+                <span class="hidden sm:inline-block text-xs bg-green-500/20 text-green-400 px-3 py-1 rounded-full">● Live</span>
+            </div>
+        </header>
+
+        <main class="p-4 md:p-6 fade-in">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                <div class="bg-[#12121a] rounded-xl p-5 glow-card border border-cyan-500/20">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-400 text-sm">Total Balance</span>
+                        <span class="text-2xl">💎</span>
+                    </div>
+                    <p class="text-2xl md:text-3xl font-bold text-white">₹<span id="totalBalance">0</span></p>
+                    <p class="text-xs text-gray-500 mt-1">Available for withdrawal & investment</p>
+                </div>
+                <div class="bg-[#12121a] rounded-xl p-5 glow-card border border-purple-500/20">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-400 text-sm">Active Investments</span>
+                        <span class="text-2xl">📈</span>
+                    </div>
+                    <p class="text-2xl md:text-3xl font-bold text-white"><span id="activeInvestments">0</span></p>
+                    <p class="text-xs text-gray-500 mt-1">Plans currently earning returns</p>
+                </div>
+                <div class="bg-[#12121a] rounded-xl p-5 glow-card border border-yellow-500/20">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-400 text-sm">Referral Earnings</span>
+                        <span class="text-2xl">🤝</span>
+                    </div>
+                    <p class="text-2xl md:text-3xl font-bold text-white">₹<span id="referralEarnings">0</span></p>
+                    <p class="text-xs text-gray-500 mt-1">Total earned from referrals</p>
+                </div>
+            </div>
+
+            <!-- Referral Section -->
+            <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20 mb-8">
+                <h3 class="text-xl font-bold text-white mb-2">💰 Earn <span class="text-cyan-400">₹79</span> per Referral! Your Friend Gets <span class="text-yellow-400">₹59</span> Bonus! 💃✨👋💎</h3>
+                <p class="text-gray-300 mb-4 text-sm">Share your referral link and earn rewards when your friends join.</p>
+                <p class="text-gray-400 mb-4 text-sm">Your Referral Code: <span id="myReferralCode" class="text-cyan-400 font-bold"></span></p>
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="shareWhatsApp()" 
+                        class="glow-btn bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2 text-sm">
+                        📱 Share on WhatsApp
+                    </button>
+                    <button onclick="copyReferralLink()"
+                        class="glow-btn bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2 text-sm">
+                        🔗 Copy Referral Link
+                    </button>
+                </div>
+            </div>
+
+            <!-- Investment Plans -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-white mb-4">📊 Available Investment Plans</h3>
+                <div id="plansContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <p class="text-gray-400 col-span-full text-center py-8">Loading plans...</p>
+                </div>
+            </div>
+
+            <!-- Invest Modal -->
+            <div id="investModal" class="hidden fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
+                <div class="bg-[#12121a] rounded-xl p-6 w-full max-w-md border border-cyan-500/30">
+                    <h4 class="text-lg font-bold text-white mb-4">Invest in <span id="investPlanName" class="text-cyan-400"></span></h4>
+                    <p class="text-gray-400 text-sm mb-4">Daily Return: <span id="investPlanReturn" class="text-yellow-400"></span>% | Duration: <span id="investPlanDuration" class="text-yellow-400"></span> days</p>
+                    <div class="mb-4">
+                        <label class="text-gray-300 text-sm mb-1 block">Investment Amount (₹)</label>
+                        <input type="number" id="investAmount" min="1" placeholder="Enter amount"
+                            class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"/>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="confirmInvest()" class="glow-btn flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-3 rounded-lg">Confirm Investment</button>
+                        <button onclick="closeInvestModal()" class="bg-gray-700 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-600 transition">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, where, getDocs, Timestamp, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+            authDomain: "winkom-da4c2.firebaseapp.com",
+            projectId: "winkom-da4c2",
+            storageBucket: "winkom-da4c2.firebasestorage.app",
+            messagingSenderId: "629229462242",
+            appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let currentUserData = null;
+        let selectedPlan = null;
+        let plansList = [];
+
+        window.toggleSidebar = function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            if (sidebar.classList.contains('sidebar-closed')) {
+                sidebar.classList.remove('sidebar-closed');
+                sidebar.classList.add('sidebar-open');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('sidebar-closed');
+                sidebar.classList.remove('sidebar-open');
+                overlay.classList.add('hidden');
+            }
+        };
+
+        window.handleLogout = async function() {
+            try {
+                await signOut(auth);
+                window.location.href = 'login.html';
+            } catch (err) {
+                alert('Logout error: ' + err.message);
+            }
+        };
+
+        window.shareWhatsApp = function() {
+            if (!currentUserData || !currentUserData.referralCode) return;
+            const link = `https://wwcollab.site/signup.html?ref=${currentUserData.referralCode}`;
+            const msg = `🎉 Join WWCollab today and get ₹59 bonus instantly! ✨\n💰 Sign up with my referral link and start earning:\n🔗 ${link}\n\n💎 WWCollab - Your Trusted Investment Platform`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        };
+
+        window.copyReferralLink = function() {
+            if (!currentUserData || !currentUserData.referralCode) return;
+            const link = `https://wwcollab.site/signup.html?ref=${currentUserData.referralCode}`;
+            navigator.clipboard.writeText(link).then(() => {
+                alert('Referral link copied! Share it with your friends.');
+            }).catch(() => {
+                prompt('Copy this link:', link);
+            });
+        };
+
+        window.openInvestModal = function(planId) {
+            selectedPlan = plansList.find(p => p.id === planId);
+            if (!selectedPlan) return;
+            document.getElementById('investPlanName').textContent = selectedPlan.name;
+            document.getElementById('investPlanReturn').textContent = selectedPlan.dailyReturn;
+            document.getElementById('investPlanDuration').textContent = selectedPlan.duration;
+            document.getElementById('investAmount').value = '';
+            document.getElementById('investModal').classList.remove('hidden');
+        };
+
+        window.closeInvestModal = function() {
+            document.getElementById('investModal').classList.add('hidden');
+            selectedPlan = null;
+        };
+
+        window.confirmInvest = async function() {
+            const amount = parseFloat(document.getElementById('investAmount').value);
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount.');
+                return;
+            }
+            if (amount > (currentUserData?.balance || 0)) {
+                alert('Insufficient balance. Please deposit funds first.');
+                return;
+            }
+
+            try {
+                const newBalance = currentUserData.balance - amount;
+                await updateDoc(doc(db, 'users', currentUser.uid), { balance: newBalance });
+
+                await addDoc(collection(db, 'investments'), {
+                    uid: currentUser.uid,
+                    userName: currentUserData.name,
+                    planId: selectedPlan.id,
+                    planName: selectedPlan.name,
+                    amount: amount,
+                    dailyReturn: selectedPlan.dailyReturn,
+                    duration: selectedPlan.duration,
+                    status: 'active',
+                    createdAt: serverTimestamp()
+                });
+
+                alert('✅ Investment successful!');
+                closeInvestModal();
+                await loadUserData();
+                await loadPlans();
+            } catch (err) {
+                alert('Investment error: ' + err.message);
+            }
+        };
+
+        async function loadUserData() {
+            if (!currentUser) return;
+            const userRef = doc(db, 'users', currentUser.uid);
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+                currentUserData = userSnap.data();
+                document.getElementById('userName').textContent = currentUserData.name || 'User';
+                document.getElementById('totalBalance').textContent = (currentUserData.balance || 0).toFixed(2);
+                document.getElementById('referralEarnings').textContent = (currentUserData.totalReferralEarnings || 0).toFixed(2);
+                document.getElementById('myReferralCode').textContent = currentUserData.referralCode || 'N/A';
+                loadInvestmentCount();
+            }
+        }
+
+        async function loadInvestmentCount() {
+            if (!currentUser) return;
+            const q = query(collection(db, 'investments'), where('uid', '==', currentUser.uid), where('status', '==', 'active'));
+            const snap = await getDocs(q);
+            document.getElementById('activeInvestments').textContent = snap.size;
+        }
+
+        async function loadPlans() {
+            const container = document.getElementById('plansContainer');
+            const snap = await getDocs(collection(db, 'plans'));
+            plansList = [];
+            snap.forEach(doc => {
+                if (doc.data().status === 'active') {
+                    plansList.push({ id: doc.id, ...doc.data() });
+                }
+            });
+
+            if (plansList.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 col-span-full text-center py-8">No active investment plans available.</p>';
+                return;
+            }
+
+            container.innerHTML = plansList.map(plan => `
+                <div class="bg-[#12121a] rounded-xl p-5 glow-card border border-cyan-500/20 hover:border-cyan-400/50 transition">
+                    <h4 class="text-lg font-bold text-white mb-2">${plan.name}</h4>
+                    <p class="text-gray-400 text-sm mb-3">${plan.description || 'Investment Plan'}</p>
+                    <div class="flex justify-between mb-2">
+                        <span class="text-gray-500 text-sm">Min</span>
+                        <span class="text-white font-medium">₹${plan.minAmount || 0}</span>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span class="text-gray-500 text-sm">Max</span>
+                        <span class="text-white font-medium">₹${plan.maxAmount || 'Unlimited'}</span>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span class="text-gray-500 text-sm">Daily Return</span>
+                        <span class="text-yellow-400 font-bold">${plan.dailyReturn || 0}%</span>
+                    </div>
+                    <div class="flex justify-between mb-4">
+                        <span class="text-gray-500 text-sm">Duration</span>
+                        <span class="text-white font-medium">${plan.duration || 0} days</span>
+                    </div>
+                    <button onclick="openInvestModal('${plan.id}')" class="glow-btn w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-2 px-4 rounded-lg text-sm">Invest Now</button>
+                </div>
+            `).join('');
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            currentUser = user;
+            await loadUserData();
+            await loadPlans();
+        });
+    </script>
+</body>
+</html>
