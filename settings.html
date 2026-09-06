@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>WinKom - Settings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #0a0a0f; font-family: 'Segoe UI', sans-serif; }
+        .glow-card { box-shadow: 0 0 30px rgba(34, 211, 238, 0.1); }
+        .glow-btn { box-shadow: 0 0 20px rgba(34, 211, 238, 0.3); transition: all 0.3s; }
+        .glow-btn:hover { box-shadow: 0 0 40px rgba(34, 211, 238, 0.6); transform: translateY(-2px); }
+        .sidebar { transition: transform 0.3s ease; }
+        .sidebar-open { transform: translateX(0); }
+        .sidebar-closed { transform: translateX(-100%); }
+        @media (min-width: 768px) { .sidebar-closed { transform: translateX(0); } }
+        .fade-in { animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar sidebar-closed fixed top-0 left-0 h-full w-64 bg-[#12121a] border-r border-cyan-500/20 z-50 overflow-y-auto">
+        <div class="p-5">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-lg" onerror="this.style.display='none'"/>
+                    <span class="text-xl font-bold text-white">Win<span class="text-cyan-400">Kom</span></span>
+                </div>
+                <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white">✕</button>
+            </div>
+            <nav class="space-y-1">
+                <a href="index.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">📊 Dashboard</a>
+                <a href="deposit.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">💰 Deposit</a>
+                <a href="withdraw.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">🏦 Withdraw</a>
+                <a href="settings.html" class="block px-4 py-3 rounded-lg bg-cyan-500/20 text-cyan-400 font-medium">⚙️ Settings</a>
+                <a href="about.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">ℹ️ About</a>
+                <a href="support.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">🎧 Support</a>
+                <button onclick="handleLogout()" class="block w-full text-left px-4 py-3 rounded-lg text-red-400 hover:bg-red-500/10 transition">🚪 Logout</button>
+            </nav>
+        </div>
+    </div>
+
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
+    <div class="md:ml-64">
+        <header class="bg-[#12121a] border-b border-cyan-500/20 p-4 sticky top-0 z-30">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleSidebar()" class="md:hidden text-gray-300 hover:text-white">☰</button>
+                    <div>
+                        <h2 class="text-lg font-bold text-white">⚙️ Settings</h2>
+                        <p class="text-xs text-gray-400">Welcome, <span id="userName" class="text-cyan-400">Loading...</span></p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="p-4 md:p-6 fade-in">
+            <div class="max-w-2xl">
+                <!-- Update Name -->
+                <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20 mb-6">
+                    <h3 class="text-lg font-bold text-white mb-4">👤 Update Full Name</h3>
+                    <form id="nameForm" class="space-y-4">
+                        <div>
+                            <label class="text-gray-300 text-sm font-medium mb-1 block">Full Name</label>
+                            <input type="text" id="fullNameInput" required placeholder="Your full name"
+                                class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"/>
+                        </div>
+                        <button type="submit" class="glow-btn bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 px-6 rounded-lg">Update Name</button>
+                    </form>
+                </div>
+
+                <!-- Change Password -->
+                <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20 mb-6">
+                    <h3 class="text-lg font-bold text-white mb-4">🔒 Change Password</h3>
+                    <form id="passwordForm" class="space-y-4">
+                        <div>
+                            <label class="text-gray-300 text-sm font-medium mb-1 block">New Password</label>
+                            <input type="password" id="newPassword" required minlength="6" placeholder="Min 6 characters"
+                                class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"/>
+                        </div>
+                        <div>
+                            <label class="text-gray-300 text-sm font-medium mb-1 block">Confirm Password</label>
+                            <input type="password" id="confirmPassword" required minlength="6" placeholder="Repeat new password"
+                                class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"/>
+                        </div>
+                        <button type="submit" class="glow-btn bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 px-6 rounded-lg">Change Password</button>
+                    </form>
+                </div>
+
+                <!-- Account Info -->
+                <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-gray-700/50">
+                    <h3 class="text-lg font-bold text-white mb-4">📧 Account Information</h3>
+                    <p class="text-gray-400 text-sm">Email Address (cannot be changed)</p>
+                    <p id="userEmail" class="text-white font-medium mt-1">Loading...</p>
+                    <p class="text-gray-400 text-sm mt-4">Account Status</p>
+                    <span id="userStatus" class="inline-block mt-1 px-3 py-1 rounded-full text-xs bg-green-500/20 text-green-400">Active</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged, updatePassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+            authDomain: "winkom-da4c2.firebaseapp.com",
+            projectId: "winkom-da4c2",
+            storageBucket: "winkom-da4c2.firebasestorage.app",
+            messagingSenderId: "629229462242",
+            appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+
+        window.toggleSidebar = function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            if (sidebar.classList.contains('sidebar-closed')) {
+                sidebar.classList.remove('sidebar-closed');
+                sidebar.classList.add('sidebar-open');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('sidebar-closed');
+                sidebar.classList.remove('sidebar-open');
+                overlay.classList.add('hidden');
+            }
+        };
+
+        window.handleLogout = async function() {
+            await signOut(auth);
+            window.location.href = 'login.html';
+        };
+
+        document.getElementById('nameForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newName = document.getElementById('fullNameInput').value.trim();
+            if (!newName) {
+                alert('Please enter a name.');
+                return;
+            }
+            try {
+                await updateProfile(currentUser, { displayName: newName });
+                await updateDoc(doc(db, 'users', currentUser.uid), { name: newName });
+                document.getElementById('userName').textContent = newName;
+                alert('✅ Name updated successfully!');
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        });
+
+        document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+
+            if (newPass !== confirmPass) {
+                alert('Passwords do not match.');
+                return;
+            }
+            if (newPass.length < 6) {
+                alert('Password must be at least 6 characters.');
+                return;
+            }
+
+            try {
+                await updatePassword(currentUser, newPass);
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+                alert('✅ Password changed successfully!');
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        });
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            currentUser = user;
+            document.getElementById('userEmail').textContent = user.email;
+            document.getElementById('userName').textContent = user.displayName || 'User';
+
+            const userSnap = await getDoc(doc(db, 'users', user.uid));
+            if (userSnap.exists()) {
+                const data = userSnap.data();
+                document.getElementById('fullNameInput').value = data.name || '';
+                document.getElementById('userStatus').textContent = data.status === 'active' ? 'Active' : 'Blocked';
+                document.getElementById('userStatus').className = data.status === 'active' 
+                    ? 'inline-block mt-1 px-3 py-1 rounded-full text-xs bg-green-500/20 text-green-400'
+                    : 'inline-block mt-1 px-3 py-1 rounded-full text-xs bg-red-500/20 text-red-400';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>WinKom - Support</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #0a0a0f; font-family: 'Segoe UI', sans-serif; }
+        .glow-card { box-shadow: 0 0 30px rgba(34, 211, 238, 0.1); }
+        .glow-btn { box-shadow: 0 0 20px rgba(34, 211, 238, 0.3); transition: all 0.3s; }
+        .glow-btn:hover { box-shadow: 0 0 40px rgba(34, 211, 238, 0.6); transform: translateY(-2px); }
+        .sidebar { transition: transform 0.3s ease; }
+        .sidebar-open { transform: translateX(0); }
+        .sidebar-closed { transform: translateX(-100%); }
+        @media (min-width: 768px) { .sidebar-closed { transform: translateX(0); } }
+        .fade-in { animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div id="sidebar" class="sidebar sidebar-closed fixed top-0 left-0 h-full w-64 bg-[#12121a] border-r border-cyan-500/20 z-50 overflow-y-auto">
+        <div class="p-5">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-lg" onerror="this.style.display='none'"/>
+                    <span class="text-xl font-bold text-white">Win<span class="text-cyan-400">Kom</span></span>
+                </div>
+                <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white">✕</button>
+            </div>
+            <nav class="space-y-1">
+                <a href="index.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">📊 Dashboard</a>
+                <a href="deposit.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">💰 Deposit</a>
+                <a href="withdraw.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">🏦 Withdraw</a>
+                <a href="settings.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">⚙️ Settings</a>
+                <a href="about.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">ℹ️ About</a>
+                <a href="support.html" class="block px-4 py-3 rounded-lg bg-cyan-500/20 text-cyan-400 font-medium">🎧 Support</a>
+                <button onclick="handleLogout()" class="block w-full text-left px-4 py-3 rounded-lg text-red-400 hover:bg-red-500/10 transition">🚪 Logout</button>
+            </nav>
+        </div>
+    </div>
+
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
+    <div class="md:ml-64">
+        <header class="bg-[#12121a] border-b border-cyan-500/20 p-4 sticky top-0 z-30">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="md:hidden text-gray-300 hover:text-white">☰</button>
+                <h2 class="text-lg font-bold text-white">🎧 Customer Support</h2>
+            </div>
+        </header>
+
+        <main class="p-4 md:p-6 fade-in max-w-2xl mx-auto">
+            <!-- Support Email -->
+            <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20 mb-6 text-center">
+                <p class="text-3xl mb-3">📧</p>
+                <h3 class="text-lg font-bold text-white mb-2">Contact Us</h3>
+                <p class="text-gray-400 mb-2">For any queries, reach out to us at:</p>
+                <a href="mailto:WinKom@gmail.com" class="text-cyan-400 hover:text-cyan-300 font-semibold text-lg">WinKom@gmail.com</a>
+                <p class="text-gray-500 text-sm mt-2">We typically respond within 24 hours.</p>
+            </div>
+
+            <!-- Query Form -->
+            <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20">
+                <h3 class="text-lg font-bold text-white mb-4">📝 Submit a Query</h3>
+                <div id="successMsg" class="hidden bg-green-500/20 border border-green-500/50 text-green-300 p-3 rounded-lg mb-4 text-sm">
+                    ✅ Your query has been submitted! We will get back to you soon.
+                </div>
+                <form id="queryForm" class="space-y-4">
+                    <div>
+                        <label class="text-gray-300 text-sm font-medium mb-1 block">Name</label>
+                        <input type="text" id="qName" required placeholder="Your name"
+                            class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"/>
+                    </div>
+                    <div>
+                        <label class="text-gray-300 text-sm font-medium mb-1 block">Email</label>
+                        <input type="email" id="qEmail" required placeholder="Your email"
+                            class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"/>
+                    </div>
+                    <div>
+                        <label class="text-gray-300 text-sm font-medium mb-1 block">Subject</label>
+                        <input type="text" id="qSubject" required placeholder="Subject"
+                            class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"/>
+                    </div>
+                    <div>
+                        <label class="text-gray-300 text-sm font-medium mb-1 block">Message</label>
+                        <textarea id="qMessage" required rows="4" placeholder="Describe your issue..."
+                            class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"></textarea>
+                    </div>
+                    <button type="submit" class="glow-btn w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-3 rounded-lg">
+                        Submit Query
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+            authDomain: "winkom-da4c2.firebaseapp.com",
+            projectId: "winkom-da4c2",
+            storageBucket: "winkom-da4c2.firebasestorage.app",
+            messagingSenderId: "629229462242",
+            appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+
+        window.toggleSidebar = function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            if (sidebar.classList.contains('sidebar-closed')) {
+                sidebar.classList.remove('sidebar-closed');
+                sidebar.classList.add('sidebar-open');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('sidebar-closed');
+                sidebar.classList.remove('sidebar-open');
+                overlay.classList.add('hidden');
+            }
+        };
+
+        window.handleLogout = async function() {
+            await signOut(auth);
+            window.location.href = 'login.html';
+        };
+
+        document.getElementById('queryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('qName').value.trim();
+            const email = document.getElementById('qEmail').value.trim();
+            const subject = document.getElementById('qSubject').value.trim();
+            const message = document.getElementById('qMessage').value.trim();
+
+            try {
+                await addDoc(collection(db, 'supportQueries'), {
+                    uid: currentUser?.uid || 'guest',
+                    name: name,
+                    email: email,
+                    subject: subject,
+                    message: message,
+                    status: 'pending',
+                    createdAt: serverTimestamp()
+                });
+
+                document.getElementById('queryForm').reset();
+                document.getElementById('successMsg').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('successMsg').classList.add('hidden');
+                }, 5000);
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            currentUser = user;
+            document.getElementById('qName').value = user.displayName || '';
+            document.getElementById('qEmail').value = user.email || '';
+        });
+    </script>
+</body>
+</html>

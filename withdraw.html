@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>WinKom - Withdraw</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #0a0a0f; font-family: 'Segoe UI', sans-serif; }
+        .glow-card { box-shadow: 0 0 30px rgba(34, 211, 238, 0.1); }
+        .glow-btn { box-shadow: 0 0 20px rgba(34, 211, 238, 0.3); transition: all 0.3s; }
+        .glow-btn:hover { box-shadow: 0 0 40px rgba(34, 211, 238, 0.6); transform: translateY(-2px); }
+        .sidebar { transition: transform 0.3s ease; }
+        .sidebar-open { transform: translateX(0); }
+        .sidebar-closed { transform: translateX(-100%); }
+        @media (min-width: 768px) { .sidebar-closed { transform: translateX(0); } }
+        .fade-in { animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar sidebar-closed fixed top-0 left-0 h-full w-64 bg-[#12121a] border-r border-cyan-500/20 z-50 overflow-y-auto">
+        <div class="p-5">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-lg" onerror="this.style.display='none'"/>
+                    <span class="text-xl font-bold text-white">Win<span class="text-cyan-400">Kom</span></span>
+                </div>
+                <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white">✕</button>
+            </div>
+            <nav class="space-y-1">
+                <a href="index.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">📊 Dashboard</a>
+                <a href="deposit.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">💰 Deposit</a>
+                <a href="withdraw.html" class="block px-4 py-3 rounded-lg bg-cyan-500/20 text-cyan-400 font-medium">🏦 Withdraw</a>
+                <a href="settings.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">⚙️ Settings</a>
+                <a href="about.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">ℹ️ About</a>
+                <a href="support.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">🎧 Support</a>
+                <button onclick="handleLogout()" class="block w-full text-left px-4 py-3 rounded-lg text-red-400 hover:bg-red-500/10 transition">🚪 Logout</button>
+            </nav>
+        </div>
+    </div>
+
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
+    <div class="md:ml-64">
+        <header class="bg-[#12121a] border-b border-cyan-500/20 p-4 sticky top-0 z-30">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleSidebar()" class="md:hidden text-gray-300 hover:text-white">☰</button>
+                    <div>
+                        <h2 class="text-lg font-bold text-white">🏦 Withdrawal Portal</h2>
+                        <p class="text-xs text-gray-400">Welcome, <span id="userName" class="text-cyan-400">Loading...</span></p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="p-4 md:p-6 fade-in">
+            <!-- Balance Display -->
+            <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20 mb-4">
+                <p class="text-gray-400 text-sm">Available Balance for Withdrawal</p>
+                <p class="text-3xl md:text-4xl font-bold text-white mt-1">₹<span id="availBalance">0.00</span></p>
+            </div>
+
+            <!-- Warning Banner -->
+            <div id="warningBanner" class="hidden bg-red-500/20 border border-red-500/50 rounded-lg p-4 mb-4 text-red-300 text-sm">
+                ⚠️ Your balance is insufficient for withdrawal. Minimum withdrawal is ₹100.
+            </div>
+
+            <!-- Withdrawal Notice -->
+            <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 mb-4 text-yellow-300 text-sm">
+                ⏱️ <strong>Withdrawal processing time: 30 to 60 minutes.</strong>
+            </div>
+
+            <!-- Withdrawal Form -->
+            <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20 mb-8">
+                <h3 class="text-lg font-bold text-white mb-4">Request Withdrawal</h3>
+                <form id="withdrawForm" class="space-y-4">
+                    <div>
+                        <label class="text-gray-300 text-sm font-medium mb-1 block">Amount (₹)</label>
+                        <input type="number" id="withdrawAmount" required min="100" placeholder="Minimum ₹100"
+                            class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"/>
+                    </div>
+                    <div>
+                        <label class="text-gray-300 text-sm font-medium mb-1 block">Payment Method</label>
+                        <select id="paymentMethod"
+                            class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-400 transition">
+                            <option value="">Select method</option>
+                            <option value="upi">UPI</option>
+                            <option value="bank">Bank Account</option>
+                        </select>
+                    </div>
+
+                    <!-- UPI Fields -->
+                    <div id="upiFields" class="hidden space-y-4">
+                        <div>
+                            <label class="text-gray-300 text-sm font-medium mb-1 block">Name</label>
+                            <input type="text" id="upiName" placeholder="Your full name"
+                                class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"/>
+                        </div>
+                        <div>
+                            <label class="text-gray-300 text-sm font-medium mb-1 block">UPI ID</label>
+                            <input type="text" id="upiId" placeholder="yourname@upi"
+                                class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"/>
+                        </div>
+                    </div>
+
+                    <!-- Bank Fields -->
+                    <div id="bankFields" class="hidden space-y-4">
+                        <div>
+                            <label class="text-gray-300 text-sm font-medium mb-1 block">Account Number</label>
+                            <input type="text" id="accountNumber" placeholder="Enter account number"
+                                class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"/>
+                        </div>
+                        <div>
+                            <label class="text-gray-300 text-sm font-medium mb-1 block">Account Holder Name</label>
+                            <input type="text" id="accountHolderName" placeholder="Enter account holder name"
+                                class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"/>
+                        </div>
+                        <div>
+                            <label class="text-gray-300 text-sm font-medium mb-1 block">IFSC Code</label>
+                            <input type="text" id="ifscCode" placeholder="e.g. HDFC0001234"
+                                class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"/>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="glow-btn w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-3 rounded-lg">
+                        Submit Withdrawal Request
+                    </button>
+                </form>
+            </div>
+
+            <!-- Withdrawal History -->
+            <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20">
+                <h3 class="text-lg font-bold text-white mb-4">📋 Withdrawal History</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-gray-700 text-gray-400">
+                                <th class="py-3 px-2 text-left">Date</th>
+                                <th class="py-3 px-2 text-right">Amount</th>
+                                <th class="py-3 px-2 text-left">Method</th>
+                                <th class="py-3 px-2 text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="withdrawHistory">
+                            <tr><td colspan="4" class="text-center py-8 text-gray-500">Loading history...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, query, where, getDocs, Timestamp, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+            authDomain: "winkom-da4c2.firebaseapp.com",
+            projectId: "winkom-da4c2",
+            storageBucket: "winkom-da4c2.firebasestorage.app",
+            messagingSenderId: "629229462242",
+            appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let userData = null;
+
+        window.toggleSidebar = function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            if (sidebar.classList.contains('sidebar-closed')) {
+                sidebar.classList.remove('sidebar-closed');
+                sidebar.classList.add('sidebar-open');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('sidebar-closed');
+                sidebar.classList.remove('sidebar-open');
+                overlay.classList.add('hidden');
+            }
+        };
+
+        window.handleLogout = async function() {
+            await signOut(auth);
+            window.location.href = 'login.html';
+        };
+
+        document.getElementById('paymentMethod').addEventListener('change', function() {
+            const method = this.value;
+            document.getElementById('upiFields').classList.toggle('hidden', method !== 'upi');
+            document.getElementById('bankFields').classList.toggle('hidden', method !== 'bank');
+        });
+
+        document.getElementById('withdrawForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const method = document.getElementById('paymentMethod').value;
+
+            if (!amount || amount < 100) {
+                alert('Minimum withdrawal is ₹100.');
+                return;
+            }
+            if (amount > (userData?.balance || 0)) {
+                alert('Insufficient balance.');
+                return;
+            }
+            if (!method) {
+                alert('Please select a payment method.');
+                return;
+            }
+
+            let paymentDetails = {};
+            if (method === 'upi') {
+                const upiName = document.getElementById('upiName').value.trim();
+                const upiId = document.getElementById('upiId').value.trim();
+                if (!upiName || !upiId) {
+                    alert('Please fill in all UPI details.');
+                    return;
+                }
+                paymentDetails = { name: upiName, upiId: upiId };
+                // Save payment details
+                await updateDoc(doc(db, 'users', currentUser.uid), {
+                    savedUpi: { name: upiName, upiId: upiId }
+                });
+            } else if (method === 'bank') {
+                const accNum = document.getElementById('accountNumber').value.trim();
+                const accHolder = document.getElementById('accountHolderName').value.trim();
+                const ifsc = document.getElementById('ifscCode').value.trim();
+                if (!accNum || !accHolder || !ifsc) {
+                    alert('Please fill in all bank details.');
+                    return;
+                }
+                paymentDetails = { accountNumber: accNum, accountHolderName: accHolder, ifscCode: ifsc };
+                await updateDoc(doc(db, 'users', currentUser.uid), {
+                    savedBank: { accountNumber: accNum, accountHolderName: accHolder, ifscCode: ifsc }
+                });
+            }
+
+            try {
+                await addDoc(collection(db, 'withdrawals'), {
+                    uid: currentUser.uid,
+                    userName: userData.name,
+                    amount: amount,
+                    method: method,
+                    paymentDetails: paymentDetails,
+                    status: 'pending',
+                    createdAt: serverTimestamp()
+                });
+
+                document.getElementById('withdrawAmount').value = '';
+                alert('✅ Withdrawal request submitted! Processing time: 30-60 minutes.');
+                await loadWithdrawHistory();
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        });
+
+        async function loadWithdrawHistory() {
+            if (!currentUser) return;
+            const tableBody = document.getElementById('withdrawHistory');
+            const q = query(collection(db, 'withdrawals'), where('uid', '==', currentUser.uid));
+            const snap = await getDocs(q);
+
+            let records = [];
+            snap.forEach(d => {
+                records.push({ id: d.id, ...d.data() });
+            });
+            records.sort((a, b) => (b.createdAt?.toDate?.() || new Date()) - (a.createdAt?.toDate?.() || new Date()));
+
+            if (records.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-gray-500">No withdrawal requests yet.</td></tr>';
+                return;
+            }
+
+            tableBody.innerHTML = records.map(r => `
+                <tr class="border-b border-gray-800 hover:bg-gray-800/30 transition">
+                    <td class="py-3 px-2 text-gray-300">${r.createdAt?.toDate?.().toLocaleDateString() || 'N/A'}</td>
+                    <td class="py-3 px-2 text-right text-white font-medium">₹${r.amount.toFixed(2)}</td>
+                    <td class="py-3 px-2 text-gray-300">${r.method.toUpperCase()}</td>
+                    <td class="py-3 px-2 text-center">
+                        <span class="px-2 py-1 rounded-full text-xs ${r.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' : r.status === 'approved' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">${r.status}</span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function prefillPaymentDetails() {
+            if (userData?.savedUpi) {
+                document.getElementById('upiName').value = userData.savedUpi.name || '';
+                document.getElementById('upiId').value = userData.savedUpi.upiId || '';
+            }
+            if (userData?.savedBank) {
+                document.getElementById('accountNumber').value = userData.savedBank.accountNumber || '';
+                document.getElementById('accountHolderName').value = userData.savedBank.accountHolderName || '';
+                document.getElementById('ifscCode').value = userData.savedBank.ifscCode || '';
+            }
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            currentUser = user;
+            const userSnap = await getDoc(doc(db, 'users', user.uid));
+            if (userSnap.exists()) {
+                userData = userSnap.data();
+                document.getElementById('userName').textContent = userData.name || 'User';
+                document.getElementById('availBalance').textContent = (userData.balance || 0).toFixed(2);
+
+                if (userData.balance < 100) {
+                    document.getElementById('warningBanner').classList.remove('hidden');
+                } else {
+                    document.getElementById('warningBanner').classList.add('hidden');
+                }
+
+                await prefillPaymentDetails();
+            }
+            await loadWithdrawHistory();
+        });
+    </script>
+</body>
+</html>

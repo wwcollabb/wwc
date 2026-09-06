@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>WinKom - Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #0a0a0f; font-family: 'Segoe UI', sans-serif; }
+        .glow-card { box-shadow: 0 0 30px rgba(34, 211, 238, 0.1); }
+        .glow-btn { box-shadow: 0 0 20px rgba(34, 211, 238, 0.3); transition: all 0.3s; }
+        .glow-btn:hover { box-shadow: 0 0 40px rgba(34, 211, 238, 0.6); transform: translateY(-2px); }
+        .fade-in { animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .tab-btn { transition: all 0.3s; }
+        .tab-btn.active { background: rgba(34, 211, 238, 0.2); color: #22d3ee; border-color: #22d3ee; }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Access Denied Screen -->
+    <div id="accessDenied" class="hidden min-h-screen flex items-center justify-center p-4">
+        <div class="bg-[#12121a] rounded-2xl p-8 glow-card border border-red-500/30 text-center max-w-md">
+            <p class="text-5xl mb-4">🚫</p>
+            <h1 class="text-2xl font-bold text-red-400 mb-2">Access Denied</h1>
+            <p class="text-gray-400">Only the administrator (Admin@wk.in) can access this panel.</p>
+            <button onclick="handleLogout()" class="mt-4 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg">Logout</button>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="hidden min-h-screen fade-in">
+        <header class="bg-[#12121a] border-b border-cyan-500/20 p-4 sticky top-0 z-30">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-lg" onerror="this.style.display='none'"/>
+                    <div>
+                        <h2 class="text-lg font-bold text-white">⚡ Admin Control Panel</h2>
+                        <p class="text-xs text-gray-400">Admin@wk.in</p>
+                    </div>
+                </div>
+                <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded-lg">Logout</button>
+            </div>
+        </header>
+
+        <main class="p-4 md:p-6">
+            <!-- Tabs -->
+            <div class="flex flex-wrap gap-2 mb-6">
+                <button onclick="switchTab('deposits')" id="tabDeposits" class="tab-btn active px-4 py-2 rounded-lg border border-gray-700 text-gray-300 hover:border-cyan-400 hover:text-cyan-400">💳 Deposit Requests</button>
+                <button onclick="switchTab('withdrawals')" id="tabWithdrawals" class="tab-btn px-4 py-2 rounded-lg border border-gray-700 text-gray-300 hover:border-cyan-400 hover:text-cyan-400">🏦 Withdrawal Requests</button>
+                <button onclick="switchTab('users')" id="tabUsers" class="tab-btn px-4 py-2 rounded-lg border border-gray-700 text-gray-300 hover:border-cyan-400 hover:text-cyan-400">👥 Users</button>
+                <button onclick="switchTab('plans')" id="tabPlans" class="tab-btn px-4 py-2 rounded-lg border border-gray-700 text-gray-300 hover:border-cyan-400 hover:text-cyan-400">📊 Plans</button>
+            </div>
+
+            <!-- Deposit Requests Tab -->
+            <div id="contentDeposits" class="tab-content">
+                <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20">
+                    <h3 class="text-lg font-bold text-white mb-4">💳 Pending Deposit Requests</h3>
+                    <div id="depositList" class="space-y-3">
+                        <p class="text-gray-500">Loading deposits...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Withdrawal Requests Tab -->
+            <div id="contentWithdrawals" class="tab-content hidden">
+                <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20">
+                    <h3 class="text-lg font-bold text-white mb-4">🏦 Withdrawal Requests</h3>
+                    <div id="withdrawList" class="space-y-3">
+                        <p class="text-gray-500">Loading withdrawals...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="contentUsers" class="tab-content hidden">
+                <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20">
+                    <h3 class="text-lg font-bold text-white mb-4">👥 All Users</h3>
+                    <div id="userList" class="space-y-3">
+                        <p class="text-gray-500">Loading users...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plans Tab -->
+            <div id="contentPlans" class="tab-content hidden">
+                <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20 mb-6">
+                    <h3 class="text-lg font-bold text-white mb-4">➕ Create New Investment Plan</h3>
+                    <form id="planForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-gray-300 text-sm mb-1 block">Plan Name</label>
+                            <input type="text" id="planName" required placeholder="e.g. Starter Plan"
+                                class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"/>
+                        </div>
+                        <div>
+                            <label class="text-gray-300 text-sm mb-1 block">Daily Return (%)</label>
+                            <input type="number" id="planReturn" required step="0.1" min="0.1" placeholder="e.g. 2.5"
+                                class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"/>
+                        </div>
+                        <div>
+                            <label class="text-gray-300 text-sm mb-1 block">Min Amount (₹)</label>
+                            <input type="number" id="planMin" required min="1" placeholder="e.g. 500"
+                                class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"/>
+                        </div>
+                        <div>
+                            <label class="text-gray-300 text-sm mb-1 block">Max Amount (₹)</label>
+                            <input type="number" id="planMax" required min="1" placeholder="e.g. 10000"
+                                class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"/>
+                        </div>
+                        <div>
+                            <label class="text-gray-300 text-sm mb-1 block">Duration (Days)</label>
+                            <input type="number" id="planDuration" required min="1" placeholder="e.g. 30"
+                                class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"/>
+                        </div>
+                        <div>
+                            <label class="text-gray-300 text-sm mb-1 block">Description</label>
+                            <input type="text" id="planDesc" placeholder="Brief description"
+                                class="w-full bg-[#1a1a28] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"/>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <button type="submit" class="glow-btn w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-3 rounded-lg">
+                                Create Plan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20">
+                    <h3 class="text-lg font-bold text-white mb-4">📊 Existing Plans</h3>
+                    <div id="existingPlans" class="space-y-3">
+                        <p class="text-gray-500">Loading plans...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, query, where, getDocs, Timestamp, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+            authDomain: "winkom-da4c2.firebaseapp.com",
+            projectId: "winkom-da4c2",
+            storageBucket: "winkom-da4c2.firebasestorage.app",
+            messagingSenderId: "629229462242",
+            appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.handleLogout = async function() {
+            await signOut(auth);
+            window.location.href = 'login.html';
+        };
+
+        window.switchTab = function(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+            document.getElementById(`tab${tab.charAt(0).toUpperCase() + tab.slice(1)}`).classList.add('active');
+            document.getElementById(`content${tab.charAt(0).toUpperCase() + tab.slice(1)}`).classList.remove('hidden');
+        };
+
+        async function loadDeposits() {
+            const container = document.getElementById('depositList');
+            const snap = await getDocs(collection(db, 'deposits'));
+            let records = [];
+            snap.forEach(d => records.push({ id: d.id, ...d.data() }));
+            records.sort((a, b) => (b.createdAt?.toDate?.() || new Date()) - (a.createdAt?.toDate?.() || new Date()));
+
+            if (records.length === 0) {
+                container.innerHTML = '<p class="text-gray-500">No deposit requests.</p>';
+                return;
+            }
+
+            container.innerHTML = records.map(r => `
+                <div class="p-4 bg-gray-800/30 rounded-lg">
+                    <div class="flex flex-wrap justify-between items-center gap-2">
+                        <div>
+                            <p class="text-white font-medium">${r.userName} - ₹${r.amount.toFixed(2)}</p>
+                            <p class="text-gray-400 text-xs">UTR: ${r.utr} | ${r.createdAt?.toDate?.().toLocaleString() || 'N/A'}</p>
+                        </div>
+                        <span class="px-2 py-1 rounded-full text-xs ${r.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' : r.status === 'approved' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">${r.status}</span>
+                    </div>
+                    ${r.status === 'pending' ? `
+                    <div class="flex gap-2 mt-3">
+                        <button onclick="approveDeposit('${r.id}', '${r.uid}', ${r.amount})" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-2 px-4 rounded-lg">Approve</button>
+                        <button onclick="rejectDeposit('${r.id}')" class="bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded-lg">Reject</button>
+                    </div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        window.approveDeposit = async function(depositId, uid, amount) {
+            try {
+                await updateDoc(doc(db, 'deposits', depositId), { status: 'approved' });
+                const userRef = doc(db, 'users', uid);
+                const userSnap = await getDoc(userRef);
+                if (userSnap.exists()) {
+                    const newBalance = (userSnap.data().balance || 0) + amount;
+                    await updateDoc(userRef, { balance: newBalance });
+                }
+                alert('✅ Deposit approved and balance credited!');
+                await loadDeposits();
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        };
+
+        window.rejectDeposit = async function(depositId) {
+            try {
+                await updateDoc(doc(db, 'deposits', depositId), { status: 'rejected' });
+                alert('Deposit rejected.');
+                await loadDeposits();
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        };
+
+        async function loadWithdrawals() {
+            const container = document.getElementById('withdrawList');
+            const snap = await getDocs(collection(db, 'withdrawals'));
+            let records = [];
+            snap.forEach(d => records.push({ id: d.id, ...d.data() }));
+            records.sort((a, b) => (b.createdAt?.toDate?.() || new Date()) - (a.createdAt?.toDate?.() || new Date()));
+
+            if (records.length === 0) {
+                container.innerHTML = '<p class="text-gray-500">No withdrawal requests.</p>';
+                return;
+            }
+
+            container.innerHTML = records.map(r => {
+                const pd = r.paymentDetails || {};
+                let detailText = r.method === 'upi' ? `UPI ID: ${pd.upiId || 'N/A'}` : `Account: ${pd.accountNumber || 'N/A'} | IFSC: ${pd.ifscCode || 'N/A'} | Holder: ${pd.accountHolderName || 'N/A'}`;
+                return `
+                <div class="p-4 bg-gray-800/30 rounded-lg">
+                    <div class="flex flex-wrap justify-between items-center gap-2">
+                        <div>
+                            <p class="text-white font-medium">${r.userName} - ₹${r.amount.toFixed(2)}</p>
+                            <p class="text-gray-400 text-xs">Method: ${r.method.toUpperCase()} | ${detailText}</p>
+                            <p class="text-gray-400 text-xs">Date: ${r.createdAt?.toDate?.().toLocaleString() || 'N/A'}</p>
+                        </div>
+                        <span class="px-2 py-1 rounded-full text-xs ${r.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' : r.status === 'approved' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">${r.status}</span>
+                    </div>
+                    ${r.status === 'pending' ? `
+                    <div class="flex gap-2 mt-3">
+                        <button onclick="approveWithdrawal('${r.id}', '${r.uid}', ${r.amount})" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-2 px-4 rounded-lg">Approve</button>
+                        <button onclick="rejectWithdrawal('${r.id}')" class="bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded-lg">Reject</button>
+                    </div>` : ''}
+                </div>`;
+            }).join('');
+        }
+
+        window.approveWithdrawal = async function(withdrawId, uid, amount) {
+            try {
+                await updateDoc(doc(db, 'withdrawals', withdrawId), { status: 'approved' });
+                const userRef = doc(db, 'users', uid);
+                const userSnap = await getDoc(userRef);
+                if (userSnap.exists()) {
+                    const newBalance = Math.max(0, (userSnap.data().balance || 0) - amount);
+                    await updateDoc(userRef, { balance: newBalance });
+                }
+                alert('✅ Withdrawal approved and balance deducted!');
+                await loadWithdrawals();
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        };
+
+        window.rejectWithdrawal = async function(withdrawId) {
+            try {
+                await updateDoc(doc(db, 'withdrawals', withdrawId), { status: 'rejected' });
+                alert('Withdrawal rejected.');
+                await loadWithdrawals();
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        };
+
+        async function loadUsers() {
+            const container = document.getElementById('userList');
+            const snap = await getDocs(collection(db, 'users'));
+            let users = [];
+            snap.forEach(d => users.push({ id: d.id, ...d.data() }));
+
+            if (users.length === 0) {
+                container.innerHTML = '<p class="text-gray-500">No users found.</p>';
+                return;
+            }
+
+            container.innerHTML = users.map(u => `
+                <div class="p-4 bg-gray-800/30 rounded-lg flex flex-wrap justify-between items-center gap-2">
+                    <div>
+                        <p class="text-white font-medium">${u.name} - <span class="text-gray-400 text-sm">${u.email}</span></p>
+                        <p class="text-gray-400 text-xs">Balance: ₹${(u.balance || 0).toFixed(2)} | Referrals: ${u.referralCount || 0}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-2 py-1 rounded-full text-xs ${u.status === 'active' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">${u.status || 'active'}</span>
+                        <button onclick="toggleUserStatus('${u.id}', '${u.status === 'active' ? 'blocked' : 'active'}')"
+                            class="${u.status === 'active' ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'} text-white text-sm font-bold py-2 px-4 rounded-lg">
+                            ${u.status === 'active' ? 'Block' : 'Activate'}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.toggleUserStatus = async function(userId, newStatus) {
+            try {
+                await updateDoc(doc(db, 'users', userId), { status: newStatus });
+                alert(`User ${newStatus === 'active' ? 'activated' : 'blocked'} successfully!`);
+                await loadUsers();
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        };
+
+        document.getElementById('planForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('planName').value.trim();
+            const dailyReturn = parseFloat(document.getElementById('planReturn').value);
+            const minAmount = parseFloat(document.getElementById('planMin').value);
+            const maxAmount = parseFloat(document.getElementById('planMax').value);
+            const duration = parseInt(document.getElementById('planDuration').value);
+            const description = document.getElementById('planDesc').value.trim();
+
+            try {
+                await addDoc(collection(db, 'plans'), {
+                    name: name,
+                    dailyReturn: dailyReturn,
+                    minAmount: minAmount,
+                    maxAmount: maxAmount,
+                    duration: duration,
+                    description: description || 'Investment Plan',
+                    status: 'active',
+                    createdAt: serverTimestamp()
+                });
+                document.getElementById('planForm').reset();
+                alert('✅ Plan created successfully!');
+                await loadPlans();
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        });
+
+        window.deletePlan = async function(planId) {
+            if (!confirm('Are you sure you want to delete this plan?')) return;
+            try {
+                await deleteDoc(doc(db, 'plans', planId));
+                alert('Plan deleted!');
+                await loadPlans();
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        };
+
+        async function loadPlans() {
+            const container = document.getElementById('existingPlans');
+            const snap = await getDocs(collection(db, 'plans'));
+            let plans = [];
+            snap.forEach(d => plans.push({ id: d.id, ...d.data() }));
+
+            if (plans.length === 0) {
+                container.innerHTML = '<p class="text-gray-500">No plans created yet.</p>';
+                return;
+            }
+
+            container.innerHTML = plans.map(p => `
+                <div class="p-4 bg-gray-800/30 rounded-lg flex flex-wrap justify-between items-center gap-2">
+                    <div>
+                        <p class="text-white font-medium">${p.name} - ${p.dailyReturn}% daily</p>
+                        <p class="text-gray-400 text-xs">₹${p.minAmount} to ₹${p.maxAmount} | ${p.duration} days | ${p.description || ''}</p>
+                    </div>
+                    <button onclick="deletePlan('${p.id}')" class="bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded-lg">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            if (user.email !== 'Admin@wk.in') {
+                document.getElementById('accessDenied').classList.remove('hidden');
+                document.getElementById('adminPanel').classList.add('hidden');
+                return;
+            }
+
+            document.getElementById('accessDenied').classList.add('hidden');
+            document.getElementById('adminPanel').classList.remove('hidden');
+
+            await loadDeposits();
+            await loadWithdrawals();
+            await loadUsers();
+            await loadPlans();
+        });
+    </script>
+</body>
+</html>
