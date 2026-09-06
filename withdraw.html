@@ -57,20 +57,20 @@
         </header>
 
         <main class="p-4 md:p-6 fade-in">
-            <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20 mb-4">
+            <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20 mb-4 max-w-2xl mx-auto">
                 <p class="text-gray-400 text-sm">Available Balance for Withdrawal</p>
                 <p class="text-3xl md:text-4xl font-bold text-white mt-1">₹<span id="availBalance">0.00</span></p>
             </div>
 
-            <div id="warningBanner" class="hidden bg-red-500/20 border border-red-500/50 rounded-lg p-4 mb-4 text-red-300 text-sm">
+            <div id="warningBanner" class="hidden bg-red-500/20 border border-red-500/50 rounded-lg p-4 mb-4 text-red-300 text-sm max-w-2xl mx-auto">
                 ⚠️ Your balance is insufficient for withdrawal. Minimum withdrawal is ₹100.
             </div>
 
-            <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 mb-4 text-yellow-300 text-sm">
+            <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 mb-4 text-yellow-300 text-sm max-w-2xl mx-auto">
                 ⏱️ <strong>Withdrawal processing time: 30 to 60 minutes.</strong>
             </div>
 
-            <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20 mb-8">
+            <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20 max-w-2xl mx-auto">
                 <h3 class="text-lg font-bold text-white mb-4">Request Withdrawal</h3>
                 <form id="withdrawForm" class="space-y-4">
                     <div>
@@ -130,32 +130,13 @@
                     </button>
                 </form>
             </div>
-
-            <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20">
-                <h3 class="text-lg font-bold text-white mb-4">📋 Withdrawal History</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="border-b border-gray-700 text-gray-400">
-                                <th class="py-3 px-2 text-left">Date</th>
-                                <th class="py-3 px-2 text-right">Amount</th>
-                                <th class="py-3 px-2 text-left">Method</th>
-                                <th class="py-3 px-2 text-center">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="withdrawHistory">
-                            <tr><td colspan="4" class="text-center py-8 text-gray-500">Loading history...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
         </main>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, addDoc, collection, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
@@ -261,52 +242,10 @@
                 document.getElementById('withdrawAmount').value = '';
                 document.getElementById('withdrawCode').value = '';
                 alert('✅ Withdrawal request submitted! Processing time: 30-60 minutes.');
-                await loadWithdrawHistory();
             } catch (err) {
                 alert('Error: ' + err.message);
             }
         });
-
-        async function loadWithdrawHistory() {
-            if (!currentUser) return;
-            const tableBody = document.getElementById('withdrawHistory');
-            const q = query(collection(db, 'withdrawals'), where('uid', '==', currentUser.uid));
-            const snap = await getDocs(q);
-
-            let records = [];
-            snap.forEach(d => {
-                records.push({ id: d.id, ...d.data() });
-            });
-            records.sort((a, b) => (b.createdAt?.toDate?.() || new Date()) - (a.createdAt?.toDate?.() || new Date()));
-
-            if (records.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-gray-500">No withdrawal requests yet.</td></tr>';
-                return;
-            }
-
-            tableBody.innerHTML = records.map(r => {
-                let statusLabel, statusClass;
-                if (r.status === 'pending') {
-                    statusLabel = 'Processing';
-                    statusClass = 'bg-yellow-500/20 text-yellow-400';
-                } else if (r.status === 'approved') {
-                    statusLabel = 'Success';
-                    statusClass = 'bg-green-500/20 text-green-400';
-                } else {
-                    statusLabel = 'Rejected';
-                    statusClass = 'bg-red-500/20 text-red-400';
-                }
-                return `
-                <tr class="border-b border-gray-800 hover:bg-gray-800/30 transition">
-                    <td class="py-3 px-2 text-gray-300 text-xs">${r.createdAt?.toDate?.().toLocaleDateString() || 'N/A'}</td>
-                    <td class="py-3 px-2 text-right text-white font-medium">₹${r.amount.toFixed(2)}</td>
-                    <td class="py-3 px-2 text-gray-300">${r.method.toUpperCase()}</td>
-                    <td class="py-3 px-2 text-center">
-                        <span class="px-2 py-1 rounded-full text-xs ${statusClass}">${statusLabel}</span>
-                    </td>
-                </tr>`;
-            }).join('');
-        }
 
         async function prefillPaymentDetails() {
             if (userData?.savedUpi) {
@@ -340,7 +279,6 @@
 
                 await prefillPaymentDetails();
             }
-            await loadWithdrawHistory();
         });
     </script>
 </body>
