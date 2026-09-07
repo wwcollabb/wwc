@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Page Not Found - WinKom</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: #0a0a0f;
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .mesh-bg {
+            background-color: #0a0a0f;
+            background-image:
+                radial-gradient(ellipse 600px 400px at 15% -5%, rgba(34,211,238,0.08), transparent 60%),
+                radial-gradient(ellipse 500px 400px at 100% 10%, rgba(168,85,247,0.06), transparent 55%);
+        }
+        .glow-card {
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.1);
+        }
+        .glow-btn {
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+            transition: all 0.3s;
+        }
+        .glow-btn:hover {
+            box-shadow: 0 0 40px rgba(34, 211, 238, 0.6);
+            transform: translateY(-2px);
+        }
+        .glow-btn:active {
+            transform: scale(0.97);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen mesh-bg flex items-center justify-center p-4">
+    <div class="text-center max-w-lg fade-in">
+        <div class="bg-[#12121a] rounded-3xl p-8 md:p-12 glow-card border border-cyan-500/20">
+            <div class="text-6xl mb-6">🚧</div>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-3">
+                <span class="text-cyan-400">404</span>
+            </h1>
+            <p class="text-xl font-semibold text-gray-200 mb-2">Page Not Found</p>
+            <p class="text-gray-400 text-sm mb-8">We couldn't find what you were looking for. Maybe the page moved or never existed.</p>
+            
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                <button onclick="window.location.href='index.html'"
+                    class="glow-btn bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-3 px-6 rounded-xl">
+                    🏠 Go to Dashboard
+                </button>
+                <button onclick="history.back()"
+                    class="bg-gray-700 text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-600 transition">
+                    ← Go Back
+                </button>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-white/5">
+                <p class="text-xs text-gray-500">© 2026 WinKom. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
