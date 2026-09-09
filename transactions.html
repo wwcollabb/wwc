@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>WinKom - My Transactions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #0a0a0f; font-family: 'Segoe UI', sans-serif; }
+        .glow-card { box-shadow: 0 0 30px rgba(34, 211, 238, 0.1); }
+        .glow-btn { box-shadow: 0 0 20px rgba(34, 211, 238, 0.3); transition: all 0.3s; }
+        .glow-btn:hover { box-shadow: 0 0 40px rgba(34, 211, 238, 0.6); transform: translateY(-2px); }
+        .sidebar { transition: transform 0.3s ease; }
+        .sidebar-open { transform: translateX(0); }
+        .sidebar-closed { transform: translateX(-100%); }
+        .fade-in { animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @media (min-width: 768px) { .sidebar-closed { transform: translateX(0); } }
+        .transaction-row { cursor: pointer; transition: background 0.2s; }
+        .transaction-row:hover { background: rgba(255,255,255,0.03); }
+        .transaction-details { display: none; }
+        .transaction-details.open { display: block; }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar sidebar-closed fixed top-0 left-0 h-full w-64 bg-[#12121a] border-r border-cyan-500/20 z-50 overflow-y-auto">
+        <div class="p-5">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-lg" onerror="this.style.display='none'"/>
+                    <span class="text-xl font-bold text-white">Win<span class="text-cyan-400">Kom</span></span>
+                </div>
+                <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white">✕</button>
+            </div>
+            <nav class="space-y-1">
+                <a href="index.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">📊 Dashboard</a>
+                <a href="deposit.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">💰 Deposit</a>
+                <a href="withdraw.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">🏦 Withdraw</a>
+                <a href="transactions.html" class="block px-4 py-3 rounded-lg bg-cyan-500/20 text-cyan-400 font-medium">📋 My Transactions</a>
+                <a href="settings.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">⚙️ Settings</a>
+                <a href="about.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">ℹ️ About</a>
+                <a href="support.html" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition">🎧 Support</a>
+                <button onclick="handleLogout()" class="block w-full text-left px-4 py-3 rounded-lg text-red-400 hover:bg-red-500/10 transition">🚪 Logout</button>
+            </nav>
+        </div>
+    </div>
+
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
+    <div class="md:ml-64">
+        <header class="bg-[#12121a] border-b border-cyan-500/20 p-4 sticky top-0 z-30">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleSidebar()" class="md:hidden text-gray-300 hover:text-white">☰</button>
+                    <div>
+                        <h2 class="text-lg font-bold text-white">📋 My Transactions</h2>
+                        <p class="text-xs text-gray-400">Welcome, <span id="userName" class="text-cyan-400">Loading...</span></p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="p-4 md:p-6 fade-in">
+            <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20 mb-6">
+                <h3 class="text-lg font-bold text-white mb-4">💰 Current Balance: ₹<span id="currentBalance">0</span></h3>
+                <p class="text-gray-400 text-sm">Tap on any transaction to see details</p>
+            </div>
+
+            <div id="depositWarningBanner" class="hidden bg-red-500/10 border border-red-500/40 rounded-xl p-4 mb-6 text-red-300 text-sm flex items-start gap-2">
+                <span>⚠️</span>
+                <span id="depositWarningText">Your last 5 withdrawal requests have failed. Minimum ₹1 deposit required, only then withdrawal will work.</span>
+            </div>
+
+            <div class="bg-[#12121a] rounded-xl p-6 glow-card border border-cyan-500/20">
+                <div id="transactionsList" class="space-y-2">
+                    <p class="text-gray-500 text-center py-8">Loading transactions...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, query, where, getDocs, updateDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+            authDomain: "winkom-da4c2.firebaseapp.com",
+            projectId: "winkom-da4c2",
+            storageBucket: "winkom-da4c2.firebasestorage.app",
+            messagingSenderId: "629229462242",
+            appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+
+        window.toggleSidebar = function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            if (sidebar.classList.contains('sidebar-closed')) {
+                sidebar.classList.remove('sidebar-closed');
+                sidebar.classList.add('sidebar-open');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('sidebar-closed');
+                sidebar.classList.remove('sidebar-open');
+                overlay.classList.add('hidden');
+            }
+        };
+
+        window.handleLogout = async function() {
+            await signOut(auth);
+            window.location.href = 'login.html';
+        };
+
+        window.toggleTransactionDetails = function(id) {
+            const details = document.getElementById(`details-${id}`);
+            if (details) {
+                details.classList.toggle('open');
+            }
+        };
+
+        function formatDate(date) {
+            if (!date) return 'N/A';
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        }
+
+        // Process matured investments (same as dashboard)
+        async function processMaturedInvestments() {
+            if (!currentUser) return;
+            const q = query(
+                collection(db, 'investments'),
+                where('uid', '==', currentUser.uid),
+                where('status', '==', 'active')
+            );
+            const snap = await getDocs(q);
+            const now = new Date();
+            let userBal = (await getDoc(doc(db, 'users', currentUser.uid))).data()?.balance || 0;
+            let changed = false;
+
+            for (const docSnap of snap.docs) {
+                const inv = docSnap.data();
+                const endDate = inv.endDate?.toDate?.() || new Date(inv.createdAt.toDate().getTime() + inv.duration * 86400000);
+                if (endDate <= now) {
+                    const maturity = inv.maturityAmount || (inv.amount + inv.amount * (inv.dailyReturn / 100) * inv.duration);
+                    userBal += maturity;
+                    await updateDoc(doc(db, 'users', currentUser.uid), { balance: userBal });
+                    await updateDoc(doc(db, 'investments', docSnap.id), { status: 'completed', completedAt: serverTimestamp() });
+                    await addDoc(collection(db, 'transactions'), {
+                        uid: currentUser.uid,
+                        type: 'investment_maturity',
+                        description: `Maturity profit from ${inv.planName}`,
+                        amount: maturity,
+                        balanceAfter: userBal,
+                        createdAt: serverTimestamp()
+                    });
+                    changed = true;
+                }
+            }
+            if (changed) {
+                document.getElementById('currentBalance').textContent = userBal.toFixed(2);
+            }
+        }
+
+        async function loadTransactions() {
+            if (!currentUser) return;
+            const container = document.getElementById('transactionsList');
+            container.innerHTML = '<p class="text-gray-500 text-center py-8">Loading transactions...</p>';
+
+            try {
+                // Process matured investments first
+                await processMaturedInvestments();
+
+                // Fetch all three collections in parallel
+                const [transactionsSnap, withdrawalsSnap, depositsSnap] = await Promise.all([
+                    getDocs(query(collection(db, 'transactions'), where('uid', '==', currentUser.uid))),
+                    getDocs(query(collection(db, 'withdrawals'), where('uid', '==', currentUser.uid))),
+                    getDocs(query(collection(db, 'deposits'), where('uid', '==', currentUser.uid)))
+                ]);
+
+                // --- Auto-refund rejected withdrawals (if not already refunded) ---
+                const userRef = doc(db, 'users', currentUser.uid);
+                const userSnap = await getDoc(userRef);
+                let userBal = userSnap.exists() ? (userSnap.data().balance || 0) : 0;
+
+                for (const w of withdrawalsSnap.docs) {
+                    const data = w.data();
+                    if (data.status === 'rejected' && !data.refunded) {
+                        const refundAmount = data.amount;
+                        userBal += refundAmount;
+                        await updateDoc(userRef, { balance: userBal });
+                        await updateDoc(doc(db, 'withdrawals', w.id), { 
+                            refunded: true,
+                            balanceAfter: userBal  // update balance after refund
+                        });
+                    }
+                }
+
+                // Update current balance display
+                document.getElementById('currentBalance').textContent = userBal.toFixed(2);
+
+                // Build array of all records
+                let records = [];
+
+                // Add completed transactions from 'transactions' collection
+                transactionsSnap.forEach(d => {
+                    const data = d.data();
+                    records.push({
+                        id: d.id,
+                        type: data.type,
+                        description: data.description || data.type,
+                        amount: data.amount,
+                        createdAt: data.createdAt?.toDate?.() || new Date(),
+                        status: data.status || 'completed',
+                        balanceAfter: data.balanceAfter || null,
+                        transactionId: data.transactionId || null
+                    });
+                });
+
+                // Add ALL withdrawals from 'withdrawals' collection
+                withdrawalsSnap.forEach(d => {
+                    const data = d.data();
+                    let desc;
+                    if (data.status === 'rejected') desc = 'Withdrawal Failed';
+                    else if (data.status === 'approved') desc = 'Withdrawal Successful';
+                    else desc = 'Withdrawal Request';
+
+                    records.push({
+                        id: d.id,
+                        type: 'withdrawal',
+                        description: desc,
+                        amount: -data.amount, // negative
+                        createdAt: data.createdAt?.toDate?.() || new Date(),
+                        status: data.status, // 'pending', 'approved', 'rejected'
+                        refunded: data.refunded || false,
+                        balanceAfter: data.balanceAfter || null,
+                        transactionId: data.transactionId || null
+                    });
+                });
+
+                // Add ONLY pending/rejected deposits from 'deposits' collection
+                depositsSnap.forEach(d => {
+                    const data = d.data();
+                    if (data.status === 'pending' || data.status === 'rejected') {
+                        let desc;
+                        if (data.status === 'rejected') desc = 'Deposit Failed';
+                        else desc = 'Deposit Request';
+
+                        records.push({
+                            id: d.id,
+                            type: 'deposit',
+                            description: desc,
+                            amount: data.amount,
+                            createdAt: data.createdAt?.toDate?.() || new Date(),
+                            status: data.status, // 'pending', 'rejected'
+                            balanceAfter: null, // not credited yet
+                            transactionId: data.utr || data.transactionId || null
+                        });
+                    }
+                });
+
+                // Sort by date descending (latest first)
+                records.sort((a, b) => b.createdAt - a.createdAt);
+
+                // Compute balanceAfter for each record (newest to oldest)
+                let currentBal = userBal;
+                records.forEach(rec => {
+                    rec.balanceAfter = currentBal;
+
+                    let effect = 0;
+                    if (rec.type === 'deposit' && (rec.status === 'pending' || rec.status === 'rejected')) {
+                        effect = 0;
+                    } else if (rec.type === 'withdrawal') {
+                        if (rec.status === 'rejected' && rec.refunded) {
+                            effect = 0;
+                        } else {
+                            effect = rec.amount; // negative
+                        }
+                    } else {
+                        effect = rec.amount;
+                    }
+                    currentBal = currentBal - effect;
+                });
+
+                // Warning banner: Check if last 5 withdrawal attempts are all failed
+                const withdrawalRecords = records.filter(r => r.type === 'withdrawal').slice(0, 5);
+                const allFailed = withdrawalRecords.length > 0 && withdrawalRecords.every(r => r.status === 'rejected');
+
+                const bannerEl = document.getElementById('depositWarningBanner');
+                if (bannerEl) bannerEl.classList.toggle('hidden', !allFailed);
+                if (allFailed) {
+                    const bannerText = document.getElementById('depositWarningText');
+                    bannerText.textContent = `Your last ${withdrawalRecords.length} withdrawal requests have failed. Minimum ₹1 deposit required, only then withdrawal will work.`;
+                }
+
+                if (records.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500 text-center py-8">No transactions yet.</p>';
+                    return;
+                }
+
+                // Render records with professional descriptions and badges
+                container.innerHTML = records.map(rec => {
+                    // Override description for approved types to ensure professional wording
+                    if (rec.type === 'deposit' && rec.status === 'approved') {
+                        rec.description = 'Deposit Credited';
+                    } else if (rec.type === 'withdrawal' && rec.status === 'approved') {
+                        rec.description = 'Withdrawal Successful';
+                    } else if (rec.type === 'investment') {
+                        rec.description = 'Investment';
+                    } else if (rec.type === 'investment_maturity') {
+                        rec.description = 'Maturity Profit';
+                    } else if (rec.type === 'referral_bonus') {
+                        rec.description = 'Referral Bonus';
+                    } else if (rec.type === 'signup_bonus') {
+                        rec.description = 'Signup Bonus';
+                    }
+
+                    const isCredit = rec.amount >= 0;
+                    const amountClass = isCredit ? 'text-green-400' : 'text-red-400';
+                    const sign = isCredit ? '+' : '-';
+                    const absAmount = Math.abs(rec.amount);
+                    const balanceText = rec.balanceAfter != null ? `₹${rec.balanceAfter.toFixed(2)}` : '—';
+                    
+                    // Determine status label & color based on type & status
+                    let statusLabel = '';
+                    let statusColor = '';
+                    
+                    if (rec.status === 'pending') {
+                        statusLabel = 'Processing';
+                        statusColor = 'bg-yellow-500/20 text-yellow-400';
+                    } else if (rec.status === 'rejected') {
+                        statusLabel = 'Failed';
+                        statusColor = 'bg-red-500/20 text-red-400';
+                    } else if (rec.status === 'approved' || rec.status === 'success') {
+                        // Map based on type
+                        switch (rec.type) {
+                            case 'deposit':
+                                statusLabel = 'Credited';
+                                statusColor = 'bg-green-500/20 text-green-400';
+                                break;
+                            case 'withdrawal':
+                                statusLabel = 'Success';
+                                statusColor = 'bg-green-500/20 text-green-400';
+                                break;
+                            case 'investment':
+                                statusLabel = 'Invested';
+                                statusColor = 'bg-blue-500/20 text-blue-400';
+                                break;
+                            case 'investment_maturity':
+                                statusLabel = 'Earned';
+                                statusColor = 'bg-emerald-500/20 text-emerald-400';
+                                break;
+                            case 'signup_bonus':
+                            case 'referral_bonus':
+                                statusLabel = 'Bonus';
+                                statusColor = 'bg-cyan-500/20 text-cyan-400';
+                                break;
+                            default:
+                                statusLabel = 'Completed';
+                                statusColor = 'bg-green-500/20 text-green-400';
+                        }
+                    } else {
+                        // fallback
+                        statusLabel = 'Completed';
+                        statusColor = 'bg-green-500/20 text-green-400';
+                    }
+
+                    let detailMessage = '';
+                    if (rec.type === 'withdrawal') {
+                        if (rec.status === 'pending') {
+                            detailMessage = '🔄 Your withdrawal request is being processed. The amount has been deducted from your wallet.';
+                            if (rec.transactionId) detailMessage += ` Transaction ID: ${rec.transactionId}`;
+                        } else if (rec.status === 'approved') {
+                            detailMessage = '✅ Your withdrawal has been successfully processed and credited to your account.';
+                            if (rec.transactionId) detailMessage += ` Transaction ID: ${rec.transactionId}`;
+                        } else if (rec.status === 'rejected') {
+                            if (rec.refunded) {
+                                detailMessage = '❌ Your withdrawal request was not successful, but the amount has been refunded to your wallet.';
+                            } else {
+                                detailMessage = '❌ Your withdrawal request was not successful. The refund will be processed shortly.';
+                            }
+                        }
+                    } else if (rec.type === 'deposit') {
+                        if (rec.status === 'pending') {
+                            detailMessage = '⏳ Your deposit is under review. It will be credited once confirmed.';
+                            if (rec.transactionId) detailMessage += ` Transaction ID: ${rec.transactionId}`;
+                        } else if (rec.status === 'approved') {
+                            detailMessage = '✅ Your deposit has been credited to your wallet.';
+                            if (rec.transactionId) detailMessage += ` Transaction ID: ${rec.transactionId}`;
+                        } else if (rec.status === 'rejected') {
+                            detailMessage = '❌ Your deposit could not be processed. If you have made a payment, please contact support.';
+                        }
+                    } else if (rec.type === 'investment') {
+                        detailMessage = '📈 Your investment is now active and will earn returns.';
+                    } else if (rec.type === 'investment_maturity') {
+                        detailMessage = '🎉 Your investment has matured and the profit has been credited to your wallet.';
+                    } else if (rec.type === 'signup_bonus') {
+                        detailMessage = '🎉 Signup bonus credited to your wallet.';
+                    } else if (rec.type === 'referral_bonus') {
+                        detailMessage = '🤝 Referral bonus credited to your wallet.';
+                    } else {
+                        detailMessage = 'Transaction completed successfully.';
+                    }
+
+                    return `
+                    <div class="transaction-row bg-gray-800/30 rounded-lg p-4" onclick="toggleTransactionDetails('${rec.id}')">
+                        <div class="flex flex-wrap justify-between items-center gap-2">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-white font-medium truncate">${rec.description}</p>
+                                <p class="text-gray-400 text-xs">${formatDate(rec.createdAt)}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-bold ${amountClass}">${sign}₹${absAmount.toFixed(2)}</p>
+                                <p class="text-gray-500 text-xs">Bal: ${balanceText}</p>
+                            </div>
+                            <span class="px-2 py-1 rounded-full text-xs ${statusColor}">${statusLabel}</span>
+                        </div>
+                        <div id="details-${rec.id}" class="transaction-details mt-2">
+                            <div class="bg-gray-700/20 rounded-lg p-3 text-sm text-gray-300">
+                                ${detailMessage}
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+
+            } catch (err) {
+                console.error('Error loading transactions:', err);
+                container.innerHTML = `<p class="text-red-400 text-center py-8">Error loading transactions: ${err.message}</p>`;
+            }
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            currentUser = user;
+            const userSnap = await getDoc(doc(db, 'users', user.uid));
+            if (userSnap.exists()) {
+                document.getElementById('userName').textContent = userSnap.data().name || 'User';
+                document.getElementById('currentBalance').textContent = (userSnap.data().balance || 0).toFixed(2);
+            }
+            await loadTransactions();
+        });
+    </script>
+</body>
+</html>
