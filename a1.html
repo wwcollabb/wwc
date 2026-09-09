@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>WinKom Admin Pro</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            background: #0b0d14;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        .glass {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+            border: 1px solid rgba(34, 211, 238, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+        }
+        .glow-btn {
+            transition: all .3s;
+            box-shadow: 0 0 12px rgba(34, 211, 238, 0.2);
+        }
+        .glow-btn:hover {
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.4);
+            transform: translateY(-2px);
+        }
+        .table-card {
+            border-radius: 14px;
+            overflow: hidden;
+            background: #111321;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .table-card table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-card th {
+            background: #151928;
+            padding: 12px 14px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #7b8496;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            letter-spacing: .5px;
+        }
+        .table-card td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 13px;
+            color: #c1c8d4;
+        }
+        .table-card tbody tr {
+            transition: background .2s;
+            cursor: pointer;
+        }
+        .table-card tbody tr:hover {
+            background: rgba(34, 211, 238, 0.04);
+        }
+        .badge {
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .3px;
+            text-transform: uppercase;
+        }
+        .badge-pending {
+            background: rgba(255, 184, 0, 0.15);
+            color: #ffb800;
+        }
+        .badge-approved {
+            background: rgba(0, 200, 130, 0.15);
+            color: #00c882;
+        }
+        .badge-rejected {
+            background: rgba(255, 80, 80, 0.15);
+            color: #ff5050;
+        }
+        .badge-active {
+            background: rgba(0, 200, 130, 0.15);
+            color: #00c882;
+        }
+        .badge-blocked {
+            background: rgba(255, 80, 80, 0.15);
+            color: #ff5050;
+        }
+        .badge-completed {
+            background: rgba(80, 130, 255, 0.15);
+            color: #5082ff;
+        }
+        .badge-cancelled {
+            background: rgba(255, 80, 80, 0.15);
+            color: #ff5050;
+        }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-box {
+            background: #12141d;
+            border: 1px solid rgba(34, 211, 238, 0.15);
+            border-radius: 20px;
+            max-width: 720px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 28px;
+            box-shadow: 0 0 60px rgba(34, 211, 238, 0.1);
+        }
+        .modal-box h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .detail-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 10px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .detail-item label {
+            font-size: 10px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            display: block;
+            margin-bottom: 3px;
+        }
+        .detail-item span {
+            font-size: 14px;
+            color: #e2e8f0;
+            word-break: break-all;
+            font-weight: 500;
+        }
+        .stat-card {
+            padding: 18px;
+            border-radius: 16px;
+            background: #111321;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+        .stat-card .value {
+            font-size: 30px;
+            font-weight: 800;
+            color: #fff;
+            margin: 6px 0 2px;
+        }
+        .stat-card .label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6b7280;
+        }
+        .stat-card .icon {
+            font-size: 22px;
+        }
+        .nav-tab {
+            padding: 10px 16px;
+            border-radius: 12px;
+            border: none;
+            background: transparent;
+            color: #7b8496;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all .3s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .nav-tab.active {
+            background: rgba(34, 211, 238, 0.1);
+            color: #22d3ee;
+            border: 1px solid rgba(34, 211, 238, 0.2);
+        }
+        .nav-tab:hover {
+            color: #22d3ee;
+            background: rgba(34, 211, 238, 0.05);
+        }
+        .search-input {
+            background: #151928;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 10px 14px;
+            color: #e2e8f0;
+            font-size: 14px;
+            outline: none;
+            transition: border .3s;
+            width: 100%;
+        }
+        .search-input:focus {
+            border-color: rgba(34, 211, 238, 0.4);
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+        }
+        .search-input::placeholder {
+            color: #4b5563;
+        }
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all .2s;
+        }
+        .action-btn:hover {
+            transform: scale(1.03);
+        }
+        .btn-green {
+            background: rgba(0, 200, 130, 0.2);
+            color: #00c882;
+        }
+        .btn-green:hover {
+            background: rgba(0, 200, 130, 0.3);
+        }
+        .btn-red {
+            background: rgba(255, 80, 80, 0.2);
+            color: #ff5050;
+        }
+        .btn-red:hover {
+            background: rgba(255, 80, 80, 0.3);
+        }
+        .btn-blue {
+            background: rgba(80, 130, 255, 0.2);
+            color: #5082ff;
+        }
+        .btn-blue:hover {
+            background: rgba(80, 130, 255, 0.3);
+        }
+        .btn-yellow {
+            background: rgba(255, 184, 0, 0.2);
+            color: #ffb800;
+        }
+        .btn-yellow:hover {
+            background: rgba(255, 184, 0, 0.3);
+        }
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(34, 211, 238, 0.3);
+            border-radius: 10px;
+        }
+        .table-wrap {
+            overflow-x: auto;
+        }
+        @media(max-width:768px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+            .stat-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .nav-tabs-wrap {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Access Denied -->
+    <div id="accessDenied" class="hidden min-h-screen flex items-center justify-center p-4">
+        <div class="glass p-8 text-center max-w-md">
+            <p class="text-6xl mb-3">🔒</p>
+            <h1 class="text-2xl font-bold text-red-400 mb-2">Access Denied</h1>
+            <p class="text-gray-400 mb-4">Only Admin@wk.in can access this panel.</p>
+            <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-8 rounded-lg">Logout</button>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="hidden min-h-screen">
+
+        <!-- Header -->
+        <header class="bg-[#0f1219] border-b border-cyan-500/10 sticky top-0 z-50 backdrop-blur-xl">
+            <div class="max-w-[1400px] mx-auto px-4 py-3">
+                <div class="flex items-center justify-between gap-4 flex-wrap">
+                    <div class="flex items-center gap-3">
+                        <img src="logo.png" alt="WinKom" class="w-10 h-10 rounded-xl" onerror="this.style.display='none'"/>
+                        <div>
+                            <h1 class="text-lg font-extrabold text-white tracking-tight">⚡ WinKom <span class="text-cyan-400">Admin Pro</span></h1>
+                            <p class="text-[11px] text-gray-500" id="adminEmail">Admin@wk.in</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="refreshAll()" class="glow-btn bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-bold py-2 px-4 rounded-lg">🔄 Refresh</button>
+                        <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded-lg">Logout</button>
+                    </div>
+                </div>
+                <!-- Navigation Tabs -->
+                <div class="nav-tabs-wrap flex gap-1 mt-3 pb-1">
+                    <button class="nav-tab active" id="tabWithdrawals" onclick="switchTab('withdrawals')">🏦 Withdrawal Requests</button>
+                    <button class="nav-tab" id="tabDeposits" onclick="switchTab('deposits')">💳 Deposit Requests</button>
+                    <button class="nav-tab" id="tabUsers" onclick="switchTab('users')">👥 All Users</button>
+                    <button class="nav-tab" id="tabInvested" onclick="switchTab('invested')">📈 Invested Plans</button>
+                    <button class="nav-tab" id="tabPlans" onclick="switchTab('plans')">📊 Plans</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-[1400px] mx-auto p-4 md:p-6">
+
+            <!-- Withdrawals Section -->
+            <div id="contentWithdrawals" class="tab-content fade-in">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4" id="withdrawStats">
+                    <div class="stat-card"><p class="icon">🏦</p><p class="value" id="wPending">0</p><p class="label">Pending</p></div>
+                    <div class="stat-card"><p class="icon">✅</p><p class="value" id="wApproved">0</p><p class="label">Approved</p></div>
+                    <div class="stat-card"><p class="icon">❌</p><p class="value" id="wRejected">0</p><p class="label">Rejected</p></div>
+                    <div class="stat-card"><p class="icon">💰</p><p class="value" id="wTotal">0</p><p class="label">Total</p></div>
+                </div>
+                <div class="glass p-4 mb-4">
+                    <input type="text" id="withdrawSearch" class="search-input" placeholder="Search by user, email, txn ID, amount..."/>
+                </div>
+                <div class="table-card">
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>User</th><th>Amount</th><th>Method</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+                            <tbody id="withdrawTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Deposits Section -->
+            <div id="contentDeposits" class="tab-content hidden fade-in">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4" id="depositStats">
+                    <div class="stat-card"><p class="icon">⏳</p><p class="value" id="dPending">0</p><p class="label">Pending</p></div>
+                    <div class="stat-card"><p class="icon">✅</p><p class="value" id="dApproved">0</p><p class="label">Approved</p></div>
+                    <div class="stat-card"><p class="icon">❌</p><p class="value" id="dRejected">0</p><p class="label">Rejected</p></div>
+                    <div class="stat-card"><p class="icon">💰</p><p class="value" id="dTotal">0</p><p class="label">Total</p></div>
+                </div>
+                <div class="glass p-4 mb-4">
+                    <input type="text" id="depositSearch" class="search-input" placeholder="Search by user, email, UTR, amount..."/>
+                </div>
+                <div class="table-card">
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>User</th><th>Amount</th><th>Method</th><th>Txn ID</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+                            <tbody id="depositTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Section -->
+            <div id="contentUsers" class="tab-content hidden fade-in">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4" id="userStats">
+                    <div class="stat-card"><p class="icon">👥</p><p class="value" id="uTotal">0</p><p class="label">Total Users</p></div>
+                    <div class="stat-card"><p class="icon">✅</p><p class="value" id="uActive">0</p><p class="label">Active</p></div>
+                    <div class="stat-card"><p class="icon">🚫</p><p class="value" id="uBlocked">0</p><p class="label">Blocked</p></div>
+                    <div class="stat-card"><p class="icon">💰</p><p class="value" id="uBalance">0</p><p class="label">Total Balance</p></div>
+                </div>
+                <div class="glass p-4 mb-4">
+                    <input type="text" id="userSearch" class="search-input" placeholder="Search by name, email, phone, referral..."/>
+                </div>
+                <div class="table-card">
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>User</th><th>Email</th><th>Phone</th><th>Balance</th><th>Status</th><th>Actions</th></tr></thead>
+                            <tbody id="userTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Invested Plans Section -->
+            <div id="contentInvested" class="tab-content hidden fade-in">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4" id="investStats">
+                    <div class="stat-card"><p class="icon">👥</p><p class="value" id="iInvestors">0</p><p class="label">Investors</p></div>
+                    <div class="stat-card"><p class="icon">💰</p><p class="value" id="iAmount">0</p><p class="label">Total Invested</p></div>
+                    <div class="stat-card"><p class="icon">📈</p><p class="value" id="iActive">0</p><p class="label">Active</p></div>
+                    <div class="stat-card"><p class="icon">🏁</p><p class="value" id="iCompleted">0</p><p class="label">Completed</p></div>
+                </div>
+                <div class="glass p-4 mb-4">
+                    <input type="text" id="investSearch" class="search-input" placeholder="Search by investor, plan, referral..."/>
+                </div>
+                <div class="table-card">
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Investor</th><th>Plan</th><th>Amount</th><th>Date</th><th>Duration</th><th>Expected</th><th>Status</th></tr></thead>
+                            <tbody id="investTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plans Section -->
+            <div id="contentPlans" class="tab-content hidden fade-in">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <!-- Create Plan -->
+                    <div class="glass p-6">
+                        <h3 class="text-lg font-bold text-white mb-4">➕ Create New Plan</h3>
+                        <form id="planForm" class="space-y-3">
+                            <div><label class="text-gray-400 text-xs block mb-1">Plan Name</label><input type="text" id="planName" required placeholder="e.g. Starter Plan" class="search-input"/></div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div><label class="text-gray-400 text-xs block mb-1">Daily Return %</label><input type="number" id="planReturn" required step="0.1" min="0.1" class="search-input"/></div>
+                                <div><label class="text-gray-400 text-xs block mb-1">Duration (Days)</label><input type="number" id="planDuration" required min="1" class="search-input"/></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div><label class="text-gray-400 text-xs block mb-1">Min Amount</label><input type="number" id="planMin" required min="1" class="search-input"/></div>
+                                <div><label class="text-gray-400 text-xs block mb-1">Max Amount</label><input type="number" id="planMax" required min="1" class="search-input"/></div>
+                            </div>
+                            <div><label class="text-gray-400 text-xs block mb-1">Description</label><input type="text" id="planDesc" class="search-input"/></div>
+                            <button type="submit" class="glow-btn w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-3 rounded-xl">Create Plan</button>
+                        </form>
+                    </div>
+                    <!-- Existing Plans -->
+                    <div class="glass p-6">
+                        <h3 class="text-lg font-bold text-white mb-4">📊 Existing Plans</h3>
+                        <div id="existingPlans" class="space-y-3"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Withdrawal Detail Modal -->
+    <div id="withdrawModal" class="hidden modal-overlay" onclick="if(event.target===this)closeWithdrawModal()">
+        <div class="modal-box">
+            <div class="flex justify-between items-center mb-4">
+                <h3>🏦 Withdrawal Detail</h3>
+                <button onclick="closeWithdrawModal()" class="text-gray-500 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div id="withdrawModalContent"></div>
+        </div>
+    </div>
+
+    <!-- Deposit Detail Modal -->
+    <div id="depositModal" class="hidden modal-overlay" onclick="if(event.target===this)closeDepositModal()">
+        <div class="modal-box">
+            <div class="flex justify-between items-center mb-4">
+                <h3>💳 Deposit Detail</h3>
+                <button onclick="closeDepositModal()" class="text-gray-500 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div id="depositModalContent"></div>
+        </div>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div id="userModal" class="hidden modal-overlay" onclick="if(event.target===this)closeUserModal()">
+        <div class="modal-box">
+            <div class="flex justify-between items-center mb-4">
+                <h3>👤 User Profile</h3>
+                <button onclick="closeUserModal()" class="text-gray-500 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div id="userModalContent"></div>
+        </div>
+    </div>
+
+    <!-- Investment Detail Modal -->
+    <div id="investModal" class="hidden modal-overlay" onclick="if(event.target===this)closeInvestModal()">
+        <div class="modal-box">
+            <div class="flex justify-between items-center mb-4">
+                <h3>📈 Investment Detail</h3>
+                <button onclick="closeInvestModal()" class="text-gray-500 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div id="investModalContent"></div>
+        </div>
+    </div>
+
+    <!-- Plan Edit Modal -->
+    <div id="planEditModal" class="hidden modal-overlay" onclick="if(event.target===this)closePlanEditModal()">
+        <div class="modal-box">
+            <div class="flex justify-between items-center mb-4">
+                <h3>✏️ Edit Plan</h3>
+                <button onclick="closePlanEditModal()" class="text-gray-500 hover:text-white text-2xl">&times;</button>
+            </div>
+            <form id="planEditForm" class="space-y-3">
+                <div><label class="text-gray-400 text-xs block mb-1">Plan Name</label><input type="text" id="editPlanName" class="search-input"/></div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="text-gray-400 text-xs block mb-1">Daily Return %</label><input type="number" id="editPlanReturn" step="0.1" class="search-input"/></div>
+                    <div><label class="text-gray-400 text-xs block mb-1">Duration (Days)</label><input type="number" id="editPlanDuration" class="search-input"/></div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="text-gray-400 text-xs block mb-1">Min Amount</label><input type="number" id="editPlanMin" class="search-input"/></div>
+                    <div><label class="text-gray-400 text-xs block mb-1">Max Amount</label><input type="number" id="editPlanMax" class="search-input"/></div>
+                </div>
+                <div><label class="text-gray-400 text-xs block mb-1">Description</label><input type="text" id="editPlanDesc" class="search-input"/></div>
+                <div class="flex gap-2">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-3 rounded-xl">Update</button>
+                    <button type="button" onclick="closePlanEditModal()" class="bg-gray-600 text-white font-bold py-3 px-6 rounded-xl">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Withdrawal Modal -->
+    <div id="editWithdrawModal" class="hidden modal-overlay">
+        <div class="modal-box">
+            <div class="flex justify-between items-center mb-4">
+                <h3>✏️ Edit Withdrawal</h3>
+                <button onclick="closeEditWithdrawModal()" class="text-gray-500 hover:text-white text-2xl">&times;</button>
+            </div>
+            <form id="editWithdrawForm" class="space-y-3">
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="text-gray-400 text-xs block mb-1">Amount</label><input type="number" id="editWAmount" class="search-input"/></div>
+                    <div><label class="text-gray-400 text-xs block mb-1">Status</label><select id="editWStatus" class="search-input"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select></div>
+                </div>
+                <div><label class="text-gray-400 text-xs block mb-1">Transaction ID</label><input type="text" id="editWTxnId" class="search-input"/></div>
+                <div class="flex gap-2">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl">Save Changes</button>
+                    <button type="button" onclick="closeEditWithdrawModal()" class="bg-gray-600 text-white font-bold py-3 px-6 rounded-xl">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Deposit Modal -->
+    <div id="editDepositModal" class="hidden modal-overlay">
+        <div class="modal-box">
+            <div class="flex justify-between items-center mb-4">
+                <h3>✏️ Edit Deposit</h3>
+                <button onclick="closeEditDepositModal()" class="text-gray-500 hover:text-white text-2xl">&times;</button>
+            </div>
+            <form id="editDepositForm" class="space-y-3">
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="text-gray-400 text-xs block mb-1">Amount</label><input type="number" id="editDAmount" class="search-input"/></div>
+                    <div><label class="text-gray-400 text-xs block mb-1">Status</label><select id="editDStatus" class="search-input"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select></div>
+                </div>
+                <div><label class="text-gray-400 text-xs block mb-1">Transaction ID / UTR</label><input type="text" id="editDTxnId" class="search-input"/></div>
+                <div class="flex gap-2">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl">Save Changes</button>
+                    <button type="button" onclick="closeEditDepositModal()" class="bg-gray-600 text-white font-bold py-3 px-6 rounded-xl">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, addDoc, collection, getDocs, deleteDoc, serverTimestamp, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+            authDomain: "winkom-da4c2.firebaseapp.com",
+            projectId: "winkom-da4c2",
+            storageBucket: "winkom-da4c2.firebasestorage.app",
+            messagingSenderId: "629229462242",
+            appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const ADMIN_EMAIL = 'admin@wk.in';
+
+        let allUsers = [];
+        let allDeposits = [];
+        let allWithdrawals = [];
+        let allPlans = [];
+        let allInvestments = [];
+        let currentModalUserId = null;
+        let currentEditPlanId = null;
+        let currentWithdrawId = null;
+        let currentDepositId = null;
+
+        // ===== LOGOUT =====
+        window.handleLogout = async function() {
+            await signOut(auth);
+            window.location.href = 'login.html';
+        };
+
+        // ===== TABS =====
+        window.switchTab = function(tab) {
+            document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            const btn = document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1));
+            if (btn) btn.classList.add('active');
+            const content = document.getElementById('content' + tab.charAt(0).toUpperCase() + tab.slice(1));
+            if (content) content.classList.remove('hidden');
+        };
+
+        window.refreshAll = async function() {
+            await Promise.all([loadWithdrawals(), loadDeposits(), loadUsers(), loadInvested(), loadPlans()]);
+        };
+
+        // ===== HELPERS =====
+        function formatDate(val) {
+            if (!val) return 'N/A';
+            if (val?.toDate) return val.toDate().toLocaleString();
+            if (val instanceof Date) return val.toLocaleString();
+            return String(val);
+        }
+
+        function formatMoney(amt) {
+            return '₹' + (parseFloat(amt) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function badge(status) {
+            const map = {
+                'pending': 'badge-pending',
+                'approved': 'badge-approved',
+                'rejected': 'badge-rejected',
+                'active': 'badge-active',
+                'blocked': 'badge-blocked',
+                'completed': 'badge-completed',
+                'cancelled': 'badge-cancelled'
+            };
+            return `<span class="badge ${map[status] || 'badge-pending'}">${status}</span>`;
+        }
+
+        // ===== WITHDRAWALS =====
+        async function loadWithdrawals() {
+            const container = document.getElementById('withdrawTableBody');
+            const usersMap = {};
+            allUsers.forEach(u => usersMap[u.id] = u);
+
+            const snap = await getDocs(collection(db, 'withdrawals'));
+            allWithdrawals = [];
+            snap.forEach(d => {
+                const data = { id: d.id, ...d.data() };
+                allWithdrawals.push(data);
+            });
+            allWithdrawals.sort((a, b) => (b.createdAt?.toDate?.() || new Date()) - (a.createdAt?.toDate?.() || new Date()));
+
+            // Stats
+            const pending = allWithdrawals.filter(w => w.status === 'pending').length;
+            const approved = allWithdrawals.filter(w => w.status === 'approved').length;
+            const rejected = allWithdrawals.filter(w => w.status === 'rejected').length;
+            document.getElementById('wPending').textContent = pending;
+            document.getElementById('wApproved').textContent = approved;
+            document.getElementById('wRejected').textContent = rejected;
+            document.getElementById('wTotal').textContent = allWithdrawals.length;
+
+            renderWithdrawTable();
+        }
+
+        function renderWithdrawTable() {
+            const container = document.getElementById('withdrawTableBody');
+            const searchTerm = (document.getElementById('withdrawSearch').value || '').toLowerCase().trim();
+
+            let records = allWithdrawals;
+            if (searchTerm) {
+                records = records.filter(w => {
+                    const user = allUsers.find(u => u.id === w.uid) || {};
+                    return (w.userName || '').toLowerCase().includes(searchTerm) ||
+                        (user.email || '').toLowerCase().includes(searchTerm) ||
+                        (w.transactionId || '').toLowerCase().includes(searchTerm) ||
+                        (w.paymentDetails?.accountNumber || '').includes(searchTerm) ||
+                        (String(w.amount) || '').includes(searchTerm);
+                });
+            }
+
+            if (records.length === 0) {
+                container.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">No withdrawals found</td></tr>';
+                return;
+            }
+
+            container.innerHTML = records.map(w => {
+                const user = allUsers.find(u => u.id === w.uid) || {};
+                const email = user.email || w.userEmail || 'Unknown';
+                const method = w.method || 'N/A';
+                return `<tr onclick="showWithdrawDetail('${w.id}')">
+                    <td><div class="font-medium text-white">${w.userName || 'Unknown'}</div><div class="text-xs text-gray-500">${email}</div></td>
+                    <td class="text-cyan-400 font-bold">${formatMoney(w.amount)}</td>
+                    <td>${method}</td>
+                    <td class="text-xs text-gray-500">${formatDate(w.createdAt)}</td>
+                    <td>${badge(w.status)}</td>
+                    <td onclick="event.stopPropagation()">
+                        <button onclick="showWithdrawDetail('${w.id}')" class="action-btn btn-blue">🔍</button>
+                        ${w.status === 'pending' ? `<button onclick="approveWithdrawal('${w.id}')" class="action-btn btn-green">✔</button>
+                        <button onclick="rejectWithdrawal('${w.id}')" class="action-btn btn-red">✖</button>` : ''}
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        window.showWithdrawDetail = async function(id) {
+            const w = allWithdrawals.find(x => x.id === id);
+            if (!w) return;
+            const user = allUsers.find(u => u.id === w.uid) || {};
+            const pd = w.paymentDetails || {};
+            const content = document.getElementById('withdrawModalContent');
+            let html = `
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 text-xl">${(w.userName || 'U').substring(0,2).toUpperCase()}</div>
+                    <div><div class="font-bold text-white">${w.userName || 'Unknown'}</div><div class="text-xs text-gray-500">${user.email || w.userEmail || 'Unknown'}</div></div>
+                </div>
+                <div class="detail-grid">
+                    <div class="detail-item"><label>Amount</label><span>${formatMoney(w.amount)}</span></div>
+                    <div class="detail-item"><label>Method</label><span>${w.method || 'N/A'}</span></div>
+                    <div class="detail-item"><label>Account Holder</label><span>${pd.accountHolderName || 'N/A'}</span></div>
+                    <div class="detail-item"><label>Account Number</label><span>${pd.accountNumber || 'N/A'}</span></div>
+                    <div class="detail-item"><label>Bank Name</label><span>${pd.bankName || 'N/A'}</span></div>
+                    <div class="detail-item"><label>IFSC</label><span>${pd.ifscCode || 'N/A'}</span></div>
+                    <div class="detail-item"><label>UPI ID</label><span>${pd.upiId || 'N/A'}</span></div>
+                    <div class="detail-item"><label>Txn ID</label><span>${w.transactionId || 'N/A'}</span></div>
+                    <div class="detail-item"><label>Request Date</label><span>${formatDate(w.createdAt)}</span></div>
+                    <div class="detail-item"><label>Status</label><span>${badge(w.status)}</span></div>
+                </div>`;
+
+            if (w.approvedAt) {
+                html += `<div class="detail-grid mt-2"><div class="detail-item"><label>Approved Date</label><span>${formatDate(w.approvedAt)}</span></div></div>`;
+            }
+            if (w.rejectedAt) {
+                html += `<div class="detail-grid mt-2"><div class="detail-item"><label>Rejected Date</label><span>${formatDate(w.rejectedAt)}</span></div></div>`;
+            }
+
+            html += `<div class="flex flex-wrap gap-2 mt-5">
+                ${w.status === 'pending' ? `<button onclick="approveWithdrawal('${w.id}')" class="action-btn btn-green px-4 py-2">✅ Approve</button>
+                <button onclick="rejectWithdrawal('${w.id}')" class="action-btn btn-red px-4 py-2">✖ Reject</button>` : ''}
+                ${w.status === 'approved' ? `<button onclick="reverseWithdrawal('${w.id}')" class="action-btn btn-yellow px-4 py-2">↩ Reject</button>` : ''}
+                <button onclick="openEditWithdrawModal('${w.id}')" class="action-btn btn-blue px-4 py-2">✏️ Edit</button>
+                <button onclick="deleteWithdrawal('${w.id}')" class="action-btn btn-red px-4 py-2">🗑 Delete</button>
+            </div>`;
+
+            content.innerHTML = html;
+            document.getElementById('withdrawModal').classList.remove('hidden');
+        };
+
+        window.closeWithdrawModal = function() {
+            document.getElementById('withdrawModal').classList.add('hidden');
+        };
+
+        // IMPORTANT FIX: Approval should NOT deduct balance again.
+        // Balance is already deducted at the time of withdrawal request.
+        window.approveWithdrawal = async function(id) {
+            if (!confirm('Approve this withdrawal?')) return;
+            try {
+                const w = allWithdrawals.find(x => x.id === id);
+                if (!w) throw new Error('Withdrawal not found');
+                await updateDoc(doc(db, 'withdrawals', id), { status: 'approved', approvedAt: serverTimestamp() });
+                // Balance is already deducted at request time, so no need to deduct again.
+                // We don't add a transaction here because the withdrawal request already reflects in user's history.
+                alert('✅ Withdrawal approved!');
+                await loadWithdrawals();
+                closeWithdrawModal();
+            } catch (e) { alert('Error: ' + e.message); }
+        };
+
+        window.rejectWithdrawal = async function(id) {
+            if (!confirm('Reject this withdrawal?')) return;
+            try {
+                await updateDoc(doc(db, 'withdrawals', id), { status: 'rejected', rejectedAt: serverTimestamp() });
+                alert('Withdrawal rejected.');
+                await loadWithdrawals();
+                closeWithdrawModal();
+            } catch (e) { alert('Error: ' + e.message); }
+        };
+
+        window.reverseWithdrawal = async function(id) {
+            if (!confirm('Reverse this approved withdrawal? Balance will be refunded.')) return;
+            try {
+                const w = allWithdrawals.find(x => x.id === id);
+                if (!w) throw new Error('Not found');
+                await updateDoc(doc(db, 'withdrawals', id), { status: 'rejected', rejectedAt: serverTimestamp() });
+                if (w.uid) {
+                    const userRef = doc(db, 'users', w.uid);
+                    const uSnap = await getDoc(userRef);
+                    if (uSnap.exists()) {
+                        const newBal = (uSnap.data().balance || 0) + w.amount;
+                        await updateDoc(userRef, { balance: newBal });
+                    }
+                }
+                alert('Withdrawal reversed and balance refunded.');
+                await loadWithdrawals();
+                closeWithdrawModal();
+            } catch (e) { alert('Error: ' + e.message); }
+        };
+
+        window.deleteWithdrawal = async function(id) {
+            if (!confirm('⚠️ Permanently delete this withdrawal record?')) return;
+            try {
+                await deleteDoc(doc(db, 'withdrawals', id));
+                alert('Withdrawal deleted.');
+                await loadWithdrawals();
+                closeWithdrawModal();
+            } catch (e) { alert('Error: ' + e.message); }
+        };
+
+        window.openEditWithdrawModal = function(id) {
+            const w = allWithdrawals.find(x => x.id === id);
+            if (!w) return;
+            currentWithdrawId = id;
+            document.getElementById('editWAmount').value = w.amount || '';
+            document.getElementById('editWStatus').value = w.status || 'pending';
+            document.getElementById('editWTxnId').value = w.transactionId || '';
+            document.getElementById('editWithdrawModal').classList.remove('hidden');
+        };
+
+        window.closeEditWithdrawModal = function() {
+            document.getElementById('editWithdrawModal').classList.add('hidden');
+            currentWithdrawId = null;
+        };
+
+        document.getElementById('editWithdrawForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentWithdrawId) return;
+            const amount = parseFloat(document.getElementById('editWAmount').value);
+            const status = document.getElementById('editWStatus').value;
+            const txnId = document.getElementById('editWTxnId').value;
+            try {
+                await updateDoc(doc(db, 'withdrawals', currentWithdrawId), { amount, status, transactionId: txnId });
+                alert('✅ Withdrawal updated!');
+                closeEditWithdrawModal();
+                await loadWithdrawals();
+                closeWithdrawModal();
+            } catch (e) { alert('Error: ' + e.message); }
+        });
+
+        // ===== DEPOSITS =====
+        async function loadDeposits() {
+            const snap = await getDocs(collection(db, 'deposits'));
+            allDeposits = [];
+            snap.forEach(d => allDeposits.push({ id: d.id, ...d.data() }));
+            allDeposits.sort((a, b) => (b.createdAt?.toDate?.() || new Date()) - (a.createdAt?.toDate?.() || new Date()));
+
+            const pending = allDeposits.filter(d => d.status === 'pending').length;
+            const approved = allDeposits.filter(d => d.status === 'approved').length;
+            const rejected = allDeposits.filter(d => d.status === 'rejected').length;
+            document.getElementById('dPending').textContent = pending;
+            document.getElementById('dApproved').textContent = approved;
+            document.getElementById('dRejected').textContent = rejected;
+            document.getElementById('dTotal').textContent = allDeposits.length;
+
+            renderDepositTable();
+        }
+
+        function renderDepositTable() {
+            const container = document.getElementById('depositTableBody');
+            const searchTerm = (document.getElementById('depositSearch').value || '').toLowerCase().trim();
+
+            let records = allDeposits;
+            if (searchTerm) {
+                records = records.filter(d => {
+                    const user = allUsers.find(u => u.id === d.uid) || {};
+                    return (d.userName || '').toLowerCase().includes(searchTerm) ||
+                        (user.email || '').toLowerCase().includes(searchTerm) ||
+                        (d.utr || d.transactionId || '').toLowerCase().includes(searchTerm) ||
+                        (String(d.amount) || '').includes(searchTerm);
+                });
+            }
+
+            if (records.length === 0) {
+                container.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-500">No deposits found</td></tr>';
+                return;
+            }
+
+            container.innerHTML = records.map(d => {
+                const user = allUsers.find(u => u.id === d.uid) || {};
+                const email = user.email || d.userEmail || 'Unknown';
+                return `<tr onclick="showDepositDetail('${d.id}')">
+                    <td><div class="font-medium text-white">${d.userName || 'Unknown'}</div><div class="text-xs text-gray-500">${email}</div></td>
+                    <td class="text-cyan-400 font-bold">${formatMoney(d.amount)}</td>
+                    <td>${d.method || 'N/A'}</td>
+                    <td class="text-xs">${d.utr || d.transactionId || 'N/A'}</td>
+                    <td class="text-xs text-gray-500">${formatDate(d.createdAt)}</td>
+                    <td>${badge(d.status)}</td>
+                    <td onclick="event.stopPropagation()">
+                        <button onclick="showDepositDetail('${d.id}')" class="action-btn btn-blue">🔍</button>
+                        ${d.status === 'pending' ? `<button onclick="approveDeposit('${d.id}')" class="action-btn btn-green">✔</button>
+                        <button onclick="rejectDeposit('${d.id}')" class="action-btn btn-red">✖</button>` : ''}
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        window.showDepositDetail = async function(id) {
+            const d = allDeposits.find(x => x.id === id);
+            if (!d) return;
+            const user = allUsers.find(u => u.id === d.uid) || {};
+            const content = document.getElementById('depositModalContent');
+            let html = `
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-xl">${(d.userName || 'U').substring(0,2).toUpperCase()}</div>
+                    <div><div class="font-bold text-white">${d.userName || 'Unknown'}</div><div class="text-xs text-gray-500">${user.email || d.userEmail || 'Unknown'}</div></div>
+                </div>
+                <div class="detail-grid">
+                    <div class="detail-item"><label>Amount</label><span>${formatMoney(d.amount)}</span></div>
+                    <div class="detail-item"><label>Method</label><span>${d.method || 'N/A'}</span></div>
+                    <div class="detail-item"><label>Txn ID / UTR</label><span>${d.utr || d.transactionId || 'N/A'}</span></div>
+                    <div class="detail-item"><label>Request Date</label><span>${formatDate(d.createdAt)}</span></div>
+                    <div class="detail-item"><label>Status</label><span>${badge(d.status)}</span></div>
+                </div>`;
+
+            if (d.paymentProof) {
+                html += `<div class="mt-4"><label class="text-gray-400 text-xs block mb-2">Payment Proof</label><a href="${d.paymentProof}" target="_blank" class="text-cyan-400 underline text-sm">View Image</a></div>`;
+            }
+            if (d.approvedAt) {
+                html += `<div class="detail-grid mt-2"><div class="detail-item"><label>Approved Date</label><span>${formatDate(d.approvedAt)}</span></div></div>`;
+            }
+            if (d.rejectedAt) {
+                html += `<div class="detail-grid mt-2"><div class="detail-item"><label>Rejected Date</label><span>${formatDate(d.rejectedAt)}</span></div></div>`;
+            }
+
+            html += `<div class="flex flex-wrap gap-2 mt-5">
+                ${d.status === 'pending' ? `<button onclick="approveDeposit('${d.id}')" class="action-btn btn-green px-4 py-2">✅ Approve</button>
+                <button onclick="rejectDeposit('${d.id}')" class="action-btn btn-red px-4 py-2">✖ Reject</button>` : ''}
+                ${d.status === 'approved' ? `<button onclick="reverseDeposit('${d.id}')" class="action-btn btn-yellow px-4 py-2">↩ Reject</button>` : ''}
+                <button onclick="openEditDepositModal('${d.id}')" class="action-btn btn-blue px-4 py-2">✏️ Edit</button>
+                <button onclick="deleteDeposit('${d.id}')" class="action-btn btn-red px-4 py-2">🗑 Delete</button>
+            </div>`;
+
+            content.innerHTML = html;
+            document.getElementById('depositModal').classList.remove('hidden');
+        };
+
+        window.closeDepositModal = function() {
+            document.getElementById('depositModal').classList.add('hidden');
+        };
+
+        window.approveDeposit = async function(id) {
+            if (!confirm('Approve this deposit? Balance will be credited to user.')) return;
+            try {
+                const d = allDeposits.find(x => x.id === id);
+                if (!d) throw new Error('Deposit not found');
+                await updateDoc(doc(db, 'deposits', id), { status: 'approved', approvedAt: serverTimestamp() });
+                if (d.uid) {
+                    const userRef = doc(db, 'users', d.uid);
+                    const uSnap = await getDoc(userRef);
+                    if (uSnap.exists()) {
+                        const newBal = (uSnap.data().balance || 0) + d.amount;
+                        await updateDoc(userRef, { balance: newBal });
+                        await addDoc(collection(db, 'transactions'), { uid: d.uid, type: 'deposit', description: 'Deposit Approved', amount: d.amount, balanceAfter: newBal, createdAt: serverTimestamp() });
+                    }
+                }
+                alert('✅ Deposit approved and balance credited!');
+                await loadDeposits();
+                closeDepositModal();
+            } catch (e) { alert('Error: ' + e.message); }
+        };
+
+        window.rejectDeposit = async function(id) {
+            if (!confirm('Reject this deposit?')) return;
+            try {
+                await updateDoc(doc(db, 'deposits', id), { status: 'rejected', rejectedAt: serverTimestamp() });
+                alert('Deposit rejected.');
+                await loadDeposits();
+                closeDepositModal();
+            } catch (e) { alert('Error: ' + e.message); }
+        };
+
+        window.reverseDeposit = async function(id) {
+            if (!confirm('Reverse this approved deposit? Balance will be deducted.')) return;
+            try {
+                const d = allDeposits.find(x => x.id === id);
+                if (!d) throw new Error('Not found');
+                await updateDoc(doc(db, 'deposits', id), { status: 'rejected', rejectedAt: serverTimestamp() });
+                if (d.uid) {
+                    const userRef = doc(db, 'users', d.uid);
+                    const uSnap = await getDoc(userRef);
+                    if (uSnap.exists()) {
+                        const newBal = Math.max(0, (uSnap.data().balance || 0) - d.amount);
+                        await updateDoc(userRef, { balance: newBal });
+                    }
+                }
+                alert('Deposit reversed.');
+                await loadDeposits();
+                closeDepositModal();
+            } catch (e) { alert('Error: ' + e.message); }
+        };
+
+        window.deleteDeposit = async function(id) {
+            if (!confirm('⚠️ Permanently delete this deposit record?')) return;
+            try {
+                await deleteDoc(doc(db, 'deposits', id));
+                alert('Deposit deleted.');
+                await loadDeposits();
+                closeDepositModal();
+            } catch (e) { alert('Error: ' + e.message); }
+        };
+
+        window.openEditDepositModal = function(id) {
+            const d = allDeposits.find(x => x.id === id);
+            if (!d) return;
+            currentDepositId = id;
+            document.getElementById('editDAmount').value = d.amount || '';
+            document.getElementById('editDStatus').value = d.status || 'pending';
+            document.getElementById('editDTxnId').value = d.utr || d.transactionId || '';
+            document.getElementById('editDepositModal').classList.remove('hidden');
+        };
+
+        window.closeEditDepositModal = function() {
+            document.getElementById('editDepositModal').classList.add('hidden');
+            currentDepositId = null;
+        };
+
+        document.getElementById('editDepositForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentDepositId) return;
+            const amount = parseFloat(document.getElementById('editDAmount').value);
+            const status = document.getElementById('editDStatus').value;
+            const txnId = document.getElementById('editDTxnId').value;
+            try {
+                await updateDoc(doc(db, 'deposits', currentDepositId), { amount, status, utr: txnId, transactionId: txnId });
+                alert('✅ Deposit updated!');
+                closeEditDepositModal();
+                await loadDeposits();
+                closeDepositModal();
+            } catch (e) { alert('Error: ' + e.message); }
+        });
+
+        // ===== USERS =====
+        async function loadUsers() {
+            const snap = await getDocs(collection(db, 'users'));
+            allUsers = [];
+            snap.forEach(d => allUsers.push({ id: d.id, ...d.data() }));
+
+            const total = allUsers.length;
+            const active = allUsers.filter(u => (u.status || 'active') === 'active').length;
+            const blocked = allUsers.filter(u => u.status === 'blocked').length;
+            const balance = allUsers.reduce((sum, u) => sum + (u.balance || 0), 0);
+
+            document.getElementById('uTotal').textContent = total;
+            document.getElementById('uActive').textContent = active;
+            document.getElementById('uBlocked').textContent = blocked;
+            document.getElementById('uBalance').textContent = formatMoney(balance);
+
+            renderUserTable();
+        }
+
+        function renderUserTable() {
+            const container = document.getElementById('userTableBody');
+            const searchTerm = (document.getElementById('userSearch').value || '').toLowerCase().trim();
+
+            let records = allUsers;
+            if (searchTerm) {
+                records = records.filter(u => {
+                    return (u.name || '').toLowerCase().includes(searchTerm) ||
+                        (u.email || '').toLowerCase().includes(searchTerm) ||
+                        (u.phone || '').includes(searchTerm) ||
+                        (u.referralCode || '').toLowerCase().includes(searchTerm);
+                });
+            }
+
+            if (records.length === 0) {
+                container.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">No users found</td></tr>';
+                return;
+            }
+
+            container.innerHTML = records.map(u => {
+                const status = u.status || 'active';
+                return `<tr onclick="showUserDetail('${u.id}')">
+                    <td><div class="font-medium text-white">${u.name || 'Unknown'}</div></td>
+                    <td class="text-gray-400">${u.email || 'N/A'}</td>
+                    <td>${u.phone || 'N/A'}</td>
+                    <td class="text-cyan-400 font-bold">${formatMoney(u.balance || 0)}</td>
+                    <td>${badge(status)}</td>
+                    <td onclick="event.stopPropagation()">
+                        <button onclick="showUserDetail('${u.id}')" class="action-btn btn-blue">🔍</button>
+                        <button onclick="toggleUserStatus('${u.id}')" class="action-btn ${status === 'active' ? 'btn-red' : 'btn-green'}">${status === 'active' ? '🚫' : '✅'}</button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        window.showUserDetail = async function(id) {
+            const u = allUsers.find(x => x.id === id);
+            if (!u) return;
+            currentModalUserId = id;
+            const content = document.getElementById('userModalContent');
+            const status = u.status || 'active';
+            let html = `
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-16 h-16 rounded-full bg-cyan-600/20 flex items-center justify-center text-cyan-400 text-2xl font-bold">${(u.name || 'U').substring(0,2).toUpperCase()}</div>
+                    <div><div class="text-lg font-bold text-white">${u.name || 'Unknown'}</div>
+                    <div class="text-sm text-gray-500">${u.email || 'N/A'}</div>
+                    <div class="mt-1">${badge(status)}</div></div>
+                </div>
+                <div class="detail-grid">
+                    <div class="detail-item"><label>Phone</label><span>${u.phone || 'N/A'}</span></div>
+                    <div class="detail-item"><label>Balance</label><span>${formatMoney(u.balance || 0)}</span></div>
+                    <div class="detail-item"><label>Referral Code</label><span>${u.referralCode || 'N/A'}</span></div>
+                    <div class="detail-item"><label>Referred By</label><span>${u.referredBy || 'N/A'}</span></div>
+                    <div class="detail-item"><label>Created</label><span>${formatDate(u.createdAt)}</span></div>
+                    <div class="detail-item"><label>Referral Count</label><span>${u.referralCount || 0}</span></div>
+                </div>`;
+
+            // Bank details
+            if (u.bankAccountNumber || u.ifscCode || u.accountHolderName || u.upiId) {
+                html += `<h4 class="text-white font-bold mt-5 mb-2 text-sm">🏦 Bank / Payment Details</h4><div class="detail-grid">
+                    <div class="detail-item"><label>Account Holder</label><span>${u.accountHolderName || 'N/A'}</span></div>
+                    <div class="detail-item"><label>Account No.</label><span>${u.bankAccountNumber || 'N/A'}</span></div>
+                    <div class="detail-item"><label>IFSC</label><span>${u.ifscCode || 'N/A'}</span></div>
+                    <div class="detail-item"><label>UPI ID</label><span>${u.upiId || 'N/A'}</span></div>
+                </div>`;
+            }
+
+            // Referral info
+            if (u.referredBy || u.referrerName || u.referrerEmail) {
+                html += `<h4 class="text-white font-bold mt-5 mb-2 text-sm">🔗 Referral Info</h4><div class="detail-grid">
+                    <div class="detail-item"><label>Referrer Name</label><span>${u.referrerName || 'N/A'}</span></div>
+                    <div class="detail-item"><label>Referrer Email</label><span>${u.referrerEmail || 'N/A'}</span></div>
+                    <div class="detail-item"><label>Referral Code</label><span>${u.referrerCode || u.referredBy || 'N/A'}</span></div>
+                </div>`;
+            }
+
+            html += `<div class="flex flex-wrap gap-2 mt-5">
+                <button onclick="toggleUserStatus('${u.id}')" class="action-btn ${status === 'active' ? 'btn-red' : 'btn-green'} px-4 py-2">${status === 'active' ? '🚫 Block User' : '✅ Activate User'}</button>
+                <button onclick="deleteUser('${u.id}')" class="action-btn btn-red px-4 py-2">🗑 Delete User</button>
+            </div>`;
+
+            content.innerHTML = html;
+            document.getElementById('userModal').classList.remove('hidden');
+        };
+
+        window.closeUserModal = function() {
+            document.getElementById('userModal').classList.add('hidden');
+            currentModalUserId = null;
+        };
+
+        window.toggleUserStatus = async function(id) {
+            const u = allUsers.find(x => x.id === id);
+            if (!u) return;
+            const newStatus = (u.status || 'active') === 'active' ? 'blocked' : 'active';
+            if (newStatus === 'blocked' && !confirm('Block this user?')) return;
+            try {
+                await updateDoc(doc(db, 'users', id), { status: newStatus });
+                alert(`User ${newStatus === 'active' ? 'activated' : 'blocked'}!`);
+                await loadUsers();
+                if (currentModalUserId === id) await showUserDetail(id);
+            } catch (e) { alert('Error: ' + e.message); }
+        };
+
+        window.deleteUser = async function(id) {
+            if (!confirm('⚠️ PERMANENTLY DELETE this user? This action CANNOT be undone!')) return;
+            if (!confirm('Are you ABSOLUTELY sure?')) return;
+            try {
+                await deleteDoc(doc(db, 'users', id));
+                alert('User deleted.');
+                closeUserModal();
+                await loadUsers();
+            } catch (e) { alert('Error: ' + e.message); }
+        };
+
+        // ===== INVESTED PLANS =====
+        async function loadInvested() {
+            try {
+                const snap = await getDocs(collection(db, 'investments'));
+                allInvestments = [];
+                snap.forEach(d => allInvestments.push({ id: d.id, ...d.data() }));
+            } catch (e) {
+                allInvestments = [];
+            }
+            allInvestments.sort((a, b) => (b.investedDate?.toDate?.() || new Date()) - (a.investedDate?.toDate?.() || new Date()));
+
+            const investors = new Set(allInvestments.map(i => i.uid)).size;
+            const totalAmt = allInvestments.reduce((s, i) => s + (i.amount || 0), 0);
+            const active = allInvestments.filter(i => i.status === 'active').length;
+            const completed = allInvestments.filter(i => i.status === 'completed').length;
+
+            document.getElementById('iInvestors').textContent = investors;
+            document.getElementById('iAmount').textContent = formatMoney(totalAmt);
+            document.getElementById('iActive').textContent = active;
+            document.getElementById('iCompleted').textContent = completed;
+
+            renderInvestTable();
+        }
+
+        function renderInvestTable() {
+            const container = document.getElementById('investTableBody');
+            const searchTerm = (document.getElementById('investSearch').value || '').toLowerCase().trim();
+
+            let records = allInvestments;
+            if (searchTerm) {
+                records = records.filter(i => {
+                    return (i.userName || '').toLowerCase().includes(searchTerm) ||
+                        (i.userEmail || '').toLowerCase().includes(searchTerm) ||
+                        (i.planName || '').toLowerCase().includes(searchTerm) ||
+                        (i.referrerName || '').toLowerCase().includes(searchTerm) ||
+                        (i.referralCode || '').toLowerCase().includes(searchTerm);
+                });
+            }
+
+            if (records.length === 0) {
+                container.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-500">No investments found</td></tr>';
+                return;
+            }
+
+            container.innerHTML = records.map(i => {
+                return `<tr onclick="showInvestDetail('${i.id}')">
+                    <td><div class="font-medium text-white">${i.userName || 'Unknown'}</div><div class="text-xs text-gray-500">${i.userEmail || ''}</div></td>
+                    <td>${i.planName || 'N/A'}</td>
+                    <td class="text-cyan-400 font-bold">${formatMoney(i.amount)}</td>
+                    <td class="text-xs text-gray-500">${formatDate(i.investedDate)}</td>
+                    <td class="text-xs">${i.duration || 'N/A'} days</td>
+                    <td class="text-emerald-400 font-medium">${formatMoney(i.expectedReturn || 0)}</td>
+                    <td>${badge(i.status || 'active')}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        window.showInvestDetail = async function(id) {
+            const i = allInvestments.find(x => x.id === id);
+            if (!i) return;
+            const content = document.getElementById('investModalContent');
+            let html = `
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-14 h-14 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 text-xl">📈</div>
+                    <div><div class="font-bold text-white">${i.userName || 'Unknown'}</div><div class="text-xs text-gray-500">${i.userEmail || ''}</div></div>
+                </div>
+                <div class="detail-grid">
+                    <div class="detail-item"><label>Plan</label><span>${i.planName || 'N/A'}</span></div>
+                    <div class="detail-item"><label>Amount</label><span>${formatMoney(i.amount)}</span></div>
+                    <div class="detail-item"><label>Invested Date</label><span>${formatDate(i.investedDate)}</span></div>
+                    <div class="detail-item"><label>Duration</label><span>${i.duration || 'N/A'} days</span></div>
+                    <div class="detail-item"><label>Expected Return</label><span>${formatMoney(i.expectedReturn || 0)}</span></div>
+                    <div class="detail-item"><label>Status</label><span>${badge(i.status || 'active')}</span></div>
+                    <div class="detail-item"><label>Completion Date</label><span>${i.completionDate ? formatDate(i.completionDate) : 'N/A'}</span></div>
+                </div>`;
+
+            // Referral
+            if (i.referrerName || i.referrerEmail || i.referralCode) {
+                html += `<h4 class="text-white font-bold mt-5 mb-2 text-sm">🔗 Referral Information</h4><div class="detail-grid">
+                    <div class="detail-item"><label>Referrer Name</label><span>${i.referrerName || 'N/A'}</span></div>
+                    <div class="detail-item"><label>Referrer Email</label><span>${i.referrerEmail || 'N/A'}</span></div>
+                    <div class="detail-item"><label>Referral Code</label><span>${i.referralCode || 'N/A'}</span></div>
+                </div>`;
+            }
+
+            content.innerHTML = html;
+            document.getElementById('investModal').classList.remove('hidden');
+        };
+
+        window.closeInvestModal = function() {
+            document.getElementById('investModal').classList.add('hidden');
+        };
+
+        // ===== PLANS =====
+        document.getElementById('planForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('planName').value.trim();
+            const dailyReturn = parseFloat(document.getElementById('planReturn').value);
+            const duration = parseInt(document.getElementById('planDuration').value);
+            const minAmt = parseFloat(document.getElementById('planMin').value);
+            const maxAmt = parseFloat(document.getElementById('planMax').value);
+            const desc = document.getElementById('planDesc').value.trim();
+
+            if (!name || !dailyReturn || !minAmt || !maxAmt || !duration) return alert('Fill all required fields');
+            if (minAmt >= maxAmt) return alert('Min must be less than max');
+
+            try {
+                await addDoc(collection(db, 'plans'), {
+                    name, dailyReturn, duration, minAmount: minAmt, maxAmount: maxAmt,
+                    description: desc || 'Investment Plan', status: 'active', createdAt: serverTimestamp()
+                });
+                document.getElementById('planForm').reset();
+                alert('✅ Plan created!');
+                await loadPlans();
+            } catch (e) { alert('Error: ' + e.message); }
+        });
+
+        async function loadPlans() {
+            const snap = await getDocs(collection(db, 'plans'));
+            allPlans = [];
+            snap.forEach(d => allPlans.push({ id: d.id, ...d.data() }));
+            renderPlans();
+        }
+
+        function renderPlans() {
+            const container = document.getElementById('existingPlans');
+            if (allPlans.length === 0) {
+                container.innerHTML = '<p class="text-gray-500">No plans created yet.</p>';
+                return;
+            }
+            container.innerHTML = allPlans.map(p => `
+                <div class="p-4 bg-gray-800/30 rounded-xl border border-gray-700/30 flex flex-wrap justify-between items-center gap-3">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-white">${p.name}</span>
+                            <span class="badge ${p.status === 'active' ? 'badge-active' : 'badge-blocked'}">${p.status || 'active'}</span>
+                        </div>
+                        <p class="text-gray-400 text-xs mt-1">${p.dailyReturn}% daily | ₹${p.minAmount} - ₹${p.maxAmount} | ${p.duration} days</p>
+                        <p class="text-gray-500 text-xs">${p.description || ''}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="togglePlanStatus('${p.id}')" class="action-btn ${p.status === 'active' ? 'btn-yellow' : 'btn-green'}">${p.status === 'active' ? 'Disable' : 'Enable'}</button>
+                        <button onclick="openPlanEditModal('${p.id}')" class="action-btn btn-blue">✏️ Edit</button>
+                        <button onclick="deletePlan('${p.id}')" class="action-btn btn-red">🗑 Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.togglePlanStatus = async function(id) {
+            const p = allPlans.find(x => x.id === id);
+            if (!p) return;
+            const newStatus = (p.status || 'active') === 'active' ? 'disabled' : 'active';
+            try {
+                await updateDoc(doc(db, 'plans', id), { status: newStatus });
+                await loadPlans();
+            } catch (e) { alert('Error: ' + e.message); }
+        };
+
+        window.openPlanEditModal = async function(id) {
+            const p = allPlans.find(x => x.id === id);
+            if (!p) return;
+            currentEditPlanId = id;
+            document.getElementById('editPlanName').value = p.name || '';
+            document.getElementById('editPlanReturn').value = p.dailyReturn || '';
+            document.getElementById('editPlanDuration').value = p.duration || '';
+            document.getElementById('editPlanMin').value = p.minAmount || '';
+            document.getElementById('editPlanMax').value = p.maxAmount || '';
+            document.getElementById('editPlanDesc').value = p.description || '';
+            document.getElementById('planEditModal').classList.remove('hidden');
+        };
+
+        window.closePlanEditModal = function() {
+            document.getElementById('planEditModal').classList.add('hidden');
+            currentEditPlanId = null;
+        };
+
+        document.getElementById('planEditForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentEditPlanId) return;
+            const name = document.getElementById('editPlanName').value.trim();
+            const dailyReturn = parseFloat(document.getElementById('editPlanReturn').value);
+            const duration = parseInt(document.getElementById('editPlanDuration').value);
+            const minAmt = parseFloat(document.getElementById('editPlanMin').value);
+            const maxAmt = parseFloat(document.getElementById('editPlanMax').value);
+            const desc = document.getElementById('editPlanDesc').value.trim();
+            try {
+                await updateDoc(doc(db, 'plans', currentEditPlanId), {
+                    name, dailyReturn, duration, minAmount: minAmt, maxAmount: maxAmt, description: desc
+                });
+                alert('✅ Plan updated!');
+                closePlanEditModal();
+                await loadPlans();
+            } catch (e) { alert('Error: ' + e.message); }
+        });
+
+        window.deletePlan = async function(id) {
+            if (!confirm('Delete this plan permanently?')) return;
+            try {
+                await deleteDoc(doc(db, 'plans', id));
+                alert('Plan deleted.');
+                await loadPlans();
+            } catch (e) { alert('Error: ' + e.message); }
+        };
+
+        // ===== SEARCH EVENTS =====
+        document.getElementById('withdrawSearch').addEventListener('input', renderWithdrawTable);
+        document.getElementById('depositSearch').addEventListener('input', renderDepositTable);
+        document.getElementById('userSearch').addEventListener('input', renderUserTable);
+        document.getElementById('investSearch').addEventListener('input', renderInvestTable);
+
+        // ===== AUTH =====
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            const userEmail = (user.email || '').toLowerCase();
+            if (userEmail !== ADMIN_EMAIL) {
+                document.getElementById('accessDenied').classList.remove('hidden');
+                document.getElementById('adminPanel').classList.add('hidden');
+                return;
+            }
+            document.getElementById('accessDenied').classList.add('hidden');
+            document.getElementById('adminPanel').classList.remove('hidden');
+            document.getElementById('adminEmail').textContent = user.email;
+            await Promise.all([loadUsers(), loadDeposits(), loadWithdrawals(), loadInvested(), loadPlans()]);
+        });
+    </script>
+</body>
+</html>
