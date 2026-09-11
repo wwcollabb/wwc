@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>WinKom — Withdraw</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{
+  --bg:#070b14;
+  --line:rgba(255,255,255,.075);
+  --line-strong:rgba(255,255,255,.13);
+  --text:#eef4fb;
+  --muted:#8b98ad;
+  --dim:#5b6879;
+  --cyan:#22d3ee;
+  --cyan-soft:#67e8f9;
+  --amber:#f59e0b;
+  --emerald:#10b981;
+  --rose:#f43f5e;
+  --violet:#8b5cf6;
+}
+
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  font-family:'Plus Jakarta Sans','Segoe UI',system-ui,-apple-system,sans-serif;
+  -webkit-tap-highlight-color:transparent;
+  background-color:var(--bg);
+  background-image:
+    radial-gradient(680px 420px at 8% -12%, rgba(34,211,238,.10), transparent 62%),
+    radial-gradient(620px 420px at 102% 2%, rgba(99,102,241,.09), transparent 60%),
+    radial-gradient(700px 520px at 50% 112%, rgba(16,185,129,.05), transparent 62%);
+  background-attachment:fixed;
+}
+::selection{background:rgba(34,211,238,.3)}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:rgba(34,211,238,.35)}
+
+.ic{width:20px;height:20px;flex:none;display:block;stroke:currentColor;fill:none;
+    stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ic-sm{width:16px;height:16px}
+.ic-xs{width:13px;height:13px;stroke-width:2.2}
+.ic-lg{width:24px;height:24px}
+
+.glass{
+  background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+  border:1px solid var(--line);
+  border-radius:20px;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+
+.sidebar{transition:transform .32s cubic-bezier(.4,0,.2,1)}
+.sidebar-closed{transform:translateX(-100%)}
+.sidebar-open{transform:translateX(0)}
+@media (min-width:768px){.sidebar-closed{transform:translateX(0)}}
+
+.nav-link{
+  position:relative;display:flex;align-items:center;gap:12px;
+  padding:11px 14px;border-radius:14px;font-size:14px;font-weight:600;
+  color:var(--muted);border:1px solid transparent;
+  transition:background .2s ease,color .2s ease,border-color .2s ease;
+}
+.nav-link:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.nav-link.active{
+  background:linear-gradient(90deg,rgba(34,211,238,.16),rgba(34,211,238,.04));
+  border-color:rgba(34,211,238,.22);
+  color:var(--cyan-soft);
+}
+.nav-link .ic{width:18px;height:18px}
+
+.glass-header{
+  background:rgba(9,13,22,.72);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+
+.balance-card{
+  background:
+    radial-gradient(520px 220px at 100% 0%, rgba(34,211,238,.10), transparent 62%),
+    linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));
+  border:1px solid rgba(34,211,238,.20);
+  border-radius:22px;
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+  transition:border-color .25s ease,box-shadow .25s ease;
+}
+.balance-card:hover{border-color:rgba(34,211,238,.35)}
+.wallet-badge{
+  width:54px;height:54px;border-radius:16px;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--cyan-soft);
+  background:rgba(34,211,238,.10);
+  border:1px solid rgba(34,211,238,.22);
+}
+.wallet-badge .ic{width:26px;height:26px}
+
+.chip{
+  width:42px;height:42px;border-radius:13px;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid transparent;
+}
+.chip .ic{width:20px;height:20px}
+.chip-cyan{color:var(--cyan-soft);background:rgba(34,211,238,.10);border-color:rgba(34,211,238,.20)}
+.chip-amber{color:#fbbf24;background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.20)}
+.chip-emerald{color:#34d399;background:rgba(16,185,129,.10);border-color:rgba(16,185,129,.20)}
+.chip-violet{color:#a78bfa;background:rgba(139,92,246,.10);border-color:rgba(139,92,246,.20)}
+.chip-rose{color:#fda4af;background:rgba(244,63,94,.10);border-color:rgba(244,63,94,.20)}
+.chip-slate{color:#cbd5e1;background:rgba(148,163,184,.10);border-color:rgba(148,163,184,.20)}
+
+.field-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:800}
+
+.input-field{
+  width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line);
+  color:var(--text);font-size:14px;border-radius:14px;
+  padding:13px 16px;outline:none;transition:border-color .2s ease,background .2s ease;
+  font-family:inherit;
+}
+.input-field::placeholder{color:#5b6879}
+.input-field:focus{border-color:rgba(34,211,238,.5);background:rgba(34,211,238,.06)}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:13px 20px;border-radius:14px;font-size:14px;font-weight:800;
+  white-space:nowrap;cursor:pointer;border:1px solid transparent;
+  transition:transform .16s ease,box-shadow .22s ease,background .22s ease,border-color .22s ease,color .22s ease;
+  font-family:inherit;
+}
+.btn:active{transform:scale(.97)}
+.btn-primary{
+  background:linear-gradient(135deg,#22d3ee,#3b82f6);color:#04121a;
+  box-shadow:0 10px 26px rgba(34,211,238,.25);
+}
+.btn-primary:hover{box-shadow:0 14px 34px rgba(34,211,238,.38)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;transform:none}
+.btn-ghost{background:rgba(255,255,255,.05);border-color:var(--line-strong);color:var(--muted)}
+.btn-ghost:hover{background:rgba(255,255,255,.09);color:var(--text)}
+
+/* Payment method cards */
+.pay-method{
+  display:flex;align-items:center;gap:12px;
+  padding:14px;
+  border-radius:16px;
+  background:rgba(255,255,255,.028);
+  border:1px solid var(--line);
+  cursor:pointer;
+  transition:all .22s ease;
+}
+.pay-method:hover{border-color:rgba(34,211,238,.24);background:rgba(255,255,255,.045)}
+.pay-method.active{
+  border-color:rgba(34,211,238,.5);
+  background:linear-gradient(135deg,rgba(34,211,238,.14),rgba(34,211,238,.03));
+  box-shadow:0 8px 24px rgba(34,211,238,.10);
+}
+.pay-method .radio{
+  width:22px;height:22px;border-radius:999px;flex:none;
+  border:1.5px solid var(--line-strong);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s ease;
+}
+.pay-method.active .radio{border-color:var(--cyan);background:var(--cyan)}
+.pay-method .radio::after{
+  content:'';width:8px;height:8px;border-radius:999px;background:#04121a;
+  transform:scale(0);transition:transform .2s ease;
+}
+.pay-method.active .radio::after{transform:scale(1)}
+
+/* Verified details card */
+.verified-card{
+  border:1px solid rgba(16,185,129,.28);
+  background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(255,255,255,.02));
+  border-radius:16px;
+  overflow:hidden;
+  transition:border-color .22s ease,background .22s ease;
+}
+.verified-card.open{border-color:rgba(16,185,129,.45)}
+.verified-head{display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer}
+.verified-chevron{transition:transform .3s cubic-bezier(.4,0,.2,1);color:#34d399;flex:none}
+.verified-card.open .verified-chevron{transform:rotate(180deg)}
+.verified-body{
+  max-height:0;opacity:0;overflow:hidden;
+  transition:max-height .34s cubic-bezier(.4,0,.2,1),opacity .26s ease;
+}
+.verified-card.open .verified-body{max-height:500px;opacity:1}
+.verified-body-inner{padding:0 14px 14px}
+
+.verified-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:4px 9px;border-radius:999px;font-size:10px;font-weight:800;
+  background:rgba(16,185,129,.13);color:#34d399;border:1px solid rgba(16,185,129,.3);
+  white-space:nowrap;
+}
+
+.binding-card{
+  border:1px dashed rgba(245,158,11,.35);
+  background:linear-gradient(135deg,rgba(245,158,11,.06),rgba(255,255,255,.015));
+  border-radius:16px;
+  padding:16px;
+}
+
+.spec{
+  background:rgba(0,0,0,.22);
+  border:1px solid var(--line);
+  border-radius:12px;padding:10px 12px;min-width:0;
+}
+.spec span{display:block;font-size:10px;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.spec strong{display:block;font-size:13px;color:#e8eef7;font-weight:700;margin-top:4px;word-break:break-all}
+
+.copy-btn{
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--line);
+  border-radius:8px;padding:4px;
+  display:inline-flex;align-items:center;justify-content:center;
+  color:var(--muted);cursor:pointer;transition:all .2s ease;
+}
+.copy-btn:hover{background:rgba(34,211,238,.12);border-color:rgba(34,211,238,.35);color:var(--cyan-soft)}
+
+/* Modal */
+.modal{
+  position:fixed;inset:0;z-index:60;display:none;
+  align-items:center;justify-content:center;padding:16px;
+  background:rgba(3,6,12,.76);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.modal.open{display:flex}
+.modal-panel{
+  width:100%;max-width:420px;max-height:88vh;overflow-y:auto;
+  border-radius:22px;padding:22px;
+  background:linear-gradient(180deg,#0e1524,#0a101b);
+  border:1px solid var(--line-strong);
+  box-shadow:0 40px 100px rgba(0,0,0,.7);
+  animation:modalIn .28s cubic-bezier(.16,1,.3,1);
+  overscroll-behavior:contain;
+}
+@keyframes modalIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.icon-btn{
+  width:36px;height:36px;border-radius:12px;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.05);border:1px solid var(--line);
+  color:var(--muted);cursor:pointer;transition:all .2s ease;
+}
+.icon-btn:hover{background:rgba(255,255,255,.10);color:#fff}
+
+/* Code input (4 boxes) */
+.code-input{
+  width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line);
+  color:var(--text);font-size:22px;font-weight:800;letter-spacing:.5em;text-align:center;
+  border-radius:14px;padding:14px 12px;outline:none;
+  transition:border-color .2s ease,background .2s ease;
+  font-family:inherit;
+}
+.code-input:focus{border-color:rgba(34,211,238,.5);background:rgba(34,211,238,.06)}
+.code-input.error{border-color:rgba(244,63,94,.6);background:rgba(244,63,94,.06)}
+
+.alert-row{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:12px 14px;border-radius:14px;font-size:12.5px;line-height:1.5;
+}
+.alert-warn{background:rgba(245,158,11,.09);border:1px solid rgba(245,158,11,.28);color:#fcd34d}
+.alert-error{background:rgba(244,63,94,.09);border:1px solid rgba(244,63,94,.28);color:#fda4af}
+.alert-info{background:rgba(34,211,238,.09);border:1px solid rgba(34,211,238,.28);color:var(--cyan-soft)}
+
+.fade-in{animation:fadeIn .45s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.pulse-dot{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+</style>
+</head>
+<body>
+
+<!-- ============ SIDEBAR ============ -->
+<aside id="sidebar" class="sidebar sidebar-closed fixed top-0 left-0 h-full w-[264px] bg-[#0a0f1a]/95 backdrop-blur-xl border-r border-white/[.06] z-50 overflow-y-auto">
+  <div class="p-5">
+    <div class="flex items-center justify-between mb-8">
+      <a href="index.html" class="flex items-center gap-3 min-w-0">
+        <img src="logo.png" alt="WinKom" class="w-10 h-10 rounded-xl object-cover" onerror="this.style.display='none'"/>
+        <span class="text-xl font-extrabold text-white tracking-tight truncate">Win<span class="text-cyan-400">Kom</span></span>
+      </a>
+      <button onclick="toggleSidebar()" aria-label="Close menu"
+              class="md:hidden w-9 h-9 rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:text-white flex items-center justify-center transition">
+        <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+
+    <nav class="space-y-1.5">
+      <a href="index.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8.5 16v-4.5M12.5 16V8M16.5 16v-2.5"/></svg>
+        Dashboard
+      </a>
+      <a href="deposit.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8 10.5 4 4 4-4"/><path d="M5 19h14"/></svg>
+        Deposit
+      </a>
+      <a href="withdraw.html" class="nav-link active">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M12 15V5"/><path d="m8 8.5 4-4 4 4"/><path d="M5 19h14"/></svg>
+        Withdraw
+      </a>
+      <a href="transactions.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M6.5 3.5h8L18.5 7v13.5h-12z"/><path d="M9.5 11h6M9.5 14.5h6M9.5 7.5h2.5"/></svg>
+        My Transactions
+      </a>
+      <a href="settings.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.1"/><path d="M12 2.9v2.3M12 18.8v2.3M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.9 12h2.3M18.8 12h2.3M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+        Settings
+      </a>
+      <a href="about.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.2"/><circle cx="12" cy="7.9" r=".9" fill="currentColor" stroke="none"/></svg>
+        About
+      </a>
+      <a href="support.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/><path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/><path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/></svg>
+        Support
+      </a>
+
+      <div class="pt-3 mt-3 border-t border-white/[.06]">
+        <button onclick="handleLogout()" class="nav-link w-full text-left text-red-400 hover:bg-red-500/10 hover:text-red-300">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="m10 8-4 4 4 4"/><path d="M6 12h9"/></svg>
+          Logout
+        </button>
+      </div>
+    </nav>
+  </div>
+</aside>
+
+<div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden"></div>
+
+<!-- ============ MAIN ============ -->
+<div class="md:ml-64 relative">
+
+  <!-- Header -->
+  <header class="glass-header border-b border-white/[.06] sticky top-0 z-30">
+    <div class="max-w-3xl mx-auto px-4 py-3.5">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <button onclick="toggleSidebar()" aria-label="Open menu"
+                  class="md:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:text-white flex items-center justify-center transition">
+            <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+          <div class="min-w-0">
+            <h1 class="text-[15px] sm:text-lg font-extrabold text-white truncate leading-tight">Withdrawal Portal</h1>
+            <p class="text-[11px] text-slate-500 font-medium truncate">
+              Welcome, <span id="userName" class="text-cyan-400 font-bold">…</span>
+            </p>
+          </div>
+        </div>
+        <span class="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 px-3 py-1.5 rounded-full shrink-0">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></span> SECURE
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-5 md:py-7 fade-in">
+
+    <!-- ===== Balance ===== -->
+    <section class="balance-card p-5 sm:p-6 mb-4">
+      <div class="flex items-center gap-4">
+        <span class="wallet-badge">
+          <svg class="ic" viewBox="0 0 24 24">
+            <path d="M20 8.6V7a2 2 0 0 0-2-2H5.6A2.6 2.6 0 0 0 3 7.6v8.8A2.6 2.6 0 0 0 5.6 19H18a2 2 0 0 0 2-2v-1.6"/>
+            <path d="M21.3 9.6h-4.4a2.4 2.4 0 0 0 0 4.8h4.4a.8.8 0 0 0 .8-.8v-3.2a.8.8 0 0 0-.8-.8Z"/>
+            <circle cx="17.1" cy="12" r=".85" fill="currentColor" stroke="none"/>
+          </svg>
+        </span>
+        <div class="min-w-0">
+          <p class="field-label">Available for Withdrawal</p>
+          <p class="text-[30px] sm:text-4xl font-extrabold text-white leading-tight mt-1 tracking-tight">
+            ₹<span id="availBalance">0.00</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Insufficient balance warning -->
+    <div id="warningBanner" class="hidden alert-row alert-error mb-4">
+      <svg class="ic ic-sm mt-0.5" style="color:#fda4af" viewBox="0 0 24 24">
+        <path d="M12 9v4"/><path d="M12 16.5h.01"/>
+        <path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/>
+      </svg>
+      <span>Your balance is insufficient for withdrawal. Minimum withdrawal amount is ₹100.</span>
+    </div>
+
+    <!-- Processing note -->
+    <div class="alert-row alert-warn mb-4">
+      <svg class="ic ic-sm mt-0.5" style="color:#fcd34d" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/>
+      </svg>
+      <span><strong style="color:#fbbf24">Withdrawal processing time: 30–60 minutes.</strong> Your request will be reviewed and processed to your selected account.</span>
+    </div>
+
+    <!-- ===== Withdraw Form ===== -->
+    <section class="glass p-5 sm:p-6">
+      <div class="flex items-center gap-3 mb-5">
+        <span class="chip chip-cyan">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M12 15V5"/><path d="m8 8.5 4-4 4 4"/><path d="M5 19h14"/></svg>
+        </span>
+        <div>
+          <h2 class="text-[15px] font-extrabold text-white">Request Withdrawal</h2>
+          <p class="text-[11.5px] text-slate-500 mt-0.5">Fill in the details below to submit your request</p>
+        </div>
+      </div>
+
+      <form id="withdrawForm" class="space-y-5" novalidate>
+
+        <!-- Amount -->
+        <div>
+          <label class="field-label block mb-2">Amount (₹)</label>
+          <input type="number" id="withdrawAmount" min="100" step="1" placeholder="Minimum ₹100"
+                 inputmode="numeric" class="input-field" style="font-size:16px;font-weight:800"/>
+          <p class="text-slate-500 text-[11px] mt-1.5">Enter any amount ≥ ₹100</p>
+        </div>
+
+        <!-- Method -->
+        <div>
+          <label class="field-label block mb-2">Payment Method</label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="pay-method" data-method="upi" id="payMethodUpi" onclick="selectMethod('upi')">
+              <span class="radio"></span>
+              <span class="chip chip-cyan" style="width:36px;height:36px;border-radius:11px">
+                <svg class="ic ic-sm" viewBox="0 0 24 24">
+                  <rect x="6" y="3" width="12" height="18" rx="2.4"/>
+                  <path d="M10 17.5h4"/>
+                </svg>
+              </span>
+              <div class="min-w-0 flex-1">
+                <p class="text-white font-bold text-[13.5px]">UPI</p>
+                <p class="text-slate-500 text-[11px]">Instant transfer</p>
+              </div>
+            </div>
+
+            <div class="pay-method" data-method="bank" id="payMethodBank" onclick="selectMethod('bank')">
+              <span class="radio"></span>
+              <span class="chip chip-violet" style="width:36px;height:36px;border-radius:11px">
+                <svg class="ic ic-sm" viewBox="0 0 24 24">
+                  <path d="M3 9.5 12 4l9 5.5"/>
+                  <path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8"/>
+                  <path d="M3 20h18"/>
+                </svg>
+              </span>
+              <div class="min-w-0 flex-1">
+                <p class="text-white font-bold text-[13.5px]">Bank Account</p>
+                <p class="text-slate-500 text-[11px]">NEFT / IMPS</p>
+              </div>
+            </div>
+          </div>
+          <input type="hidden" id="paymentMethod" value=""/>
+        </div>
+
+        <!-- Details area (dynamic) -->
+        <div id="detailsArea" class="hidden"></div>
+
+        <!-- Submit -->
+        <button type="submit" id="submitBtn" class="btn btn-primary w-full" disabled>
+          <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M12 15V5"/><path d="m8 8.5 4-4 4 4"/><path d="M5 19h14"/></svg>
+          Submit Withdrawal Request
+        </button>
+      </form>
+    </section>
+  </main>
+</div>
+
+<!-- ============ WITHDRAWAL CODE MODAL ============ -->
+<div id="codeModal" class="modal">
+  <div class="modal-panel">
+    <div class="flex items-start justify-between gap-3 mb-5">
+      <div class="min-w-0">
+        <p class="field-label">Security Check</p>
+        <h4 class="text-lg font-extrabold text-white mt-1.5 flex items-center gap-2.5">
+          <span class="chip chip-cyan" style="width:36px;height:36px;border-radius:11px">
+            <svg class="ic ic-sm" viewBox="0 0 24 24">
+              <path d="M12 3.2 5 6v5.5c0 4 2.9 7.8 7 9.3 4.1-1.5 7-5.3 7-9.3V6z"/>
+              <path d="M9.2 12.2l2 2 3.6-3.8"/>
+            </svg>
+          </span>
+          Verify Withdrawal
+        </h4>
+      </div>
+      <button type="button" onclick="closeCodeModal()" aria-label="Close" class="icon-btn">
+        <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+
+    <div class="glass p-4 mb-5" style="border-radius:14px;border-color:rgba(34,211,238,.20)">
+      <div class="flex items-center justify-between gap-3">
+        <span class="field-label">Withdrawal Amount</span>
+        <span class="text-cyan-300 font-extrabold text-lg">₹<span id="modalAmount">0.00</span></span>
+      </div>
+      <div class="flex items-center justify-between gap-3 mt-2 pt-2 border-t border-white/[.06]">
+        <span class="field-label">Method</span>
+        <span class="text-white font-bold text-[12.5px]" id="modalMethod">—</span>
+      </div>
+    </div>
+
+    <label class="field-label block mb-2">Enter 4-Digit Withdrawal Code</label>
+    <input type="password" id="modalCodeInput" inputmode="numeric" maxlength="4" placeholder="••••"
+           class="code-input mb-2" autocomplete="off"/>
+
+    <div id="modalError" class="hidden alert-row alert-error mb-4">
+      <svg class="ic ic-sm mt-0.5" style="color:#fda4af" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/>
+      </svg>
+      <span id="modalErrorText">Incorrect code.</span>
+    </div>
+
+    <div class="alert-row alert-info mb-4">
+      <svg class="ic ic-sm mt-0.5" style="color:var(--cyan-soft)" viewBox="0 0 24 24">
+        <rect x="4.5" y="10.5" width="15" height="10" rx="2.4"/>
+        <path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7"/>
+      </svg>
+      <span>You set this 4-digit code during signup. Forgot it? Change it in <strong style="color:#fff">Settings</strong>.</span>
+    </div>
+
+    <div class="flex gap-3">
+      <button type="button" onclick="confirmWithdrawal()" id="modalConfirmBtn" class="btn btn-primary flex-1">
+        <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M5 12.6l4.4 4.4L19 7.4"/></svg>
+        Confirm & Withdraw
+      </button>
+      <button type="button" onclick="closeCodeModal()" class="btn btn-ghost">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+    authDomain: "winkom-da4c2.firebaseapp.com",
+    projectId: "winkom-da4c2",
+    storageBucket: "winkom-da4c2.firebasestorage.app",
+    messagingSenderId: "629229462242",
+    appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let userData = null;
+let selectedMethod = '';
+let pendingWithdrawal = null;
+
+/* ============================================================
+   ICONS
+   ============================================================ */
+function S(paths, cls = '') {
+    return `<svg class="ic ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
+}
+const IC = {
+    check:   c => S('<path d="M5 12.6l4.4 4.4L19 7.4"/>', c),
+    chevronDown: c => S('<path d="m6 9 6 6 6-6"/>', c),
+    copy:    c => S('<rect x="9" y="9" width="11.5" height="11.5" rx="2.4"/><path d="M15 6.2V5.6A2.1 2.1 0 0 0 12.9 3.5H5.6A2.1 2.1 0 0 0 3.5 5.6v7.3A2.1 2.1 0 0 0 5.6 15h.6"/>', c),
+    upi:     c => S('<rect x="6" y="3" width="12" height="18" rx="2.4"/><path d="M10 17.5h4"/>', c),
+    bank:    c => S('<path d="M3 9.5 12 4l9 5.5"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8"/><path d="M3 20h18"/>', c),
+    shield:  c => S('<path d="M12 3.2 5 6v5.5c0 4 2.9 7.8 7 9.3 4.1-1.5 7-5.3 7-9.3V6z"/><path d="M9.2 12.2l2 2 3.6-3.8"/>', c),
+    lock:    c => S('<rect x="4.5" y="10.5" width="15" height="10" rx="2.4"/><path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7"/>', c),
+    warn:    c => S('<circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/>', c)
+};
+function ic(name, cls = '') { return IC[name] ? IC[name](cls) : ''; }
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+}
+function escapeAttr(str) { return escapeHtml(str).replace(/"/g, '&quot;'); }
+
+window.copyToClipboard = function (e, btn) {
+    e.stopPropagation();
+    const value = btn.getAttribute('data-copy') || '';
+    const done = () => {
+        const orig = btn.innerHTML;
+        btn.innerHTML = ic('check', 'ic-xs');
+        btn.style.color = '#34d399';
+        setTimeout(() => { btn.innerHTML = orig; btn.style.color = ''; }, 1400);
+    };
+    if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(value).then(done).catch(() => fallbackCopy(value, done));
+    } else {
+        fallbackCopy(value, done);
+    }
+};
+function fallbackCopy(text, cb) {
+    try {
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta);
+        cb && cb();
+    } catch (e) { console.error(e); }
+}
+
+/* ============================================================
+   SIDEBAR / LOGOUT
+   ============================================================ */
+window.toggleSidebar = function () {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    if (sidebar.classList.contains('sidebar-closed')) {
+        sidebar.classList.remove('sidebar-closed');
+        sidebar.classList.add('sidebar-open');
+        overlay.classList.remove('hidden');
+    } else {
+        sidebar.classList.add('sidebar-closed');
+        sidebar.classList.remove('sidebar-open');
+        overlay.classList.add('hidden');
+    }
+};
+window.handleLogout = async function () {
+    await signOut(auth);
+    window.location.href = 'login.html';
+};
+
+/* ============================================================
+   METHOD SELECTION + DETAILS AREA
+   ============================================================ */
+window.selectMethod = function (method) {
+    selectedMethod = method;
+    document.getElementById('paymentMethod').value = method;
+
+    document.getElementById('payMethodUpi').classList.toggle('active', method === 'upi');
+    document.getElementById('payMethodBank').classList.toggle('active', method === 'bank');
+
+    renderDetailsArea(method);
+    updateSubmitState();
+};
+
+function renderDetailsArea(method) {
+    const area = document.getElementById('detailsArea');
+    area.classList.remove('hidden');
+
+    if (method === 'upi') {
+        const saved = userData?.savedUpi;
+        if (saved && saved.upiId) {
+            area.innerHTML = renderVerifiedCard('upi', saved);
+        } else {
+            area.innerHTML = renderBindingForm('upi');
+        }
+    } else if (method === 'bank') {
+        const saved = userData?.savedBank;
+        if (saved && saved.accountNumber) {
+            area.innerHTML = renderVerifiedCard('bank', saved);
+        } else {
+            area.innerHTML = renderBindingForm('bank');
+        }
+    }
+}
+
+/* ---- Verified (saved) details card ---- */
+function renderVerifiedCard(method, saved) {
+    const isUpi = method === 'upi';
+
+    const title = isUpi ? 'UPI Details Verified' : 'Bank Account Verified';
+    const subtitle = isUpi
+        ? escapeHtml(saved.upiId || '')
+        : '•••• ' + String(saved.accountNumber || '').slice(-4);
+
+    const detailFields = isUpi
+        ? `
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div class="spec">
+                    <span>Account Holder</span>
+                    <strong>${escapeHtml(saved.name || '—')}</strong>
+                </div>
+                <div class="spec">
+                    <span>UPI ID</span>
+                    <div class="flex items-center justify-between gap-2 mt-1">
+                        <strong style="margin-top:0" class="truncate">${escapeHtml(saved.upiId || '—')}</strong>
+                        <button type="button" class="copy-btn shrink-0" data-copy="${escapeAttr(saved.upiId || '')}" onclick="copyToClipboard(event, this)" aria-label="Copy">
+                            ${ic('copy', 'ic-xs')}
+                        </button>
+                    </div>
+                </div>
+            </div>`
+        : `
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div class="spec">
+                    <span>Account Holder</span>
+                    <strong>${escapeHtml(saved.accountHolderName || '—')}</strong>
+                </div>
+                <div class="spec">
+                    <span>Account Number</span>
+                    <div class="flex items-center justify-between gap-2 mt-1">
+                        <strong style="margin-top:0" class="truncate">${escapeHtml(saved.accountNumber || '—')}</strong>
+                        <button type="button" class="copy-btn shrink-0" data-copy="${escapeAttr(saved.accountNumber || '')}" onclick="copyToClipboard(event, this)" aria-label="Copy">
+                            ${ic('copy', 'ic-xs')}
+                        </button>
+                    </div>
+                </div>
+                <div class="spec sm:col-span-2">
+                    <span>IFSC Code</span>
+                    <div class="flex items-center justify-between gap-2 mt-1">
+                        <strong style="margin-top:0" class="truncate">${escapeHtml(saved.ifscCode || '—')}</strong>
+                        <button type="button" class="copy-btn shrink-0" data-copy="${escapeAttr(saved.ifscCode || '')}" onclick="copyToClipboard(event, this)" aria-label="Copy">
+                            ${ic('copy', 'ic-xs')}
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+
+    return `
+    <div class="verified-card" id="verifiedCard">
+        <div class="verified-head" onclick="toggleVerifiedDetails(event)">
+            <span class="chip chip-emerald" style="width:38px;height:38px;border-radius:12px">
+                ${isUpi ? ic('upi', 'ic-sm') : ic('bank', 'ic-sm')}
+            </span>
+            <div class="min-w-0 flex-1">
+                <p class="text-white font-bold text-[13.5px] leading-snug">${title}</p>
+                <p class="text-slate-400 text-[11.5px] mt-0.5 truncate">${subtitle}</p>
+            </div>
+            <span class="verified-badge">
+                ${ic('check', 'ic-xs')} Verified
+            </span>
+            <svg class="ic ic-sm verified-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+        <div class="verified-body">
+            <div class="verified-body-inner">
+                ${detailFields}
+                <p class="text-slate-500 text-[10.5px] mt-3 leading-relaxed">
+                    These details are permanently linked to your account. To update them, please change them in Settings.
+                </p>
+            </div>
+        </div>
+    </div>`;
+}
+
+window.toggleVerifiedDetails = function (e) {
+    if (e && e.target.closest('.copy-btn')) return; // don't toggle when copying
+    const card = document.getElementById('verifiedCard');
+    if (card) card.classList.toggle('open');
+};
+
+/* ---- Binding form (no saved details yet) ---- */
+function renderBindingForm(method) {
+    const isUpi = method === 'upi';
+
+    const badge = `
+    <div class="flex items-start gap-3 mb-4">
+        <span class="chip chip-amber" style="width:38px;height:38px;border-radius:12px">
+            ${ic('warn', 'ic-sm')}
+        </span>
+        <div class="min-w-0">
+            <p class="text-white font-bold text-[13.5px] leading-snug">Bind Account Details</p>
+            <p class="text-slate-400 text-[11.5px] mt-0.5">
+                ${isUpi
+                    ? 'You haven\'t bound any UPI ID yet. Fill in the details below — they will be saved permanently.'
+                    : 'You haven\'t bound any bank account yet. Fill in the details below — they will be saved permanently.'}
+            </p>
+        </div>
+    </div>`;
+
+    if (isUpi) {
+        return `
+        <div class="binding-card">
+            ${badge}
+            <div class="space-y-4">
+                <div>
+                    <label class="field-label block mb-2">Account Holder Name</label>
+                    <input type="text" id="upiName" placeholder="Your full name" class="input-field"/>
+                </div>
+                <div>
+                    <label class="field-label block mb-2">UPI ID</label>
+                    <input type="text" id="upiId" placeholder="yourname@upi" class="input-field" autocapitalize="off" autocomplete="off"/>
+                </div>
+            </div>
+        </div>`;
+    } else {
+        return `
+        <div class="binding-card">
+            ${badge}
+            <div class="space-y-4">
+                <div>
+                    <label class="field-label block mb-2">Account Number</label>
+                    <input type="text" id="accountNumber" placeholder="Enter account number" inputmode="numeric" class="input-field" autocomplete="off"/>
+                </div>
+                <div>
+                    <label class="field-label block mb-2">Account Holder Name</label>
+                    <input type="text" id="accountHolderName" placeholder="Enter account holder name" class="input-field"/>
+                </div>
+                <div>
+                    <label class="field-label block mb-2">IFSC Code</label>
+                    <input type="text" id="ifscCode" placeholder="e.g. HDFC0001234" class="input-field" autocapitalize="characters" autocomplete="off"/>
+                </div>
+            </div>
+        </div>`;
+    }
+}
+
+/* ============================================================
+   SUBMIT STATE
+   ============================================================ */
+function updateSubmitState() {
+    const btn = document.getElementById('submitBtn');
+    const amount = parseFloat(document.getElementById('withdrawAmount').value);
+    const hasMethod = !!selectedMethod;
+    const balanceOk = amount > 0 && amount >= 100 && amount <= (userData?.balance || 0);
+    btn.disabled = !(hasMethod && balanceOk);
+}
+
+document.getElementById('withdrawAmount').addEventListener('input', updateSubmitState);
+
+/* ============================================================
+   FORM SUBMIT → OPEN CODE MODAL
+   ============================================================ */
+document.getElementById('withdrawForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const amount = parseFloat(document.getElementById('withdrawAmount').value);
+    const method = document.getElementById('paymentMethod').value;
+
+    if (!amount || isNaN(amount) || amount < 100) {
+        alert('Minimum withdrawal amount is ₹100.');
+        return;
+    }
+    if (amount > (userData?.balance || 0)) {
+        alert('Insufficient balance.');
+        return;
+    }
+    if (!method) {
+        alert('Please select a payment method.');
+        return;
+    }
+
+    let paymentDetails = null;
+
+    if (method === 'upi') {
+        const saved = userData?.savedUpi;
+        if (saved && saved.upiId) {
+            paymentDetails = { name: saved.name || '', upiId: saved.upiId };
+        } else {
+            const name = (document.getElementById('upiName')?.value || '').trim();
+            const upiId = (document.getElementById('upiId')?.value || '').trim();
+            if (!name || !upiId) {
+                alert('Please fill in all UPI details.');
+                return;
+            }
+            if (!/^[\w.\-]{2,}@[a-zA-Z]{2,}$/.test(upiId)) {
+                alert('Please enter a valid UPI ID (example: yourname@upi).');
+                return;
+            }
+            paymentDetails = { name, upiId };
+        }
+    } else if (method === 'bank') {
+        const saved = userData?.savedBank;
+        if (saved && saved.accountNumber) {
+            paymentDetails = {
+                accountNumber: saved.accountNumber,
+                accountHolderName: saved.accountHolderName,
+                ifscCode: saved.ifscCode
+            };
+        } else {
+            const accNum = (document.getElementById('accountNumber')?.value || '').trim();
+            const accHolder = (document.getElementById('accountHolderName')?.value || '').trim();
+            const ifsc = (document.getElementById('ifscCode')?.value || '').trim().toUpperCase();
+            if (!accNum || !accHolder || !ifsc) {
+                alert('Please fill in all bank details.');
+                return;
+            }
+            if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifsc)) {
+                alert('Please enter a valid IFSC code (example: HDFC0001234).');
+                return;
+            }
+            paymentDetails = { accountNumber: accNum, accountHolderName: accHolder, ifscCode: ifsc };
+        }
+    }
+
+    // Stash the pending withdrawal — do NOT debit yet
+    pendingWithdrawal = { amount, method, paymentDetails };
+
+    // Open code modal
+    openCodeModal(amount, method);
+});
+
+/* ============================================================
+   CODE MODAL
+   ============================================================ */
+function openCodeModal(amount, method) {
+    document.getElementById('modalAmount').textContent = amount.toFixed(2);
+    document.getElementById('modalMethod').textContent = method === 'upi' ? 'UPI' : 'Bank Account';
+    document.getElementById('modalCodeInput').value = '';
+    document.getElementById('modalCodeInput').classList.remove('error');
+    document.getElementById('modalError').classList.add('hidden');
+    document.getElementById('codeModal').classList.add('open');
+    setTimeout(() => document.getElementById('modalCodeInput').focus(), 120);
+}
+
+window.closeCodeModal = function () {
+    document.getElementById('codeModal').classList.remove('open');
+    document.getElementById('modalCodeInput').value = '';
+    document.getElementById('modalCodeInput').classList.remove('error');
+    document.getElementById('modalError').classList.add('hidden');
+    pendingWithdrawal = null;
+};
+
+document.getElementById('modalCodeInput').addEventListener('input', (e) => {
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
+    e.target.classList.remove('error');
+    document.getElementById('modalError').classList.add('hidden');
+});
+
+document.getElementById('modalCodeInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); confirmWithdrawal(); }
+});
+
+window.confirmWithdrawal = async function () {
+    if (!pendingWithdrawal || !currentUser) return;
+
+    const code = document.getElementById('modalCodeInput').value.trim();
+    const errorEl = document.getElementById('modalError');
+    const errorText = document.getElementById('modalErrorText');
+    const codeInput = document.getElementById('modalCodeInput');
+    const confirmBtn = document.getElementById('modalConfirmBtn');
+
+    if (!code || code.length !== 4) {
+        errorText.textContent = 'Please enter your complete 4-digit code.';
+        errorEl.classList.remove('hidden');
+        codeInput.classList.add('error');
+        return;
+    }
+
+    if (code !== String(userData?.withdrawalCode || '')) {
+        errorText.textContent = 'Incorrect withdrawal code. Please try again.';
+        errorEl.classList.remove('hidden');
+        codeInput.classList.add('error');
+        codeInput.value = '';
+        codeInput.focus();
+        return;
+    }
+
+    // ---- Code verified: process withdrawal ----
+    confirmBtn.disabled = true;
+    const originalBtnHtml = confirmBtn.innerHTML;
+    confirmBtn.innerHTML = 'Processing…';
+
+    try {
+        const { amount, method, paymentDetails } = pendingWithdrawal;
+
+        // Re-verify balance (in case it changed)
+        const freshSnap = await getDoc(doc(db, 'users', currentUser.uid));
+        const freshBalance = freshSnap.data()?.balance || 0;
+        if (amount > freshBalance) {
+            throw new Error('Insufficient balance.');
+        }
+
+        const newBalance = freshBalance - amount;
+
+        // 1) Save bound details permanently if this was first time
+        const userUpdates = { balance: newBalance };
+        if (method === 'upi' && !(userData?.savedUpi && userData.savedUpi.upiId)) {
+            userUpdates.savedUpi = paymentDetails;
+        }
+        if (method === 'bank' && !(userData?.savedBank && userData.savedBank.accountNumber)) {
+            userUpdates.savedBank = paymentDetails;
+        }
+
+        await updateDoc(doc(db, 'users', currentUser.uid), userUpdates);
+
+        // 2) Create withdrawal record
+        await addDoc(collection(db, 'withdrawals'), {
+            uid: currentUser.uid,
+            userName: userData.name,
+            amount,
+            method,
+            paymentDetails,
+            status: 'pending',
+            balanceAfter: newBalance,
+            createdAt: serverTimestamp()
+        });
+
+        // 3) Update local state
+        userData.balance = newBalance;
+        if (userUpdates.savedUpi) userData.savedUpi = userUpdates.savedUpi;
+        if (userUpdates.savedBank) userData.savedBank = userUpdates.savedBank;
+
+        document.getElementById('availBalance').textContent = newBalance.toFixed(2);
+        if (newBalance < 100) {
+            document.getElementById('warningBanner').classList.remove('hidden');
+        } else {
+            document.getElementById('warningBanner').classList.add('hidden');
+        }
+
+        // Reset form
+        document.getElementById('withdrawAmount').value = '';
+        closeCodeModal();
+        updateSubmitState();
+
+        // Re-render verified card now that details are bound
+        if (selectedMethod) renderDetailsArea(selectedMethod);
+        updateSubmitState();
+
+        alert('Withdrawal request submitted successfully!\nYour amount has been debited and will be processed within 30–60 minutes.');
+
+    } catch (err) {
+        errorText.textContent = err.message || 'Something went wrong. Please try again.';
+        errorEl.classList.remove('hidden');
+        codeInput.classList.add('error');
+    } finally {
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = originalBtnHtml;
+    }
+};
+
+/* Close modal on backdrop click */
+document.getElementById('codeModal').addEventListener('click', (e) => {
+    if (e.target.id === 'codeModal') closeCodeModal();
+});
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeCodeModal();
+});
+
+/* ============================================================
+   BOOTSTRAP
+   ============================================================ */
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.href = 'login.html';
+        return;
+    }
+    currentUser = user;
+    const userSnap = await getDoc(doc(db, 'users', user.uid));
+    if (userSnap.exists()) {
+        userData = userSnap.data();
+        document.getElementById('userName').textContent = userData.name || 'User';
+        document.getElementById('availBalance').textContent = (userData.balance || 0).toFixed(2);
+
+        if ((userData.balance || 0) < 100) {
+            document.getElementById('warningBanner').classList.remove('hidden');
+        } else {
+            document.getElementById('warningBanner').classList.add('hidden');
+        }
+    }
+    updateSubmitState();
+});
+</script>
+</body>
+</html>
