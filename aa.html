@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>WinKom Admin Pro</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{--bg:#070b14;--line:rgba(255,255,255,.075);--line-strong:rgba(255,255,255,.13);--text:#eef4fb;--muted:#8b98ad;--dim:#5b6879;--cyan:#22d3ee;--cyan-soft:#67e8f9;--amber:#f59e0b;--emerald:#10b981;--violet:#8b5cf6;--rose:#f43f5e;}
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;min-height:100vh;color:var(--text);font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;background-color:var(--bg);background-image:radial-gradient(680px 420px at 8% -12%, rgba(34,211,238,.09), transparent 62%),radial-gradient(620px 420px at 102% 2%, rgba(99,102,241,.08), transparent 60%),radial-gradient(700px 520px at 50% 112%, rgba(16,185,129,.05), transparent 62%);background-attachment:fixed;}
+::selection{background:rgba(34,211,238,.3)}
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:rgba(34,211,238,.35)}
+.ic{width:20px;height:20px;flex:none;display:block;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ic-sm{width:16px;height:16px}.ic-xs{width:13px;height:13px;stroke-width:2.2}
+.glass{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:20px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+.glass-header{background:rgba(9,13,22,.75);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+.brand{display:flex;align-items:center;gap:11px;min-width:0;text-decoration:none}
+.brand-mark{width:40px;height:40px;flex:none;border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(34,211,238,.18);position:relative;background:linear-gradient(135deg,#22d3ee,#6366f1);}
+.brand-mark>*{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.brand-mark .is-hidden{display:none!important}
+.brand-name{font-size:18px;font-weight:800;letter-spacing:-.02em;color:#fff;line-height:1;white-space:nowrap}
+.brand-name .accent{background:linear-gradient(135deg,#22d3ee,#a78bfa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.chip{width:42px;height:42px;border-radius:13px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid transparent}
+.chip .ic{width:20px;height:20px}
+.chip-cyan{color:var(--cyan-soft);background:rgba(34,211,238,.10);border-color:rgba(34,211,238,.20)}
+.chip-amber{color:#fbbf24;background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.20)}
+.chip-emerald{color:#34d399;background:rgba(16,185,129,.10);border-color:rgba(16,185,129,.20)}
+.chip-violet{color:#a78bfa;background:rgba(139,92,246,.10);border-color:rgba(139,92,246,.20)}
+.chip-rose{color:#fda4af;background:rgba(244,63,94,.10);border-color:rgba(244,63,94,.20)}
+.chip-slate{color:#cbd5e1;background:rgba(148,163,184,.10);border-color:rgba(148,163,184,.20)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:700;white-space:nowrap;cursor:pointer;border:1px solid transparent;transition:transform .16s ease,box-shadow .22s ease,background .22s ease,border-color .22s ease,color .22s ease;font-family:inherit}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:linear-gradient(135deg,#22d3ee,#3b82f6);color:#04121a;box-shadow:0 8px 22px rgba(34,211,238,.25)}
+.btn-primary:hover{box-shadow:0 12px 30px rgba(34,211,238,.38)}
+.btn-ghost{background:rgba(255,255,255,.05);border-color:var(--line-strong);color:var(--muted)}
+.btn-ghost:hover{background:rgba(255,255,255,.09);color:var(--text)}
+.btn-danger{background:rgba(244,63,94,.14);border-color:rgba(244,63,94,.35);color:#fda4af}
+.btn-danger:hover{background:rgba(244,63,94,.22)}
+.btn-success{background:rgba(16,185,129,.14);border-color:rgba(16,185,129,.35);color:#6ee7b7}
+.btn-success:hover{background:rgba(16,185,129,.22)}
+.btn-cyan{background:rgba(34,211,238,.14);border-color:rgba(34,211,238,.35);color:var(--cyan-soft)}
+.btn-cyan:hover{background:rgba(34,211,238,.22)}
+.btn-icon{padding:8px;width:34px;height:34px}
+.input-field{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--text);font-size:13.5px;border-radius:12px;padding:11px 14px;outline:none;transition:border-color .2s,background .2s;font-family:inherit}
+.input-field::placeholder{color:#5b6879}
+.input-field:focus{border-color:rgba(34,211,238,.5);background:rgba(34,211,238,.05)}
+textarea.input-field{resize:vertical;min-height:80px;line-height:1.5}
+select.input-field{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b98ad' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.field-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:800;margin-bottom:6px;display:block}
+.tabs-bar{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.tabs-bar::-webkit-scrollbar{display:none}
+.tab{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:12px;font-size:12.5px;font-weight:700;color:var(--muted);background:rgba(255,255,255,.03);border:1px solid var(--line);cursor:pointer;transition:all .2s ease;white-space:nowrap;flex:none}
+.tab:hover{color:var(--text);background:rgba(255,255,255,.07)}
+.tab.active{color:#fff;border-color:rgba(34,211,238,.45);background:linear-gradient(135deg,rgba(34,211,238,.22),rgba(34,211,238,.06));box-shadow:0 6px 20px rgba(34,211,238,.12)}
+.tab .ic{width:15px;height:15px}
+.stat-tile{padding:14px 12px;border-radius:16px;text-align:center;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--line);transition:transform .22s,border-color .22s}
+.stat-tile:hover{transform:translateY(-2px);border-color:rgba(34,211,238,.24)}
+.stat-tile .stat-icon{width:36px;height:36px;border-radius:11px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;border:1px solid transparent}
+.stat-tile .stat-value{font-size:20px;font-weight:800;color:#fff;letter-spacing:-.01em;line-height:1.1}
+.stat-tile .stat-label{font-size:10.5px;color:var(--muted);font-weight:700;margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
+.table-card{border-radius:16px;overflow:hidden;background:rgba(255,255,255,.025);border:1px solid var(--line)}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.table-card table{width:100%;border-collapse:collapse;min-width:600px}
+.table-card th{background:rgba(0,0,0,.30);padding:11px 14px;text-align:left;font-size:10.5px;font-weight:800;text-transform:uppercase;color:var(--dim);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:2;letter-spacing:.08em;white-space:nowrap}
+.table-card td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.035);font-size:13px;color:#cbd5e1;vertical-align:middle}
+.table-card tbody tr{transition:background .18s;cursor:pointer}
+.table-card tbody tr:hover{background:rgba(34,211,238,.045)}
+.table-card tbody tr:last-child td{border-bottom:0}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.02em;border:1px solid transparent;text-transform:capitalize}
+.badge-pending{background:rgba(245,158,11,.10);color:#fbbf24;border-color:rgba(245,158,11,.25)}
+.badge-approved,.badge-active,.badge-completed{background:rgba(16,185,129,.10);color:#34d399;border-color:rgba(16,185,129,.25)}
+.badge-rejected,.badge-blocked,.badge-cancelled,.badge-disabled{background:rgba(244,63,94,.10);color:#fda4af;border-color:rgba(244,63,94,.25)}
+.modal{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(3,6,12,.78);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.modal.open{display:flex}
+.modal-panel{width:100%;max-width:640px;max-height:90vh;overflow-y:auto;border-radius:22px;padding:22px;background:linear-gradient(180deg,#0e1524,#0a101b);border:1px solid var(--line-strong);box-shadow:0 40px 100px rgba(0,0,0,.7);animation:modalIn .28s cubic-bezier(.16,1,.3,1);overscroll-behavior:contain}
+.modal-panel.wide{max-width:820px}
+.modal-panel.chat-wide{max-width:720px;padding:0;display:flex;flex-direction:column;height:88vh}
+.modal-panel.tiny{max-width:420px}
+@keyframes modalIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.detail-grid{grid-template-columns:1fr}}
+.detail-item{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:11px 13px;min-width:0}
+.detail-item label{font-size:9.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:3px;font-weight:800}
+.detail-item span{font-size:13px;color:#e8eef7;font-weight:700;word-break:break-all;display:block}
+.chat-head{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(34,211,238,.05),transparent);flex:none;border-radius:22px 22px 0 0}
+.chat-avatar{width:42px;height:42px;border-radius:999px;flex:none;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(34,211,238,.20),rgba(99,102,241,.18));border:1px solid rgba(34,211,238,.28);color:var(--cyan-soft);font-weight:800;font-size:14px}
+.chat-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.chat-empty{margin:auto;text-align:center;padding:30px 16px;color:var(--muted);font-size:13px;max-width:280px}
+.chat-empty-icon{width:56px;height:56px;border-radius:18px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(34,211,238,.15),rgba(99,102,241,.12));border:1px solid rgba(34,211,238,.25);color:var(--cyan-soft)}
+.msg-row{display:flex;gap:8px;align-items:flex-end;animation:msgIn .28s ease}
+.msg-row.user{flex-direction:row-reverse}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.msg-avatar{width:28px;height:28px;border-radius:999px;flex:none;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:800;background:linear-gradient(135deg,rgba(34,211,238,.18),rgba(99,102,241,.14));border:1px solid rgba(34,211,238,.25);color:var(--cyan-soft)}
+.msg-content{max-width:74%;display:flex;flex-direction:column}
+.msg-row.user .msg-content{align-items:flex-end}
+.msg-name{font-size:9.5px;font-weight:700;color:var(--dim);margin-bottom:3px;letter-spacing:.02em}
+.msg-bubble{padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.5;word-wrap:break-word;word-break:break-word;white-space:pre-wrap}
+.msg-row.user .msg-bubble{background:rgba(255,255,255,.055);border:1px solid var(--line);color:var(--text);border-bottom-left-radius:4px}
+.msg-row.admin .msg-bubble{background:linear-gradient(135deg,#22d3ee,#3b82f6);color:#04121a;font-weight:600;border-bottom-right-radius:4px;box-shadow:0 6px 18px rgba(34,211,238,.18)}
+.msg-time{font-size:9.5px;color:var(--dim);margin-top:4px;font-weight:600}
+.chat-quick-bar{display:flex;gap:8px;padding:8px 14px 0;flex-wrap:wrap}
+.quick-chip{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;font-size:11.5px;font-weight:800;background:rgba(16,185,129,.12);color:#6ee7b7;border:1px solid rgba(16,185,129,.30);cursor:pointer;transition:all .18s}
+.quick-chip:hover{background:rgba(16,185,129,.22)}
+.quick-chip.warn{background:rgba(245,158,11,.12);color:#fbbf24;border-color:rgba(245,158,11,.30)}
+.quick-chip.warn:hover{background:rgba(245,158,11,.22)}
+.quick-chip .ic{width:13px;height:13px}
+.chat-input-bar{flex:none;display:flex;align-items:flex-end;gap:10px;padding:12px 14px;border-top:1px solid var(--line);background:rgba(0,0,0,.20);border-radius:0 0 22px 22px}
+.chat-input-wrap{flex:1;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:14px;transition:border-color .2s}
+.chat-input-wrap:focus-within{border-color:rgba(34,211,238,.5);background:rgba(34,211,238,.05)}
+#chatInput{width:100%;background:transparent;border:none;outline:none;resize:none;color:var(--text);font-size:13.5px;font-family:inherit;line-height:1.5;padding:11px 13px;max-height:110px;overflow-y:auto}
+#chatInput::placeholder{color:#5b6879}
+.send-btn{width:42px;height:42px;border-radius:13px;flex:none;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#22d3ee,#3b82f6);color:#04121a;border:none;cursor:pointer;transition:transform .16s,box-shadow .22s,opacity .2s;box-shadow:0 8px 22px rgba(34,211,238,.28)}
+.send-btn:active{transform:scale(.94)}
+.send-btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+.section-title{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:800;color:#fff;margin:18px 0 10px}
+.tx-row{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:14px;background:rgba(255,255,255,.028);border:1px solid var(--line);transition:border-color .18s;cursor:pointer}
+.tx-row:hover{border-color:rgba(34,211,238,.32);background:rgba(34,211,238,.04)}
+.tx-chip{width:34px;height:34px;border-radius:10px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid transparent}
+.tx-del{width:28px;height:28px;border-radius:9px;flex:none;display:flex;align-items:center;justify-content:center;background:rgba(244,63,94,.10);border:1px solid rgba(244,63,94,.25);color:#fda4af;cursor:pointer;transition:all .18s}
+.tx-del:hover{background:rgba(244,63,94,.22)}
+.tx-del .ic{width:13px;height:13px}
+.hidden{display:none!important}
+.fade-in{animation:fadeIn .35s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.empty-state{text-align:center;padding:34px 16px;border-radius:18px;border:1px dashed rgba(255,255,255,.10);background:rgba(255,255,255,.015)}
+.empty-state .chip{margin:0 auto 12px}
+.access-denied{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+</style>
+</head>
+<body>
+
+<!-- Access Denied -->
+<div id="accessDenied" class="access-denied hidden">
+  <div class="glass p-8 text-center max-w-md">
+    <span class="chip chip-rose" style="width:56px;height:56px;border-radius:18px;margin:0 auto 14px">
+      <svg class="ic" style="width:26px;height:26px" viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="2.4"/><path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7"/></svg>
+    </span>
+    <h1 class="text-xl font-extrabold text-white mb-2">Access Denied</h1>
+    <p class="text-slate-400 text-[13px] mb-5">Only the admin account can access this panel.</p>
+    <button onclick="handleLogout()" class="btn btn-danger">Logout</button>
+  </div>
+</div>
+
+<!-- Admin Panel -->
+<div id="adminPanel" class="hidden min-h-screen">
+  <header class="glass-header border-b border-white/[.06] sticky top-0 z-30">
+    <div class="max-w-[1400px] mx-auto px-4 py-3.5">
+      <div class="flex items-center justify-between gap-3 flex-wrap">
+        <a href="a.html" class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <img src="logo.png" alt="WinKom" onerror="this.classList.add('is-hidden');this.nextElementSibling.classList.remove('is-hidden');"/>
+            <svg class="is-hidden" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="wkG1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#6366f1"/></linearGradient></defs>
+              <rect width="40" height="40" rx="12" fill="url(#wkG1)"/>
+              <path d="M9 14 L14 27 L20 18 L26 27 L31 14" stroke="#04121a" stroke-width="2.9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </span>
+          <span class="brand-name">Win<span class="accent">Kom</span> <span style="color:#22d3ee;font-size:13px;font-weight:800;margin-left:6px">Admin</span></span>
+        </a>
+        <div class="flex items-center gap-2">
+          <span class="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 px-3 py-1.5 rounded-full">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Online
+          </span>
+          <button onclick="refreshAll()" class="btn btn-cyan">
+            <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+            Refresh
+          </button>
+          <button onclick="handleLogout()" class="btn btn-danger">
+            <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="m10 8-4 4 4 4"/><path d="M6 12h9"/></svg>
+            Logout
+          </button>
+        </div>
+      </div>
+      <div class="tabs-bar mt-3">
+        <button class="tab active" data-tab="users" onclick="switchTab('users')"><svg class="ic" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.1"/><path d="M3.2 19.3c.6-3.2 2.6-4.9 5.8-4.9s5.2 1.7 5.8 4.9"/><circle cx="17.2" cy="9.2" r="2.5"/><path d="M16.1 14.9c2.8-.1 4.6 1.4 5.2 4.5"/></svg> Users</button>
+        <button class="tab" data-tab="withdrawals" onclick="switchTab('withdrawals')"><svg class="ic" viewBox="0 0 24 24"><path d="M12 15V5"/><path d="m8 8.5 4-4 4 4"/><path d="M5 19h14"/></svg> Withdrawals</button>
+        <button class="tab" data-tab="deposits" onclick="switchTab('deposits')"><svg class="ic" viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8 10.5 4 4 4-4"/><path d="M5 19h14"/></svg> Deposits</button>
+        <button class="tab" data-tab="investments" onclick="switchTab('investments')"><svg class="ic" viewBox="0 0 24 24"><path d="M3 16.5 9 10.5l4 4 8-8"/><path d="M15 6.5h6v6"/></svg> Investments</button>
+        <button class="tab" data-tab="plans" onclick="switchTab('plans')"><svg class="ic" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg> Plans</button>
+        <button class="tab" data-tab="chats" onclick="switchTab('chats')"><svg class="ic" viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-8.5 8.5H4.2a1.2 1.2 0 0 1-.85-2.05L5 17A8.5 8.5 0 1 1 21 12Z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg> Support Chats <span id="chatBadge" class="badge badge-cyan hidden" style="background:rgba(34,211,238,.18);color:#67e8f9;border-color:rgba(34,211,238,.35);margin-left:4px">0</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-[1400px] mx-auto p-4 md:p-6">
+    <!-- USERS -->
+    <div id="tabContent-users" class="tab-content fade-in">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+        <div class="stat-tile"><div class="stat-icon chip-cyan"><svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.1"/><path d="M3.2 19.3c.6-3.2 2.6-4.9 5.8-4.9s5.2 1.7 5.8 4.9"/></svg></div><div class="stat-value" id="uTotal">0</div><div class="stat-label">Total Users</div></div>
+        <div class="stat-tile"><div class="stat-icon chip-emerald"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M5 12.6l4.4 4.4L19 7.4"/></svg></div><div class="stat-value" id="uActive">0</div><div class="stat-label">Active</div></div>
+        <div class="stat-tile"><div class="stat-icon chip-rose"><svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M6 6l12 12"/></svg></div><div class="stat-value" id="uBlocked">0</div><div class="stat-label">Blocked</div></div>
+        <div class="stat-tile"><div class="stat-icon chip-amber"><svg class="ic ic-sm" viewBox="0 0 24 24"><rect x="2.6" y="6.4" width="18.8" height="11.2" rx="2.6"/></svg></div><div class="stat-value" id="uBalance">₹0</div><div class="stat-label">Total Balance</div></div>
+      </div>
+      <div class="glass p-3 mb-4"><input type="text" id="userSearch" class="input-field" placeholder="Search by name, email, phone, referral code…"/></div>
+      <div class="table-card"><div class="table-wrap"><table><thead><tr><th>User</th><th>Email</th><th>Phone</th><th>Balance</th><th>Status</th><th>Action</th></tr></thead><tbody id="userTableBody"></tbody></table></div></div>
+    </div>
+
+    <!-- WITHDRAWALS -->
+    <div id="tabContent-withdrawals" class="tab-content hidden fade-in">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+        <div class="stat-tile"><div class="stat-icon chip-amber"><svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.4V12l3.2 2"/></svg></div><div class="stat-value" id="wPending">0</div><div class="stat-label">Pending</div></div>
+        <div class="stat-tile"><div class="stat-icon chip-emerald"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M5 12.6l4.4 4.4L19 7.4"/></svg></div><div class="stat-value" id="wApproved">0</div><div class="stat-label">Approved</div></div>
+        <div class="stat-tile"><div class="stat-icon chip-rose"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></div><div class="stat-value" id="wRejected">0</div><div class="stat-label">Rejected</div></div>
+        <div class="stat-tile"><div class="stat-icon chip-cyan"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M12 2.5v19"/><path d="M17 7.5c0-1.7-2.2-3-5-3s-5 1.3-5 3 2.2 3 5 3 5 1.3 5 3-2.2 3-5 3-5-1.3-5-3"/></svg></div><div class="stat-value" id="wTotal">0</div><div class="stat-label">Total</div></div>
+      </div>
+      <div class="glass p-3 mb-4"><input type="text" id="withdrawSearch" class="input-field" placeholder="Search by user, email, txn ID, amount…"/></div>
+      <div class="table-card"><div class="table-wrap"><table><thead><tr><th>User</th><th>Amount</th><th>Method</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="withdrawTableBody"></tbody></table></div></div>
+    </div>
+
+    <!-- DEPOSITS -->
+    <div id="tabContent-deposits" class="tab-content hidden fade-in">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+        <div class="stat-tile"><div class="stat-icon chip-amber"><svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.4V12l3.2 2"/></svg></div><div class="stat-value" id="dPending">0</div><div class="stat-label">Pending</div></div>
+        <div class="stat-tile"><div class="stat-icon chip-emerald"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M5 12.6l4.4 4.4L19 7.4"/></svg></div><div class="stat-value" id="dApproved">0</div><div class="stat-label">Approved</div></div>
+        <div class="stat-tile"><div class="stat-icon chip-rose"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></div><div class="stat-value" id="dRejected">0</div><div class="stat-label">Rejected</div></div>
+        <div class="stat-tile"><div class="stat-icon chip-cyan"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M12 2.5v19"/><path d="M17 7.5c0-1.7-2.2-3-5-3s-5 1.3-5 3 2.2 3 5 3 5 1.3 5 3-2.2 3-5 3-5-1.3-5-3"/></svg></div><div class="stat-value" id="dTotal">0</div><div class="stat-label">Total</div></div>
+      </div>
+      <div class="glass p-3 mb-4"><input type="text" id="depositSearch" class="input-field" placeholder="Search by user, email, UTR, amount…"/></div>
+      <div class="table-card"><div class="table-wrap"><table><thead><tr><th>User</th><th>Amount</th><th>Method</th><th>Txn ID</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="depositTableBody"></tbody></table></div></div>
+    </div>
+
+    <!-- INVESTMENTS -->
+    <div id="tabContent-investments" class="tab-content hidden fade-in">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+        <div class="stat-tile"><div class="stat-icon chip-violet"><svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.1"/><path d="M3.2 19.3c.6-3.2 2.6-4.9 5.8-4.9s5.2 1.7 5.8 4.9"/></svg></div><div class="stat-value" id="iInvestors">0</div><div class="stat-label">Investors</div></div>
+        <div class="stat-tile"><div class="stat-icon chip-cyan"><svg class="ic ic-sm" viewBox="0 0 24 24"><rect x="2.6" y="6.4" width="18.8" height="11.2" rx="2.6"/></svg></div><div class="stat-value" id="iAmount">₹0</div><div class="stat-label">Total Invested</div></div>
+        <div class="stat-tile"><div class="stat-icon chip-emerald"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></div><div class="stat-value" id="iActive">0</div><div class="stat-label">Active</div></div>
+        <div class="stat-tile"><div class="stat-icon chip-slate"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M5 12.6l4.4 4.4L19 7.4"/></svg></div><div class="stat-value" id="iCompleted">0</div><div class="stat-label">Completed</div></div>
+      </div>
+      <div class="glass p-3 mb-4"><input type="text" id="investSearch" class="input-field" placeholder="Search by investor, plan, referral…"/></div>
+      <div class="table-card"><div class="table-wrap"><table><thead><tr><th>Investor</th><th>Plan</th><th>Amount</th><th>Date</th><th>Duration</th><th>Expected</th><th>Status</th></tr></thead><tbody id="investTableBody"></tbody></table></div></div>
+    </div>
+
+    <!-- PLANS -->
+    <div id="tabContent-plans" class="tab-content hidden fade-in">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div class="glass p-5">
+          <div class="section-title" style="margin-top:0"><span class="chip chip-emerald" style="width:36px;height:36px;border-radius:11px"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span>Create New Plan</div>
+          <form id="planForm" class="space-y-3">
+            <div><label class="field-label">Plan Name</label><input type="text" id="planName" required placeholder="e.g. Starter Plan" class="input-field"/></div>
+            <div class="grid grid-cols-2 gap-3"><div><label class="field-label">Daily Return %</label><input type="number" id="planReturn" required step="0.1" min="0.1" class="input-field"/></div><div><label class="field-label">Duration (Days)</label><input type="number" id="planDuration" required min="1" class="input-field"/></div></div>
+            <div class="grid grid-cols-2 gap-3"><div><label class="field-label">Min Amount</label><input type="number" id="planMin" required min="1" class="input-field"/></div><div><label class="field-label">Max Amount</label><input type="number" id="planMax" required min="1" class="input-field"/></div></div>
+            <div><label class="field-label">Description</label><input type="text" id="planDesc" class="input-field" placeholder="Short plan description"/></div>
+            <button type="submit" class="btn btn-primary w-full"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M5 12.6l4.4 4.4L19 7.4"/></svg>Create Plan</button>
+          </form>
+        </div>
+        <div class="glass p-5">
+          <div class="section-title" style="margin-top:0"><span class="chip chip-violet" style="width:36px;height:36px;border-radius:11px"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/></svg></span>Existing Plans</div>
+          <div id="existingPlans" class="space-y-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHATS -->
+    <div id="tabContent-chats" class="tab-content hidden fade-in">
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5">
+        <div class="stat-tile"><div class="stat-icon chip-cyan"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-8.5 8.5H4.2a1.2 1.2 0 0 1-.85-2.05L5 17A8.5 8.5 0 1 1 21 12Z"/></svg></div><div class="stat-value" id="chatTotal">0</div><div class="stat-label">Total Chats</div></div>
+        <div class="stat-tile"><div class="stat-icon chip-amber"><svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.4V12l3.2 2"/></svg></div><div class="stat-value" id="chatUnread">0</div><div class="stat-label">Unread</div></div>
+        <div class="stat-tile"><div class="stat-icon chip-emerald"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M5 12.6l4.4 4.4L19 7.4"/></svg></div><div class="stat-value" id="chatReplied">0</div><div class="stat-label">Replied</div></div>
+      </div>
+      <div class="glass p-3 mb-4"><input type="text" id="chatSearch" class="input-field" placeholder="Search by user name or email…"/></div>
+      <div class="table-card"><div class="table-wrap"><table><thead><tr><th>User</th><th>Email</th><th>Last Message</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="chatTableBody"></tbody></table></div></div>
+    </div>
+  </main>
+</div>
+
+<!-- User Modal -->
+<div id="userModal" class="modal">
+  <div class="modal-panel wide">
+    <div class="flex items-start justify-between gap-3 mb-4">
+      <h3 id="userModalTitle" class="text-lg font-extrabold text-white">User Profile</h3>
+      <button onclick="closeUserModal()" class="btn btn-ghost btn-icon"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div id="userModalContent"></div>
+  </div>
+</div>
+
+<!-- Transaction Detail Modal -->
+<div id="txDetailModal" class="modal">
+  <div class="modal-panel">
+    <div class="flex items-start justify-between gap-3 mb-4">
+      <h3 class="text-lg font-extrabold text-white">Transaction Detail</h3>
+      <button onclick="closeTxDetailModal()" class="btn btn-ghost btn-icon"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div id="txDetailContent"></div>
+  </div>
+</div>
+
+<!-- Withdrawal Detail Modal -->
+<div id="withdrawModal" class="modal">
+  <div class="modal-panel">
+    <div class="flex items-start justify-between gap-3 mb-4">
+      <h3 class="text-lg font-extrabold text-white">Withdrawal Detail</h3>
+      <button onclick="closeWithdrawModal()" class="btn btn-ghost btn-icon"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div id="withdrawModalContent"></div>
+  </div>
+</div>
+
+<!-- Deposit Detail Modal -->
+<div id="depositModal" class="modal">
+  <div class="modal-panel">
+    <div class="flex items-start justify-between gap-3 mb-4">
+      <h3 class="text-lg font-extrabold text-white">Deposit Detail</h3>
+      <button onclick="closeDepositModal()" class="btn btn-ghost btn-icon"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div id="depositModalContent"></div>
+  </div>
+</div>
+
+<!-- Investment Detail Modal -->
+<div id="investModal" class="modal">
+  <div class="modal-panel">
+    <div class="flex items-start justify-between gap-3 mb-4">
+      <h3 class="text-lg font-extrabold text-white">Investment Detail</h3>
+      <button onclick="closeInvestModal()" class="btn btn-ghost btn-icon"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div id="investModalContent"></div>
+  </div>
+</div>
+
+<!-- Plan Edit Modal -->
+<div id="planEditModal" class="modal">
+  <div class="modal-panel">
+    <div class="flex items-start justify-between gap-3 mb-4">
+      <h3 class="text-lg font-extrabold text-white">Edit Plan</h3>
+      <button onclick="closePlanEditModal()" class="btn btn-ghost btn-icon"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <form id="planEditForm" class="space-y-3">
+      <div><label class="field-label">Plan Name</label><input type="text" id="editPlanName" class="input-field"/></div>
+      <div class="grid grid-cols-2 gap-3"><div><label class="field-label">Daily Return %</label><input type="number" id="editPlanReturn" step="0.1" class="input-field"/></div><div><label class="field-label">Duration (Days)</label><input type="number" id="editPlanDuration" class="input-field"/></div></div>
+      <div class="grid grid-cols-2 gap-3"><div><label class="field-label">Min Amount</label><input type="number" id="editPlanMin" class="input-field"/></div><div><label class="field-label">Max Amount</label><input type="number" id="editPlanMax" class="input-field"/></div></div>
+      <div><label class="field-label">Description</label><input type="text" id="editPlanDesc" class="input-field"/></div>
+      <div class="flex gap-2"><button type="submit" class="btn btn-primary flex-1">Update</button><button type="button" onclick="closePlanEditModal()" class="btn btn-ghost">Cancel</button></div>
+    </form>
+  </div>
+</div>
+
+<!-- Balance Modal -->
+<div id="balanceModal" class="modal">
+  <div class="modal-panel tiny">
+    <div class="flex items-start justify-between gap-3 mb-4">
+      <h3 class="text-lg font-extrabold text-white">Edit Balance</h3>
+      <button onclick="closeBalanceModal()" class="btn btn-ghost btn-icon"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="glass p-3 mb-4" style="border-radius:12px"><p class="field-label">Current Balance</p><p id="balanceCurrent" class="text-cyan-300 font-extrabold text-lg mt-1">₹0.00</p></div>
+    <label class="field-label">New Balance (₹)</label>
+    <input type="number" id="balanceNewValue" step="0.01" class="input-field mb-2"/>
+    <div class="flex gap-2 mb-2"><button type="button" onclick="quickBalance('+')" class="btn btn-ghost flex-1" style="font-size:11.5px;padding:8px">+ Add</button><button type="button" onclick="quickBalance('-')" class="btn btn-ghost flex-1" style="font-size:11.5px;padding:8px">− Subtract</button></div>
+    <label class="field-label mt-2">Adjustment Amount</label>
+    <input type="number" id="balanceAdjust" class="input-field" placeholder="e.g. 500" step="0.01"/>
+    <div class="flex gap-2 mt-4"><button onclick="saveBalanceEdit()" class="btn btn-primary flex-1">Save Balance</button><button onclick="closeBalanceModal()" class="btn btn-ghost">Cancel</button></div>
+  </div>
+</div>
+
+<!-- Payment Details Modal -->
+<div id="paymentModal" class="modal">
+  <div class="modal-panel" style="max-width:480px">
+    <div class="flex items-start justify-between gap-3 mb-4">
+      <h3 class="text-lg font-extrabold text-white">Edit Payment Details</h3>
+      <button onclick="closePaymentModal()" class="btn btn-ghost btn-icon"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="section-title" style="margin-top:0"><span class="chip chip-cyan" style="width:32px;height:32px;border-radius:10px"><svg class="ic ic-xs" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2.4"/></svg></span>UPI Details</div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+      <div><label class="field-label">Account Holder Name</label><input type="text" id="editUpiName" class="input-field"/></div>
+      <div><label class="field-label">UPI ID</label><input type="text" id="editUpiId" class="input-field" placeholder="name@upi"/></div>
+    </div>
+    <div class="section-title"><span class="chip chip-violet" style="width:32px;height:32px;border-radius:10px"><svg class="ic ic-xs" viewBox="0 0 24 24"><path d="M3 9.5 12 4l9 5.5"/><path d="M5 10v8M19 10v8"/><path d="M3 20h18"/></svg></span>Bank Details</div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+      <div class="sm:col-span-2"><label class="field-label">Account Holder Name</label><input type="text" id="editAccHolder" class="input-field"/></div>
+      <div class="sm:col-span-2"><label class="field-label">Account Number</label><input type="text" id="editAccNumber" class="input-field"/></div>
+      <div class="sm:col-span-2"><label class="field-label">IFSC Code</label><input type="text" id="editIfsc" class="input-field" placeholder="e.g. HDFC0001234"/></div>
+    </div>
+    <div class="flex gap-2"><button onclick="savePaymentDetails()" class="btn btn-primary flex-1">Save Payment Details</button><button onclick="closePaymentModal()" class="btn btn-ghost">Cancel</button></div>
+  </div>
+</div>
+
+<!-- Transaction ID Prompt Modal -->
+<div id="txnIdModal" class="modal">
+  <div class="modal-panel tiny">
+    <div class="flex items-start justify-between gap-3 mb-4">
+      <div class="min-w-0">
+        <p class="field-label" id="txnIdModalLabel">Required</p>
+        <h3 class="text-lg font-extrabold text-white mt-1.5" id="txnIdModalTitle">Enter Transaction ID</h3>
+      </div>
+      <button onclick="closeTxnIdModal()" class="btn btn-ghost btn-icon"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="glass p-3 mb-4" style="border-radius:12px">
+      <div class="flex items-center justify-between gap-3">
+        <span class="field-label">Amount</span>
+        <span id="txnIdModalAmount" class="text-cyan-300 font-extrabold text-base">₹0.00</span>
+      </div>
+      <div class="flex items-center justify-between gap-3 mt-2 pt-2 border-t border-white/[.06]">
+        <span class="field-label">User</span>
+        <span id="txnIdModalUser" class="text-white font-bold text-[12.5px] truncate">—</span>
+      </div>
+    </div>
+    <label class="field-label">Transaction ID / UTR / Reference</label>
+    <input type="text" id="txnIdModalInput" class="input-field mb-2" placeholder="e.g. 4458XXXXXXXX or UTR number" autocapitalize="off" autocomplete="off"/>
+    <p id="txnIdModalError" class="hidden text-rose-400 text-[11.5px] font-bold mb-2">Transaction ID is required.</p>
+    <div class="alert-row" style="background:rgba(245,158,11,.09);border:1px solid rgba(245,158,11,.28);color:#fcd34d;padding:10px 12px;border-radius:12px;font-size:11.5px;line-height:1.5;margin-bottom:14px;display:flex;gap:8px;align-items:flex-start">
+      <svg class="ic ic-xs mt-0.5" style="color:#fcd34d" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+      <span>This ID will be saved and shown to the user in their transaction history.</span>
+    </div>
+    <div class="flex gap-2">
+      <button onclick="confirmTxnIdAction()" class="btn btn-primary flex-1">
+        <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M5 12.6l4.4 4.4L19 7.4"/></svg>
+        Confirm
+      </button>
+      <button onclick="closeTxnIdModal()" class="btn btn-ghost">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Chat Modal -->
+<div id="chatModal" class="modal">
+  <div class="modal-panel chat-wide">
+    <div class="chat-head">
+      <div class="chat-avatar" id="chatModalAvatar">U</div>
+      <div class="min-w-0 flex-1">
+        <p class="text-white font-extrabold text-[14.5px] truncate" id="chatModalName">User</p>
+        <p class="text-slate-500 text-[11.5px] font-medium truncate mt-0.5" id="chatModalEmail">email@example.com</p>
+      </div>
+      <button onclick="deleteCurrentChat()" class="btn btn-danger btn-icon" title="Delete chat"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9.5 7V5.5A1.5 1.5 0 0 1 11 4h2a1.5 1.5 0 0 1 1.5 1.5V7"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/></svg></button>
+      <button onclick="closeChatModal()" class="btn btn-ghost btn-icon"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="chat-body" id="chatBody">
+      <div class="chat-empty"><div class="chat-empty-icon"><svg class="ic" style="width:24px;height:24px" viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-8.5 8.5H4.2a1.2 1.2 0 0 1-.85-2.05L5 17A8.5 8.5 0 1 1 21 12Z"/></svg></div><p>Loading conversation…</p></div>
+    </div>
+    <div class="chat-quick-bar">
+      <button class="quick-chip" onclick="sendThanksAndClose()">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M5 12.6l4.4 4.4L19 7.4"/></svg>
+        Thanks & Close Chat
+      </button>
+      <button class="quick-chip warn" onclick="sendQuickReply('Your query has been resolved. Thank you for choosing WinKom!')">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9z"/></svg>
+        Query Resolved
+      </button>
+    </div>
+    <div class="chat-input-bar">
+      <div class="chat-input-wrap"><textarea id="chatInput" rows="1" placeholder="Type your reply…" maxlength="1000"></textarea></div>
+      <button type="button" class="send-btn" id="chatSendBtn" disabled aria-label="Send"><svg class="ic" viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9z"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, updateDoc, addDoc, setDoc, collection, getDocs,
+  query, where, orderBy, deleteDoc, onSnapshot, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+  authDomain: "winkom-da4c2.firebaseapp.com",
+  projectId: "winkom-da4c2",
+  storageBucket: "winkom-da4c2.firebasestorage.app",
+  messagingSenderId: "629229462242",
+  appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const ADMIN_EMAIL = 'admin@wk.in';
+const REFERRAL_BONUS = 39;
+
+let allUsers = [];
+let allDeposits = [];
+let allWithdrawals = [];
+let allPlans = [];
+let allInvestments = [];
+let allChats = [];
+
+let currentUserEditId = null;
+let currentEditPlanId = null;
+let currentBalanceUserId = null;
+let currentPaymentUserId = null;
+let currentChatUserId = null;
+let currentTx = null;
+
+let chatUnsubMessages = null;
+
+/* Pending TXN-ID action state */
+let txnIdAction = null; // { type: 'withdrawal'|'deposit', id: string }
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const fmtDate = v => {
+  if (!v) return 'N/A';
+  const d = v?.toDate ? v.toDate() : new Date(v);
+  if (isNaN(d.getTime())) return 'N/A';
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const day = d.getDate();
+  let h = d.getHours(); const ampm = h>=12?'PM':'AM'; h = h%12||12;
+  const m = String(d.getMinutes()).padStart(2,'0');
+  return `${day} ${months[d.getMonth()]} ${d.getFullYear()} · ${h}:${m} ${ampm}`;
+};
+const fmtShort = v => {
+  if (!v) return 'N/A';
+  const d = v?.toDate ? v.toDate() : new Date(v);
+  if (isNaN(d.getTime())) return 'N/A';
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+};
+const fmtTime = v => {
+  if (!v) return 'N/A';
+  const d = v?.toDate ? v.toDate() : new Date(v);
+  if (isNaN(d.getTime())) return 'N/A';
+  let h = d.getHours(); const ampm = h>=12?'PM':'AM'; h = h%12||12;
+  const m = String(d.getMinutes()).padStart(2,'0');
+  return `${h}:${m} ${ampm}`;
+};
+const fmtMoney = a => '₹' + (parseFloat(a)||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+const toDateSafe = v => {
+  if (!v) return null;
+  if (v.toDate) return v.toDate();
+  const d = new Date(v);
+  return isNaN(d.getTime()) ? null : d;
+};
+const escapeHtml = str => {
+  if (str == null) return '';
+  return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+};
+
+function badge(status){
+  const s = String(status || 'pending').toLowerCase();
+  const map = {'pending':'badge-pending','approved':'badge-approved','active':'badge-active','rejected':'badge-rejected','blocked':'badge-blocked','completed':'badge-completed','cancelled':'badge-cancelled','disabled':'badge-disabled'};
+  return `<span class="badge ${map[s]||'badge-pending'}">${escapeHtml(s)}</span>`;
+}
+
+function toast(msg, ok=true){
+  const el = document.createElement('div');
+  el.textContent = msg;
+  el.style.cssText = `position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:11px 18px;border-radius:12px;font-size:13px;font-weight:700;z-index:9999;background:${ok?'rgba(16,185,129,.95)':'rgba(244,63,94,.95)'};color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:opacity .3s;max-width:90vw;text-align:center;`;
+  document.body.appendChild(el);
+  setTimeout(()=>{el.style.opacity='0';},1800);
+  setTimeout(()=>{el.remove();},2100);
+}
+
+/* ============================================================
+   REFERRAL REVERSAL
+   ============================================================ */
+async function adjustReferrerEarnings(userDoc, sign){
+  if (!userDoc || !userDoc.referredBy) return null;
+  try {
+    const refQuery = query(collection(db,'users'), where('referralCode','==',userDoc.referredBy));
+    const refSnap = await getDocs(refQuery);
+    if (refSnap.empty) return null;
+    const refDoc = refSnap.docs[0];
+    const refData = refDoc.data();
+    const newCount = Math.max(0, (refData.referralCount||0) + sign);
+    const newEarnings = Math.max(0, (refData.totalReferralEarnings||0) + (sign * REFERRAL_BONUS));
+
+    await updateDoc(doc(db,'users',refDoc.id), {
+      referralCount: newCount,
+      totalReferralEarnings: newEarnings
+    });
+
+    if (sign === -1){
+      await addDoc(collection(db,'transactions'), {
+        uid: refDoc.id,
+        type: 'referral_reversal',
+        description: `Referral earnings reversed — referred user (${userDoc.name||'user'}) was blocked`,
+        amount: -REFERRAL_BONUS,
+        createdAt: serverTimestamp()
+      });
+    } else {
+      await addDoc(collection(db,'transactions'), {
+        uid: refDoc.id,
+        type: 'referral_bonus',
+        description: `Referral earnings restored — referred user (${userDoc.name||'user'}) was reactivated`,
+        amount: REFERRAL_BONUS,
+        createdAt: serverTimestamp()
+      });
+    }
+    return refDoc.id;
+  } catch(e){ console.error('Referral adjust error:', e); return null; }
+}
+
+/* ============================================================
+   AUTH / NAV
+   ============================================================ */
+window.handleLogout = async function(){
+  await signOut(auth);
+  window.location.href = 'login.html';
+};
+
+window.switchTab = function(tab){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.add('hidden'));
+  const el = document.getElementById('tabContent-'+tab);
+  if (el) el.classList.remove('hidden');
+  if (tab === 'chats') loadChats();
+};
+
+window.refreshAll = async function(){
+  await Promise.all([loadUsers(), loadDeposits(), loadWithdrawals(), loadInvested(), loadPlans(), loadChats()]);
+  toast('Refreshed');
+};
+
+/* ============================================================
+   TXN ID MODAL
+   ============================================================ */
+window.openTxnIdModal = function(type, id){
+  const isWithdrawal = type === 'withdrawal';
+  const record = isWithdrawal
+    ? allWithdrawals.find(x => x.id === id)
+    : allDeposits.find(x => x.id === id);
+  if (!record){ toast('Record not found', false); return; }
+
+  txnIdAction = { type, id };
+  document.getElementById('txnIdModalLabel').textContent = isWithdrawal ? 'Withdrawal Approval' : 'Deposit Approval';
+  document.getElementById('txnIdModalTitle').textContent = 'Enter Transaction ID';
+  document.getElementById('txnIdModalAmount').textContent = fmtMoney(record.amount);
+  document.getElementById('txnIdModalUser').textContent = record.userName || 'User';
+  document.getElementById('txnIdModalInput').value = record.transactionId || record.utr || '';
+  document.getElementById('txnIdModalError').classList.add('hidden');
+  document.getElementById('txnIdModal').classList.add('open');
+  setTimeout(() => document.getElementById('txnIdModalInput').focus(), 150);
+};
+
+window.closeTxnIdModal = function(){
+  document.getElementById('txnIdModal').classList.remove('open');
+  txnIdAction = null;
+};
+
+window.confirmTxnIdAction = async function(){
+  if (!txnIdAction) return;
+  const txnId = (document.getElementById('txnIdModalInput').value || '').trim();
+  const errEl = document.getElementById('txnIdModalError');
+  if (!txnId){
+    errEl.classList.remove('hidden');
+    document.getElementById('txnIdModalInput').focus();
+    return;
+  }
+  errEl.classList.add('hidden');
+
+  const { type, id } = txnIdAction;
+  try {
+    if (type === 'withdrawal') await approveWithdrawalWithTxn(id, txnId);
+    else await approveDepositWithTxn(id, txnId);
+    closeTxnIdModal();
+  } catch(e){ toast(e.message, false); }
+};
+
+/* ============================================================
+   USERS
+   ============================================================ */
+async function loadUsers(){
+  const snap = await getDocs(collection(db,'users'));
+  allUsers = [];
+  snap.forEach(d => allUsers.push({ id: d.id, ...d.data() }));
+
+  const total = allUsers.length;
+  const active = allUsers.filter(u => (u.status || 'active') === 'active').length;
+  const blocked = allUsers.filter(u => u.status === 'blocked').length;
+  const balance = allUsers.reduce((s,u) => s + (u.balance||0), 0);
+
+  document.getElementById('uTotal').textContent = total;
+  document.getElementById('uActive').textContent = active;
+  document.getElementById('uBlocked').textContent = blocked;
+  document.getElementById('uBalance').textContent = fmtMoney(balance);
+
+  renderUserTable();
+}
+
+function renderUserTable(){
+  const q = (document.getElementById('userSearch').value||'').toLowerCase().trim();
+  let records = allUsers;
+  if (q) records = records.filter(u =>
+    (u.name||'').toLowerCase().includes(q) ||
+    (u.email||'').toLowerCase().includes(q) ||
+    (u.phone||'').includes(q) ||
+    (u.referralCode||'').toLowerCase().includes(q)
+  );
+
+  const tb = document.getElementById('userTableBody');
+  if (!records.length){ tb.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-slate-500">No users found</td></tr>'; return; }
+  tb.innerHTML = records.map(u => {
+    const status = u.status || 'active';
+    return `<tr onclick="showUserDetail('${u.id}')">
+      <td><div class="font-bold text-white">${escapeHtml(u.name||'Unknown')}</div></td>
+      <td class="text-slate-400">${escapeHtml(u.email||'—')}</td>
+      <td>${escapeHtml(u.phone||'—')}</td>
+      <td class="text-cyan-300 font-extrabold">${fmtMoney(u.balance||0)}</td>
+      <td>${badge(status)}</td>
+      <td onclick="event.stopPropagation()">
+        <div class="flex gap-1">
+          <button onclick="showUserDetail('${u.id}')" class="btn btn-cyan btn-icon" title="View"><svg class="ic ic-xs" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.6"/><path d="m16 16 4.4 4.4"/></svg></button>
+          <button onclick="toggleUserStatus('${u.id}')" class="btn ${status==='active'?'btn-danger':'btn-success'} btn-icon" title="${status==='active'?'Block':'Activate'}">
+            ${status==='active' ? `<svg class="ic ic-xs" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M6 6l12 12"/></svg>` : `<svg class="ic ic-xs" viewBox="0 0 24 24"><path d="M5 12.6l4.4 4.4L19 7.4"/></svg>`}
+          </button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+window.showUserDetail = async function(id){
+  const u = allUsers.find(x => x.id === id);
+  if (!u) return;
+  currentUserEditId = id;
+
+  const [txSnap, wSnap, dSnap, iSnap] = await Promise.all([
+    getDocs(query(collection(db,'transactions'), where('uid','==',id))),
+    getDocs(query(collection(db,'withdrawals'), where('uid','==',id))),
+    getDocs(query(collection(db,'deposits'), where('uid','==',id))),
+    getDocs(query(collection(db,'investments'), where('uid','==',id)))
+  ]);
+
+  const ledger = [];
+  txSnap.forEach(d => ledger.push({ id: d.id, _src: 'transaction', ...d.data() }));
+  wSnap.forEach(d => {
+    const data = d.data();
+    ledger.push({ id: d.id, _src: 'withdrawal', type: 'withdrawal', amount: -Math.abs(data.amount||0), createdAt: data.createdAt, status: data.status, description: 'Withdrawal', balanceAfter: data.balanceAfter, transactionId: data.transactionId });
+  });
+  dSnap.forEach(d => {
+    const data = d.data();
+    if (data.status === 'approved') ledger.push({ id: d.id, _src: 'deposit', type: 'deposit', amount: Math.abs(data.amount||0), createdAt: data.createdAt, status: data.status, description: 'Deposit', balanceAfter: data.balanceAfter, transactionId: data.utr || data.transactionId });
+  });
+
+  ledger.sort((a,b) => (toDateSafe(a.createdAt)||new Date(0)) - (toDateSafe(b.createdAt)||new Date(0)));
+
+  const currentBalance = u.balance || 0;
+  let finalFromLedger = 0;
+  const ledgerWithBalance = ledger.map(e => { const amt = Number(e.amount)||0; finalFromLedger += amt; return {...e, amt}; });
+  const startingBalance = currentBalance - finalFromLedger;
+  let running = startingBalance;
+  const withRunning = ledgerWithBalance.map(e => { running += e.amt; return {...e, runBal: running}; });
+
+  const investments = [];
+  iSnap.forEach(d => investments.push({id:d.id, ...d.data()}));
+  investments.sort((a,b) => (toDateSafe(b.createdAt)||new Date(0)) - (toDateSafe(a.createdAt)||new Date(0)));
+
+  const savedUpi = u.savedUpi || {};
+  const savedBank = u.savedBank || {};
+  const status = u.status || 'active';
+  const initials = (u.name||'U').substring(0,2).toUpperCase();
+
+  const txIcon = t => {
+    const m = {
+      deposit: {cls:'chip-cyan', svg:`<svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8 10.5 4 4 4-4"/><path d="M5 19h14"/></svg>`},
+      withdrawal: {cls:'chip-rose', svg:`<svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M12 15V5"/><path d="m8 8.5 4-4 4 4"/><path d="M5 19h14"/></svg>`},
+      investment: {cls:'chip-violet', svg:`<svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M3 16.5 9 10.5l4 4 8-8"/></svg>`},
+      investment_refund: {cls:'chip-emerald', svg:`<svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>`},
+      investment_maturity: {cls:'chip-emerald', svg:`<svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>`},
+      signup_bonus: {cls:'chip-amber', svg:`<svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M12 3.2 14.6 9l6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.7 9.4 9z"/></svg>`},
+      referral_bonus: {cls:'chip-violet', svg:`<svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.1"/><path d="M3.2 19.3c.6-3.2 2.6-4.9 5.8-4.9s5.2 1.7 5.8 4.9"/><circle cx="17.2" cy="9.2" r="2.5"/></svg>`},
+      referral_reversal: {cls:'chip-rose', svg:`<svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.1"/><path d="M3.2 19.3c.6-3.2 2.6-4.9 5.8-4.9s5.2 1.7 5.8 4.9"/><path d="m16 6 5 5-5 5"/></svg>`}
+    };
+    return m[t] || {cls:'chip-slate', svg:`<svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>`};
+  };
+
+  const txRowsHtml = withRunning.length
+    ? withRunning.map(e => {
+        const ic2 = txIcon(e.type);
+        const isCredit = e.amt >= 0;
+        return `<div class="tx-row" onclick="event.stopPropagation();openTxDetail('${e._src}','${e.id}')">
+          <span class="tx-chip ${ic2.cls}">${ic2.svg}</span>
+          <div class="min-w-0 flex-1">
+            <p class="text-white font-bold text-[12.5px] truncate">${escapeHtml(e.description || e.type)}</p>
+            <p class="text-slate-500 text-[10.5px] mt-0.5">${fmtDate(e.createdAt)}</p>
+          </div>
+          <div class="text-right">
+            <p class="font-extrabold text-[12.5px] ${isCredit?'text-emerald-400':'text-rose-400'}">${isCredit?'+':'−'}${fmtMoney(Math.abs(e.amt))}</p>
+            <p class="text-slate-500 text-[10px] mt-0.5">Bal: ${fmtMoney(e.runBal)}</p>
+          </div>
+          <button onclick="event.stopPropagation();deleteTransaction('${e._src}','${e.id}','${escapeHtml(String(e.description||e.type))}')" class="tx-del" title="Delete transaction">
+            <svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9.5 7V5.5A1.5 1.5 0 0 1 11 4h2a1.5 1.5 0 0 1 1.5 1.5V7"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/></svg>
+          </button>
+        </div>`;
+      }).join('')
+    : `<div class="empty-state"><p class="text-slate-400 text-[13px]">No transactions found for this user.</p></div>`;
+
+  const html = `
+    <div class="flex items-center gap-3 mb-5 flex-wrap">
+      <div class="chat-avatar" style="width:60px;height:60px;font-size:20px">${initials}</div>
+      <div class="min-w-0 flex-1">
+        <h4 class="text-[16px] font-extrabold text-white">${escapeHtml(u.name||'Unknown')}</h4>
+        <p class="text-slate-500 text-[12px] truncate mt-0.5">${escapeHtml(u.email||'—')}</p>
+        <div class="mt-1.5">${badge(status)}</div>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <button onclick="openChatWith('${u.id}')" class="btn btn-cyan"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-8.5 8.5H4.2a1.2 1.2 0 0 1-.85-2.05L5 17A8.5 8.5 0 1 1 21 12Z"/></svg>Chat</button>
+        <button onclick="openBalanceModal('${u.id}')" class="btn btn-success"><svg class="ic ic-sm" viewBox="0 0 24 24"><rect x="2.6" y="6.4" width="18.8" height="11.2" rx="2.6"/></svg>Balance</button>
+        <button onclick="openPaymentModal('${u.id}')" class="btn btn-primary"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M3 9.5 12 4l9 5.5"/><path d="M5 10v8M19 10v8"/><path d="M3 20h18"/></svg>Payment</button>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:6px"><span class="chip chip-cyan" style="width:32px;height:32px;border-radius:10px"><svg class="ic ic-xs" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.2"/></svg></span>Profile</div>
+    <div class="detail-grid">
+      <div class="detail-item"><label>Balance</label><span class="text-cyan-300">${fmtMoney(currentBalance)}</span></div>
+      <div class="detail-item"><label>Phone</label><span>${escapeHtml(u.phone||'—')}</span></div>
+      <div class="detail-item"><label>Referral Code</label><span>${escapeHtml(u.referralCode||'—')}</span></div>
+      <div class="detail-item"><label>Referred By</label><span>${escapeHtml(u.referredBy||'—')}</span></div>
+      <div class="detail-item"><label>Referral Count</label><span>${u.referralCount||0}</span></div>
+      <div class="detail-item"><label>Joined</label><span>${fmtShort(u.createdAt)}</span></div>
+      <div class="detail-item"><label>User ID</label><span style="font-size:11px;font-family:monospace">${escapeHtml(u.id)}</span></div>
+      <div class="detail-item"><label>Total Referral Earnings</label><span>${fmtMoney(u.totalReferralEarnings||0)}</span></div>
+    </div>
+
+    <div class="section-title"><span class="chip chip-cyan" style="width:32px;height:32px;border-radius:10px"><svg class="ic ic-xs" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2.4"/></svg></span>UPI Details</div>
+    <div class="detail-grid">
+      <div class="detail-item"><label>UPI Holder</label><span>${escapeHtml(savedUpi.name||'Not bound')}</span></div>
+      <div class="detail-item"><label>UPI ID</label><span>${escapeHtml(savedUpi.upiId||'Not bound')}</span></div>
+    </div>
+
+    <div class="section-title"><span class="chip chip-violet" style="width:32px;height:32px;border-radius:10px"><svg class="ic ic-xs" viewBox="0 0 24 24"><path d="M3 9.5 12 4l9 5.5"/><path d="M5 10v8M19 10v8"/><path d="M3 20h18"/></svg></span>Bank Details</div>
+    <div class="detail-grid">
+      <div class="detail-item"><label>Account Holder</label><span>${escapeHtml(savedBank.accountHolderName||'Not bound')}</span></div>
+      <div class="detail-item"><label>Account Number</label><span>${escapeHtml(savedBank.accountNumber||'Not bound')}</span></div>
+      <div class="detail-item"><label>IFSC Code</label><span>${escapeHtml(savedBank.ifscCode||'Not bound')}</span></div>
+    </div>
+
+    <div class="section-title"><span class="chip chip-emerald" style="width:32px;height:32px;border-radius:10px"><svg class="ic ic-xs" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></span>Transaction Ledger (tap to view details)</div>
+    <div class="space-y-2">${txRowsHtml}</div>
+
+    <div class="section-title"><span class="chip chip-amber" style="width:32px;height:32px;border-radius:10px"><svg class="ic ic-xs" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/></svg></span>Investments (${investments.length})</div>
+    <div class="space-y-2">
+      ${investments.length ? investments.map(i => `
+        <div class="tx-row" onclick="event.stopPropagation();openInvestDetail('${i.id}')">
+          <span class="tx-chip chip-violet"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M3 16.5 9 10.5l4 4 8-8"/></svg></span>
+          <div class="min-w-0 flex-1">
+            <p class="text-white font-bold text-[12.5px] truncate">${escapeHtml(i.planName||'Plan')}</p>
+            <p class="text-slate-500 text-[10.5px] mt-0.5">${fmtDate(i.createdAt)} · ${i.duration||0} days</p>
+          </div>
+          <div class="text-right">
+            <p class="text-cyan-300 font-extrabold text-[12.5px]">${fmtMoney(i.amount||0)}</p>
+            <p class="mt-0.5">${badge(i.status||'active')}</p>
+          </div>
+        </div>
+      `).join('') : `<div class="empty-state"><p class="text-slate-400 text-[13px]">No investments.</p></div>`}
+    </div>
+
+    <div class="flex flex-wrap gap-2 mt-6">
+      <button onclick="toggleUserStatus('${u.id}')" class="btn ${status==='active'?'btn-danger':'btn-success'}">
+        ${status==='active'
+          ? `<svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M6 6l12 12"/></svg> Block User`
+          : `<svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M5 12.6l4.4 4.4L19 7.4"/></svg> Activate User`}
+      </button>
+      <button onclick="deleteUser('${u.id}')" class="btn btn-danger">
+        <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9.5 7V5.5A1.5 1.5 0 0 1 11 4h2a1.5 1.5 0 0 1 1.5 1.5V7"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/></svg>
+        Delete User
+      </button>
+    </div>
+  `;
+
+  document.getElementById('userModalTitle').textContent = u.name || 'User Profile';
+  document.getElementById('userModalContent').innerHTML = html;
+  document.getElementById('userModal').classList.add('open');
+};
+
+window.closeUserModal = function(){
+  document.getElementById('userModal').classList.remove('open');
+  currentUserEditId = null;
+};
+
+window.toggleUserStatus = async function(id){
+  const u = allUsers.find(x => x.id === id);
+  if (!u) return;
+  const oldStatus = u.status || 'active';
+  const newStatus = oldStatus === 'active' ? 'blocked' : 'active';
+
+  if (newStatus === 'blocked'){
+    if (!confirm(`Block this user?\n\nThis will also reverse the ₹${REFERRAL_BONUS} referral bonus from the user who referred them.`)) return;
+  }
+
+  try {
+    await updateDoc(doc(db,'users',id), { status: newStatus });
+    if (newStatus === 'blocked' && oldStatus === 'active'){
+      await adjustReferrerEarnings(u, -1);
+    } else if (newStatus === 'active' && oldStatus === 'blocked'){
+      await adjustReferrerEarnings(u, +1);
+    }
+    u.status = newStatus;
+    renderUserTable();
+    if (currentUserEditId === id) showUserDetail(id);
+    await loadUsers();
+    toast(`User ${newStatus === 'active' ? 'activated' : 'blocked'}`);
+  } catch(e){ toast(e.message, false); }
+};
+
+window.deleteUser = async function(id){
+  const u = allUsers.find(x => x.id === id);
+  if (!u) return;
+  if (!confirm(`Permanently DELETE this user?\n\nThis will also reverse the ₹${REFERRAL_BONUS} referral bonus from the user who referred them.`)) return;
+  if (!confirm('Are you absolutely sure? This cannot be undone.')) return;
+  try {
+    if ((u.status || 'active') === 'active'){
+      await adjustReferrerEarnings(u, -1);
+    }
+    await deleteDoc(doc(db,'users',id));
+    closeUserModal();
+    await loadUsers();
+    toast('User deleted');
+  } catch(e){ toast(e.message, false); }
+};
+
+/* ============================================================
+   TRANSACTION DETAIL MODAL
+   ============================================================ */
+window.openTxDetail = async function(src, id){
+  const collMap = { transaction: 'transactions', withdrawal: 'withdrawals', deposit: 'deposits', investment: 'investments' };
+  const coll = collMap[src];
+  if (!coll) return;
+
+  try {
+    const snap = await getDoc(doc(db, coll, id));
+    if (!snap.exists()){ toast('Transaction not found', false); return; }
+    const data = snap.data();
+    currentTx = { src, id };
+
+    const typeLabels = {
+      deposit: 'Deposit', withdrawal: 'Withdrawal', investment: 'Investment',
+      investment_maturity: 'Investment Maturity', investment_refund: 'Investment Refund (Admin)',
+      signup_bonus: 'Signup Bonus', referral_bonus: 'Referral Bonus', referral_reversal: 'Referral Reversal'
+    };
+    const typeLabel = typeLabels[data.type] || data.type || src;
+
+    let html = `
+      <div class="glass p-4 mb-4" style="border-radius:14px">
+        <p class="field-label">${escapeHtml(typeLabel)}</p>
+        <p class="text-2xl font-extrabold mt-1 ${data.amount >= 0 ? 'text-emerald-400' : 'text-rose-400'}">
+          ${data.amount >= 0 ? '+' : '−'}${fmtMoney(Math.abs(data.amount||0))}
+        </p>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-item"><label>Type</label><span>${escapeHtml(typeLabel)}</span></div>
+        <div class="detail-item"><label>Status</label><span>${badge(data.status || 'completed')}</span></div>
+        <div class="detail-item"><label>Date</label><span>${fmtShort(data.createdAt)}</span></div>
+        <div class="detail-item"><label>Time</label><span>${fmtTime(data.createdAt)}</span></div>
+    `;
+
+    if (data.description) html += `<div class="detail-item" style="grid-column:1/-1"><label>Description</label><span>${escapeHtml(data.description)}</span></div>`;
+    if (data.balanceAfter != null) html += `<div class="detail-item"><label>Balance After</label><span>${fmtMoney(data.balanceAfter)}</span></div>`;
+    if (data.planName) html += `<div class="detail-item"><label>Plan Name</label><span>${escapeHtml(data.planName)}</span></div>`;
+    if (data.dailyReturn) html += `<div class="detail-item"><label>Daily Return</label><span>${data.dailyReturn}%</span></div>`;
+    if (data.duration) html += `<div class="detail-item"><label>Duration</label><span>${data.duration} days</span></div>`;
+    if (data.maturityAmount) html += `<div class="detail-item"><label>Maturity Amount</label><span class="text-cyan-300">${fmtMoney(data.maturityAmount)}</span></div>`;
+    if (data.startDate) html += `<div class="detail-item"><label>Start Date</label><span>${fmtShort(data.startDate)}</span></div>`;
+    if (data.startDate) html += `<div class="detail-item"><label>Start Time</label><span>${fmtTime(data.startDate)}</span></div>`;
+    if (data.endDate) html += `<div class="detail-item"><label>Maturity Date</label><span>${fmtShort(data.endDate)}</span></div>`;
+    if (data.endDate) html += `<div class="detail-item"><label>Maturity Time</label><span>12:00 AM</span></div>`;
+    if (data.utr) html += `<div class="detail-item"><label>UTR / Txn ID</label><span style="font-family:monospace;font-size:11.5px">${escapeHtml(data.utr)}</span></div>`;
+    if (data.transactionId) html += `<div class="detail-item"><label>Transaction ID</label><span style="font-family:monospace;font-size:11.5px">${escapeHtml(data.transactionId)}</span></div>`;
+    if (data.method) html += `<div class="detail-item"><label>Method</label><span>${escapeHtml(String(data.method).toUpperCase())}</span></div>`;
+    if (data.approvedAt) html += `<div class="detail-item"><label>Approved At</label><span>${fmtDate(data.approvedAt)}</span></div>`;
+    if (data.rejectedAt) html += `<div class="detail-item"><label>Rejected At</label><span>${fmtDate(data.rejectedAt)}</span></div>`;
+    if (data.completedAt) html += `<div class="detail-item"><label>Completed At</label><span>${fmtDate(data.completedAt)}</span></div>`;
+    if (data.refunded != null) html += `<div class="detail-item"><label>Refunded</label><span>${data.refunded ? 'Yes' : 'No'}</span></div>`;
+
+    if (data.paymentDetails){
+      const pd = data.paymentDetails;
+      if (pd.name) html += `<div class="detail-item"><label>UPI Holder</label><span>${escapeHtml(pd.name)}</span></div>`;
+      if (pd.upiId) html += `<div class="detail-item"><label>UPI ID</label><span>${escapeHtml(pd.upiId)}</span></div>`;
+      if (pd.accountHolderName) html += `<div class="detail-item"><label>Account Holder</label><span>${escapeHtml(pd.accountHolderName)}</span></div>`;
+      if (pd.accountNumber) html += `<div class="detail-item"><label>Account Number</label><span>${escapeHtml(pd.accountNumber)}</span></div>`;
+      if (pd.ifscCode) html += `<div class="detail-item"><label>IFSC</label><span>${escapeHtml(pd.ifscCode)}</span></div>`;
+    }
+
+    html += `<div class="detail-item" style="grid-column:1/-1"><label>Document ID</label><span style="font-family:monospace;font-size:11px">${escapeHtml(id)}</span></div>`;
+    html += `</div>`;
+
+    html += `<div class="flex gap-2 mt-5 flex-wrap">
+      <button onclick="deleteCurrentTx()" class="btn btn-danger flex-1">
+        <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9.5 7V5.5A1.5 1.5 0 0 1 11 4h2a1.5 1.5 0 0 1 1.5 1.5V7"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/></svg>
+        Delete This Transaction
+      </button>
+      <button onclick="closeTxDetailModal()" class="btn btn-ghost">Close</button>
+    </div>`;
+
+    document.getElementById('txDetailContent').innerHTML = html;
+    document.getElementById('txDetailModal').classList.add('open');
+  } catch(e){ toast(e.message, false); }
+};
+
+window.closeTxDetailModal = function(){
+  document.getElementById('txDetailModal').classList.remove('open');
+  currentTx = null;
+};
+
+window.deleteCurrentTx = async function(){
+  if (!currentTx) return;
+  await deleteTransaction(currentTx.src, currentTx.id);
+  closeTxDetailModal();
+};
+
+/* ============================================================
+   DELETE TRANSACTION (with investment refund)
+   ============================================================ */
+window.deleteTransaction = async function(src, id, label){
+  const collMap = { transaction: 'transactions', withdrawal: 'withdrawals', deposit: 'deposits', investment: 'investments' };
+  const coll = collMap[src];
+  if (!coll) return;
+
+  // ----- INVESTMENT DELETE → REFUND -----
+  if (src === 'investment'){
+    const inv = allInvestments.find(x => x.id === id);
+    if (!inv){ toast('Investment not found', false); return; }
+    const refundAmount = Number(inv.amount || 0);
+
+    if (!confirm(`Delete this investment permanently?\n\n• User: ${inv.userName || 'User'}\n• Plan: ${inv.planName || 'Investment'}\n• Refund: ₹${refundAmount.toFixed(2)} will be credited back to the user's wallet.\n\nThis will also add a transaction record visible in their history.`)) return;
+    if (!confirm('Are you absolutely sure? This cannot be undone.')) return;
+
+    try {
+      if (inv.uid){
+        const uRef = doc(db,'users',inv.uid);
+        const uSnap = await getDoc(uRef);
+        if (uSnap.exists()){
+          const prevBal = uSnap.data().balance || 0;
+          const newBal = prevBal + refundAmount;
+          await updateDoc(uRef, { balance: newBal });
+
+          await addDoc(collection(db,'transactions'), {
+            uid: inv.uid,
+            type: 'investment_refund',
+            description: `Investment cancelled by admin — ${inv.planName || 'Plan'} amount refunded`,
+            planName: inv.planName || '',
+            amount: refundAmount,
+            balanceAfter: newBal,
+            createdAt: serverTimestamp()
+          });
+        }
+      }
+      await deleteDoc(doc(db,'investments',id));
+      toast(`Investment deleted · ₹${refundAmount.toFixed(2)} refunded`);
+      if (currentUserEditId){ await showUserDetail(currentUserEditId); }
+      await Promise.all([loadInvested(), loadUsers()]);
+    } catch(e){ toast(e.message, false); }
+    return;
+  }
+
+  // ----- NORMAL DELETE -----
+  if (!confirm(`Delete this ${src} record permanently?\n${label ? '— ' + label : ''}`)) return;
+  try {
+    await deleteDoc(doc(db, coll, id));
+    toast('Transaction deleted');
+    if (currentUserEditId){ await showUserDetail(currentUserEditId); }
+    await Promise.all([loadDeposits(), loadWithdrawals(), loadInvested(), loadUsers()]);
+  } catch(e){ toast(e.message, false); }
+};
+
+/* ============================================================
+   BALANCE EDIT
+   ============================================================ */
+window.openBalanceModal = function(id){
+  const u = allUsers.find(x => x.id === id);
+  if (!u) return;
+  currentBalanceUserId = id;
+  document.getElementById('balanceCurrent').textContent = fmtMoney(u.balance||0);
+  document.getElementById('balanceNewValue').value = (u.balance||0).toFixed(2);
+  document.getElementById('balanceAdjust').value = '';
+  document.getElementById('balanceModal').classList.add('open');
+};
+window.closeBalanceModal = function(){ document.getElementById('balanceModal').classList.remove('open'); currentBalanceUserId = null; };
+window.quickBalance = function(sign){
+  const cur = parseFloat(document.getElementById('balanceNewValue').value) || 0;
+  const adj = parseFloat(document.getElementById('balanceAdjust').value) || 0;
+  const val = sign === '+' ? cur + adj : Math.max(0, cur - adj);
+  document.getElementById('balanceNewValue').value = val.toFixed(2);
+};
+window.saveBalanceEdit = async function(){
+  if (!currentBalanceUserId) return;
+  const nv = parseFloat(document.getElementById('balanceNewValue').value);
+  if (isNaN(nv) || nv < 0){ toast('Enter a valid balance', false); return; }
+  try {
+    const u = allUsers.find(x => x.id === currentBalanceUserId);
+    await updateDoc(doc(db,'users',currentBalanceUserId), { balance: nv });
+    if (u) u.balance = nv;
+    renderUserTable();
+    toast('Balance updated');
+    closeBalanceModal();
+    if (currentUserEditId === currentBalanceUserId) showUserDetail(currentBalanceUserId);
+  } catch(e){ toast(e.message, false); }
+};
+
+/* ============================================================
+   PAYMENT EDIT
+   ============================================================ */
+window.openPaymentModal = function(id){
+  const u = allUsers.find(x => x.id === id);
+  if (!u) return;
+  currentPaymentUserId = id;
+  const upi = u.savedUpi || {};
+  const bank = u.savedBank || {};
+  document.getElementById('editUpiName').value = upi.name || '';
+  document.getElementById('editUpiId').value = upi.upiId || '';
+  document.getElementById('editAccHolder').value = bank.accountHolderName || '';
+  document.getElementById('editAccNumber').value = bank.accountNumber || '';
+  document.getElementById('editIfsc').value = bank.ifscCode || '';
+  document.getElementById('paymentModal').classList.add('open');
+};
+window.closePaymentModal = function(){ document.getElementById('paymentModal').classList.remove('open'); currentPaymentUserId = null; };
+window.savePaymentDetails = async function(){
+  if (!currentPaymentUserId) return;
+  const upiName = document.getElementById('editUpiName').value.trim();
+  const upiId = document.getElementById('editUpiId').value.trim();
+  const accHolder = document.getElementById('editAccHolder').value.trim();
+  const accNumber = document.getElementById('editAccNumber').value.trim();
+  const ifsc = document.getElementById('editIfsc').value.trim().toUpperCase();
+
+  const updates = {};
+  if (upiName || upiId) updates.savedUpi = { name: upiName, upiId };
+  if (accHolder || accNumber || ifsc) updates.savedBank = { accountHolderName: accHolder, accountNumber: accNumber, ifscCode: ifsc };
+
+  try {
+    await updateDoc(doc(db,'users',currentPaymentUserId), updates);
+    const u = allUsers.find(x => x.id === currentPaymentUserId);
+    if (u){
+      if (updates.savedUpi) u.savedUpi = updates.savedUpi;
+      if (updates.savedBank) u.savedBank = updates.savedBank;
+    }
+    toast('Payment details saved');
+    closePaymentModal();
+    if (currentUserEditId === currentPaymentUserId) showUserDetail(currentPaymentUserId);
+  } catch(e){ toast(e.message, false); }
+};
+
+/* ============================================================
+   WITHDRAWALS
+   ============================================================ */
+async function loadWithdrawals(){
+  const snap = await getDocs(collection(db,'withdrawals'));
+  allWithdrawals = [];
+  snap.forEach(d => allWithdrawals.push({ id: d.id, ...d.data() }));
+  allWithdrawals.sort((a,b) => (toDateSafe(b.createdAt)||new Date(0)) - (toDateSafe(a.createdAt)||new Date(0)));
+
+  document.getElementById('wPending').textContent = allWithdrawals.filter(w => w.status==='pending').length;
+  document.getElementById('wApproved').textContent = allWithdrawals.filter(w => w.status==='approved').length;
+  document.getElementById('wRejected').textContent = allWithdrawals.filter(w => w.status==='rejected').length;
+  document.getElementById('wTotal').textContent = allWithdrawals.length;
+
+  renderWithdrawTable();
+}
+
+function renderWithdrawTable(){
+  const q = (document.getElementById('withdrawSearch').value||'').toLowerCase().trim();
+  let records = allWithdrawals;
+  if (q) records = records.filter(w => {
+    const user = allUsers.find(u => u.id === w.uid) || {};
+    return (w.userName||'').toLowerCase().includes(q) || (user.email||'').toLowerCase().includes(q) || (w.transactionId||'').toLowerCase().includes(q) || String(w.amount||'').includes(q);
+  });
+
+  const tb = document.getElementById('withdrawTableBody');
+  if (!records.length){ tb.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-slate-500">No withdrawals found</td></tr>'; return; }
+  tb.innerHTML = records.map(w => {
+    const user = allUsers.find(u => u.id === w.uid) || {};
+    const email = user.email || w.userEmail || '—';
+    const method = (w.method||'upi').toUpperCase();
+    return `<tr onclick="showWithdrawDetail('${w.id}')">
+      <td><div class="font-bold text-white">${escapeHtml(w.userName||'Unknown')}</div><div class="text-[11px] text-slate-500">${escapeHtml(email)}</div></td>
+      <td class="text-cyan-300 font-extrabold">${fmtMoney(w.amount)}</td>
+      <td>${escapeHtml(method)}</td>
+      <td class="text-[11px] text-slate-500">${fmtDate(w.createdAt)}</td>
+      <td>${badge(w.status)}</td>
+      <td onclick="event.stopPropagation()">
+        <div class="flex gap-1">
+          <button onclick="showWithdrawDetail('${w.id}')" class="btn btn-cyan btn-icon"><svg class="ic ic-xs" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.6"/><path d="m16 16 4.4 4.4"/></svg></button>
+          ${w.status==='pending' ? `
+            <button onclick="approveWithdrawal('${w.id}')" class="btn btn-success btn-icon" title="Approve"><svg class="ic ic-xs" viewBox="0 0 24 24"><path d="M5 12.6l4.4 4.4L19 7.4"/></svg></button>
+            <button onclick="rejectWithdrawal('${w.id}')" class="btn btn-danger btn-icon" title="Reject"><svg class="ic ic-xs" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>` : ''}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+window.showWithdrawDetail = function(id){
+  const w = allWithdrawals.find(x => x.id === id);
+  if (!w) return;
+  const user = allUsers.find(u => u.id === w.uid) || {};
+  const pd = w.paymentDetails || {};
+  const html = `
+    <div class="detail-grid">
+      <div class="detail-item"><label>User</label><span>${escapeHtml(w.userName||'Unknown')}</span></div>
+      <div class="detail-item"><label>Email</label><span>${escapeHtml(user.email||w.userEmail||'—')}</span></div>
+      <div class="detail-item"><label>Amount</label><span class="text-cyan-300">${fmtMoney(w.amount)}</span></div>
+      <div class="detail-item"><label>Method</label><span>${escapeHtml((w.method||'upi').toUpperCase())}</span></div>
+      ${pd.name ? `<div class="detail-item"><label>UPI Holder</label><span>${escapeHtml(pd.name)}</span></div>`:''}
+      ${pd.upiId ? `<div class="detail-item"><label>UPI ID</label><span>${escapeHtml(pd.upiId)}</span></div>`:''}
+      ${pd.accountHolderName ? `<div class="detail-item"><label>Account Holder</label><span>${escapeHtml(pd.accountHolderName)}</span></div>`:''}
+      ${pd.accountNumber ? `<div class="detail-item"><label>Account Number</label><span>${escapeHtml(pd.accountNumber)}</span></div>`:''}
+      ${pd.ifscCode ? `<div class="detail-item"><label>IFSC</label><span>${escapeHtml(pd.ifscCode)}</span></div>`:''}
+      <div class="detail-item"><label>Txn ID</label><span>${escapeHtml(w.transactionId||'—')}</span></div>
+      <div class="detail-item"><label>Request Date</label><span>${fmtDate(w.createdAt)}</span></div>
+      <div class="detail-item"><label>Status</label><span>${badge(w.status)}</span></div>
+    </div>
+    <div class="flex flex-wrap gap-2 mt-5">
+      ${w.status==='pending' ? `
+        <button onclick="approveWithdrawal('${w.id}')" class="btn btn-success"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M5 12.6l4.4 4.4L19 7.4"/></svg> Approve</button>
+        <button onclick="rejectWithdrawal('${w.id}')" class="btn btn-danger"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg> Reject & Refund</button>` : ''}
+      <button onclick="deleteWithdrawal('${w.id}')" class="btn btn-danger"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/></svg> Delete</button>
+    </div>
+  `;
+  document.getElementById('withdrawModalContent').innerHTML = html;
+  document.getElementById('withdrawModal').classList.add('open');
+};
+window.closeWithdrawModal = function(){ document.getElementById('withdrawModal').classList.remove('open'); };
+
+/* Opens the TXN-ID prompt → then approves */
+window.approveWithdrawal = function(id){
+  openTxnIdModal('withdrawal', id);
+};
+
+async function approveWithdrawalWithTxn(id, txnId){
+  const w = allWithdrawals.find(x => x.id === id);
+  if (!w) throw new Error('Withdrawal not found');
+
+  await updateDoc(doc(db,'withdrawals',id), {
+    status: 'approved',
+    transactionId: txnId,
+    approvedAt: serverTimestamp()
+  });
+
+  toast('Withdrawal approved with Txn ID');
+  closeWithdrawModal();
+  await loadWithdrawals();
+  if (currentUserEditId === w.uid) showUserDetail(w.uid);
+}
+
+window.rejectWithdrawal = async function(id){
+  if (!confirm('Reject this withdrawal? Amount will be refunded to the user.')) return;
+  try {
+    const w = allWithdrawals.find(x => x.id === id);
+    if (!w) throw new Error('Not found');
+    await updateDoc(doc(db,'withdrawals',id), { status: 'rejected', rejectedAt: serverTimestamp() });
+    if (w.uid){
+      const uRef = doc(db,'users',w.uid);
+      const uSnap = await getDoc(uRef);
+      if (uSnap.exists()){
+        const newBal = (uSnap.data().balance||0) + (w.amount||0);
+        await updateDoc(uRef, { balance: newBal });
+        await updateDoc(doc(db,'withdrawals',id), { refunded: true, balanceAfter: newBal });
+        await addDoc(collection(db,'transactions'), { uid: w.uid, type: 'withdrawal', description: 'Withdrawal Failed — Refund Credited', amount: w.amount, balanceAfter: newBal, createdAt: serverTimestamp() });
+      }
+    }
+    toast('Rejected and refunded');
+    closeWithdrawModal();
+    await loadWithdrawals();
+    await loadUsers();
+  } catch(e){ toast(e.message, false); }
+};
+
+window.deleteWithdrawal = async function(id){
+  if (!confirm('Delete this withdrawal record permanently?')) return;
+  try {
+    await deleteDoc(doc(db,'withdrawals',id));
+    closeWithdrawModal();
+    await loadWithdrawals();
+    if (currentUserEditId) showUserDetail(currentUserEditId);
+    toast('Deleted');
+  } catch(e){ toast(e.message, false); }
+};
+
+/* ============================================================
+   DEPOSITS
+   ============================================================ */
+async function loadDeposits(){
+  const snap = await getDocs(collection(db,'deposits'));
+  allDeposits = [];
+  snap.forEach(d => allDeposits.push({ id: d.id, ...d.data() }));
+  allDeposits.sort((a,b) => (toDateSafe(b.createdAt)||new Date(0)) - (toDateSafe(a.createdAt)||new Date(0)));
+
+  document.getElementById('dPending').textContent = allDeposits.filter(d => d.status==='pending').length;
+  document.getElementById('dApproved').textContent = allDeposits.filter(d => d.status==='approved').length;
+  document.getElementById('dRejected').textContent = allDeposits.filter(d => d.status==='rejected').length;
+  document.getElementById('dTotal').textContent = allDeposits.length;
+
+  renderDepositTable();
+}
+
+function renderDepositTable(){
+  const q = (document.getElementById('depositSearch').value||'').toLowerCase().trim();
+  let records = allDeposits;
+  if (q) records = records.filter(d => {
+    const user = allUsers.find(u => u.id === d.uid) || {};
+    return (d.userName||'').toLowerCase().includes(q) || (user.email||'').toLowerCase().includes(q) || (d.utr||'').toLowerCase().includes(q) || String(d.amount||'').includes(q);
+  });
+
+  const tb = document.getElementById('depositTableBody');
+  if (!records.length){ tb.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-slate-500">No deposits found</td></tr>'; return; }
+  tb.innerHTML = records.map(d => {
+    const user = allUsers.find(u => u.id === d.uid) || {};
+    const email = user.email || d.userEmail || '—';
+    return `<tr onclick="showDepositDetail('${d.id}')">
+      <td><div class="font-bold text-white">${escapeHtml(d.userName||'Unknown')}</div><div class="text-[11px] text-slate-500">${escapeHtml(email)}</div></td>
+      <td class="text-cyan-300 font-extrabold">${fmtMoney(d.amount)}</td>
+      <td>${escapeHtml((d.method||'upi').toUpperCase())}</td>
+      <td class="text-[11px]">${escapeHtml(d.utr||'—')}</td>
+      <td class="text-[11px] text-slate-500">${fmtDate(d.createdAt)}</td>
+      <td>${badge(d.status)}</td>
+      <td onclick="event.stopPropagation()">
+        <div class="flex gap-1">
+          <button onclick="showDepositDetail('${d.id}')" class="btn btn-cyan btn-icon"><svg class="ic ic-xs" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.6"/><path d="m16 16 4.4 4.4"/></svg></button>
+          ${d.status==='pending' ? `
+            <button onclick="approveDeposit('${d.id}')" class="btn btn-success btn-icon" title="Approve"><svg class="ic ic-xs" viewBox="0 0 24 24"><path d="M5 12.6l4.4 4.4L19 7.4"/></svg></button>
+            <button onclick="rejectDeposit('${d.id}')" class="btn btn-danger btn-icon" title="Reject"><svg class="ic ic-xs" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>` : ''}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+window.showDepositDetail = function(id){
+  const d = allDeposits.find(x => x.id === id);
+  if (!d) return;
+  const user = allUsers.find(u => u.id === d.uid) || {};
+  const html = `
+    <div class="detail-grid">
+      <div class="detail-item"><label>User</label><span>${escapeHtml(d.userName||'Unknown')}</span></div>
+      <div class="detail-item"><label>Email</label><span>${escapeHtml(user.email||d.userEmail||'—')}</span></div>
+      <div class="detail-item"><label>Amount</label><span class="text-cyan-300">${fmtMoney(d.amount)}</span></div>
+      <div class="detail-item"><label>Method</label><span>${escapeHtml((d.method||'upi').toUpperCase())}</span></div>
+      <div class="detail-item"><label>UTR / Txn ID</label><span>${escapeHtml(d.utr||d.transactionId||'—')}</span></div>
+      <div class="detail-item"><label>Request Date</label><span>${fmtDate(d.createdAt)}</span></div>
+      <div class="detail-item"><label>Status</label><span>${badge(d.status)}</span></div>
+      ${d.approvedAt ? `<div class="detail-item"><label>Approved At</label><span>${fmtDate(d.approvedAt)}</span></div>`:''}
+      ${d.rejectedAt ? `<div class="detail-item"><label>Rejected At</label><span>${fmtDate(d.rejectedAt)}</span></div>`:''}
+    </div>
+    <div class="flex flex-wrap gap-2 mt-5">
+      ${d.status==='pending' ? `
+        <button onclick="approveDeposit('${d.id}')" class="btn btn-success"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M5 12.6l4.4 4.4L19 7.4"/></svg> Approve & Credit</button>
+        <button onclick="rejectDeposit('${d.id}')" class="btn btn-danger"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg> Reject</button>` : ''}
+      <button onclick="deleteDeposit('${d.id}')" class="btn btn-danger"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/></svg> Delete</button>
+    </div>
+  `;
+  document.getElementById('depositModalContent').innerHTML = html;
+  document.getElementById('depositModal').classList.add('open');
+};
+window.closeDepositModal = function(){ document.getElementById('depositModal').classList.remove('open'); };
+
+/* Opens TXN-ID prompt then credits */
+window.approveDeposit = function(id){
+  openTxnIdModal('deposit', id);
+};
+
+async function approveDepositWithTxn(id, txnId){
+  const d = allDeposits.find(x => x.id === id);
+  if (!d) throw new Error('Deposit not found');
+
+  await updateDoc(doc(db,'deposits',id), {
+    status: 'approved',
+    utr: txnId,
+    transactionId: txnId,
+    approvedAt: serverTimestamp()
+  });
+
+  if (d.uid){
+    const uRef = doc(db,'users',d.uid);
+    const uSnap = await getDoc(uRef);
+    if (uSnap.exists()){
+      const newBal = (uSnap.data().balance||0) + (d.amount||0);
+      await updateDoc(uRef, { balance: newBal });
+      await addDoc(collection(db,'transactions'), {
+        uid: d.uid,
+        type: 'deposit',
+        description: 'Account has been credited with your deposit amount',
+        amount: d.amount,
+        balanceAfter: newBal,
+        transactionId: txnId,
+        createdAt: serverTimestamp()
+      });
+    }
+  }
+  toast('Deposit approved & credited');
+  closeDepositModal();
+  await loadDeposits();
+  await loadUsers();
+  if (currentUserEditId === d.uid) showUserDetail(d.uid);
+}
+
+window.rejectDeposit = async function(id){
+  if (!confirm('Reject this deposit?')) return;
+  try {
+    await updateDoc(doc(db,'deposits',id), { status: 'rejected', rejectedAt: serverTimestamp() });
+    toast('Deposit rejected');
+    closeDepositModal();
+    await loadDeposits();
+  } catch(e){ toast(e.message, false); }
+};
+
+window.deleteDeposit = async function(id){
+  if (!confirm('Delete this deposit record permanently?')) return;
+  try {
+    await deleteDoc(doc(db,'deposits',id));
+    closeDepositModal();
+    await loadDeposits();
+    if (currentUserEditId) showUserDetail(currentUserEditId);
+    toast('Deleted');
+  } catch(e){ toast(e.message, false); }
+};
+
+/* ============================================================
+   INVESTMENTS
+   ============================================================ */
+async function loadInvested(){
+  try {
+    const snap = await getDocs(collection(db,'investments'));
+    allInvestments = [];
+    snap.forEach(d => allInvestments.push({ id: d.id, ...d.data() }));
+  } catch(e){ allInvestments = []; }
+  allInvestments.sort((a,b) => (toDateSafe(b.createdAt)||new Date(0)) - (toDateSafe(a.createdAt)||new Date(0)));
+
+  document.getElementById('iInvestors').textContent = new Set(allInvestments.map(i => i.uid)).size;
+  document.getElementById('iAmount').textContent = fmtMoney(allInvestments.reduce((s,i) => s + (i.amount||0), 0));
+  document.getElementById('iActive').textContent = allInvestments.filter(i => i.status==='active').length;
+  document.getElementById('iCompleted').textContent = allInvestments.filter(i => i.status==='completed').length;
+
+  renderInvestTable();
+}
+
+function renderInvestTable(){
+  const q = (document.getElementById('investSearch').value||'').toLowerCase().trim();
+  let records = allInvestments;
+  if (q) records = records.filter(i => (i.userName||'').toLowerCase().includes(q) || (i.planName||'').toLowerCase().includes(q));
+
+  const tb = document.getElementById('investTableBody');
+  if (!records.length){ tb.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-slate-500">No investments found</td></tr>'; return; }
+  tb.innerHTML = records.map(i => `
+    <tr onclick="openInvestDetail('${i.id}')">
+      <td class="font-bold text-white">${escapeHtml(i.userName||'Unknown')}</td>
+      <td>${escapeHtml(i.planName||'—')}</td>
+      <td class="text-cyan-300 font-extrabold">${fmtMoney(i.amount)}</td>
+      <td class="text-[11px] text-slate-500">${fmtDate(i.createdAt)}</td>
+      <td>${i.duration||0} days</td>
+      <td class="text-emerald-400 font-extrabold">${fmtMoney(i.maturityAmount||0)}</td>
+      <td>${badge(i.status||'active')}</td>
+    </tr>
+  `).join('');
+}
+
+window.openInvestDetail = function(id){
+  const i = allInvestments.find(x => x.id === id);
+  if (!i) return;
+  const startDate = i.startDate || i.createdAt;
+  const endDate = i.endDate || i.maturityDate;
+
+  const html = `
+    <div class="glass p-4 mb-4" style="border-radius:14px">
+      <p class="field-label">Investment Amount</p>
+      <p class="text-2xl font-extrabold mt-1 text-cyan-300">${fmtMoney(i.amount||0)}</p>
+      <p class="text-slate-400 text-[12px] mt-1">${escapeHtml(i.planName||'Plan')} · ${i.duration||0} days · ${i.dailyReturn||0}%/day</p>
+    </div>
+
+    <div class="detail-grid">
+      <div class="detail-item"><label>Investor</label><span>${escapeHtml(i.userName||'Unknown')}</span></div>
+      <div class="detail-item"><label>Plan</label><span>${escapeHtml(i.planName||'—')}</span></div>
+      <div class="detail-item"><label>Amount</label><span class="text-cyan-300">${fmtMoney(i.amount)}</span></div>
+      <div class="detail-item"><label>Daily Return</label><span>${i.dailyReturn||0}%</span></div>
+      <div class="detail-item"><label>Duration</label><span>${i.duration||0} days</span></div>
+      <div class="detail-item"><label>Maturity Amount</label><span class="text-emerald-400">${fmtMoney(i.maturityAmount||0)}</span></div>
+      <div class="detail-item"><label>Start Date</label><span>${fmtShort(startDate)}</span></div>
+      <div class="detail-item"><label>Start Time</label><span>${fmtTime(startDate)}</span></div>
+      <div class="detail-item"><label>Maturity Date</label><span>${fmtShort(endDate)}</span></div>
+      <div class="detail-item"><label>Maturity Time</label><span>12:00 AM</span></div>
+      <div class="detail-item"><label>Status</label><span>${badge(i.status||'active')}</span></div>
+      <div class="detail-item"><label>Investment ID</label><span style="font-family:monospace;font-size:11px">${escapeHtml(i.id)}</span></div>
+    </div>
+
+    <div class="alert-row" style="background:rgba(244,63,94,.09);border:1px solid rgba(244,63,94,.28);color:#fda4af;padding:12px 14px;border-radius:12px;font-size:12px;line-height:1.55;margin-top:16px;display:flex;gap:10px;align-items:flex-start">
+      <svg class="ic ic-sm mt-0.5" style="color:#fda4af" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+      <span>Deleting this investment will refund <strong style="color:#fff">${fmtMoney(i.amount||0)}</strong> to the user's wallet and add a visible transaction record to their history.</span>
+    </div>
+
+    <div class="flex flex-wrap gap-2 mt-5">
+      <button onclick="closeInvestModal();deleteTransaction('investment','${i.id}','${escapeHtml(i.planName||'Investment')}')" class="btn btn-danger flex-1">
+        <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/></svg>
+        Delete & Refund ${fmtMoney(i.amount||0)}
+      </button>
+      <button onclick="closeInvestModal()" class="btn btn-ghost">Close</button>
+    </div>
+  `;
+  document.getElementById('investModalContent').innerHTML = html;
+  document.getElementById('investModal').classList.add('open');
+};
+window.closeInvestModal = function(){ document.getElementById('investModal').classList.remove('open'); };
+
+/* ============================================================
+   PLANS
+   ============================================================ */
+document.getElementById('planForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const name = document.getElementById('planName').value.trim();
+  const dailyReturn = parseFloat(document.getElementById('planReturn').value);
+  const duration = parseInt(document.getElementById('planDuration').value);
+  const minAmount = parseFloat(document.getElementById('planMin').value);
+  const maxAmount = parseFloat(document.getElementById('planMax').value);
+  const description = document.getElementById('planDesc').value.trim();
+
+  if (!name || !dailyReturn || !duration || !minAmount || !maxAmount) return toast('Fill all required fields', false);
+  if (minAmount >= maxAmount) return toast('Min must be less than Max', false);
+
+  try {
+    await addDoc(collection(db,'plans'), { name, dailyReturn, duration, minAmount, maxAmount, description: description || 'Investment Plan', status: 'active', createdAt: serverTimestamp() });
+    document.getElementById('planForm').reset();
+    toast('Plan created');
+    await loadPlans();
+  } catch(e){ toast(e.message, false); }
+});
+
+async function loadPlans(){
+  const snap = await getDocs(collection(db,'plans'));
+  allPlans = [];
+  snap.forEach(d => allPlans.push({ id: d.id, ...d.data() }));
+  renderPlans();
+}
+
+function renderPlans(){
+  const c = document.getElementById('existingPlans');
+  if (!allPlans.length){ c.innerHTML = '<div class="empty-state"><p class="text-slate-400 text-[13px]">No plans yet.</p></div>'; return; }
+  c.innerHTML = allPlans.map(p => `
+    <div class="p-3 rounded-2xl bg-white/[.028] border border-white/[.07]">
+      <div class="flex justify-between items-start gap-3 mb-2">
+        <div class="min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="font-extrabold text-white text-[13.5px]">${escapeHtml(p.name)}</span>
+            ${badge(p.status||'active')}
+          </div>
+          <p class="text-slate-400 text-[11.5px] mt-1">${p.dailyReturn}%/day · ${p.duration} days · ₹${p.minAmount} – ₹${p.maxAmount}</p>
+          ${p.description ? `<p class="text-slate-500 text-[11px] mt-0.5">${escapeHtml(p.description)}</p>`:''}
+        </div>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <button onclick="togglePlanStatus('${p.id}')" class="btn ${p.status==='active'?'btn-ghost':'btn-success'}" style="padding:7px 12px;font-size:11.5px">${p.status==='active' ? 'Disable' : 'Enable'}</button>
+        <button onclick="openPlanEditModal('${p.id}')" class="btn btn-cyan" style="padding:7px 12px;font-size:11.5px">Edit</button>
+        <button onclick="deletePlan('${p.id}')" class="btn btn-danger" style="padding:7px 12px;font-size:11.5px">Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.togglePlanStatus = async function(id){
+  const p = allPlans.find(x => x.id === id);
+  if (!p) return;
+  const ns = (p.status||'active')==='active' ? 'disabled' : 'active';
+  try { await updateDoc(doc(db,'plans',id), { status: ns }); await loadPlans(); toast('Plan updated'); }
+  catch(e){ toast(e.message, false); }
+};
+
+window.openPlanEditModal = function(id){
+  const p = allPlans.find(x => x.id === id);
+  if (!p) return;
+  currentEditPlanId = id;
+  document.getElementById('editPlanName').value = p.name||'';
+  document.getElementById('editPlanReturn').value = p.dailyReturn||'';
+  document.getElementById('editPlanDuration').value = p.duration||'';
+  document.getElementById('editPlanMin').value = p.minAmount||'';
+  document.getElementById('editPlanMax').value = p.maxAmount||'';
+  document.getElementById('editPlanDesc').value = p.description||'';
+  document.getElementById('planEditModal').classList.add('open');
+};
+window.closePlanEditModal = function(){ document.getElementById('planEditModal').classList.remove('open'); currentEditPlanId = null; };
+
+document.getElementById('planEditForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!currentEditPlanId) return;
+  const updates = {
+    name: document.getElementById('editPlanName').value.trim(),
+    dailyReturn: parseFloat(document.getElementById('editPlanReturn').value),
+    duration: parseInt(document.getElementById('editPlanDuration').value),
+    minAmount: parseFloat(document.getElementById('editPlanMin').value),
+    maxAmount: parseFloat(document.getElementById('editPlanMax').value),
+    description: document.getElementById('editPlanDesc').value.trim()
+  };
+  try { await updateDoc(doc(db,'plans',currentEditPlanId), updates); toast('Plan updated'); closePlanEditModal(); await loadPlans(); }
+  catch(e){ toast(e.message, false); }
+});
+
+window.deletePlan = async function(id){
+  if (!confirm('Delete this plan permanently?')) return;
+  try { await deleteDoc(doc(db,'plans',id)); await loadPlans(); toast('Plan deleted'); }
+  catch(e){ toast(e.message, false); }
+};
+
+/* ============================================================
+   SUPPORT CHATS
+   ============================================================ */
+async function loadChats(){
+  try {
+    const snap = await getDocs(collection(db,'supportChats'));
+    allChats = [];
+    snap.forEach(d => allChats.push({ id: d.id, ...d.data() }));
+  } catch(e){ allChats = []; }
+
+  allChats.sort((a,b) => (toDateSafe(b.lastMessageAt)||new Date(0)) - (toDateSafe(a.lastMessageAt)||new Date(0)));
+
+  document.getElementById('chatTotal').textContent = allChats.length;
+
+  const enriched = await Promise.all(allChats.map(async c => {
+    try {
+      const msgsSnap = await getDocs(query(collection(db,'supportChats',c.id,'messages'), orderBy('createdAt','desc')));
+      const msgs = [];
+      msgsSnap.forEach(m => msgs.push({id:m.id, ...m.data()}));
+      const last = msgs[0] || null;
+      const unread = msgs.filter(m => m.sender === 'user').length;
+      const replied = msgs.some(m => m.sender === 'admin' && !m.isAutoReply);
+      return { ...c, lastMessage: last, unread, replied };
+    } catch(e){ return { ...c, lastMessage: null, unread: 0, replied: false }; }
+  }));
+
+  const totalUnread = enriched.filter(c => c.unread > 0 && !c.replied).length;
+  document.getElementById('chatUnread').textContent = totalUnread;
+  document.getElementById('chatReplied').textContent = enriched.filter(c => c.replied).length;
+
+  const badgeEl = document.getElementById('chatBadge');
+  if (totalUnread > 0){ badgeEl.textContent = totalUnread; badgeEl.classList.remove('hidden'); }
+  else badgeEl.classList.add('hidden');
+
+  renderChatTable(enriched);
+}
+
+function renderChatTable(chats){
+  const q = (document.getElementById('chatSearch').value||'').toLowerCase().trim();
+  let records = chats;
+  if (q) records = records.filter(c => (c.userName||'').toLowerCase().includes(q) || (c.userEmail||'').toLowerCase().includes(q));
+
+  const tb = document.getElementById('chatTableBody');
+  if (!records.length){ tb.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-slate-500">No support chats yet</td></tr>'; return; }
+  tb.innerHTML = records.map(c => {
+    const lastMsg = c.lastMessage;
+    const preview = lastMsg ? `${lastMsg.sender==='user'?'':'You: '}${escapeHtml((lastMsg.text||'').substring(0,60))}${(lastMsg.text||'').length>60?'…':''}` : '<span class="text-slate-500">No messages yet</span>';
+    const statusLabel = c.replied ? 'Replied' : (c.unread > 0 ? 'Unread' : 'Open');
+    const statusCls = c.replied ? 'badge-approved' : (c.unread > 0 ? 'badge-pending' : 'badge-active');
+    return `<tr onclick="openChatWith('${c.id}')">
+      <td><div class="font-bold text-white">${escapeHtml(c.userName||'User')}</div></td>
+      <td class="text-slate-400 text-[12px]">${escapeHtml(c.userEmail||'—')}</td>
+      <td class="text-[11.5px] max-w-[260px] truncate">${preview}</td>
+      <td class="text-[11px] text-slate-500">${fmtDate(c.lastMessageAt||c.createdAt)}</td>
+      <td><span class="badge ${statusCls}">${statusLabel}</span></td>
+      <td onclick="event.stopPropagation()">
+        <div class="flex gap-1">
+          <button onclick="openChatWith('${c.id}')" class="btn btn-cyan btn-icon"><svg class="ic ic-xs" viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-8.5 8.5H4.2a1.2 1.2 0 0 1-.85-2.05L5 17A8.5 8.5 0 1 1 21 12Z"/></svg></button>
+          <button onclick="deleteChatConfirm('${c.id}')" class="btn btn-danger btn-icon"><svg class="ic ic-xs" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9.5 7V5.5A1.5 1.5 0 0 1 11 4h2a1.5 1.5 0 0 1 1.5 1.5V7"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/></svg></button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+window.openChatWith = async function(userId){
+  let user = allUsers.find(u => u.id === userId);
+  if (!user){
+    const snap = await getDoc(doc(db,'users',userId));
+    if (snap.exists()) user = { id: snap.id, ...snap.data() };
+  }
+  if (!user){ toast('User not found', false); return; }
+
+  currentChatUserId = userId;
+  document.getElementById('chatModalAvatar').textContent = (user.name||'U').substring(0,2).toUpperCase();
+  document.getElementById('chatModalName').textContent = user.name || 'User';
+  document.getElementById('chatModalEmail').textContent = user.email || '—';
+
+  const body = document.getElementById('chatBody');
+  body.innerHTML = `<div class="chat-empty"><div class="chat-empty-icon"><svg class="ic" style="width:24px;height:24px" viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-8.5 8.5H4.2a1.2 1.2 0 0 1-.85-2.05L5 17A8.5 8.5 0 1 1 21 12Z"/></svg></div><p>Loading conversation…</p></div>`;
+
+  if (chatUnsubMessages){ chatUnsubMessages(); chatUnsubMessages = null; }
+
+  const chatRef = doc(db,'supportChats',userId);
+  const chatSnap = await getDoc(chatRef);
+  if (!chatSnap.exists()){
+    body.innerHTML = `<div class="chat-empty"><div class="chat-empty-icon"><svg class="ic" style="width:24px;height:24px" viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-8.5 8.5H4.2a1.2 1.2 0 0 1-.85-2.05L5 17A8.5 8.5 0 1 1 21 12Z"/></svg></div><p>This user hasn't started a support chat yet. Send a message below to start one.</p></div>`;
+  }
+
+  const msgColl = collection(db,'supportChats',userId,'messages');
+  const q = query(msgColl, orderBy('createdAt','asc'));
+  chatUnsubMessages = onSnapshot(q, snap => {
+    const msgs = [];
+    snap.forEach(m => msgs.push({ id: m.id, ...m.data() }));
+    renderChatModalMessages(msgs, user);
+  });
+
+  document.getElementById('chatModal').classList.add('open');
+  setTimeout(() => document.getElementById('chatInput').focus(), 150);
+};
+
+function renderChatModalMessages(msgs, user){
+  const body = document.getElementById('chatBody');
+  if (!msgs.length){
+    body.innerHTML = `<div class="chat-empty"><div class="chat-empty-icon"><svg class="ic" style="width:24px;height:24px" viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-8.5 8.5H4.2a1.2 1.2 0 0 1-.85-2.05L5 17A8.5 8.5 0 1 1 21 12Z"/></svg></div><p>No messages yet. Start the conversation below.</p></div>`;
+    return;
+  }
+  body.innerHTML = msgs.map(m => {
+    const isAdmin = m.sender === 'admin';
+    const dt = toDateSafe(m.createdAt);
+    const time = dt ? dt.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '';
+    const initial = isAdmin ? 'A' : (user.name||'U').substring(0,1).toUpperCase();
+    return `<div class="msg-row ${isAdmin?'admin':'user'}">
+      <div class="msg-avatar">${initial}</div>
+      <div class="msg-content">
+        <span class="msg-name">${isAdmin?(m.isAutoReply?'WinKom Auto':'You (Admin)'):escapeHtml(user.name||'User')}</span>
+        <div class="msg-bubble">${escapeHtml(m.text||'')}</div>
+        ${time?`<span class="msg-time">${time}</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  requestAnimationFrame(() => { body.scrollTop = body.scrollHeight; });
+}
+
+window.closeChatModal = function(){
+  document.getElementById('chatModal').classList.remove('open');
+  if (chatUnsubMessages){ chatUnsubMessages(); chatUnsubMessages = null; }
+  currentChatUserId = null;
+};
+
+window.deleteCurrentChat = async function(){
+  if (!currentChatUserId) return;
+  await deleteChatConfirm(currentChatUserId, true);
+};
+
+window.deleteChatConfirm = async function(userId, fromModal=false){
+  if (!confirm('Delete this chat? User will see an empty support page and any future message will start a fresh conversation.')) return;
+  try {
+    const msgsSnap = await getDocs(collection(db,'supportChats',userId,'messages'));
+    const promises = [];
+    msgsSnap.forEach(m => promises.push(deleteDoc(doc(db,'supportChats',userId,'messages',m.id))));
+    await Promise.all(promises);
+    await deleteDoc(doc(db,'supportChats',userId));
+    toast('Chat deleted');
+    if (fromModal) closeChatModal();
+    await loadChats();
+  } catch(e){ toast(e.message, false); }
+};
+
+/* Send Thanks & Close Chat — auto delete after 20 seconds */
+window.sendThanksAndClose = async function(){
+  if (!currentChatUserId) return;
+  if (!confirm('Send "Thanks for contacting" message?\n\nThe chat will be automatically deleted 20 seconds after sending.')) return;
+
+  const userId = currentChatUserId;
+  try {
+    const chatRef = doc(db,'supportChats',userId);
+    const chatSnap = await getDoc(chatRef);
+    if (!chatSnap.exists()){
+      const user = allUsers.find(u=>u.id===userId) || {};
+      await setDoc(chatRef, {
+        uid: userId,
+        userName: user.name || 'User',
+        userEmail: user.email || '',
+        status: 'open',
+        createdAt: serverTimestamp(),
+        lastMessageAt: serverTimestamp()
+      });
+    }
+
+    await addDoc(collection(db,'supportChats',userId,'messages'), {
+      sender: 'admin',
+      text: 'Thanks for contacting WinKom Support! We\'re glad we could help. This chat will now be closed. If you need anything else, feel free to message us again anytime. Have a great day!',
+      isAutoReply: false,
+      createdAt: serverTimestamp()
+    });
+    await updateDoc(chatRef, { lastMessageAt: serverTimestamp() });
+
+    toast('Chat will close in 20 seconds…');
+
+    // Auto-delete after 20s
+    setTimeout(async () => {
+      try {
+        const msgsSnap = await getDocs(collection(db,'supportChats',userId,'messages'));
+        const promises = [];
+        msgsSnap.forEach(m => promises.push(deleteDoc(doc(db,'supportChats',userId,'messages',m.id))));
+        await Promise.all(promises);
+        await deleteDoc(doc(db,'supportChats',userId));
+        toast('Chat closed & cleared');
+        closeChatModal();
+        await loadChats();
+      } catch(e){ console.error(e); }
+    }, 20000);
+  } catch(e){ toast(e.message, false); }
+};
+
+window.sendQuickReply = async function(text){
+  if (!currentChatUserId) return;
+  const input = document.getElementById('chatInput');
+  input.value = text;
+  input.dispatchEvent(new Event('input'));
+  input.focus();
+};
+
+function wireChatInput(){
+  const input = document.getElementById('chatInput');
+  const btn = document.getElementById('chatSendBtn');
+  function autosize(){ input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 110) + 'px'; }
+  function updateState(){ btn.disabled = !input.value.trim(); }
+  input.addEventListener('input', () => { autosize(); updateState(); });
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); if (!btn.disabled) sendAdminMessage(); }
+  });
+  btn.addEventListener('click', sendAdminMessage);
+}
+
+async function sendAdminMessage(){
+  if (!currentChatUserId) return;
+  const input = document.getElementById('chatInput');
+  const text = (input.value||'').trim();
+  if (!text) return;
+  const btn = document.getElementById('chatSendBtn');
+  btn.disabled = true;
+  input.value = '';
+  input.style.height = 'auto';
+  try {
+    const chatRef = doc(db,'supportChats',currentChatUserId);
+    const chatSnap = await getDoc(chatRef);
+    if (!chatSnap.exists()){
+      const user = allUsers.find(u => u.id === currentChatUserId) || {};
+      await setDoc(chatRef, { uid: currentChatUserId, userName: user.name || 'User', userEmail: user.email || '', status: 'open', createdAt: serverTimestamp(), lastMessageAt: serverTimestamp() });
+    }
+    await addDoc(collection(db,'supportChats',currentChatUserId,'messages'), { sender: 'admin', text, createdAt: serverTimestamp() });
+    await updateDoc(chatRef, { lastMessageAt: serverTimestamp() });
+  } catch(e){ toast(e.message, false); input.value = text; }
+  finally { btn.disabled = false; input.focus(); }
+}
+
+/* ============================================================
+   SEARCH LISTENERS
+   ============================================================ */
+document.getElementById('userSearch').addEventListener('input', renderUserTable);
+document.getElementById('withdrawSearch').addEventListener('input', renderWithdrawTable);
+document.getElementById('depositSearch').addEventListener('input', renderDepositTable);
+document.getElementById('investSearch').addEventListener('input', renderInvestTable);
+document.getElementById('chatSearch').addEventListener('input', () => renderChatTable(allChats));
+
+/* ============================================================
+   MODAL BACKDROP + ESC
+   ============================================================ */
+['userModal','txDetailModal','withdrawModal','depositModal','investModal','planEditModal','balanceModal','paymentModal','chatModal','txnIdModal'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('click', e => {
+    if (e.target.id === id){
+      if (id === 'chatModal') closeChatModal();
+      else if (id === 'userModal') closeUserModal();
+      else if (id === 'txDetailModal') closeTxDetailModal();
+      else if (id === 'withdrawModal') closeWithdrawModal();
+      else if (id === 'depositModal') closeDepositModal();
+      else if (id === 'investModal') closeInvestModal();
+      else if (id === 'planEditModal') closePlanEditModal();
+      else if (id === 'balanceModal') closeBalanceModal();
+      else if (id === 'paymentModal') closePaymentModal();
+      else if (id === 'txnIdModal') closeTxnIdModal();
+    }
+  });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape'){
+    document.querySelectorAll('.modal.open').forEach(m => m.classList.remove('open'));
+    if (chatUnsubMessages){ chatUnsubMessages(); chatUnsubMessages = null; }
+    txnIdAction = null;
+  }
+});
+
+/* ============================================================
+   AUTH
+   ============================================================ */
+onAuthStateChanged(auth, async user => {
+  if (!user){ window.location.href = 'login.html'; return; }
+  const email = (user.email||'').toLowerCase();
+  if (email !== ADMIN_EMAIL){
+    document.getElementById('accessDenied').classList.remove('hidden');
+    document.getElementById('adminPanel').classList.add('hidden');
+    return;
+  }
+  document.getElementById('accessDenied').classList.add('hidden');
+  document.getElementById('adminPanel').classList.remove('hidden');
+  await Promise.all([loadUsers(), loadDeposits(), loadWithdrawals(), loadInvested(), loadPlans()]);
+  await loadChats();
+  wireChatInput();
+  document.getElementById('chatSendBtn').disabled = true;
+});
+</script>
+</body>
+</html>
