@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>WinKom — Dashboard</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{
+  --bg:#070b14;
+  --panel:rgba(255,255,255,.035);
+  --line:rgba(255,255,255,.075);
+  --line-strong:rgba(255,255,255,.13);
+  --text:#eef4fb;
+  --muted:#8b98ad;
+  --dim:#5b6879;
+  --cyan:#22d3ee;
+  --cyan-soft:#67e8f9;
+  --amber:#f59e0b;
+  --emerald:#10b981;
+  --violet:#8b5cf6;
+}
+
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  font-family:'Plus Jakarta Sans','Segoe UI',system-ui,-apple-system,sans-serif;
+  -webkit-tap-highlight-color:transparent;
+  background-color:var(--bg);
+  background-image:
+    radial-gradient(680px 420px at 8% -12%, rgba(34,211,238,.10), transparent 62%),
+    radial-gradient(620px 420px at 102% 2%, rgba(99,102,241,.09), transparent 60%),
+    radial-gradient(700px 520px at 50% 112%, rgba(16,185,129,.05), transparent 62%);
+  background-attachment:fixed;
+}
+::selection{background:rgba(34,211,238,.3)}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:rgba(34,211,238,.35)}
+
+/* ---------- Icons ---------- */
+.ic{width:20px;height:20px;flex:none;display:block;stroke:currentColor;fill:none;
+    stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ic-sm{width:16px;height:16px}
+.ic-xs{width:13px;height:13px;stroke-width:2}
+.ic-lg{width:24px;height:24px}
+.ic-xl{width:28px;height:28px}
+
+/* ---------- Glass surfaces ---------- */
+.glass{
+  background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+  border:1px solid var(--line);
+  border-radius:20px;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar{transition:transform .32s cubic-bezier(.4,0,.2,1)}
+.sidebar-closed{transform:translateX(-100%)}
+.sidebar-open{transform:translateX(0)}
+@media (min-width:768px){.sidebar-closed{transform:translateX(0)}}
+
+.nav-link{
+  position:relative;display:flex;align-items:center;gap:12px;
+  padding:11px 14px;border-radius:14px;font-size:14px;font-weight:600;
+  color:var(--muted);border:1px solid transparent;
+  transition:background .2s ease,color .2s ease,border-color .2s ease;
+}
+.nav-link:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.nav-link.active{
+  background:linear-gradient(90deg,rgba(34,211,238,.16),rgba(34,211,238,.04));
+  border-color:rgba(34,211,238,.22);
+  color:var(--cyan-soft);
+}
+.nav-link .ic{width:18px;height:18px}
+
+/* ---------- Header ---------- */
+.glass-header{
+  background:rgba(9,13,22,.72);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+
+/* ---------- Wallet ---------- */
+.wallet-card{
+  background:
+    radial-gradient(520px 220px at 100% 0%, rgba(34,211,238,.10), transparent 62%),
+    linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));
+  border:1px solid rgba(34,211,238,.20);
+  border-radius:22px;
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+  transition:border-color .25s ease,box-shadow .25s ease;
+}
+.wallet-card:hover{border-color:rgba(34,211,238,.35);box-shadow:0 24px 60px rgba(0,0,0,.45)}
+.wallet-badge{
+  width:54px;height:54px;border-radius:16px;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--cyan-soft);
+  background:rgba(34,211,238,.10);
+  border:1px solid rgba(34,211,238,.22);
+}
+.wallet-badge .ic{width:26px;height:26px}
+
+/* ---------- Buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 18px;border-radius:14px;font-size:13.5px;font-weight:700;
+  white-space:nowrap;cursor:pointer;border:1px solid transparent;
+  transition:transform .16s ease,box-shadow .22s ease,background .22s ease,border-color .22s ease,color .22s ease;
+}
+.btn:active{transform:scale(.97)}
+.btn-deposit{background:var(--emerald);color:#04140d}
+.btn-deposit:hover{box-shadow:0 12px 30px rgba(16,185,129,.30);background:#12c78d}
+.btn-withdraw{background:rgba(255,255,255,.05);border-color:var(--line-strong);color:var(--text)}
+.btn-withdraw:hover{background:rgba(34,211,238,.12);border-color:rgba(34,211,238,.35);color:var(--cyan-soft)}
+.btn-cyan{background:rgba(34,211,238,.14);border-color:rgba(34,211,238,.35);color:var(--cyan-soft)}
+.btn-cyan:hover{background:rgba(34,211,238,.22);box-shadow:0 10px 26px rgba(34,211,238,.18)}
+.btn-green{background:rgba(16,185,129,.14);border-color:rgba(16,185,129,.35);color:#6ee7b7}
+.btn-green:hover{background:rgba(16,185,129,.22)}
+.btn-primary{
+  background:linear-gradient(135deg,#22d3ee,#3b82f6);color:#04121a;
+  box-shadow:0 10px 26px rgba(34,211,238,.22);
+}
+.btn-primary:hover{box-shadow:0 14px 34px rgba(34,211,238,.35)}
+.btn-ghost{background:rgba(255,255,255,.05);border-color:var(--line-strong);color:var(--muted)}
+.btn-ghost:hover{background:rgba(255,255,255,.09);color:var(--text)}
+
+/* ---------- Chips ---------- */
+.chip{
+  width:42px;height:42px;border-radius:13px;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid transparent;
+}
+.chip .ic{width:20px;height:20px}
+.chip-cyan{color:var(--cyan-soft);background:rgba(34,211,238,.10);border-color:rgba(34,211,238,.20)}
+.chip-amber{color:#fbbf24;background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.20)}
+.chip-emerald{color:#34d399;background:rgba(16,185,129,.10);border-color:rgba(16,185,129,.20)}
+.chip-violet{color:#a78bfa;background:rgba(139,92,246,.10);border-color:rgba(139,92,246,.20)}
+
+/* ---------- Stat tiles ---------- */
+.stat-tile{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:9px;padding:16px 10px;border-radius:18px;text-align:center;width:100%;
+  background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+  border:1px solid var(--line);
+  transition:transform .2s ease,border-color .2s ease,background .2s ease,box-shadow .2s ease;
+}
+button.stat-tile{cursor:pointer}
+.stat-tile:hover{transform:translateY(-2px);border-color:rgba(34,211,238,.26);background:rgba(255,255,255,.055)}
+.stat-tile:active{transform:scale(.985)}
+.stat-value{font-size:19px;font-weight:800;color:#fff;line-height:1.1;letter-spacing:-.01em}
+.stat-label{font-size:11px;color:var(--muted);font-weight:600}
+
+/* ---------- Referral collapse ---------- */
+.referral-details{
+  max-height:0;opacity:0;overflow:hidden;
+  transition:max-height .4s cubic-bezier(.4,0,.2,1),opacity .3s ease,padding .3s ease;
+  padding-top:0;padding-bottom:0;
+}
+.referral-details.open{max-height:720px;opacity:1;padding-bottom:20px}
+#referralChevron{transition:transform .32s cubic-bezier(.4,0,.2,1);color:var(--cyan-soft)}
+#referralToggle.open #referralChevron{transform:rotate(180deg)}
+
+.field-box{
+  background:rgba(0,0,0,.28);
+  border:1px solid var(--line);
+  border-radius:14px;padding:12px 14px;
+}
+.field-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:800}
+
+/* ---------- Search ---------- */
+.search-wrap{position:relative}
+.search-wrap .ic{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--dim);pointer-events:none;width:17px;height:17px}
+.search-input{
+  width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line);
+  color:var(--text);font-size:13.5px;border-radius:999px;
+  padding:10px 16px 10px 40px;outline:none;transition:border-color .2s ease,background .2s ease;
+}
+.search-input::placeholder{color:#55617233}
+.search-input::placeholder{color:#5b6879}
+.search-input:focus{border-color:rgba(34,211,238,.45);background:rgba(34,211,238,.05)}
+
+/* ---------- Plans ---------- */
+.plan-card{
+  background:#0d1320;
+  border:1px solid var(--line);
+  border-radius:20px;overflow:hidden;
+  transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease;
+}
+.plan-card:hover{transform:translateY(-4px);border-color:rgba(34,211,238,.34);box-shadow:0 22px 50px rgba(0,0,0,.45)}
+.plan-media{position:relative;height:140px;background-size:cover;background-position:center}
+.plan-media::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(7,11,20,.10) 0%,rgba(7,11,20,.55) 58%,rgba(13,19,32,.98) 100%);
+}
+.plan-badge{
+  position:absolute;top:12px;right:12px;z-index:2;
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 10px;border-radius:999px;
+  background:rgba(245,158,11,.92);color:#1b1206;
+  font-size:11px;font-weight:800;letter-spacing:.01em;
+}
+.plan-badge .ic{width:12px;height:12px;stroke-width:2.2}
+.plan-title{
+  position:absolute;bottom:12px;left:16px;right:16px;z-index:2;
+  color:#fff;font-weight:800;font-size:17px;letter-spacing:-.01em;
+}
+.plan-spec{
+  background:rgba(255,255,255,.035);
+  border:1px solid var(--line);
+  border-radius:12px;padding:9px 11px;
+}
+.plan-spec span{display:block;font-size:10.5px;color:var(--dim);font-weight:600}
+.plan-spec strong{display:block;font-size:13px;color:#fff;font-weight:700;margin-top:2px}
+
+/* ---------- Modals ---------- */
+.modal{
+  position:fixed;inset:0;z-index:60;display:none;
+  align-items:center;justify-content:center;padding:16px;
+  background:rgba(3,6,12,.74);
+  backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
+}
+.modal.open{display:flex}
+.modal-panel{
+  width:100%;max-width:540px;max-height:88vh;overflow-y:auto;
+  border-radius:22px;padding:20px;
+  background:linear-gradient(180deg,#0e1524,#0a101b);
+  border:1px solid var(--line-strong);
+  box-shadow:0 40px 100px rgba(0,0,0,.65);
+  animation:modalIn .26s cubic-bezier(.16,1,.3,1);
+  overscroll-behavior:contain;
+}
+@keyframes modalIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.icon-btn{
+  width:36px;height:36px;border-radius:12px;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.05);border:1px solid var(--line);
+  color:var(--muted);cursor:pointer;transition:all .2s ease;
+}
+.icon-btn:hover{background:rgba(255,255,255,.10);color:#fff}
+
+/* ---------- Filter pills ---------- */
+.pill{
+  padding:8px 16px;border-radius:999px;font-size:12.5px;font-weight:700;
+  color:var(--muted);background:rgba(255,255,255,.04);
+  border:1px solid var(--line);cursor:pointer;
+  transition:all .22s ease;
+}
+.pill:hover{color:var(--text);background:rgba(255,255,255,.075)}
+.pill.active{
+  color:#fff;border-color:rgba(34,211,238,.45);
+  background:linear-gradient(135deg,rgba(34,211,238,.26),rgba(34,211,238,.10));
+  box-shadow:0 6px 20px rgba(34,211,238,.14);
+}
+.pill:active{transform:scale(.97)}
+
+/* ---------- Investment rows ---------- */
+.inv-row{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.028);
+  border-radius:16px;overflow:hidden;
+  transition:border-color .22s ease,background .22s ease;
+}
+.inv-row:hover{border-color:rgba(34,211,238,.22)}
+.inv-row.open{border-color:rgba(34,211,238,.32);background:rgba(34,211,238,.045)}
+.inv-head{display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer}
+.inv-ico{
+  width:42px;height:42px;border-radius:13px;flex:none;
+  display:flex;align-items:center;justify-content:center;border:1px solid transparent;
+}
+.inv-chev{transition:transform .3s cubic-bezier(.4,0,.2,1);color:#5b6879;flex:none}
+.inv-row.open .inv-chev{transform:rotate(90deg);color:var(--cyan-soft)}
+.inv-detail{
+  max-height:0;opacity:0;overflow:hidden;
+  transition:max-height .34s cubic-bezier(.4,0,.2,1),opacity .26s ease;
+}
+.inv-row.open .inv-detail{max-height:760px;opacity:1}
+.inv-detail-inner{padding:0 14px 16px}
+
+.badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 9px;border-radius:999px;font-size:10px;font-weight:800;
+  border:1px solid transparent;white-space:nowrap;
+}
+.badge-active{background:rgba(16,185,129,.10);color:#34d399;border-color:rgba(16,185,129,.22)}
+.badge-done{background:rgba(59,130,246,.10);color:#93c5fd;border-color:rgba(59,130,246,.22)}
+.badge-bonus{background:rgba(16,185,129,.10);color:#34d399;border-color:rgba(16,185,129,.22)}
+
+.spec{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--line);
+  border-radius:12px;padding:10px 12px;min-width:0;
+}
+.spec span{display:block;font-size:10px;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.spec strong{display:block;font-size:12.5px;color:#e8eef7;font-weight:700;margin-top:4px;word-break:break-word}
+
+.bar{height:6px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden}
+.bar > i{
+  display:block;height:100%;border-radius:999px;
+  background:linear-gradient(90deg,#22d3ee,#6366f1);
+  transition:width .6s cubic-bezier(.4,0,.2,1);
+}
+.bar.done > i{background:linear-gradient(90deg,#10b981,#34d399)}
+
+/* ---------- Referral user rows ---------- */
+.ref-row{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 14px;border-radius:16px;
+  background:rgba(255,255,255,.028);
+  border:1px solid var(--line);
+  transition:border-color .2s ease,background .2s ease,transform .2s ease;
+}
+.ref-row:hover{border-color:rgba(34,211,238,.22);background:rgba(255,255,255,.05);transform:translateY(-1px)}
+.avatar{
+  width:42px;height:42px;border-radius:999px;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:15px;color:#cffafe;
+  background:linear-gradient(135deg,rgba(34,211,238,.22),rgba(59,130,246,.18));
+  border:1px solid rgba(34,211,238,.22);
+}
+
+/* ---------- Empty states ---------- */
+.empty{
+  text-align:center;padding:36px 18px;border-radius:18px;
+  border:1px dashed rgba(255,255,255,.10);
+  background:rgba(255,255,255,.015);
+}
+.empty .chip{margin:0 auto 12px}
+
+/* ---------- Animations ---------- */
+.fade-in{animation:fadeIn .45s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.pulse-dot{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+</style>
+</head>
+<body>
+
+<!-- ============ SIDEBAR ============ -->
+<aside id="sidebar" class="sidebar sidebar-closed fixed top-0 left-0 h-full w-[264px] bg-[#0a0f1a]/95 backdrop-blur-xl border-r border-white/[.06] z-50 overflow-y-auto">
+  <div class="p-5">
+    <div class="flex items-center justify-between mb-8">
+      <a href="index.html" class="flex items-center gap-3 min-w-0">
+        <img src="logo.png" alt="WinKom" class="w-10 h-10 rounded-xl object-cover" onerror="this.style.display='none'"/>
+        <span class="text-xl font-extrabold text-white tracking-tight truncate">Win<span class="text-cyan-400">Kom</span></span>
+      </a>
+      <button onclick="toggleSidebar()" aria-label="Close menu"
+              class="md:hidden w-9 h-9 rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:text-white flex items-center justify-center transition">
+        <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+
+    <nav class="space-y-1.5">
+      <a href="index.html" class="nav-link active">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8.5 16v-4.5M12.5 16V8M16.5 16v-2.5"/></svg>
+        Dashboard
+      </a>
+      <a href="deposit.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8 10.5 4 4 4-4"/><path d="M5 19h14"/></svg>
+        Deposit
+      </a>
+      <a href="withdraw.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M12 15V5"/><path d="m8 8.5 4-4 4 4"/><path d="M5 19h14"/></svg>
+        Withdraw
+      </a>
+      <a href="transactions.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M6.5 3.5h8L18.5 7v13.5h-12z"/><path d="M9.5 11h6M9.5 14.5h6M9.5 7.5h2.5"/></svg>
+        My Transactions
+      </a>
+      <a href="settings.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.1"/><path d="M12 2.9v2.3M12 18.8v2.3M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.9 12h2.3M18.8 12h2.3M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+        Settings
+      </a>
+      <a href="about.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.2"/><circle cx="12" cy="7.9" r=".9" fill="currentColor" stroke="none"/></svg>
+        About
+      </a>
+      <a href="support.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/><path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/><path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/></svg>
+        Support
+      </a>
+
+      <div class="pt-3 mt-3 border-t border-white/[.06]">
+        <button onclick="handleLogout()" class="nav-link w-full text-left text-red-400 hover:bg-red-500/10 hover:text-red-300">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="m10 8-4 4 4 4"/><path d="M6 12h9"/></svg>
+          Logout
+        </button>
+      </div>
+    </nav>
+  </div>
+</aside>
+
+<div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden"></div>
+
+<!-- ============ MAIN ============ -->
+<div class="md:ml-64 relative">
+
+  <!-- Header -->
+  <header class="glass-header border-b border-white/[.06] sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-4 py-3.5">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <button onclick="toggleSidebar()" aria-label="Open menu"
+                  class="md:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:text-white flex items-center justify-center transition">
+            <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+          <div class="min-w-0">
+            <h1 class="text-[15px] sm:text-lg font-extrabold text-white truncate leading-tight">
+              Welcome, <span id="userName" class="text-cyan-400">Loading…</span>
+            </h1>
+            <p class="text-[11px] text-slate-500 font-medium">Your investment dashboard</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2.5">
+          <div class="search-wrap hidden sm:block w-56 md:w-72">
+            <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.6"/><path d="m16 16 4.4 4.4"/></svg>
+            <input id="planSearchInput" type="text" inputmode="search" placeholder="Search plan or amount…"
+                   oninput="filterPlans(this.value)" class="search-input"/>
+          </div>
+          <span class="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 px-3 py-1.5 rounded-full shrink-0">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></span> LIVE
+          </span>
+        </div>
+      </div>
+
+      <div class="search-wrap sm:hidden mt-3">
+        <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.6"/><path d="m16 16 4.4 4.4"/></svg>
+        <input id="planSearchInputMobile" type="text" inputmode="search" placeholder="Search plan or amount…"
+               oninput="filterPlans(this.value)" class="search-input"/>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-5 md:py-7 fade-in">
+    <div id="dashboardSections">
+
+      <!-- ===== Wallet ===== -->
+      <section class="wallet-card p-5 sm:p-6 mb-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+          <div class="flex items-center gap-4 min-w-0">
+            <span class="wallet-badge">
+              <svg class="ic" viewBox="0 0 24 24">
+                <path d="M20 8.6V7a2 2 0 0 0-2-2H5.6A2.6 2.6 0 0 0 3 7.6v8.8A2.6 2.6 0 0 0 5.6 19H18a2 2 0 0 0 2-2v-1.6"/>
+                <path d="M21.3 9.6h-4.4a2.4 2.4 0 0 0 0 4.8h4.4a.8.8 0 0 0 .8-.8v-3.2a.8.8 0 0 0-.8-.8Z"/>
+                <circle cx="17.1" cy="12" r=".85" fill="currentColor" stroke="none"/>
+              </svg>
+            </span>
+            <div class="min-w-0">
+              <p class="field-label">Available Balance</p>
+              <p class="text-[30px] sm:text-4xl font-extrabold text-white leading-tight mt-1 tracking-tight">
+                ₹<span id="totalBalance">0</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 sm:flex gap-3 shrink-0">
+            <a href="deposit.html" class="btn btn-deposit">
+              <svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8.4v7.2M8.4 12h7.2"/></svg>
+              Deposit
+            </a>
+            <a href="withdraw.html" class="btn btn-withdraw">
+              <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M12 15V5"/><path d="m8 8.5 4-4 4 4"/><path d="M5 19h14"/></svg>
+              Withdraw
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Stats ===== -->
+      <section class="grid grid-cols-3 gap-3 mb-5">
+        <button type="button" class="stat-tile" onclick="openMyInvestmentsModal()">
+          <span class="chip chip-violet">
+            <svg class="ic" viewBox="0 0 24 24"><path d="M3 16.5 9 10.5l4 4 8-8"/><path d="M15 6.5h6v6"/></svg>
+          </span>
+          <span class="stat-value" id="myInvestmentsCount">0</span>
+          <span class="stat-label">My Investments</span>
+        </button>
+
+        <div class="stat-tile">
+          <span class="chip chip-amber">
+            <svg class="ic" viewBox="0 0 24 24"><rect x="2.6" y="6.4" width="18.8" height="11.2" rx="2.6"/><circle cx="12" cy="12" r="2.4"/><path d="M6.4 12h.01M17.6 12h.01"/></svg>
+          </span>
+          <span class="stat-value">₹<span id="totalEarnings">0</span></span>
+          <span class="stat-label">Total Earnings</span>
+        </div>
+
+        <button type="button" class="stat-tile" onclick="openMyReferralsModal()">
+          <span class="chip chip-emerald">
+            <svg class="ic" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.1"/><path d="M3.2 19.3c.6-3.2 2.6-4.9 5.8-4.9s5.2 1.7 5.8 4.9"/><circle cx="17.2" cy="9.2" r="2.5"/><path d="M16.1 14.9c2.8-.1 4.6 1.4 5.2 4.5"/></svg>
+          </span>
+          <span class="stat-value" id="referralCount">0</span>
+          <span class="stat-label">People Referred</span>
+        </button>
+      </section>
+
+      <!-- ===== Referral section ===== -->
+      <section class="glass overflow-hidden mb-6">
+        <button id="referralToggle" type="button" onclick="toggleReferralSection()"
+                class="w-full flex items-center justify-between gap-4 p-5 text-left">
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="chip chip-emerald">
+              <svg class="ic" viewBox="0 0 24 24"><path d="M12 3.2 14.6 9l6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.7 9.4 9z"/></svg>
+            </span>
+            <div class="min-w-0">
+              <h3 class="text-[15px] sm:text-lg font-extrabold text-white">Referral Program</h3>
+              <p class="text-slate-400 text-[11.5px] sm:text-sm mt-0.5 truncate">
+                Earn <span class="text-cyan-300 font-bold">₹39</span> per referral — your friend gets
+                <span class="text-amber-300 font-bold">₹21</span> too
+              </p>
+            </div>
+          </div>
+          <svg id="referralChevron" class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+
+        <div id="referralDetails" class="referral-details px-5">
+          <p class="text-slate-400 text-[13px] mb-4">Share your link below and get rewarded every time a friend joins.</p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+            <div class="field-box">
+              <p class="field-label">Your Referral Code</p>
+              <p class="text-cyan-300 font-extrabold text-lg tracking-wide mt-1" id="myReferralCode">Loading…</p>
+            </div>
+            <div class="field-box min-w-0">
+              <p class="field-label">Your Referral Link</p>
+              <p class="text-slate-300 text-[12px] mt-1.5 truncate" id="myReferralLink">Loading…</p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            <button type="button" onclick="shareWhatsApp()" class="btn btn-green">
+              <svg class="ic ic-sm" viewBox="0 0 24 24">
+                <circle cx="18" cy="5.2" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="18.8" r="2.6"/>
+                <path d="m8.4 10.8 7.2-4.1M8.4 13.2l7.2 4.1"/>
+              </svg>
+              Share Now
+            </button>
+            <button type="button" onclick="copyReferralLink()" class="btn btn-cyan">
+              <svg class="ic ic-sm" viewBox="0 0 24 24">
+                <rect x="9" y="9" width="11.5" height="11.5" rx="2.4"/>
+                <path d="M15 6.2V5.6A2.1 2.1 0 0 0 12.9 3.5H5.6A2.1 2.1 0 0 0 3.5 5.6v7.3A2.1 2.1 0 0 0 5.6 15h.6"/>
+              </svg>
+              Copy Link
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== Plans ===== -->
+    <section class="mb-8">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="chip chip-cyan">
+          <svg class="ic" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
+        </span>
+        <h2 class="text-lg sm:text-xl font-extrabold text-white">Available Investment Plans</h2>
+      </div>
+      <div id="plansContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <p class="text-slate-400 col-span-full text-center py-10 text-sm">Loading plans…</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ============ MY INVESTMENTS MODAL ============ -->
+<div id="myInvestmentsModal" class="modal">
+  <div class="modal-panel">
+    <div class="flex items-start justify-between gap-3 mb-5">
+      <div class="min-w-0">
+        <p class="field-label">Portfolio</p>
+        <h4 class="text-xl font-extrabold text-white mt-1.5 flex items-center gap-2.5">
+          <span class="chip chip-violet" style="width:36px;height:36px;border-radius:11px">
+            <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M3 16.5 9 10.5l4 4 8-8"/><path d="M15 6.5h6v6"/></svg>
+          </span>
+          My Investments
+        </h4>
+        <p class="text-slate-500 text-[12px] mt-1.5">Tap an investment to view full details.</p>
+      </div>
+      <button type="button" onclick="closeMyInvestmentsModal()" aria-label="Close" class="icon-btn">
+        <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+
+    <div class="flex items-center justify-between gap-3 mb-4 flex-wrap">
+      <div class="flex items-center gap-2">
+        <button id="filterActiveBtn" type="button" onclick="setInvestmentFilter('active')" class="pill active">Active</button>
+        <button id="filterMaturedBtn" type="button" onclick="setInvestmentFilter('matured')" class="pill">Matured</button>
+      </div>
+      <span id="investmentFilterCount" class="text-[11px] text-slate-500 font-semibold"></span>
+    </div>
+
+    <div id="myInvestmentsContainer" class="space-y-3">
+      <p class="text-slate-400 text-center py-10 text-sm">Loading your investments…</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MY REFERRALS MODAL ============ -->
+<div id="myReferralsModal" class="modal">
+  <div class="modal-panel">
+    <div class="flex items-center justify-between gap-3 mb-5">
+      <h4 class="text-xl font-extrabold text-white flex items-center gap-2.5">
+        <span class="chip chip-emerald" style="width:36px;height:36px;border-radius:11px">
+          <svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.1"/><path d="M3.2 19.3c.6-3.2 2.6-4.9 5.8-4.9s5.2 1.7 5.8 4.9"/><circle cx="17.2" cy="9.2" r="2.5"/><path d="M16.1 14.9c2.8-.1 4.6 1.4 5.2 4.5"/></svg>
+        </span>
+        My Referrals
+      </h4>
+      <button type="button" onclick="closeMyReferralsModal()" aria-label="Close" class="icon-btn">
+        <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+
+    <div class="glass p-4 mb-5" style="border-radius:16px;border-color:rgba(16,185,129,.18)">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <span class="chip chip-emerald" style="width:38px;height:38px">
+            <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M12 3.2 14.6 9l6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.7 9.4 9z"/></svg>
+          </span>
+          <p class="text-white font-bold text-sm">Your referrals</p>
+        </div>
+        <div class="text-right">
+          <p class="field-label">Total</p>
+          <p class="text-emerald-400 font-extrabold text-xl leading-tight" id="refSummaryTotal">0</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="myReferralsContainer" class="space-y-3">
+      <p class="text-slate-400 text-center py-10 text-sm">Loading your referrals…</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ INVEST MODAL ============ -->
+<div id="investModal" class="modal">
+  <div class="modal-panel" style="max-width:460px">
+    <div class="flex items-start justify-between gap-3 mb-4">
+      <div class="min-w-0">
+        <p class="field-label">New Investment</p>
+        <h4 class="text-lg font-extrabold text-white mt-1.5 leading-snug">
+          Invest in <span id="investPlanName" class="text-cyan-400"></span>
+        </h4>
+      </div>
+      <button type="button" onclick="closeInvestModal()" aria-label="Close" class="icon-btn">
+        <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+
+    <div class="grid grid-cols-3 gap-2 mb-5">
+      <div class="spec">
+        <span>Daily</span>
+        <strong id="investPlanReturn" class="text-amber-300">—</strong>
+      </div>
+      <div class="spec">
+        <span>Duration</span>
+        <strong id="investPlanDuration">—</strong>
+      </div>
+      <div class="spec">
+        <span>Range</span>
+        <strong class="text-[11.5px]">₹<span id="investPlanMin"></span>–<span id="investPlanMax"></span></strong>
+      </div>
+    </div>
+
+    <label class="field-label block mb-2">Investment Amount (₹)</label>
+    <input type="number" id="investAmount" min="1" placeholder="Enter amount" oninput="updateMaturityPreview()"
+           class="search-input mb-2" style="padding-left:16px;border-radius:14px;font-size:15px;font-weight:700"/>
+    <p id="investError" class="hidden text-red-400 text-xs mb-2"></p>
+
+    <div id="maturityPreview" class="hidden field-box mb-4" style="border-color:rgba(34,211,238,.3);background:rgba(34,211,238,.06)">
+      <div class="flex justify-between items-center gap-3 text-sm">
+        <span class="text-slate-400 text-[12.5px]">Maturity after <span id="maturityDuration"></span> days</span>
+        <span class="text-cyan-300 font-extrabold">₹<span id="maturityAmount">0</span></span>
+      </div>
+    </div>
+
+    <div class="flex gap-3">
+      <button type="button" onclick="confirmInvest()" class="btn btn-primary flex-1">Confirm Investment</button>
+      <button type="button" onclick="closeInvestModal()" class="btn btn-ghost">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+    authDomain: "winkom-da4c2.firebaseapp.com",
+    projectId: "winkom-da4c2",
+    storageBucket: "winkom-da4c2.firebasestorage.app",
+    messagingSenderId: "629229462242",
+    appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let currentUserData = null;
+let selectedPlan = null;
+let plansList = [];
+let allInvestments = [];
+let investmentFilter = 'active';
+
+/* ============================================================
+   ICON SYSTEM (inline SVG, stroke based)
+   ============================================================ */
+function S(paths, cls = '') {
+    return `<svg class="ic ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
+}
+
+const IC = {
+    wallet:      c => S('<path d="M20 8.6V7a2 2 0 0 0-2-2H5.6A2.6 2.6 0 0 0 3 7.6v8.8A2.6 2.6 0 0 0 5.6 19H18a2 2 0 0 0 2-2v-1.6"/><path d="M21.3 9.6h-4.4a2.4 2.4 0 0 0 0 4.8h4.4a.8.8 0 0 0 .8-.8v-3.2a.8.8 0 0 0-.8-.8Z"/>', c),
+    trend:       c => S('<path d="M3 16.5 9 10.5l4 4 8-8"/><path d="M15 6.5h6v6"/>', c),
+    users:       c => S('<circle cx="9" cy="8" r="3.1"/><path d="M3.2 19.3c.6-3.2 2.6-4.9 5.8-4.9s5.2 1.7 5.8 4.9"/><circle cx="17.2" cy="9.2" r="2.5"/><path d="M16.1 14.9c2.8-.1 4.6 1.4 5.2 4.5"/>', c),
+    check:       c => S('<path d="M5 12.6l4.4 4.4L19 7.4"/>', c),
+    chevron:     c => S('<path d="m9 5 7 7-7 7"/>', c),
+    lightning:   c => S('<path d="M13 2.5 4.8 13.4h6.1L10.6 21.5 19 10.6h-6.1z"/>', c),
+    arrowUpRight:c => S('<path d="M7 17 17 7"/><path d="M9 7h8v8"/>', c),
+    layers:      c => S('<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/>', c),
+    banknote:    c => S('<rect x="2.6" y="6.4" width="18.8" height="11.2" rx="2.6"/><circle cx="12" cy="12" r="2.4"/>', c),
+    clock:       c => S('<circle cx="12" cy="12" r="8.8"/><path d="M12 7.4V12l3.2 2"/>', c),
+    sparkle:     c => S('<path d="M12 3.2 14.6 9l6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.7 9.4 9z"/>', c),
+    doc:         c => S('<path d="M6.5 3.5h8L18.5 7v13.5h-12z"/><path d="M9.5 11h6M9.5 14.5h6M9.5 7.5h2.5"/>', c),
+    empty:       c => S('<rect x="3" y="6.5" width="18" height="13" rx="3"/><path d="M3 11h18"/><path d="M8 15.5h4"/>', c)
+};
+function ic(name, cls = '') { return IC[name] ? IC[name](cls) : ''; }
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+}
+const fmtDate = d => d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+const fmtTime = d => d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+const money = n => Number(n || 0).toFixed(2);
+
+function calculateMaturity(amount, dailyReturn, duration) {
+    return Number(amount) + (Number(amount) * (Number(dailyReturn) / 100) * Number(duration));
+}
+
+/* ============================================================
+   SIDEBAR / LOGOUT
+   ============================================================ */
+window.toggleSidebar = function () {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    if (sidebar.classList.contains('sidebar-closed')) {
+        sidebar.classList.remove('sidebar-closed');
+        sidebar.classList.add('sidebar-open');
+        overlay.classList.remove('hidden');
+    } else {
+        sidebar.classList.add('sidebar-closed');
+        sidebar.classList.remove('sidebar-open');
+        overlay.classList.add('hidden');
+    }
+};
+
+window.handleLogout = async function () {
+    try {
+        await signOut(auth);
+        window.location.href = 'login.html';
+    } catch (err) {
+        alert('Logout error: ' + err.message);
+    }
+};
+
+/* ============================================================
+   REFERRAL SECTION
+   ============================================================ */
+window.toggleReferralSection = function () {
+    const details = document.getElementById('referralDetails');
+    const toggle = document.getElementById('referralToggle');
+    details.classList.toggle('open');
+    toggle.classList.toggle('open');
+};
+
+window.shareWhatsApp = function () {
+    if (!currentUserData || !currentUserData.referralCode) return;
+    const link = `https://winkom.site/signup.html?ref=${currentUserData.referralCode}`;
+    const msg = `Join WinKom today and get a ₹21 welcome bonus!\nSign up with my referral link and start earning:\n${link}\n\nWinKom — Your Trusted Investment Platform`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+};
+
+window.copyReferralLink = function () {
+    if (!currentUserData || !currentUserData.referralCode) return;
+    const link = `https://winkom.site/signup.html?ref=${currentUserData.referralCode}`;
+    navigator.clipboard.writeText(link).then(() => {
+        alert('Referral link copied! Share it with your friends.');
+    }).catch(() => {
+        prompt('Copy this link:', link);
+    });
+};
+
+/* ============================================================
+   INVEST MODAL
+   ============================================================ */
+window.updateMaturityPreview = function () {
+    const amount = parseFloat(document.getElementById('investAmount').value);
+    const preview = document.getElementById('maturityPreview');
+    if (!amount || isNaN(amount) || amount <= 0 || !selectedPlan) {
+        preview.classList.add('hidden');
+        return;
+    }
+    const maturity = calculateMaturity(amount, selectedPlan.dailyReturn, selectedPlan.duration);
+    document.getElementById('maturityAmount').textContent = maturity.toFixed(2);
+    document.getElementById('maturityDuration').textContent = selectedPlan.duration;
+    preview.classList.remove('hidden');
+};
+
+window.openInvestModal = function (planId) {
+    selectedPlan = plansList.find(p => p.id === planId);
+    if (!selectedPlan) return;
+    document.getElementById('investPlanName').textContent = selectedPlan.name;
+    document.getElementById('investPlanReturn').textContent = selectedPlan.dailyReturn + '%';
+    document.getElementById('investPlanDuration').textContent = selectedPlan.duration + ' days';
+    document.getElementById('investPlanMin').textContent = selectedPlan.minAmount;
+    document.getElementById('investPlanMax').textContent = selectedPlan.maxAmount;
+    document.getElementById('investAmount').value = '';
+    document.getElementById('investError').classList.add('hidden');
+    document.getElementById('maturityPreview').classList.add('hidden');
+    document.getElementById('investModal').classList.add('open');
+};
+
+window.closeInvestModal = function () {
+    document.getElementById('investModal').classList.remove('open');
+    selectedPlan = null;
+    document.getElementById('investError').classList.add('hidden');
+    document.getElementById('maturityPreview').classList.add('hidden');
+};
+
+window.confirmInvest = async function () {
+    const amount = parseFloat(document.getElementById('investAmount').value);
+    const errorEl = document.getElementById('investError');
+
+    if (!amount || isNaN(amount) || amount <= 0) {
+        errorEl.textContent = 'Please enter a valid amount.';
+        errorEl.classList.remove('hidden');
+        return;
+    }
+    if (amount < selectedPlan.minAmount) {
+        errorEl.textContent = `Minimum investment for this plan is ₹${selectedPlan.minAmount}.`;
+        errorEl.classList.remove('hidden');
+        return;
+    }
+    if (amount > selectedPlan.maxAmount) {
+        errorEl.textContent = `Maximum investment for this plan is ₹${selectedPlan.maxAmount}.`;
+        errorEl.classList.remove('hidden');
+        return;
+    }
+    if (amount > (currentUserData?.balance || 0)) {
+        errorEl.textContent = `Insufficient balance. You have ₹${money(currentUserData?.balance || 0)}.`;
+        errorEl.classList.remove('hidden');
+        return;
+    }
+    errorEl.classList.add('hidden');
+
+    try {
+        const newBalance = currentUserData.balance - amount;
+        await updateDoc(doc(db, 'users', currentUser.uid), { balance: newBalance });
+
+        currentUserData.balance = newBalance;
+        document.getElementById('totalBalance').textContent = newBalance.toFixed(2);
+
+        const now = new Date();
+        const endDate = new Date(now);
+        endDate.setDate(endDate.getDate() + parseInt(selectedPlan.duration));
+        const maturityAmount = calculateMaturity(amount, selectedPlan.dailyReturn, selectedPlan.duration);
+
+        await addDoc(collection(db, 'investments'), {
+            uid: currentUser.uid,
+            userName: currentUserData.name,
+            planId: selectedPlan.id,
+            planName: selectedPlan.name,
+            amount: amount,
+            dailyReturn: selectedPlan.dailyReturn,
+            duration: selectedPlan.duration,
+            maturityAmount: maturityAmount,
+            startDate: now,
+            endDate: endDate,
+            status: 'active',
+            createdAt: serverTimestamp()
+        });
+
+        await addDoc(collection(db, 'transactions'), {
+            uid: currentUser.uid,
+            type: 'investment',
+            description: `Investment in ${selectedPlan.name}`,
+            amount: -amount,
+            balanceAfter: newBalance,
+            createdAt: serverTimestamp()
+        });
+
+        alert('Investment successful!');
+        closeInvestModal();
+        await processMaturedInvestments();
+        await loadAllInvestments();
+        await loadPlans();
+    } catch (err) {
+        alert('Investment error: ' + err.message);
+    }
+};
+
+/* ============================================================
+   USER DATA
+   ============================================================ */
+async function loadUserData() {
+    if (!currentUser) return;
+    const userRef = doc(db, 'users', currentUser.uid);
+    const userSnap = await getDoc(userRef);
+    if (userSnap.exists()) {
+        currentUserData = userSnap.data();
+        document.getElementById('userName').textContent = currentUserData.name || 'User';
+        document.getElementById('totalBalance').textContent = money(currentUserData.balance || 0);
+        document.getElementById('referralCount').textContent = currentUserData.referralCount || 0;
+        document.getElementById('myReferralCode').textContent = currentUserData.referralCode || 'N/A';
+        document.getElementById('myReferralLink').textContent =
+            `https://winkom.site/signup.html?ref=${currentUserData.referralCode || ''}`;
+        updateTotalEarnings();
+    }
+}
+
+/* ============================================================
+   TOTAL EARNINGS
+   Referral earnings (existing field) + realised profit from
+   matured/completed investments (maturityAmount - principal).
+   No double counting, no invented values.
+   ============================================================ */
+function updateTotalEarnings() {
+    const el = document.getElementById('totalEarnings');
+    if (!el) return;
+    let total = Number(currentUserData?.totalReferralEarnings || 0);
+    allInvestments.forEach(inv => {
+        if (inv.status === 'completed') {
+            const m = Number(inv.maturityAmount || 0);
+            const a = Number(inv.amount || 0);
+            if (m > a) total += (m - a);
+        }
+    });
+    el.textContent = total.toFixed(2);
+}
+
+/* ============================================================
+   MATURITY PROCESSING (unchanged logic)
+   ============================================================ */
+async function processMaturedInvestments() {
+    if (!currentUser || !currentUserData) return;
+
+    const q = query(
+        collection(db, 'investments'),
+        where('uid', '==', currentUser.uid),
+        where('status', '==', 'active')
+    );
+    const snap = await getDocs(q);
+
+    const now = new Date();
+    let userBal = currentUserData.balance || 0;
+    let changed = false;
+
+    for (const docSnap of snap.docs) {
+        const inv = docSnap.data();
+        const endDate = inv.endDate?.toDate?.() ||
+            new Date(inv.createdAt.toDate().getTime() + inv.duration * 86400000);
+
+        if (endDate <= now) {
+            const maturity = inv.maturityAmount ||
+                (inv.amount + inv.amount * (inv.dailyReturn / 100) * inv.duration);
+
+            userBal += maturity;
+            await updateDoc(doc(db, 'users', currentUser.uid), { balance: userBal });
+
+            await updateDoc(doc(db, 'investments', docSnap.id), {
+                status: 'completed',
+                completedAt: serverTimestamp()
+            });
+
+            await addDoc(collection(db, 'transactions'), {
+                uid: currentUser.uid,
+                type: 'investment_maturity',
+                description: `Maturity profit from ${inv.planName}`,
+                planName: inv.planName,
+                amount: maturity,
+                balanceAfter: userBal,
+                createdAt: serverTimestamp()
+            });
+
+            changed = true;
+        }
+    }
+
+    if (changed) {
+        currentUserData.balance = userBal;
+        document.getElementById('totalBalance').textContent = userBal.toFixed(2);
+    }
+}
+
+/* ============================================================
+   MY INVESTMENTS
+   ============================================================ */
+window.openMyInvestmentsModal = async function () {
+    document.getElementById('myInvestmentsModal').classList.add('open');
+    investmentFilter = 'active';
+    document.getElementById('filterActiveBtn')?.classList.add('active');
+    document.getElementById('filterMaturedBtn')?.classList.remove('active');
+    await loadAllInvestments();
+};
+
+window.closeMyInvestmentsModal = function () {
+    document.getElementById('myInvestmentsModal').classList.remove('open');
+};
+
+async function loadAllInvestments() {
+    if (!currentUser) return;
+    const container = document.getElementById('myInvestmentsContainer');
+    container.innerHTML = '<p class="text-slate-400 text-center py-10 text-sm">Loading your investments…</p>';
+
+    const q = query(collection(db, 'investments'), where('uid', '==', currentUser.uid));
+    const snap = await getDocs(q);
+
+    allInvestments = [];
+    snap.forEach(d => allInvestments.push({ id: d.id, ...d.data() }));
+    allInvestments.sort((a, b) => {
+        const da = a.createdAt?.toDate?.() || a.startDate?.toDate?.() || new Date(0);
+        const db2 = b.createdAt?.toDate?.() || b.startDate?.toDate?.() || new Date(0);
+        return db2 - da;
+    });
+
+    document.getElementById('myInvestmentsCount').textContent = allInvestments.length;
+    updateTotalEarnings();
+    renderInvestments();
+}
+
+window.setInvestmentFilter = function (filter) {
+    investmentFilter = filter === 'matured' ? 'matured' : 'active';
+    document.getElementById('filterActiveBtn')?.classList.toggle('active', investmentFilter === 'active');
+    document.getElementById('filterMaturedBtn')?.classList.toggle('active', investmentFilter === 'matured');
+    renderInvestments();
+};
+
+window.toggleInvestmentDetails = function (id) {
+    const row = document.querySelector(`[data-investment-id="${CSS.escape(String(id))}"]`);
+    if (row) row.classList.toggle('open');
+};
+
+function renderInvestments() {
+    const container = document.getElementById('myInvestmentsContainer');
+    if (!container) return;
+
+    const filtered = allInvestments.filter(inv =>
+        investmentFilter === 'active' ? inv.status !== 'completed' : inv.status === 'completed'
+    );
+
+    const countEl = document.getElementById('investmentFilterCount');
+    if (countEl) countEl.textContent = `${filtered.length} ${investmentFilter === 'active' ? 'active' : 'matured'}`;
+
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="empty">
+                <span class="chip ${investmentFilter === 'active' ? 'chip-violet' : 'chip-emerald'}">
+                    ${investmentFilter === 'active' ? ic('trend') : ic('check')}
+                </span>
+                <p class="text-white font-bold text-sm mb-1">
+                    ${investmentFilter === 'active' ? 'No active investments' : 'No matured investments'}
+                </p>
+                <p class="text-slate-500 text-[12px]">
+                    ${investmentFilter === 'active'
+                        ? 'Your active investments will appear here.'
+                        : 'Matured investments will appear here.'}
+                </p>
+            </div>`;
+        return;
+    }
+
+    container.innerHTML = filtered.map(inv => {
+        const startDate = inv.startDate?.toDate?.() || inv.createdAt?.toDate?.() || new Date();
+        const endDate = inv.endDate?.toDate?.() ||
+            new Date(startDate.getTime() + (inv.duration || 0) * 86400000);
+
+        const now = new Date();
+        const isCompleted = inv.status === 'completed';
+        const totalMs = Math.max(1, endDate.getTime() - startDate.getTime());
+        const elapsed = now.getTime() - startDate.getTime();
+        const progress = isCompleted ? 100 : Math.min(100, Math.max(0, (elapsed / totalMs) * 100));
+        const daysRemaining = isCompleted ? 0 : Math.max(0, Math.ceil((endDate.getTime() - now.getTime()) / 86400000));
+        const maturityAmount = inv.maturityAmount ?? calculateMaturity(inv.amount, inv.dailyReturn, inv.duration);
+
+        const statusBadge = isCompleted
+            ? `<span class="badge badge-done">${ic('check', 'ic-xs')} Matured</span>`
+            : `<span class="badge badge-active"><span style="width:6px;height:6px;border-radius:99px;background:#34d399;display:inline-block"></span> Active</span>`;
+
+        const safeId = String(inv.id).replace(/'/g, "\\'");
+
+        return `
+        <div data-investment-id="${escapeHtml(inv.id)}" class="inv-row">
+            <div class="inv-head" onclick="toggleInvestmentDetails('${safeId}')">
+                <span class="inv-ico ${isCompleted ? 'chip-emerald' : 'chip-violet'}">
+                    ${isCompleted ? ic('check') : ic('trend')}
+                </span>
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <h4 class="text-[13.5px] font-bold text-white truncate">${escapeHtml(inv.planName || 'Investment Plan')}</h4>
+                        ${statusBadge}
+                    </div>
+                    <p class="text-slate-500 text-[11px] mt-1 font-medium">
+                        ₹${money(inv.amount)} invested · ${inv.duration || 0} days
+                    </p>
+                </div>
+                <svg class="ic ic-sm inv-chev" viewBox="0 0 24 24">
+                    <path d="m9 5 7 7-7 7"/>
+                </svg>
+            </div>
+
+            <div class="inv-detail">
+                <div class="inv-detail-inner">
+                    <div class="pt-4 mt-0 border-t border-white/[.07]">
+                        <div class="grid grid-cols-2 gap-2.5 mb-3.5">
+                            <div class="spec">
+                                <span>Invested</span>
+                                <strong>₹${money(inv.amount)}</strong>
+                            </div>
+                            <div class="spec">
+                                <span>Daily Return</span>
+                                <strong class="text-amber-300">${inv.dailyReturn}%</strong>
+                            </div>
+                            <div class="spec">
+                                <span>Maturity Amount</span>
+                                <strong class="text-cyan-300">₹${money(maturityAmount)}</strong>
+                            </div>
+                            <div class="spec">
+                                <span>Status</span>
+                                <strong class="${isCompleted ? 'text-emerald-400' : 'text-emerald-400'}">
+                                    ${isCompleted ? 'Completed' : 'Active'}
+                                </strong>
+                            </div>
+                            <div class="spec">
+                                <span>Start Date</span>
+                                <strong>${fmtDate(startDate)}</strong>
+                            </div>
+                            <div class="spec">
+                                <span>Start Time</span>
+                                <strong>${fmtTime(startDate)}</strong>
+                            </div>
+                            <div class="spec">
+                                <span>${isCompleted ? 'Matured Date' : 'Maturity Date'}</span>
+                                <strong>${fmtDate(endDate)}</strong>
+                            </div>
+                            <div class="spec">
+                                <span>${isCompleted ? 'Matured Time' : 'Maturity Time'}</span>
+                                <strong>${fmtTime(endDate)}</strong>
+                            </div>
+                        </div>
+
+                        <div class="spec mb-3.5">
+                            <span>${isCompleted ? 'Remaining Days' : 'Remaining Days'}</span>
+                            <strong>
+                                ${isCompleted
+                                    ? 'Completed'
+                                    : `${daysRemaining} day${daysRemaining === 1 ? '' : 's'} remaining`}
+                            </strong>
+                        </div>
+
+                        <div class="flex items-center justify-between text-[10.5px] text-slate-500 mb-2 font-semibold">
+                            <span>${isCompleted ? 'Investment completed' : 'Investment progress'}</span>
+                            <span>${Math.round(progress)}%</span>
+                        </div>
+                        <div class="bar ${isCompleted ? 'done' : ''}">
+                            <i style="width:${progress}%"></i>
+                        </div>
+
+                        <p class="text-slate-600 text-[10px] mt-3 font-mono break-all">
+                            ID: ${escapeHtml(inv.id)}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+/* ============================================================
+   MY REFERRALS
+   ============================================================ */
+window.openMyReferralsModal = async function () {
+    document.getElementById('myReferralsModal').classList.add('open');
+    const container = document.getElementById('myReferralsContainer');
+    container.innerHTML = '<p class="text-slate-400 text-center py-10 text-sm">Loading your referrals…</p>';
+    document.getElementById('refSummaryTotal').textContent = '0';
+
+    if (!currentUser) return;
+
+    try {
+        const q = query(collection(db, 'referrals'), where('referrerUid', '==', currentUser.uid));
+        const snap = await getDocs(q);
+        const refs = [];
+        snap.forEach(d => refs.push({ id: d.id, ...d.data() }));
+        refs.sort((a, b) => {
+            const da = a.createdAt?.toDate?.() || new Date(0);
+            const db2 = b.createdAt?.toDate?.() || new Date(0);
+            return db2 - da;
+        });
+
+        document.getElementById('refSummaryTotal').textContent = refs.length;
+
+        if (refs.length === 0) {
+            container.innerHTML = `
+                <div class="empty">
+                    <span class="chip chip-emerald">${ic('users')}</span>
+                    <p class="text-white font-bold text-sm mb-1">No referrals yet</p>
+                    <p class="text-slate-500 text-[12px]">Share your referral link to start earning ₹39 per friend.</p>
+                </div>`;
+            return;
+        }
+
+        container.innerHTML = refs.map(r => {
+            const date = r.createdAt?.toDate?.() || null;
+            const dateStr = date ? fmtDate(date) : 'N/A';
+            const timeStr = date ? fmtTime(date) : '';
+            const name = r.referredUserName || 'User';
+            const initial = name.trim().charAt(0).toUpperCase() || 'U';
+
+            return `
+            <div class="ref-row">
+                <div class="avatar">${escapeHtml(initial)}</div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-white font-bold text-[13.5px] truncate">${escapeHtml(name)}</p>
+                    <p class="text-slate-500 text-[11px] mt-0.5 font-medium">
+                        ${dateStr}${timeStr ? ` · ${timeStr}` : ''}
+                    </p>
+                </div>
+                <span class="badge badge-bonus shrink-0">${ic('check', 'ic-xs')} Bonus</span>
+            </div>`;
+        }).join('');
+    } catch (err) {
+        console.error('Referrals load error:', err);
+        container.innerHTML = '<p class="text-red-400 text-center py-10 text-sm">Could not load referrals.</p>';
+    }
+};
+
+window.closeMyReferralsModal = function () {
+    document.getElementById('myReferralsModal').classList.remove('open');
+};
+
+/* ============================================================
+   PLANS
+   ============================================================ */
+const planImages = [
+    'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=70',
+    'https://images.unsplash.com/photo-1621761191319-c6fb62004040?auto=format&fit=crop&w=800&q=70',
+    'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=800&q=70',
+    'https://images.unsplash.com/photo-1638913662252-70efce1e60d1?auto=format&fit=crop&w=800&q=70',
+    'https://images.unsplash.com/photo-1642104704074-907c0698cbd9?auto=format&fit=crop&w=800&q=70',
+    'https://images.unsplash.com/photo-1559526324-593bc073d938?auto=format&fit=crop&w=800&q=70'
+];
+
+window.filterPlans = function (query) {
+    const q = (query || '').trim().toLowerCase();
+
+    const desktopInput = document.getElementById('planSearchInput');
+    const mobileInput = document.getElementById('planSearchInputMobile');
+    if (desktopInput && desktopInput.value !== query) desktopInput.value = query;
+    if (mobileInput && mobileInput.value !== query) mobileInput.value = query;
+
+    const dashboardSections = document.getElementById('dashboardSections');
+
+    if (q === '') {
+        if (dashboardSections) dashboardSections.classList.remove('hidden');
+        renderPlans(plansList);
+        return;
+    }
+
+    if (dashboardSections) dashboardSections.classList.add('hidden');
+
+    const amount = parseFloat(q);
+    const filtered = plansList.filter(plan => {
+        const nameMatch = (plan.name || '').toLowerCase().includes(q);
+        const amountMatch = !isNaN(amount) &&
+            amount >= Number(plan.minAmount) && amount <= Number(plan.maxAmount);
+        return nameMatch || amountMatch;
+    });
+
+    renderPlans(filtered);
+};
+
+function renderPlans(plans) {
+    const container = document.getElementById('plansContainer');
+
+    if (!plans.length) {
+        container.innerHTML = `
+            <div class="col-span-full">
+                <div class="empty">
+                    <span class="chip chip-cyan">${ic('layers')}</span>
+                    <p class="text-white font-bold text-sm mb-1">No matching plans</p>
+                    <p class="text-slate-500 text-[12px]">Try a different plan name or amount.</p>
+                </div>
+            </div>`;
+        return;
+    }
+
+    container.innerHTML = plans.map(plan => {
+        const idx = plansList.indexOf(plan);
+        const img = planImages[idx % planImages.length];
+        return `
+        <article class="plan-card">
+            <div class="plan-media" style="background-image:url('${img}')">
+                <span class="plan-badge">${ic('lightning')} ${plan.dailyReturn}% / day</span>
+                <h4 class="plan-title">${escapeHtml(plan.name)}</h4>
+            </div>
+            <div class="p-4 flex flex-col">
+                <p class="text-slate-400 text-[12.5px] leading-relaxed mb-4">
+                    ${escapeHtml(plan.description || 'Investment Plan')}
+                </p>
+                <div class="grid grid-cols-2 gap-2 mb-4">
+                    <div class="plan-spec"><span>Min Amount</span><strong>₹${plan.minAmount}</strong></div>
+                    <div class="plan-spec"><span>Max Amount</span><strong>₹${plan.maxAmount}</strong></div>
+                    <div class="plan-spec"><span>Duration</span><strong>${plan.duration} days</strong></div>
+                    <div class="plan-spec"><span>Daily Return</span><strong class="text-amber-300">${plan.dailyReturn}%</strong></div>
+                </div>
+                <button type="button" onclick="openInvestModal('${plan.id}')" class="btn btn-primary w-full">
+                    ${ic('arrowUpRight', 'ic-sm')} Invest Now
+                </button>
+            </div>
+        </article>`;
+    }).join('');
+}
+
+async function loadPlans() {
+    const container = document.getElementById('plansContainer');
+    const snap = await getDocs(collection(db, 'plans'));
+    plansList = [];
+    snap.forEach(docSnap => {
+        if (docSnap.data().status === 'active') {
+            plansList.push({ id: docSnap.id, ...docSnap.data() });
+        }
+    });
+
+    if (plansList.length === 0) {
+        container.innerHTML = `
+            <div class="col-span-full">
+                <div class="empty">
+                    <span class="chip chip-cyan">${ic('layers')}</span>
+                    <p class="text-white font-bold text-sm mb-1">No active plans</p>
+                    <p class="text-slate-500 text-[12px]">Please check back soon.</p>
+                </div>
+            </div>`;
+        return;
+    }
+
+    renderPlans(plansList);
+}
+
+/* ============================================================
+   BOOTSTRAP
+   ============================================================ */
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.href = 'login.html';
+        return;
+    }
+    currentUser = user;
+
+    try { await loadUserData(); } catch (e) { console.error('loadUserData failed:', e); }
+    try { await processMaturedInvestments(); } catch (e) { console.error('processMaturedInvestments failed:', e); }
+    try { await loadAllInvestments(); } catch (e) { console.error('loadAllInvestments failed:', e); }
+    try { await loadPlans(); } catch (e) {
+        console.error('loadPlans failed:', e);
+        document.getElementById('plansContainer').innerHTML =
+            '<p class="text-red-400 col-span-full text-center py-10 text-sm">Could not load plans. Please refresh the page.</p>';
+    }
+});
+
+/* Close modals with Escape key */
+document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    document.getElementById('investModal')?.classList.remove('open');
+    document.getElementById('myInvestmentsModal')?.classList.remove('open');
+    document.getElementById('myReferralsModal')?.classList.remove('open');
+});
+</script>
+</body>
+</html>
