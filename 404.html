@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>404 — Page Not Found | WinKom</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{
+  --bg:#070b14;
+  --line:rgba(255,255,255,.075);
+  --line-strong:rgba(255,255,255,.13);
+  --text:#eef4fb;
+  --muted:#8b98ad;
+  --dim:#5b6879;
+  --cyan:#22d3ee;
+  --cyan-soft:#67e8f9;
+  --amber:#f59e0b;
+  --emerald:#10b981;
+  --violet:#8b5cf6;
+  --rose:#f43f5e;
+}
+
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  font-family:'Plus Jakarta Sans','Segoe UI',system-ui,-apple-system,sans-serif;
+  -webkit-tap-highlight-color:transparent;
+  background-color:var(--bg);
+  background-image:
+    radial-gradient(680px 420px at 8% -12%, rgba(34,211,238,.10), transparent 62%),
+    radial-gradient(620px 420px at 102% 2%, rgba(99,102,241,.09), transparent 60%),
+    radial-gradient(700px 520px at 50% 112%, rgba(16,185,129,.05), transparent 62%);
+  background-attachment:fixed;
+  display:flex;
+  flex-direction:column;
+}
+::selection{background:rgba(34,211,238,.3)}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:rgba(34,211,238,.35)}
+
+.ic{width:20px;height:20px;flex:none;display:block;stroke:currentColor;fill:none;
+    stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ic-sm{width:16px;height:16px}
+.ic-xs{width:13px;height:13px;stroke-width:2.2}
+.ic-lg{width:24px;height:24px}
+.ic-xl{width:32px;height:32px}
+
+/* Brand */
+.brand{
+  display:flex;align-items:center;gap:11px;min-width:0;
+  text-decoration:none;transition:opacity .2s ease;
+}
+.brand:hover{opacity:.85}
+.brand-mark{
+  width:42px;height:42px;flex:none;border-radius:13px;
+  overflow:hidden;position:relative;
+  background:linear-gradient(135deg,#22d3ee,#6366f1);
+  box-shadow:0 8px 22px rgba(34,211,238,.22);
+}
+.brand-mark > *{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;display:block;
+}
+.brand-mark .is-hidden{display:none!important}
+.brand-name{
+  font-size:20px;font-weight:800;letter-spacing:-.02em;color:#fff;
+  line-height:1;white-space:nowrap;
+}
+.brand-name .accent{
+  background:linear-gradient(135deg,#22d3ee,#a78bfa);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+/* Header */
+.top-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 24px;max-width:1200px;
+  width:100%;margin:0 auto;
+}
+
+/* Main */
+.main-wrap{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  padding:20px 24px 40px;
+}
+
+.card{
+  width:100%;max-width:560px;
+  text-align:center;
+  position:relative;
+}
+
+/* Big 404 number */
+.big-number{
+  font-size:clamp(96px, 22vw, 160px);
+  font-weight:800;
+  line-height:.9;
+  letter-spacing:-.05em;
+  background:linear-gradient(135deg,#22d3ee 0%,#6366f1 60%,#a78bfa 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  margin-bottom:8px;
+  position:relative;
+  display:inline-block;
+}
+
+/* Animated compass icon overlay */
+.compass{
+  width:76px;height:76px;
+  border-radius:22px;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 22px;
+  background:linear-gradient(135deg,rgba(34,211,238,.18),rgba(139,92,246,.14));
+  border:1px solid rgba(34,211,238,.28);
+  color:var(--cyan-soft);
+  box-shadow:0 16px 40px rgba(34,211,238,.16);
+  animation:floaty 4s ease-in-out infinite;
+}
+@keyframes floaty{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
+}
+
+/* Decorative dots */
+.dots{
+  position:absolute;
+  inset:0;pointer-events:none;
+  z-index:-1;
+  overflow:hidden;
+}
+.dots::before,
+.dots::after{
+  content:'';position:absolute;
+  border-radius:999px;
+  filter:blur(60px);
+}
+.dots::before{
+  width:280px;height:280px;
+  top:-60px;left:-80px;
+  background:rgba(34,211,238,.10);
+}
+.dots::after{
+  width:240px;height:240px;
+  bottom:-60px;right:-70px;
+  background:rgba(139,92,246,.10);
+}
+
+/* Typography */
+h1{
+  font-size:clamp(22px, 4vw, 28px);
+  font-weight:800;
+  color:#fff;
+  letter-spacing:-.02em;
+  margin:0 0 10px;
+  line-height:1.2;
+}
+p.subtitle{
+  font-size:14px;
+  color:var(--muted);
+  font-weight:500;
+  line-height:1.6;
+  max-width:420px;
+  margin:0 auto 28px;
+}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  padding:13px 22px;border-radius:14px;font-size:13.5px;font-weight:800;
+  white-space:nowrap;cursor:pointer;border:1px solid transparent;
+  transition:transform .16s ease,box-shadow .22s ease,background .22s ease,
+             border-color .22s ease,color .22s ease;
+  font-family:inherit;text-decoration:none;
+}
+.btn:active{transform:scale(.97)}
+.btn-primary{
+  background:linear-gradient(135deg,#22d3ee,#3b82f6);
+  color:#04121a;
+  box-shadow:0 10px 26px rgba(34,211,238,.28);
+}
+.btn-primary:hover{box-shadow:0 14px 34px rgba(34,211,238,.42)}
+.btn-ghost{
+  background:rgba(255,255,255,.05);
+  border-color:var(--line-strong);
+  color:var(--muted);
+}
+.btn-ghost:hover{
+  background:rgba(255,255,255,.09);
+  color:var(--text);
+}
+
+.button-row{
+  display:flex;gap:10px;justify-content:center;flex-wrap:wrap;
+}
+
+/* Helpful links */
+.help-links{
+  margin-top:44px;
+  padding-top:26px;
+  border-top:1px solid rgba(255,255,255,.06);
+  max-width:520px;
+  margin-left:auto;margin-right:auto;
+}
+.help-links-title{
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);font-weight:800;margin-bottom:14px;
+}
+.help-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+@media (min-width:640px){
+  .help-grid{grid-template-columns:repeat(4,1fr)}
+}
+.help-card{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:14px 10px;
+  border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+  border:1px solid var(--line);
+  text-decoration:none;
+  color:var(--muted);
+  font-size:11.5px;
+  font-weight:700;
+  transition:transform .2s ease,border-color .2s ease,background .2s ease,color .2s ease;
+}
+.help-card:hover{
+  transform:translateY(-2px);
+  border-color:rgba(34,211,238,.28);
+  background:rgba(255,255,255,.055);
+  color:#fff;
+}
+.help-card .ic{color:var(--cyan-soft);width:18px;height:18px}
+
+/* Footer */
+.footer-line{
+  text-align:center;
+  padding:16px 20px 26px;
+  font-size:11.5px;
+  color:var(--dim);
+  font-weight:600;
+}
+.footer-line strong{color:var(--cyan-soft)}
+
+/* Entrance animation */
+.fade-up{
+  animation:fadeUp .55s cubic-bezier(.16,1,.3,1) both;
+}
+.fade-up.delay-1{animation-delay:.08s}
+.fade-up.delay-2{animation-delay:.16s}
+.fade-up.delay-3{animation-delay:.24s}
+.fade-up.delay-4{animation-delay:.32s}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(14px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* Small screens */
+@media (max-width:480px){
+  .top-bar{padding:16px 18px}
+  .main-wrap{padding:10px 18px 30px}
+  .compass{width:66px;height:66px;border-radius:20px;margin-bottom:18px}
+  .compass .ic{width:28px;height:28px}
+}
+</style>
+</head>
+<body>
+
+<!-- Top bar with brand -->
+<header class="top-bar">
+  <a href="index.html" class="brand">
+    <span class="brand-mark" aria-hidden="true">
+      <img src="logo.png" alt="WinKom"
+           onerror="this.classList.add('is-hidden');this.nextElementSibling.classList.remove('is-hidden');"/>
+      <svg class="is-hidden" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" role="img">
+        <defs>
+          <linearGradient id="wkG404" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#22d3ee"/>
+            <stop offset="100%" stop-color="#6366f1"/>
+          </linearGradient>
+        </defs>
+        <rect width="40" height="40" rx="13" fill="url(#wkG404)"/>
+        <path d="M9 14 L14 27 L20 18 L26 27 L31 14"
+              stroke="#04121a" stroke-width="2.9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+    </span>
+    <span class="brand-name">Win<span class="accent">Kom</span></span>
+  </a>
+</header>
+
+<!-- Main content -->
+<main class="main-wrap">
+  <div class="card">
+
+    <div class="dots" aria-hidden="true"></div>
+
+    <!-- Compass icon -->
+    <div class="compass fade-up" aria-hidden="true">
+      <svg class="ic-xl" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="m15.5 8.5-2.2 5.3-5.3 2.2 2.2-5.3z"/>
+        <circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/>
+      </svg>
+    </div>
+
+    <!-- 404 -->
+    <div class="big-number fade-up delay-1" aria-label="404">404</div>
+
+    <!-- Message -->
+    <h1 class="fade-up delay-2">Looks like you're lost</h1>
+    <p class="subtitle fade-up delay-2">
+      The page you're looking for doesn't exist or has been moved. Let's get you back on track.
+    </p>
+
+    <!-- Buttons -->
+    <div class="button-row fade-up delay-3">
+      <a href="index.html" class="btn btn-primary">
+        <svg class="ic ic-sm" viewBox="0 0 24 24">
+          <path d="M3 11.5 12 4l9 7.5"/>
+          <path d="M5.5 10v9.5h13V10"/>
+          <path d="M10 19.5v-5h4v5"/>
+        </svg>
+        Back to Home
+      </a>
+      <button type="button" class="btn btn-ghost" onclick="goBack()">
+        <svg class="ic ic-sm" viewBox="0 0 24 24">
+          <path d="M15 6 9 12l6 6"/>
+          <path d="M9 12h10"/>
+        </svg>
+        Go Back
+      </button>
+    </div>
+
+    <!-- Helpful links -->
+    <div class="help-links fade-up delay-4">
+      <div class="help-links-title">Explore WinKom</div>
+      <div class="help-grid">
+        <a href="index.html" class="help-card">
+          <svg class="ic" viewBox="0 0 24 24">
+            <path d="M4 19V5"/>
+            <path d="M4 19h16"/>
+            <path d="M8.5 16v-4.5M12.5 16V8M16.5 16v-2.5"/>
+          </svg>
+          Dashboard
+        </a>
+        <a href="deposit.html" class="help-card">
+          <svg class="ic" viewBox="0 0 24 24">
+            <path d="M12 4v10"/>
+            <path d="m8 10.5 4 4 4-4"/>
+            <path d="M5 19h14"/>
+          </svg>
+          Deposit
+        </a>
+        <a href="withdraw.html" class="help-card">
+          <svg class="ic" viewBox="0 0 24 24">
+            <path d="M12 15V5"/>
+            <path d="m8 8.5 4-4 4 4"/>
+            <path d="M5 19h14"/>
+          </svg>
+          Withdraw
+        </a>
+        <a href="support.html" class="help-card">
+          <svg class="ic" viewBox="0 0 24 24">
+            <path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/>
+            <path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/>
+            <path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/>
+          </svg>
+          Support
+        </a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer-line">
+  © 2024 <strong>WinKom</strong> · All rights reserved · winkom.site
+</footer>
+
+<script>
+  // Smart "Go Back" — returns to previous page if possible,
+  // otherwise falls back to home
+  function goBack() {
+    if (window.history.length > 1 && document.referrer) {
+      window.history.back();
+    } else {
+      window.location.href = 'index.html';
+    }
+  }
+
+  // If URL contains a path hint, show it (optional — subtle detail)
+  // Commented out to keep it clean; uncomment if you want to display
+  // the bad path in the subtitle.
+  //
+  // (function showBadPath(){
+  //   const path = window.location.pathname.replace(/^\//, '');
+  //   if (path) {
+  //     const sub = document.querySelector('p.subtitle');
+  //     if (sub) sub.textContent = `We couldn't find "${path}". The page may have been moved or deleted.`;
+  //   }
+  // })();
+</script>
+</body>
+</html>
