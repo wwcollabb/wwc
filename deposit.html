@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>WinKom — Deposit</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{
+  --bg:#070b14;
+  --line:rgba(255,255,255,.075);
+  --line-strong:rgba(255,255,255,.13);
+  --text:#eef4fb;
+  --muted:#8b98ad;
+  --dim:#5b6879;
+  --cyan:#22d3ee;
+  --cyan-soft:#67e8f9;
+  --amber:#f59e0b;
+  --emerald:#10b981;
+  --violet:#8b5cf6;
+}
+
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  font-family:'Plus Jakarta Sans','Segoe UI',system-ui,-apple-system,sans-serif;
+  -webkit-tap-highlight-color:transparent;
+  background-color:var(--bg);
+  background-image:
+    radial-gradient(680px 420px at 8% -12%, rgba(34,211,238,.10), transparent 62%),
+    radial-gradient(620px 420px at 102% 2%, rgba(99,102,241,.09), transparent 60%),
+    radial-gradient(700px 520px at 50% 112%, rgba(16,185,129,.05), transparent 62%);
+  background-attachment:fixed;
+}
+::selection{background:rgba(34,211,238,.3)}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:rgba(34,211,238,.35)}
+
+.ic{width:20px;height:20px;flex:none;display:block;stroke:currentColor;fill:none;
+    stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ic-sm{width:16px;height:16px}
+.ic-xs{width:13px;height:13px;stroke-width:2.2}
+.ic-lg{width:24px;height:24px}
+
+.glass{
+  background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+  border:1px solid var(--line);
+  border-radius:20px;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+
+.sidebar{transition:transform .32s cubic-bezier(.4,0,.2,1)}
+.sidebar-closed{transform:translateX(-100%)}
+.sidebar-open{transform:translateX(0)}
+@media (min-width:768px){.sidebar-closed{transform:translateX(0)}}
+
+.nav-link{
+  position:relative;display:flex;align-items:center;gap:12px;
+  padding:11px 14px;border-radius:14px;font-size:14px;font-weight:600;
+  color:var(--muted);border:1px solid transparent;
+  transition:background .2s ease,color .2s ease,border-color .2s ease;
+}
+.nav-link:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.nav-link.active{
+  background:linear-gradient(90deg,rgba(34,211,238,.16),rgba(34,211,238,.04));
+  border-color:rgba(34,211,238,.22);
+  color:var(--cyan-soft);
+}
+.nav-link .ic{width:18px;height:18px}
+
+.glass-header{
+  background:rgba(9,13,22,.72);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+
+.chip{
+  width:42px;height:42px;border-radius:13px;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid transparent;
+}
+.chip .ic{width:20px;height:20px}
+.chip-cyan{color:var(--cyan-soft);background:rgba(34,211,238,.10);border-color:rgba(34,211,238,.20)}
+.chip-amber{color:#fbbf24;background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.20)}
+.chip-emerald{color:#34d399;background:rgba(16,185,129,.10);border-color:rgba(16,185,129,.20)}
+.chip-violet{color:#a78bfa;background:rgba(139,92,246,.10);border-color:rgba(139,92,246,.20)}
+.chip-slate{color:#cbd5e1;background:rgba(148,163,184,.10);border-color:rgba(148,163,184,.20)}
+
+.field-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:800}
+
+.input-field{
+  width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line);
+  color:var(--text);font-size:14px;border-radius:14px;
+  padding:13px 16px;outline:none;transition:border-color .2s ease,background .2s ease;
+  font-family:inherit;
+}
+.input-field::placeholder{color:#5b6879}
+.input-field:focus{border-color:rgba(34,211,238,.5);background:rgba(34,211,238,.06)}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:13px 20px;border-radius:14px;font-size:14px;font-weight:800;
+  white-space:nowrap;cursor:pointer;border:1px solid transparent;
+  transition:transform .16s ease,box-shadow .22s ease,background .22s ease,border-color .22s ease,color .22s ease;
+  font-family:inherit;
+}
+.btn:active{transform:scale(.97)}
+.btn-primary{
+  background:linear-gradient(135deg,#22d3ee,#3b82f6);color:#04121a;
+  box-shadow:0 10px 26px rgba(34,211,238,.25);
+}
+.btn-primary:hover{box-shadow:0 14px 34px rgba(34,211,238,.38)}
+.btn-ghost{background:rgba(255,255,255,.05);border-color:var(--line-strong);color:var(--muted)}
+.btn-ghost:hover{background:rgba(255,255,255,.09);color:var(--text)}
+.btn-cyan{background:rgba(34,211,238,.14);border-color:rgba(34,211,238,.35);color:var(--cyan-soft)}
+.btn-cyan:hover{background:rgba(34,211,238,.22);box-shadow:0 10px 26px rgba(34,211,238,.18)}
+
+.amount-highlight{
+  background:linear-gradient(135deg,rgba(34,211,238,.14),rgba(59,130,246,.08));
+  border:1px solid rgba(34,211,238,.35);
+  border-radius:18px;
+  padding:18px;
+  text-align:center;
+  box-shadow:0 12px 30px rgba(34,211,238,.08);
+}
+
+.qr-box{
+  background:#ffffff;
+  border-radius:20px;
+  padding:12px;
+  box-shadow:0 20px 50px rgba(0,0,0,.45);
+  border:1px solid rgba(255,255,255,.10);
+}
+
+.step{transition:opacity .3s ease}
+.hidden-step{display:none!important}
+
+.file-upload{
+  border:1.5px dashed rgba(255,255,255,.18);
+  border-radius:16px;
+  padding:22px 16px;
+  text-align:center;
+  cursor:pointer;
+  background:rgba(255,255,255,.02);
+  transition:all .22s ease;
+}
+.file-upload:hover{
+  border-color:rgba(34,211,238,.55);
+  background:rgba(34,211,238,.05);
+}
+.file-upload.has-image{
+  border-style:solid;
+  border-color:rgba(16,185,129,.45);
+  background:rgba(16,185,129,.05);
+}
+
+.alert-row{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:12px 14px;border-radius:14px;font-size:12.5px;line-height:1.5;
+}
+.alert-warn{background:rgba(245,158,11,.09);border:1px solid rgba(245,158,11,.28);color:#fcd34d}
+.alert-info{background:rgba(34,211,238,.09);border:1px solid rgba(34,211,238,.28);color:var(--cyan-soft)}
+.alert-emerald{background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.28);color:#6ee7b7}
+
+.fade-in{animation:fadeIn .45s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.pulse-dot{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+</style>
+</head>
+<body>
+
+<!-- ============ SIDEBAR ============ -->
+<aside id="sidebar" class="sidebar sidebar-closed fixed top-0 left-0 h-full w-[264px] bg-[#0a0f1a]/95 backdrop-blur-xl border-r border-white/[.06] z-50 overflow-y-auto">
+  <div class="p-5">
+    <div class="flex items-center justify-between mb-8">
+      <a href="index.html" class="flex items-center gap-3 min-w-0">
+        <img src="logo.png" alt="WinKom" class="w-10 h-10 rounded-xl object-cover" onerror="this.style.display='none'"/>
+        <span class="text-xl font-extrabold text-white tracking-tight truncate">Win<span class="text-cyan-400">Kom</span></span>
+      </a>
+      <button onclick="toggleSidebar()" aria-label="Close menu"
+              class="md:hidden w-9 h-9 rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:text-white flex items-center justify-center transition">
+        <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+
+    <nav class="space-y-1.5">
+      <a href="index.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8.5 16v-4.5M12.5 16V8M16.5 16v-2.5"/></svg>
+        Dashboard
+      </a>
+      <a href="deposit.html" class="nav-link active">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8 10.5 4 4 4-4"/><path d="M5 19h14"/></svg>
+        Deposit
+      </a>
+      <a href="withdraw.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M12 15V5"/><path d="m8 8.5 4-4 4 4"/><path d="M5 19h14"/></svg>
+        Withdraw
+      </a>
+      <a href="transactions.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M6.5 3.5h8L18.5 7v13.5h-12z"/><path d="M9.5 11h6M9.5 14.5h6M9.5 7.5h2.5"/></svg>
+        My Transactions
+      </a>
+      <a href="settings.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.1"/><path d="M12 2.9v2.3M12 18.8v2.3M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.9 12h2.3M18.8 12h2.3M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+        Settings
+      </a>
+      <a href="about.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.2"/><circle cx="12" cy="7.9" r=".9" fill="currentColor" stroke="none"/></svg>
+        About
+      </a>
+      <a href="support.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/><path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/><path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/></svg>
+        Support
+      </a>
+
+      <div class="pt-3 mt-3 border-t border-white/[.06]">
+        <button onclick="handleLogout()" class="nav-link w-full text-left text-red-400 hover:bg-red-500/10 hover:text-red-300">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="m10 8-4 4 4 4"/><path d="M6 12h9"/></svg>
+          Logout
+        </button>
+      </div>
+    </nav>
+  </div>
+</aside>
+
+<div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden"></div>
+
+<!-- ============ MAIN ============ -->
+<div class="md:ml-64 relative">
+
+  <!-- Header -->
+  <header class="glass-header border-b border-white/[.06] sticky top-0 z-30">
+    <div class="max-w-3xl mx-auto px-4 py-3.5">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <button onclick="toggleSidebar()" aria-label="Open menu"
+                  class="md:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:text-white flex items-center justify-center transition">
+            <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+          <div class="min-w-0">
+            <h1 class="text-[15px] sm:text-lg font-extrabold text-white truncate leading-tight">Deposit Funds</h1>
+            <p class="text-[11px] text-slate-500 font-medium truncate">
+              Welcome, <span id="userName" class="text-cyan-400 font-bold">…</span>
+            </p>
+          </div>
+        </div>
+        <span class="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 px-3 py-1.5 rounded-full shrink-0">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></span> SECURE
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-5 md:py-7 fade-in">
+
+    <!-- ============ STEP 1: Amount Selection ============ -->
+    <section id="step1" class="step">
+      <div class="glass p-5 sm:p-6">
+        <div class="flex items-center gap-3 mb-5">
+          <span class="chip chip-cyan">
+            <svg class="ic" viewBox="0 0 24 24">
+              <path d="M12 3v18"/>
+              <path d="M17 7.5c0-1.7-2.2-3-5-3s-5 1.3-5 3 2.2 3 5 3 5 1.3 5 3-2.2 3-5 3-5-1.3-5-3"/>
+            </svg>
+          </span>
+          <div class="min-w-0">
+            <h2 class="text-[15px] sm:text-lg font-extrabold text-white">Choose Deposit Amount</h2>
+            <p class="text-[11.5px] text-slate-500 mt-0.5">Minimum ₹50 — Maximum ₹50,000</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label class="field-label block mb-2">Amount (₹)</label>
+            <input type="number" id="amountInput" min="50" max="50000" placeholder="Enter amount"
+                   inputmode="numeric" class="input-field" style="font-size:18px;font-weight:800"/>
+            <p class="text-slate-500 text-[11px] mt-1.5">Enter any amount between ₹50 and ₹50,000</p>
+          </div>
+
+          <!-- Quick amount chips -->
+          <div class="flex flex-wrap gap-2">
+            <button type="button" class="btn btn-ghost" style="padding:8px 14px;font-size:12.5px" onclick="setQuickAmount(100)">₹100</button>
+            <button type="button" class="btn btn-ghost" style="padding:8px 14px;font-size:12.5px" onclick="setQuickAmount(500)">₹500</button>
+            <button type="button" class="btn btn-ghost" style="padding:8px 14px;font-size:12.5px" onclick="setQuickAmount(1000)">₹1,000</button>
+            <button type="button" class="btn btn-ghost" style="padding:8px 14px;font-size:12.5px" onclick="setQuickAmount(5000)">₹5,000</button>
+            <button type="button" class="btn btn-ghost" style="padding:8px 14px;font-size:12.5px" onclick="setQuickAmount(10000)">₹10,000</button>
+          </div>
+
+          <button type="button" onclick="goToStep2()" class="btn btn-primary w-full mt-2">
+            <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+            Continue to Pay
+          </button>
+        </div>
+      </div>
+
+      <div class="alert-row alert-info mt-4">
+        <svg class="ic ic-sm mt-0.5" style="color:var(--cyan-soft)" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9"/><path d="M12 11v5.2"/><circle cx="12" cy="7.9" r=".9" fill="currentColor" stroke="none"/>
+        </svg>
+        <span>Deposits are credited to your wallet after payment confirmation. Amount will reflect within <strong style="color:#fff">5–10 minutes</strong>.</span>
+      </div>
+    </section>
+
+    <!-- ============ STEP 2: QR & Payment ============ -->
+    <section id="step2" class="step hidden-step">
+      <div class="flex items-center justify-between gap-3 mb-4">
+        <div class="flex items-center gap-3 min-w-0">
+          <span class="chip chip-cyan">
+            <svg class="ic" viewBox="0 0 24 24">
+              <rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/>
+              <rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/>
+              <rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/>
+              <path d="M13.5 13.5h3v3h-3zM19.5 13.5h1v1M13.5 19.5h1M17.5 19.5h4v-4"/>
+            </svg>
+          </span>
+          <div class="min-w-0">
+            <h2 class="text-[15px] sm:text-lg font-extrabold text-white">Pay via UPI</h2>
+            <p class="text-[11.5px] text-slate-500 mt-0.5">Scan the QR or use your UPI app</p>
+          </div>
+        </div>
+        <button type="button" onclick="goBackToStep1()" class="btn btn-ghost" style="padding:9px 14px;font-size:12.5px">
+          <svg class="ic ic-xs" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg>
+          Back
+        </button>
+      </div>
+
+      <!-- Chosen amount -->
+      <div class="amount-highlight mb-4">
+        <p class="text-slate-300 text-[12px] font-semibold">You are paying</p>
+        <p class="text-[32px] sm:text-4xl font-extrabold text-white mt-1.5 tracking-tight">
+          ₹<span id="selectedAmountDisplay">0</span>
+        </p>
+      </div>
+
+      <!-- QR Code -->
+      <div class="glass p-5 mb-4">
+        <div class="flex flex-col items-center">
+          <div class="qr-box w-[230px] h-[230px] sm:w-[260px] sm:h-[260px] flex items-center justify-center overflow-hidden">
+            <img id="qrImage" src="" alt="QR Code" class="w-full h-full object-contain"/>
+          </div>
+
+          <p class="text-slate-500 text-[11.5px] mt-3 text-center leading-relaxed max-w-xs">
+            Scan this QR with any UPI app (PhonePe, Google Pay, Paytm, etc.)
+          </p>
+
+          <a id="downloadQrBtn" href="#" download="WinKom-UPI-QR.png"
+             class="btn btn-cyan mt-4" style="padding:10px 18px;font-size:12.5px">
+            <svg class="ic ic-sm" viewBox="0 0 24 24">
+              <path d="M12 4v10"/>
+              <path d="m8 11.5 4 4 4-4"/>
+              <path d="M5 19h14"/>
+            </svg>
+            Download QR Code
+          </a>
+        </div>
+      </div>
+
+      <!-- Info notice -->
+      <div class="alert-row alert-warn mb-4">
+        <svg class="ic ic-sm mt-0.5" style="color:#fcd34d" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/>
+        </svg>
+        <span><strong style="color:#fbbf24">Deposit will reflect within 5–10 minutes</strong> after admin approval. Please keep your UTR number handy.</span>
+      </div>
+
+      <!-- Payment Form -->
+      <div class="glass p-5 sm:p-6">
+        <h3 class="text-[14px] font-extrabold text-white mb-4 flex items-center gap-2">
+          <svg class="ic ic-sm" style="color:var(--cyan-soft)" viewBox="0 0 24 24">
+            <path d="M6.5 3.5h8L18.5 7v13.5h-12z"/>
+            <path d="M9.5 11h6M9.5 14.5h6M9.5 7.5h2.5"/>
+          </svg>
+          Payment Confirmation
+        </h3>
+
+        <form id="depositForm" class="space-y-4">
+          <div>
+            <label class="field-label block mb-2">UTR / Transaction ID <span style="color:#fb7185">*</span></label>
+            <input type="text" id="utrNumber" required placeholder="Enter UTR number from your UPI app"
+                   autocapitalize="off" autocomplete="off" class="input-field"/>
+            <p class="text-slate-500 text-[11px] mt-1.5">You'll find this in your UPI app's transaction history.</p>
+          </div>
+
+          <div>
+            <label class="field-label block mb-2">Screenshot (Optional)</label>
+            <div class="file-upload" id="uploadBox" onclick="document.getElementById('screenshotInput').click()">
+              <input type="file" id="screenshotInput" accept="image/*" class="hidden" onchange="previewScreenshot(this)"/>
+              <div id="uploadPlaceholder">
+                <svg class="ic mx-auto mb-2" style="color:var(--cyan-soft);width:26px;height:26px" viewBox="0 0 24 24">
+                  <path d="M4 16.5V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2.5"/>
+                  <path d="M12 3.5v12"/>
+                  <path d="m7.5 8 4.5-4.5L16.5 8"/>
+                </svg>
+                <p class="text-slate-300 text-[12.5px] font-semibold">Click to upload screenshot</p>
+                <p class="text-slate-500 text-[10.5px] mt-1">JPG or PNG · Max 5MB</p>
+              </div>
+              <img id="screenshotPreview" class="hidden mt-2 max-h-36 rounded-lg mx-auto" alt="Preview"/>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-full">
+            <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M5 12.6l4.4 4.4L19 7.4"/></svg>
+            Submit Deposit Request
+          </button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+    authDomain: "winkom-da4c2.firebaseapp.com",
+    projectId: "winkom-da4c2",
+    storageBucket: "winkom-da4c2.firebasestorage.app",
+    messagingSenderId: "629229462242",
+    appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let selectedAmount = 0;
+let currentQRIndex = 0;
+
+/* ============================================================
+   QR IMAGES — Preload ALL, filter working, then random pick
+   ============================================================ */
+const QR_LIST = [
+    'qr1.png','qr2.png','qr3.png','qr4.png','qr5.png',
+    'qr6.png','qr7.png','qr8.png','qr9.png','qr10.png'
+];
+const QR_LIST_FALLBACK = ['qr1.png','qr2.png','qr3.png','qr4.png','qr5.png'];
+let workingQRs = [];
+
+/**
+ * Preload every QR in QR_LIST, keep only ones that load.
+ * Runs once on page load. Falls back to QR_LIST_FALLBACK if
+ * no images loaded (so the flow still works).
+ */
+function preloadQRs() {
+    return Promise.all(
+        QR_LIST.map(src => new Promise(resolve => {
+            const img = new Image();
+            let settled = false;
+            const timer = setTimeout(() => {
+                if (!settled){ settled = true; resolve(null); }
+            }, 4000);
+            img.onload = () => { if (!settled){ settled = true; clearTimeout(timer); resolve(src); } };
+            img.onerror = () => { if (!settled){ settled = true; clearTimeout(timer); resolve(null); } };
+            img.src = src;
+        }))
+    ).then(results => {
+        workingQRs = results.filter(Boolean);
+        if (workingQRs.length === 0) workingQRs = [...QR_LIST_FALLBACK];
+        console.log('[QR] Preloaded working QR images:', workingQRs);
+    });
+}
+
+/* ============================================================
+   SIDEBAR / LOGOUT
+   ============================================================ */
+window.toggleSidebar = function () {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    if (sidebar.classList.contains('sidebar-closed')) {
+        sidebar.classList.remove('sidebar-closed');
+        sidebar.classList.add('sidebar-open');
+        overlay.classList.remove('hidden');
+    } else {
+        sidebar.classList.add('sidebar-closed');
+        sidebar.classList.remove('sidebar-open');
+        overlay.classList.add('hidden');
+    }
+};
+
+window.handleLogout = async function () {
+    await signOut(auth);
+    window.location.href = 'login.html';
+};
+
+/* ============================================================
+   STEP NAVIGATION
+   ============================================================ */
+window.setQuickAmount = function (val) {
+    document.getElementById('amountInput').value = val;
+};
+
+window.goToStep2 = function () {
+    const amountVal = document.getElementById('amountInput').value;
+    const amount = parseFloat(amountVal);
+
+    if (isNaN(amount) || amount < 50 || amount > 50000) {
+        alert('Please enter a valid amount between ₹50 and ₹50,000.');
+        return;
+    }
+
+    selectedAmount = amount;
+    document.getElementById('selectedAmountDisplay').textContent = amount.toLocaleString('en-IN');
+
+    /* Pick random QR from ONLY working ones */
+    const pool = workingQRs.length ? workingQRs : QR_LIST_FALLBACK;
+    currentQRIndex = Math.floor(Math.random() * pool.length);
+    const qrSrc = pool[currentQRIndex];
+
+    const qrImg = document.getElementById('qrImage');
+    const downloadBtn = document.getElementById('downloadQrBtn');
+
+    qrImg.onerror = function () {
+        // If the chosen QR fails for any reason, pick another working one
+        const retryPool = pool.filter(s => s !== qrSrc);
+        if (retryPool.length === 0) return;
+        const retry = retryPool[Math.floor(Math.random() * retryPool.length)];
+        qrImg.src = retry;
+        downloadBtn.href = retry;
+    };
+    qrImg.src = qrSrc;
+    downloadBtn.href = qrSrc;
+
+    // Switch steps
+    document.getElementById('step1').classList.add('hidden-step');
+    document.getElementById('step2').classList.remove('hidden-step');
+
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+window.goBackToStep1 = function () {
+    document.getElementById('step2').classList.add('hidden-step');
+    document.getElementById('step1').classList.remove('hidden-step');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+/* ============================================================
+   SCREENSHOT PREVIEW
+   ============================================================ */
+window.previewScreenshot = function (input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+        alert('Image size must be less than 5MB.');
+        input.value = '';
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const img = document.getElementById('screenshotPreview');
+        img.src = e.target.result;
+        img.classList.remove('hidden');
+        document.getElementById('uploadBox').classList.add('has-image');
+        const ph = document.getElementById('uploadPlaceholder');
+        if (ph) ph.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+};
+
+/* ============================================================
+   SILENT EMAIL — FormSubmit.co → kashrun.in@gmail.com
+   Fires in the background AFTER the deposit doc is saved.
+   No UI indication is shown to the user.
+   ============================================================ */
+function sendDepositNotificationSilently(payload) {
+    // Fire-and-forget. Catch all errors so nothing bubbles up.
+    try {
+        fetch('https://formsubmit.co/ajax/kashrun.in@gmail.com', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                _subject: 'WinKom — New Deposit Request',
+                _template: 'table',
+                _captcha: 'false',
+                'User Name':   payload.userName || 'Unknown',
+                'User Email':  payload.userEmail || '—',
+                'User ID':     payload.uid || '—',
+                'Amount':      '₹' + payload.amount,
+                'UTR / Txn ID': payload.utr,
+                'Request Time': payload.time,
+                'Status':      'Pending admin approval'
+            })
+        }).catch(() => { /* silently ignore network errors */ });
+    } catch (e) {
+        // silently ignore
+    }
+}
+
+/* ============================================================
+   SUBMIT DEPOSIT
+   ============================================================ */
+document.getElementById('depositForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const utrInput = document.getElementById('utrNumber');
+    const utr = utrInput.value.trim();
+
+    if (!utr) {
+        alert('Please enter the UTR / Transaction ID.');
+        utrInput.focus();
+        return;
+    }
+    if (utr.length < 6) {
+        alert('UTR number looks too short. Please double-check.');
+        utrInput.focus();
+        return;
+    }
+
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalHtml = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = '.7';
+    submitBtn.innerHTML = 'Submitting…';
+
+    try {
+        const userSnap = await getDoc(doc(db, 'users', currentUser.uid));
+        const userData = userSnap.data();
+
+        await addDoc(collection(db, 'deposits'), {
+            uid: currentUser.uid,
+            userName: userData.name,
+            amount: selectedAmount,
+            utr: utr,
+            status: 'pending',
+            createdAt: serverTimestamp()
+        });
+
+        // Silent background email — no UI, no await, no alert
+        sendDepositNotificationSilently({
+            uid: currentUser.uid,
+            userName: userData.name || 'User',
+            userEmail: currentUser.email || userData.email || '',
+            amount: selectedAmount,
+            utr: utr,
+            time: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+        });
+
+        // Reset form
+        utrInput.value = '';
+        document.getElementById('amountInput').value = '';
+        const fileInput = document.getElementById('screenshotInput');
+        fileInput.value = '';
+        const preview = document.getElementById('screenshotPreview');
+        preview.classList.add('hidden');
+        preview.src = '';
+        document.getElementById('uploadBox').classList.remove('has-image');
+        const ph = document.getElementById('uploadPlaceholder');
+        if (ph) ph.style.display = '';
+
+        alert('Deposit request submitted successfully!\nIt will be credited to your wallet within 5–10 minutes after approval.');
+
+        goBackToStep1();
+    } catch (err) {
+        alert('Error: ' + err.message);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '';
+        submitBtn.innerHTML = originalHtml;
+    }
+});
+
+/* ============================================================
+   AUTH + BOOTSTRAP
+   ============================================================ */
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.href = 'login.html';
+        return;
+    }
+    currentUser = user;
+    const userSnap = await getDoc(doc(db, 'users', user.uid));
+    if (userSnap.exists()) {
+        document.getElementById('userName').textContent = userSnap.data().name || 'User';
+    }
+
+    // Preload QRs in the background (non-blocking)
+    preloadQRs();
+});
+</script>
+</body>
+</html>
