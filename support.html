@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>WinKom — Support</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{
+  --bg:#f4f6fb;
+  --surface:#ffffff;
+  --surface-2:#f8fafc;
+  --surface-3:#f1f5f9;
+  --line:#e6eaf2;
+  --line-strong:#d4dbe8;
+  --text:#0f172a;
+  --text-2:#334155;
+  --muted:#64748b;
+  --dim:#94a3b8;
+  --primary:#6366f1;
+  --primary-2:#8b5cf6;
+  --primary-soft:#eef2ff;
+  --cyan:#06b6d4;
+  --success:#10b981;
+  --amber:#f59e0b;
+  --rose:#f43f5e;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{max-width:100%;overflow-x:hidden}
+html,body{height:100vh;height:100dvh}
+body{
+  margin:0;
+  overflow:hidden;
+  color:var(--text);
+  font-family:'Plus Jakarta Sans','Segoe UI',system-ui,-apple-system,sans-serif;
+  -webkit-tap-highlight-color:transparent;
+  background:
+    radial-gradient(900px 500px at -5% -10%, rgba(99,102,241,.10), transparent 60%),
+    radial-gradient(800px 500px at 105% 5%, rgba(139,92,246,.09), transparent 60%),
+    radial-gradient(900px 600px at 50% 115%, rgba(6,182,212,.06), transparent 60%),
+    linear-gradient(180deg,#f8fafd 0%,#eef2fa 100%);
+  background-attachment:fixed;
+}
+::selection{background:rgba(99,102,241,.25)}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(100,116,139,.22);border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:rgba(99,102,241,.45)}
+
+.ic{width:20px;height:20px;flex:none;display:block;stroke:currentColor;fill:none;
+    stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ic-sm{width:16px;height:16px}
+.ic-xs{width:13px;height:13px;stroke-width:2.2}
+
+/* ============ SIDEBAR (light) ============ */
+.sidebar{transition:transform .32s cubic-bezier(.4,0,.2,1)}
+.sidebar-closed{transform:translateX(-100%)}
+.sidebar-open{transform:translateX(0)}
+@media (min-width:768px){.sidebar-closed{transform:translateX(0)}}
+
+.nav-link{
+  position:relative;display:flex;align-items:center;gap:12px;
+  padding:11px 14px;border-radius:12px;font-size:14px;font-weight:600;
+  color:var(--muted);border:1px solid transparent;
+  transition:background .2s ease,color .2s ease,border-color .2s ease;
+}
+.nav-link:hover{background:#f1f5f9;color:var(--text)}
+.nav-link.active{
+  background:linear-gradient(135deg,#eef2ff,#f5f3ff);
+  border-color:rgba(99,102,241,.22);
+  color:var(--primary);
+  box-shadow:0 4px 14px rgba(99,102,241,.08);
+}
+.nav-link.active .ic{color:var(--primary)}
+.nav-link .ic{width:18px;height:18px}
+
+/* Brand */
+.brand{display:flex;align-items:center;gap:11px;min-width:0;text-decoration:none}
+.brand-mark{
+  width:40px;height:40px;flex:none;border-radius:12px;overflow:hidden;
+  box-shadow:0 8px 20px rgba(99,102,241,.28);position:relative;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+}
+.brand-mark > *{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.brand-mark .is-hidden{display:none!important}
+.brand-name{font-size:19px;font-weight:800;letter-spacing:-.02em;color:#0f172a;line-height:1;white-space:nowrap}
+.brand-name .accent{
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+/* ============ PAGE WRAP ============ */
+.page-wrap{
+  height:100vh;
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.page-main{flex:1;min-height:0;display:flex;padding:0;}
+@media (min-width:640px){ .page-main{padding:14px 16px 16px;} }
+
+/* ============ CHAT SHELL ============ */
+.chat-shell{
+  display:flex;flex-direction:column;
+  background:#ffffff;
+  border:1px solid var(--line);
+  border-radius:0;
+  overflow:hidden;
+  width:100%;
+  max-width:980px;
+  margin:0 auto;
+  flex:1;
+  min-height:0;
+  position:relative;
+  box-shadow:0 30px 70px -20px rgba(15,23,42,.18), 0 12px 30px -10px rgba(99,102,241,.10);
+}
+@media (min-width:640px){ .chat-shell{border-radius:22px;} }
+
+/* ============ HEADER ============ */
+.chat-header{
+  position:sticky;top:0;z-index:40;
+  display:flex;align-items:center;gap:12px;
+  padding:14px 16px;
+  border-bottom:1px solid var(--line);
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  flex:none;
+  overflow:visible;
+}
+.chat-header::after{
+  content:'';position:absolute;left:0;right:0;bottom:-1px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(99,102,241,.20),transparent);
+  pointer-events:none;
+}
+.chat-header-avatar{
+  width:46px;height:46px;border-radius:999px;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#eef2ff,#f5f3ff);
+  border:1.5px solid rgba(99,102,241,.25);
+  color:var(--primary);
+  position:relative;
+  box-shadow:0 4px 14px rgba(99,102,241,.14);
+  z-index:1;
+  overflow:hidden;
+}
+.chat-header-avatar::after{
+  content:'';position:absolute;bottom:1px;right:1px;
+  width:13px;height:13px;border-radius:999px;
+  background:var(--success);border:2.5px solid #ffffff;
+  box-shadow:0 0 0 1px rgba(16,185,129,.20);
+  animation:pulse 1.8s ease-in-out infinite;
+  z-index:5;
+}
+.chat-header-avatar .avatar-img{
+  position:absolute;inset:0;border-radius:999px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.chat-header-avatar .avatar-img img{
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+.chat-header-info{flex:1;min-width:0;position:relative;z-index:1}
+.chat-header-title{font-size:15px;font-weight:800;color:#0f172a;line-height:1.15;letter-spacing:-.015em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.chat-header-sub{
+  font-size:12px;color:var(--muted);font-weight:600;margin-top:3px;
+  display:flex;align-items:center;gap:6px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.chat-header-sub .dot{
+  width:7px;height:7px;border-radius:99px;background:var(--success);display:inline-block;
+  animation:pulse 1.8s ease-in-out infinite;flex:none;
+  box-shadow:0 0 0 3px rgba(16,185,129,.18);
+}
+.chat-header-sub .agent-name{
+  font-weight:800;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:nameFadeIn .5s ease;
+}
+@keyframes nameFadeIn{
+  from{opacity:0;transform:translateY(-2px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* Mobile menu button — SAME SVG */
+.header-menu-btn{
+  width:40px;height:40px;border-radius:12px;flex:none;
+  background:#f1f5f9;
+  border:1px solid var(--line);
+  color:var(--text-2);
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s,color .2s,transform .15s;
+  z-index:1;
+}
+.header-menu-btn:hover{background:#e2e8f0;color:#0f172a}
+.header-menu-btn:active{transform:scale(.95)}
+@media (min-width:768px){ .header-menu-btn{display:none} }
+
+/* ============ ESTIMATE CIRCLE ============ */
+.estimate-wrap{position:relative;flex:none;z-index:1}
+.estimate-circle{
+  width:46px;height:46px;border-radius:999px;
+  background:linear-gradient(135deg,#eef2ff,#f5f3ff);
+  border:1px solid rgba(99,102,241,.25);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;position:relative;padding:0;
+  color:var(--primary);
+  transition:transform .2s ease, box-shadow .25s ease, border-color .2s ease;
+  box-shadow:0 4px 14px rgba(99,102,241,.14);
+  animation:circlePop .5s cubic-bezier(.16,1,.3,1);
+}
+@keyframes circlePop{
+  0%{opacity:0;transform:scale(.6)}
+  100%{opacity:1;transform:scale(1)}
+}
+.estimate-circle:hover{
+  transform:translateY(-1px);
+  border-color:rgba(99,102,241,.5);
+  box-shadow:0 8px 22px rgba(99,102,241,.28);
+}
+.estimate-circle:active{transform:scale(.95)}
+.estimate-circle .ring{
+  position:absolute;inset:0;width:100%;height:100%;
+  transform:rotate(-90deg);
+}
+.estimate-circle .ring-track{
+  fill:none;stroke:rgba(99,102,241,.14);stroke-width:2.4;
+}
+.estimate-circle .ring-progress{
+  fill:none;stroke:url(#ringGrad);stroke-width:2.6;stroke-linecap:round;
+  stroke-dasharray:131.95;stroke-dashoffset:0;
+  transition:stroke-dashoffset .95s linear;
+  filter:drop-shadow(0 1px 3px rgba(99,102,241,.4));
+}
+.estimate-circle .circle-time{
+  font-size:10px;font-weight:800;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-.03em;
+  z-index:1;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.estimate-circle.is-urgent{
+  border-color:rgba(245,158,11,.5);
+  box-shadow:0 4px 14px rgba(245,158,11,.28);
+  animation:urgentPulse 1.4s ease-in-out infinite;
+  background:linear-gradient(135deg,#fef3c7,#fef9e7);
+}
+.estimate-circle.is-urgent .ring-progress{stroke:#f59e0b}
+.estimate-circle.is-urgent .circle-time{
+  background:linear-gradient(135deg,#f59e0b,#ef4444);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+@keyframes urgentPulse{
+  0%,100%{box-shadow:0 4px 14px rgba(245,158,11,.28)}
+  50%{box-shadow:0 8px 24px rgba(245,158,11,.45)}
+}
+
+/* Popover */
+.estimate-popover{
+  position:absolute;
+  top:calc(100% + 12px);
+  right:0;
+  background:#ffffff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px 16px;
+  min-width:210px;
+  box-shadow:0 20px 50px -10px rgba(15,23,42,.22), 0 6px 18px rgba(99,102,241,.10);
+  z-index:80;
+  animation:popIn .22s cubic-bezier(.16,1,.3,1);
+  transform-origin:top right;
+}
+@keyframes popIn{
+  from{opacity:0;transform:translateY(-6px) scale(.96)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.estimate-popover::before{
+  content:'';position:absolute;
+  top:-6px;right:16px;
+  width:11px;height:11px;
+  background:#ffffff;
+  border-left:1px solid var(--line);
+  border-top:1px solid var(--line);
+  transform:rotate(45deg);
+}
+.popover-header{
+  display:flex;align-items:center;gap:6px;
+  font-size:10.5px;font-weight:800;
+  color:var(--primary);
+  text-transform:uppercase;letter-spacing:.10em;
+  margin-bottom:8px;
+}
+.popover-header .ic{color:var(--primary)}
+.popover-time{
+  font-size:24px;font-weight:800;
+  line-height:1.05;
+  letter-spacing:-.025em;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.popover-unit{
+  font-size:12px;font-weight:700;color:var(--muted);
+  margin-left:4px;letter-spacing:.02em;
+}
+.popover-note{
+  margin-top:8px;
+  font-size:11.5px;
+  color:var(--text-2);
+  line-height:1.5;
+  display:flex;align-items:center;gap:6px;
+}
+.popover-note .mini-dot{
+  width:6px;height:6px;border-radius:999px;background:var(--success);flex:none;
+  box-shadow:0 0 0 3px rgba(16,185,129,.16);
+  animation:pulse 1.4s ease-in-out infinite;
+}
+
+/* ============ THIN PROGRESS LINE ============ */
+.countdown-line{
+  height:2px;
+  background:rgba(99,102,241,.08);
+  overflow:hidden;
+  flex:none;
+  position:relative;
+  z-index:39;
+}
+.countdown-line-fill{
+  height:100%;
+  background:linear-gradient(90deg,#6366f1,#8b5cf6,#06b6d4);
+  transition:width .95s linear, background .4s;
+  width:100%;
+}
+.countdown-line.is-urgent .countdown-line-fill{
+  background:linear-gradient(90deg,#f59e0b,#f43f5e);
+}
+
+/* ============ CHAT BODY ============ */
+.chat-body{
+  flex:1;
+  min-height:0;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  padding:22px 18px 14px;
+  display:flex;flex-direction:column;
+  gap:16px;
+  scroll-behavior:smooth;
+  position:relative;
+  background:
+    radial-gradient(600px 400px at 100% 0%, rgba(99,102,241,.035), transparent 60%),
+    radial-gradient(600px 400px at 0% 100%, rgba(139,92,246,.03), transparent 60%);
+}
+@media (min-width:640px){ .chat-body{padding:26px 24px 16px;} }
+
+.empty-chat{
+  margin:auto;text-align:center;padding:20px;max-width:360px;
+}
+.empty-chat-icon{
+  width:72px;height:72px;border-radius:22px;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 16px;
+  background:linear-gradient(135deg,#eef2ff,#f5f3ff);
+  border:1px solid rgba(99,102,241,.18);
+  color:var(--primary);
+  animation:floaty 3.6s ease-in-out infinite;
+  box-shadow:0 16px 40px -8px rgba(99,102,241,.28);
+}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.empty-chat h3{font-size:16px;font-weight:800;color:#0f172a;margin-bottom:8px}
+.empty-chat p{font-size:13px;color:var(--muted);line-height:1.65}
+
+/* Message row */
+.msg-row{
+  display:flex;gap:10px;align-items:flex-end;
+  animation:msgIn .3s cubic-bezier(.16,1,.3,1);
+}
+.msg-row.user{flex-direction:row-reverse}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.msg-avatar{
+  width:36px;height:36px;border-radius:999px;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;
+  background:linear-gradient(135deg,#eef2ff,#f5f3ff);
+  border:1px solid rgba(99,102,241,.18);
+  color:var(--primary);
+  overflow:hidden;
+  box-shadow:0 2px 8px rgba(99,102,241,.10);
+  letter-spacing:.02em;
+}
+.msg-avatar.has-img{
+  padding:0;
+  border-color:rgba(99,102,241,.28);
+  box-shadow:0 2px 10px rgba(99,102,241,.18);
+}
+.msg-avatar.has-img img{
+  width:100%;height:100%;object-fit:cover;border-radius:999px;display:block;
+}
+.msg-avatar.is-system{
+  background:#ffffff;
+  border-color:rgba(99,102,241,.28);
+  padding:0;
+  box-shadow:0 2px 10px rgba(99,102,241,.15);
+}
+.msg-avatar.is-system img{
+  width:100%;height:100%;object-fit:cover;border-radius:999px;display:block;
+}
+
+.msg-content{
+  max-width:78%;
+  display:flex;flex-direction:column;
+}
+.msg-row.user .msg-content{align-items:flex-end}
+
+.msg-name{
+  font-size:10.5px;font-weight:700;color:var(--dim);
+  margin-bottom:5px;letter-spacing:.05em;text-transform:uppercase;
+}
+.msg-name.is-agent{
+  color:var(--primary);
+  font-weight:800;
+  letter-spacing:.05em;
+}
+.msg-name.is-system{
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  font-weight:800;
+  letter-spacing:.06em;
+}
+
+.msg-bubble{
+  padding:12px 15px;
+  border-radius:18px;
+  font-size:13.5px;
+  line-height:1.6;
+  word-wrap:break-word;
+  word-break:break-word;
+  white-space:pre-wrap;
+}
+.msg-row.user .msg-bubble{
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  color:#ffffff;
+  border-bottom-right-radius:6px;
+  font-weight:500;
+  box-shadow:0 8px 22px -6px rgba(99,102,241,.45);
+}
+.msg-row.admin .msg-bubble{
+  background:#f1f5f9;
+  border:1px solid #e6eaf2;
+  color:var(--text);
+  border-bottom-left-radius:6px;
+  box-shadow:0 2px 8px rgba(15,23,42,.04);
+}
+.msg-row.admin.auto .msg-bubble{
+  background:linear-gradient(135deg,#f5f7ff 0%,#f9f6ff 100%);
+  border-color:rgba(99,102,241,.20);
+  color:var(--text);
+  box-shadow:0 4px 16px -4px rgba(99,102,241,.15);
+}
+
+/* ============ HIGHLIGHTED AGENT NAME ============ */
+.msg-highlight{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  font-weight:800;
+  padding:2px 10px;
+  margin:0 2px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  color:#ffffff;
+  letter-spacing:.01em;
+  box-shadow:0 4px 14px -2px rgba(99,102,241,.45), inset 0 1px 0 rgba(255,255,255,.20);
+  white-space:nowrap;
+  font-size:12.8px;
+  line-height:1.4;
+  vertical-align:middle;
+}
+.msg-highlight::before{
+  content:'';
+  width:5px;height:5px;border-radius:999px;
+  background:#ffffff;
+  box-shadow:0 0 6px rgba(255,255,255,.9);
+  display:inline-block;
+  flex:none;
+}
+
+.msg-time{
+  font-size:10.5px;
+  color:var(--dim);
+  margin-top:6px;
+  font-weight:600;
+  letter-spacing:.02em;
+}
+
+/* ============ INPUT BAR ============ */
+.chat-input-bar{
+  flex:none;
+  display:flex;align-items:flex-end;gap:10px;
+  padding:12px 14px;
+  padding-bottom:calc(12px + env(safe-area-inset-bottom, 0px));
+  border-top:1px solid var(--line);
+  background:rgba(255,255,255,.85);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+.chat-input-wrap{
+  flex:1;
+  position:relative;
+  background:#f8fafc;
+  border:1px solid var(--line);
+  border-radius:18px;
+  transition:border-color .2s ease,background .2s ease,box-shadow .2s ease;
+}
+.chat-input-wrap:focus-within{
+  border-color:rgba(99,102,241,.55);
+  background:#ffffff;
+  box-shadow:0 0 0 4px rgba(99,102,241,.10);
+}
+#chatInput{
+  width:100%;
+  background:transparent;
+  border:none;
+  outline:none;
+  resize:none;
+  color:var(--text);
+  font-size:14px;
+  font-family:inherit;
+  line-height:1.5;
+  padding:12px 16px;
+  max-height:120px;
+  overflow-y:auto;
+  display:block;
+}
+#chatInput::placeholder{color:#94a3b8}
+
+.send-btn{
+  width:46px;height:46px;border-radius:16px;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  color:#ffffff;
+  border:none;cursor:pointer;
+  transition:transform .16s ease,box-shadow .22s ease,opacity .2s ease;
+  box-shadow:0 10px 24px -6px rgba(99,102,241,.55);
+}
+.send-btn:hover{box-shadow:0 14px 30px -6px rgba(99,102,241,.70)}
+.send-btn:active{transform:scale(.94)}
+.send-btn:disabled{
+  opacity:.4;cursor:not-allowed;box-shadow:none;transform:none;
+  background:linear-gradient(135deg,#cbd5e1,#e2e8f0);
+  color:#94a3b8;
+}
+
+.pulse-dot{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+</style>
+</head>
+<body>
+
+<!-- ============ SIDEBAR ============ -->
+<aside id="sidebar" class="sidebar sidebar-closed fixed top-0 left-0 h-full w-[264px] bg-white/95 backdrop-blur-xl border-r border-slate-200/70 z-50 overflow-y-auto">
+  <div class="p-5">
+    <div class="flex items-center justify-between mb-8 gap-2">
+      <a href="index.html" class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <img src="logo.png" alt="WinKom"
+               onerror="this.classList.add('is-hidden');this.nextElementSibling.classList.remove('is-hidden');"/>
+          <svg class="is-hidden" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" role="img">
+            <defs>
+              <linearGradient id="wkGradSide" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#6366f1"/>
+                <stop offset="100%" stop-color="#8b5cf6"/>
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="40" height="40" rx="12" fill="url(#wkGradSide)"/>
+            <path d="M9 14 L14 27 L20 18 L26 27 L31 14"
+                  stroke="#ffffff" stroke-width="2.9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+        </span>
+        <span class="brand-name">Win<span class="accent">Kom</span></span>
+      </a>
+      <button onclick="toggleSidebar()" aria-label="Close menu"
+              class="md:hidden w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition shrink-0">
+        <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+
+    <nav class="space-y-1.5">
+      <a href="index.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8.5 16v-4.5M12.5 16V8M16.5 16v-2.5"/></svg>
+        Dashboard
+      </a>
+      <a href="deposit.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8 10.5 4 4 4-4"/><path d="M5 19h14"/></svg>
+        Deposit
+      </a>
+      <a href="withdraw.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M12 15V5"/><path d="m8 8.5 4-4 4 4"/><path d="M5 19h14"/></svg>
+        Withdraw
+      </a>
+      <a href="transactions.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M6.5 3.5h8L18.5 7v13.5h-12z"/><path d="M9.5 11h6M9.5 14.5h6M9.5 7.5h2.5"/></svg>
+        My Transactions
+      </a>
+      <a href="settings.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.1"/><path d="M12 2.9v2.3M12 18.8v2.3M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.9 12h2.3M18.8 12h2.3M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+        Settings
+      </a>
+      <a href="about.html" class="nav-link">
+        <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.2"/><circle cx="12" cy="7.9" r=".9" fill="currentColor" stroke="none"/></svg>
+        About
+      </a>
+      <a href="support.html" class="nav-link active">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/><path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/><path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/></svg>
+        Support
+      </a>
+
+      <div class="pt-3 mt-3 border-t border-slate-200/70">
+        <button onclick="handleLogout()" class="nav-link w-full text-left text-rose-500 hover:bg-rose-50 hover:text-rose-600">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="m10 8-4 4 4 4"/><path d="M6 12h9"/></svg>
+          Logout
+        </button>
+      </div>
+    </nav>
+  </div>
+</aside>
+
+<div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 hidden md:hidden"></div>
+
+<!-- ============ MAIN ============ -->
+<div class="md:ml-64 page-wrap">
+  <main class="page-main">
+    <section class="chat-shell" id="chatShell">
+
+      <!-- HEADER -->
+      <div class="chat-header" id="chatHeader">
+        <!-- Toggle SVG — bilkul waise hi -->
+        <button class="header-menu-btn" onclick="toggleSidebar()" aria-label="Open menu">
+          <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+
+        <div class="chat-header-avatar" id="headerAvatar">
+          <svg class="ic" viewBox="0 0 24 24" id="headerAvatarIcon">
+            <path d="M12 3.5a6.5 6.5 0 0 0-6.5 6.5v2.8l-1.3 2.6a.7.7 0 0 0 .6 1h14.4a.7.7 0 0 0 .6-1L18.5 12.8V10A6.5 6.5 0 0 0 12 3.5Z"/>
+            <path d="M9.5 19.5a2.5 2.5 0 0 0 5 0"/>
+          </svg>
+          <div class="avatar-img" id="headerAvatarImg" hidden></div>
+        </div>
+
+        <div class="chat-header-info">
+          <p class="chat-header-title" id="headerTitle">WinKom Support 24×7</p>
+          <p class="chat-header-sub">
+            <span class="dot"></span>
+            <span id="headerStatus">Support Team · Online</span>
+          </p>
+        </div>
+
+        <div class="estimate-wrap">
+          <button type="button" class="estimate-circle" id="estimateCircle"
+                  aria-label="Estimated reply time" hidden>
+            <svg class="ring" viewBox="0 0 50 50" aria-hidden="true">
+              <defs>
+                <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#6366f1"/>
+                  <stop offset="100%" stop-color="#8b5cf6"/>
+                </linearGradient>
+              </defs>
+              <circle class="ring-track" cx="25" cy="25" r="21"/>
+              <circle class="ring-progress" id="ringProgress" cx="25" cy="25" r="21"/>
+            </svg>
+            <span class="circle-time" id="circleTime">--</span>
+          </button>
+
+          <div class="estimate-popover" id="estimatePopover" hidden>
+            <div class="popover-header">
+              <svg class="ic ic-xs" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M12 7.4V12l3.2 2"/>
+              </svg>
+              <span>Estimated reply</span>
+            </div>
+            <div>
+              <span class="popover-time" id="popoverTime">--</span>
+              <span class="popover-unit" id="popoverUnit">min</span>
+            </div>
+            <div class="popover-note" id="popoverNote">
+              <span class="mini-dot"></span>
+              <span>Support will respond soon</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="countdown-line" id="countdownLine" hidden>
+        <div class="countdown-line-fill" id="countdownLineFill"></div>
+      </div>
+
+      <div class="chat-body" id="chatBody">
+        <div class="empty-chat" id="emptyState">
+          <div class="empty-chat-icon">
+            <svg class="ic" style="width:32px;height:32px" viewBox="0 0 24 24">
+              <path d="M21 12a8.5 8.5 0 0 1-8.5 8.5H4.2a1.2 1.2 0 0 1-.85-2.05L5 17A8.5 8.5 0 1 1 21 12Z"/>
+              <path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/>
+            </svg>
+          </div>
+          <h3>Start a conversation</h3>
+          <p>Our support team is here to help. Send us a message and we'll get back to you as soon as possible.</p>
+        </div>
+      </div>
+
+      <div class="chat-input-bar">
+        <div class="chat-input-wrap">
+          <textarea id="chatInput" rows="1" placeholder="Type your message…"
+                    maxlength="1000" autocomplete="off"></textarea>
+        </div>
+        <button type="button" class="send-btn" id="sendBtn" aria-label="Send message" disabled>
+          <svg class="ic" viewBox="0 0 24 24">
+            <path d="M22 2 11 13"/>
+            <path d="M22 2 15 22 11 13 2 9z"/>
+          </svg>
+        </button>
+      </div>
+
+    </section>
+  </main>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, setDoc, updateDoc, addDoc,
+  collection, query, orderBy, onSnapshot, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+    authDomain: "winkom-da4c2.firebaseapp.com",
+    projectId: "winkom-da4c2",
+    storageBucket: "winkom-da4c2.firebasestorage.app",
+    messagingSenderId: "629229462242",
+    appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* ============================================================
+   AGENT NAMES
+   ============================================================ */
+const FEMALE_AGENT_NAMES = [
+  'Neha Kapoor', 'Priya Joshi', 'Kajal Rathore', 'Simi Roy',
+  'Riya Sharma', 'Anjali Mehta', 'Pooja Verma', 'Sneha Tiwari',
+  'Divya Nair', 'Meera Bhat', 'Kavya Lal', 'Aisha Khan'
+];
+
+const MALE_AGENT_NAMES = [
+  'Rahul Singh', 'Arjun Mishra', 'Vikram Rathore', 'Aditya Kumar',
+  'Rohan Patel', 'Karan Thakur', 'Sameer Bansal', 'Nikhil Verma'
+];
+
+function pickRandomAgentName() {
+    return [...FEMALE_AGENT_NAMES, ...MALE_AGENT_NAMES][
+        Math.floor(Math.random() * (FEMALE_AGENT_NAMES.length + MALE_AGENT_NAMES.length))
+    ];
+}
+
+function pickAgentForUser() {
+    const g = (currentUserData?.gender || '').toString().trim().toLowerCase();
+    if (g === 'male' || g === 'm' || g === 'man') {
+        return MALE_AGENT_NAMES[Math.floor(Math.random() * MALE_AGENT_NAMES.length)];
+    }
+    if (g === 'female' || g === 'f' || g === 'woman' || g === 'girl') {
+        return FEMALE_AGENT_NAMES[Math.floor(Math.random() * FEMALE_AGENT_NAMES.length)];
+    }
+    return pickRandomAgentName();
+}
+
+function isFemaleAgent(name) { return FEMALE_AGENT_NAMES.includes(name); }
+function firstName(fullName) { return fullName ? fullName.split(/\s+/)[0] : ''; }
+function shortAgentName(fullName) {
+    if (!fullName) return '';
+    const parts = fullName.split(/\s+/).filter(Boolean);
+    if (parts.length === 1) return parts[0];
+    return `${parts[0]} ${parts[parts.length - 1].charAt(0).toUpperCase()}.`;
+}
+
+/* ============================================================
+   AGENT AVATARS
+   ============================================================ */
+const AGENT_AVATAR_MAP = {
+    'Neha Kapoor':    'https://randomuser.me/api/portraits/women/68.jpg',
+    'Priya Joshi':    'https://randomuser.me/api/portraits/women/44.jpg',
+    'Kajal Rathore':  'https://randomuser.me/api/portraits/women/65.jpg',
+    'Simi Roy':       'https://randomuser.me/api/portraits/women/47.jpg',
+    'Riya Sharma':    'https://randomuser.me/api/portraits/women/79.jpg',
+    'Anjali Mehta':   'https://randomuser.me/api/portraits/women/52.jpg',
+    'Pooja Verma':    'https://randomuser.me/api/portraits/women/90.jpg',
+    'Sneha Tiwari':   'https://randomuser.me/api/portraits/women/33.jpg',
+    'Divya Nair':     'https://randomuser.me/api/portraits/women/29.jpg',
+    'Meera Bhat':     'https://randomuser.me/api/portraits/women/41.jpg',
+    'Kavya Lal':      'https://randomuser.me/api/portraits/women/26.jpg',
+    'Aisha Khan':     'https://randomuser.me/api/portraits/women/57.jpg',
+    'Rahul Singh':    'https://randomuser.me/api/portraits/men/32.jpg',
+    'Arjun Mishra':   'https://randomuser.me/api/portraits/men/45.jpg',
+    'Vikram Rathore': 'https://randomuser.me/api/portraits/men/76.jpg',
+    'Aditya Kumar':   'https://randomuser.me/api/portraits/men/22.jpg',
+    'Rohan Patel':    'https://randomuser.me/api/portraits/men/54.jpg',
+    'Karan Thakur':   'https://randomuser.me/api/portraits/men/18.jpg',
+    'Sameer Bansal':  'https://randomuser.me/api/portraits/men/86.jpg',
+    'Nikhil Verma':   'https://randomuser.me/api/portraits/men/60.jpg'
+};
+
+const FALLBACK_FEMALE = 'https://randomuser.me/api/portraits/women/68.jpg';
+const FALLBACK_MALE   = 'https://randomuser.me/api/portraits/men/32.jpg';
+const WINCOM_LOGO_SRC = 'logo.png';
+
+function getAgentAvatarSrc(agentName) {
+    if (!agentName) return '';
+    if (AGENT_AVATAR_MAP[agentName]) return AGENT_AVATAR_MAP[agentName];
+    return isFemaleAgent(agentName) ? FALLBACK_FEMALE : FALLBACK_MALE;
+}
+
+function getSystemAvatarHTML() {
+    return `<img src="${WINCOM_LOGO_SRC}" alt="WinKom Support" loading="lazy"
+                 style="width:100%;height:100%;object-fit:cover;border-radius:999px;display:block;background:#ffffff;"
+                 onerror="this.style.display='none'"/>`;
+}
+function getAgentAvatarHTML(agentName) {
+    const src = getAgentAvatarSrc(agentName);
+    if (!src) return '';
+    return `<img src="${src}" alt="${escapeHtml(agentName)}" loading="lazy"
+                 style="width:100%;height:100%;object-fit:cover;border-radius:999px;display:block;"
+                 onerror="this.style.display='none'"/>`;
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let currentUser = null;
+let currentUserData = null;
+let chatDocRef = null;
+let messagesCollectionRef = null;
+let unsubscribeChat = null;
+let unsubscribeMessages = null;
+let chatExists = false;
+let currentMessages = [];
+let chatCreatedThisSession = false;
+let sendingMessage = false;
+let currentAgentName = null;
+
+/* ============================================================
+   SIDEBAR / LOGOUT
+   ============================================================ */
+window.toggleSidebar = function () {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    if (sidebar.classList.contains('sidebar-closed')) {
+        sidebar.classList.remove('sidebar-closed');
+        sidebar.classList.add('sidebar-open');
+        overlay.classList.remove('hidden');
+    } else {
+        sidebar.classList.add('sidebar-closed');
+        sidebar.classList.remove('sidebar-open');
+        overlay.classList.add('hidden');
+    }
+};
+
+window.handleLogout = async function () {
+    await signOut(auth);
+    window.location.href = 'login.html';
+};
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str).replace(/[&<>"']/g, m => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]
+    ));
+}
+
+function renderBubbleText(rawText) {
+    const safe = escapeHtml(rawText);
+    return safe.replace(/\[\[(.+?)\]\]/g, '<span class="msg-highlight">$1</span>');
+}
+
+function fmtTime(date) {
+    if (!date) return '';
+    const d = date instanceof Date ? date : new Date(date);
+    let h = d.getHours();
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    const m = String(d.getMinutes()).padStart(2, '0');
+    return `${h}:${m} ${ampm}`;
+}
+function fmtDateTime(date) {
+    if (!date) return '';
+    const d = date instanceof Date ? date : new Date(date);
+    const day = d.getDate();
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${day} ${months[d.getMonth()]}, ${fmtTime(d)}`;
+}
+function toDateSafe(v) {
+    if (!v) return null;
+    if (v.toDate) return v.toDate();
+    const d = new Date(v);
+    return isNaN(d.getTime()) ? null : d;
+}
+function randomEstimateMinutes() {
+    return 1 + Math.floor(Math.random() * 60);
+}
+
+/* ============================================================
+   LOAD USER DATA
+   ============================================================ */
+async function loadUserData() {
+    if (!currentUser) return;
+    try {
+        const snap = await getDoc(doc(db, 'users', currentUser.uid));
+        if (snap.exists()) currentUserData = snap.data();
+    } catch (e) { console.error('loadUserData failed:', e); }
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+function updateHeaderStatus() {
+    const statusEl = document.getElementById('headerStatus');
+    const titleEl = document.getElementById('headerTitle');
+    const avatarIcon = document.getElementById('headerAvatarIcon');
+    const avatarImg = document.getElementById('headerAvatarImg');
+    if (!statusEl || !titleEl) return;
+
+    titleEl.textContent = 'WinKom Support 24×7';
+
+    const hasAdminReply = currentMessages.some(m => m.sender === 'admin');
+
+    if (hasAdminReply && currentAgentName) {
+        statusEl.innerHTML = `<span class="agent-name">${escapeHtml(currentAgentName)}</span> · Online`;
+        if (avatarIcon) avatarIcon.setAttribute('hidden', '');
+        if (avatarImg) {
+            avatarImg.innerHTML = getAgentAvatarHTML(currentAgentName);
+            avatarImg.removeAttribute('hidden');
+        }
+    } else {
+        statusEl.textContent = 'Support Team · Online';
+        if (avatarIcon) avatarIcon.removeAttribute('hidden');
+        if (avatarImg) { avatarImg.setAttribute('hidden', ''); avatarImg.innerHTML = ''; }
+    }
+}
+
+/* ============================================================
+   COUNTDOWN
+   ============================================================ */
+const countdown = {
+    timerId: null, endAt: 0, totalMs: 0, estimateMin: 0,
+    lastUserMsgId: null, active: false,
+};
+const RING_CIRC = 2 * Math.PI * 21;
+
+function showCountdown() {
+    const circle = document.getElementById('estimateCircle');
+    const line = document.getElementById('countdownLine');
+    if (circle) circle.hidden = false;
+    if (line) line.hidden = false;
+    if (!countdown.active) {
+        if (circle) { circle.style.animation = 'none'; void circle.offsetWidth; circle.style.animation = ''; }
+        countdown.active = true;
+    }
+}
+function hideCountdown() {
+    const circle = document.getElementById('estimateCircle');
+    const line = document.getElementById('countdownLine');
+    const popover = document.getElementById('estimatePopover');
+    if (circle) circle.hidden = true;
+    if (line) line.hidden = true;
+    if (popover) popover.hidden = true;
+    countdown.active = false;
+}
+function formatMMSS(ms) {
+    const totalSec = Math.max(0, Math.ceil(ms / 1000));
+    const mm = Math.floor(totalSec / 60);
+    const ss = totalSec % 60;
+    return `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+}
+function updateCountdownUI(remainingMs) {
+    const circle = document.getElementById('estimateCircle');
+    const circleTime = document.getElementById('circleTime');
+    const ringProgress = document.getElementById('ringProgress');
+    const line = document.getElementById('countdownLine');
+    const lineFill = document.getElementById('countdownLineFill');
+    const popoverTime = document.getElementById('popoverTime');
+    const popoverUnit = document.getElementById('popoverUnit');
+    const popoverNote = document.getElementById('popoverNote');
+
+    const totalMs = countdown.totalMs || 1;
+    const remaining = Math.max(0, remainingMs);
+    const pct = Math.max(0, Math.min(1, remaining / totalMs));
+
+    if (circleTime) circleTime.textContent = formatMMSS(remaining);
+    if (ringProgress) ringProgress.style.strokeDashoffset = String(RING_CIRC * (1 - pct));
+    if (lineFill) lineFill.style.width = (pct * 100) + '%';
+
+    const urgent = remaining > 0 && remaining < 3 * 60 * 1000;
+    if (circle) circle.classList.toggle('is-urgent', urgent);
+    if (line) line.classList.toggle('is-urgent', urgent);
+
+    if (popoverTime) popoverTime.textContent = String(countdown.estimateMin);
+    if (popoverUnit) popoverUnit.textContent = countdown.estimateMin === 1 ? 'minute' : 'minutes';
+    if (popoverNote) {
+        if (remaining <= 0) {
+            popoverNote.innerHTML = '<span class="mini-dot" style="background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.18)"></span><span>Refreshing estimate…</span>';
+        } else {
+            const remMin = Math.max(1, Math.ceil(remaining / 60000));
+            popoverNote.innerHTML = `<span class="mini-dot"></span><span>About ${remMin} min remaining</span>`;
+        }
+    }
+}
+function tickCountdown() {
+    let remaining = countdown.endAt - Date.now();
+    if (remaining <= 0) {
+        const newMin = randomEstimateMinutes();
+        countdown.estimateMin = newMin;
+        countdown.totalMs = newMin * 60 * 1000;
+        countdown.endAt = Date.now() + countdown.totalMs;
+        remaining = countdown.totalMs;
+        const circle = document.getElementById('estimateCircle');
+        if (circle) { circle.style.animation = 'none'; void circle.offsetWidth; circle.style.animation = ''; }
+    }
+    updateCountdownUI(remaining);
+}
+function startCountdownTimer() {
+    clearCountdownTimer();
+    tickCountdown();
+    countdown.timerId = setInterval(tickCountdown, 1000);
+}
+function clearCountdownTimer() {
+    if (countdown.timerId) { clearInterval(countdown.timerId); countdown.timerId = null; }
+}
+function syncCountdown() {
+    const userMsgs = currentMessages.filter(m => m.sender === 'user');
+    if (!userMsgs.length) {
+        clearCountdownTimer(); countdown.lastUserMsgId = null; hideCountdown(); return;
+    }
+    const lastUser = userMsgs[userMsgs.length - 1];
+    const lastUserTime = toDateSafe(lastUser.createdAt);
+    if (!lastUserTime) { hideCountdown(); return; }
+
+    const adminRepliedAfter = currentMessages.some(m => {
+        if (m.sender !== 'admin') return false;
+        if (m.isAutoReply === true) return false;
+        const t = toDateSafe(m.createdAt);
+        return t && t > lastUserTime;
+    });
+    if (adminRepliedAfter) {
+        clearCountdownTimer(); countdown.lastUserMsgId = null; hideCountdown(); return;
+    }
+
+    const storedMin = (typeof lastUser.replyEstimateMin === 'number' && lastUser.replyEstimateMin > 0)
+        ? lastUser.replyEstimateMin : randomEstimateMinutes();
+
+    if (countdown.lastUserMsgId !== lastUser.id) {
+        countdown.lastUserMsgId = lastUser.id;
+        countdown.estimateMin = storedMin;
+        countdown.totalMs = storedMin * 60 * 1000;
+        countdown.endAt = lastUserTime.getTime() + countdown.totalMs;
+        if (countdown.endAt <= Date.now()) {
+            const newMin = randomEstimateMinutes();
+            countdown.estimateMin = newMin;
+            countdown.totalMs = newMin * 60 * 1000;
+            countdown.endAt = Date.now() + countdown.totalMs;
+        }
+        showCountdown(); startCountdownTimer(); return;
+    }
+    if (!countdown.timerId) { showCountdown(); startCountdownTimer(); }
+}
+
+/* ============================================================
+   POPOVER
+   ============================================================ */
+function wireEstimateCircle() {
+    const circle = document.getElementById('estimateCircle');
+    const popover = document.getElementById('estimatePopover');
+    if (!circle || !popover) return;
+    circle.addEventListener('click', (e) => { e.stopPropagation(); popover.hidden = !popover.hidden; });
+    document.addEventListener('click', (e) => {
+        if (popover.hidden) return;
+        const wrap = circle.parentElement;
+        if (!wrap.contains(e.target)) popover.hidden = true;
+    });
+}
+
+/* ============================================================
+   CHAT INIT
+   ============================================================ */
+function initChat() {
+    chatDocRef = doc(db, 'supportChats', currentUser.uid);
+    messagesCollectionRef = collection(db, 'supportChats', currentUser.uid, 'messages');
+
+    unsubscribeChat = onSnapshot(chatDocRef, (docSnap) => {
+        const wasExisting = chatExists;
+        chatExists = docSnap.exists();
+        if (!chatExists) {
+            currentMessages = [];
+            currentAgentName = null;
+            clearCountdownTimer();
+            countdown.lastUserMsgId = null;
+            hideCountdown();
+            renderMessages();
+            updateHeaderStatus();
+        } else {
+            const data = docSnap.data() || {};
+            if (data.agentName) {
+                currentAgentName = data.agentName;
+            } else if (!currentAgentName) {
+                currentAgentName = pickAgentForUser();
+                updateDoc(chatDocRef, { agentName: currentAgentName }).catch(() => {});
+            }
+            if (!wasExisting) renderMessages();
+            updateHeaderStatus();
+        }
+    }, (err) => { console.error('Chat doc listener error:', err); });
+
+    const q = query(messagesCollectionRef, orderBy('createdAt', 'asc'));
+    unsubscribeMessages = onSnapshot(q, (snap) => {
+        currentMessages = [];
+        snap.forEach(d => currentMessages.push({ id: d.id, ...d.data() }));
+        renderMessages();
+        syncCountdown();
+        updateHeaderStatus();
+    }, (err) => { console.error('Messages listener error:', err); });
+}
+
+/* ============================================================
+   RENDER MESSAGES
+   ============================================================ */
+function renderMessages() {
+    const body = document.getElementById('chatBody');
+    if (!body) return;
+
+    if (!chatExists) {
+        body.innerHTML = `
+            <div class="empty-chat">
+                <div class="empty-chat-icon">
+                    <svg class="ic" style="width:32px;height:32px" viewBox="0 0 24 24">
+                        <path d="M21 12a8.5 8.5 0 0 1-8.5 8.5H4.2a1.2 1.2 0 0 1-.85-2.05L5 17A8.5 8.5 0 1 1 21 12Z"/>
+                        <path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/>
+                    </svg>
+                </div>
+                <h3>Start a conversation</h3>
+                <p>Our support team is here to help. Send us a message and we'll get back to you as soon as possible.</p>
+            </div>`;
+        return;
+    }
+    if (currentMessages.length === 0) {
+        body.innerHTML = `
+            <div class="empty-chat">
+                <div class="empty-chat-icon">
+                    <svg class="ic" style="width:32px;height:32px" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="9"/>
+                        <path d="M12 7.4V12l3.2 2"/>
+                    </svg>
+                </div>
+                <h3>Just a moment…</h3>
+                <p>We're connecting you with our support team.</p>
+            </div>`;
+        return;
+    }
+    body.innerHTML = currentMessages.map(renderMessageRow).join('');
+    scrollToBottom();
+}
+
+function renderMessageRow(msg) {
+    const isUser = msg.sender === 'user';
+    const isAuto = msg.isAutoReply === true;
+    const isSystem = msg.isSystemMessage === true;
+    const dt = toDateSafe(msg.createdAt);
+    const timeStr = dt ? fmtDateTime(dt) : '';
+    const userInitials = currentUser?.displayName?.trim()?.charAt(0)?.toUpperCase() || 'Y';
+
+    let avatarHtml, nameHtml, nameClass = '';
+
+    if (isUser) {
+        avatarHtml = `<div class="msg-avatar">${escapeHtml(userInitials)}</div>`;
+        nameHtml = 'You';
+    } else if (isSystem) {
+        avatarHtml = `<div class="msg-avatar is-system">${getSystemAvatarHTML()}</div>`;
+        nameHtml = 'WinKom Support';
+        nameClass = 'is-system';
+    } else if (currentAgentName) {
+        avatarHtml = `<div class="msg-avatar has-img">${getAgentAvatarHTML(currentAgentName)}</div>`;
+        nameHtml = shortAgentName(currentAgentName);
+        nameClass = 'is-agent';
+    } else {
+        avatarHtml = `<div class="msg-avatar">
+             <svg class="ic ic-xs" viewBox="0 0 24 24" style="stroke-width:2">
+               <path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/>
+               <path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/>
+               <path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/>
+             </svg>
+           </div>`;
+        nameHtml = 'WinKom Support';
+        nameClass = 'is-system';
+    }
+
+    return `
+    <div class="msg-row ${isUser ? 'user' : 'admin'} ${isAuto ? 'auto' : ''}">
+        ${avatarHtml}
+        <div class="msg-content">
+            <span class="msg-name ${nameClass}">${escapeHtml(nameHtml)}</span>
+            <div class="msg-bubble">${renderBubbleText(msg.text || '')}</div>
+            ${timeStr ? `<span class="msg-time">${escapeHtml(timeStr)}</span>` : ''}
+        </div>
+    </div>`;
+}
+
+function scrollToBottom() {
+    const body = document.getElementById('chatBody');
+    if (!body) return;
+    requestAnimationFrame(() => { body.scrollTop = body.scrollHeight; });
+}
+
+/* ============================================================
+   SEND MESSAGE
+   ============================================================ */
+async function sendMessage() {
+    if (!currentUser || sendingMessage) return;
+    const input = document.getElementById('chatInput');
+    const text = (input.value || '').trim();
+    if (!text) return;
+
+    sendingMessage = true;
+    updateSendButton();
+    input.value = '';
+    input.style.height = 'auto';
+
+    try {
+        const isFirstMessage = !chatExists && !chatCreatedThisSession;
+        const estimateMin = randomEstimateMinutes();
+
+        if (isFirstMessage) {
+            chatCreatedThisSession = true;
+            const assignedAgent = currentAgentName || pickAgentForUser();
+            currentAgentName = assignedAgent;
+
+            await setDoc(chatDocRef, {
+                uid: currentUser.uid,
+                userName: currentUser.displayName || 'User',
+                userEmail: currentUser.email || '',
+                agentName: assignedAgent,
+                status: 'open',
+                createdAt: serverTimestamp(),
+                lastMessageAt: serverTimestamp()
+            });
+
+            await addDoc(messagesCollectionRef, {
+                sender: 'user',
+                text: text,
+                replyEstimateMin: estimateMin,
+                createdAt: serverTimestamp()
+            });
+
+            setTimeout(async () => {
+                try {
+                    await addDoc(messagesCollectionRef, {
+                        sender: 'admin',
+                        text:
+`👋 Welcome to WinKom Support
+
+Thank you for reaching out. Your message has been received and is now being reviewed by our support team.
+
+Your dedicated support representative, [[${assignedAgent}]], has been assigned to your request and will respond to you shortly.
+
+You may track the estimated response time at the top of this chat. We appreciate your patience and will be with you as soon as possible.`,
+                        isAutoReply: true,
+                        isSystemMessage: true,
+                        createdAt: serverTimestamp()
+                    });
+                    await updateDoc(chatDocRef, { lastMessageAt: serverTimestamp() });
+                } catch (e) { console.error('Auto-reply error:', e); }
+            }, 700);
+        } else {
+            await addDoc(messagesCollectionRef, {
+                sender: 'user',
+                text: text,
+                replyEstimateMin: estimateMin,
+                createdAt: serverTimestamp()
+            });
+            await updateDoc(chatDocRef, { lastMessageAt: serverTimestamp() });
+        }
+    } catch (err) {
+        console.error('Send message failed:', err);
+        input.value = text;
+        autoResizeInput();
+        updateSendButton();
+        alert('Could not send your message. Please check your connection and try again.');
+    } finally {
+        sendingMessage = false;
+        updateSendButton();
+        input.focus();
+    }
+}
+
+/* ============================================================
+   INPUT
+   ============================================================ */
+function autoResizeInput() {
+    const input = document.getElementById('chatInput');
+    if (!input) return;
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+}
+function updateSendButton() {
+    const btn = document.getElementById('sendBtn');
+    const input = document.getElementById('chatInput');
+    if (!btn || !input) return;
+    const hasText = input.value.trim().length > 0;
+    btn.disabled = !hasText || sendingMessage;
+}
+function wireInput() {
+    const input = document.getElementById('chatInput');
+    const btn = document.getElementById('sendBtn');
+    input.addEventListener('input', () => { autoResizeInput(); updateSendButton(); });
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            if (!btn.disabled) sendMessage();
+        }
+    });
+    btn.addEventListener('click', () => { if (!btn.disabled) sendMessage(); });
+}
+
+/* ============================================================
+   AUTH
+   ============================================================ */
+onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = 'login.html'; return; }
+    currentUser = user;
+    await loadUserData();
+    initChat();
+    wireInput();
+    wireEstimateCircle();
+    updateSendButton();
+    updateHeaderStatus();
+});
+</script>
+</body>
+</html>
