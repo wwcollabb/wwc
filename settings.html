@@ -42,64 +42,170 @@ body{
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:8px}
 ::-webkit-scrollbar-thumb:hover{background:rgba(34,211,238,.35)}
+
 .ic{width:20px;height:20px;flex:none;display:block;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
 .ic-sm{width:16px;height:16px}
 .ic-xs{width:13px;height:13px;stroke-width:2.2}
+
 .glass{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:20px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+
 .sidebar{transition:transform .32s cubic-bezier(.4,0,.2,1)}
 .sidebar-closed{transform:translateX(-100%)}
 .sidebar-open{transform:translateX(0)}
 @media (min-width:768px){.sidebar-closed{transform:translateX(0)}}
+
 .nav-link{position:relative;display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:14px;font-size:14px;font-weight:600;color:var(--muted);border:1px solid transparent;transition:background .2s ease,color .2s ease,border-color .2s ease;text-decoration:none}
 .nav-link:hover{background:rgba(255,255,255,.05);color:var(--text)}
 .nav-link.active{background:linear-gradient(90deg,rgba(34,211,238,.16),rgba(34,211,238,.04));border-color:rgba(34,211,238,.22);color:var(--cyan-soft)}
 .nav-link .ic{width:18px;height:18px}
+
 .glass-header{background:rgba(9,13,22,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
-.chip{width:42px;height:42px;border-radius:13px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid transparent}
-.chip .ic{width:20px;height:20px}
+
+/* ============================================================
+   PREMIUM VERIFIED BADGE
+   ============================================================ */
+.vbadge{
+  display:inline-flex;align-items:center;justify-content:center;
+  flex:none;
+  width:18px;height:18px;border-radius:999px;
+  background:linear-gradient(135deg,#22d3ee,#3b82f6);
+  box-shadow:
+    0 0 0 1.5px rgba(7,11,20,.9),
+    0 2px 10px rgba(34,211,238,.55),
+    inset 0 1px 0 rgba(255,255,255,.55);
+  position:relative;
+  transform:translateY(1px);
+}
+.vbadge svg{
+  width:11px;height:11px;
+  stroke:#04121a;stroke-width:3.2;
+  fill:none;stroke-linecap:round;stroke-linejoin:round;
+  display:block;
+  transform:translateY(-0.5px);
+}
+.vbadge.sm{width:16px;height:16px}
+.vbadge.sm svg{width:10px;height:10px;stroke-width:3.4}
+
+/* Phone variant — emerald */
+.vbadge.phone{
+  background:linear-gradient(135deg,#22d3ee,#10b981);
+  box-shadow:
+    0 0 0 1.5px rgba(7,11,20,.9),
+    0 2px 10px rgba(16,185,129,.55),
+    inset 0 1px 0 rgba(255,255,255,.55);
+}
 
 /* ============ PROFILE HEADER ============ */
 .profile-header{
-  display:flex;align-items:center;gap:14px;
-  padding:16px 18px;
-  background:linear-gradient(135deg,rgba(34,211,238,.06),rgba(139,92,246,.04));
+  display:flex;align-items:flex-start;gap:14px;
+  padding:18px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(34,211,238,.10), transparent 60%),
+    radial-gradient(circle at 0% 100%, rgba(139,92,246,.08), transparent 60%),
+    linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
   border:1px solid var(--line);
-  border-radius:18px;
+  border-radius:20px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 10px 34px -18px rgba(34,211,238,.30);
 }
+.profile-header::before{
+  content:'';position:absolute;top:-70%;right:-15%;
+  width:200px;height:200px;border-radius:999px;
+  background:radial-gradient(circle, rgba(34,211,238,.16), transparent 70%);
+  pointer-events:none;
+}
+
 .avatar-svg{
-  width:56px;height:56px;border-radius:999px;flex:none;
+  width:58px;height:58px;border-radius:999px;flex:none;
   display:flex;align-items:center;justify-content:center;
   background:linear-gradient(135deg,rgba(34,211,238,.22),rgba(99,102,241,.18));
   border:1.5px solid rgba(34,211,238,.38);
   color:#a5f3fc;
-  box-shadow:0 0 18px rgba(34,211,238,.28);
+  box-shadow:0 0 22px rgba(34,211,238,.30);
   position:relative;
+  z-index:1;
 }
 .avatar-svg::after{
   content:'';position:absolute;bottom:1px;right:1px;
-  width:13px;height:13px;border-radius:999px;
+  width:14px;height:14px;border-radius:999px;
   background:#10b981;border:2.5px solid #0a101b;
-  box-shadow:0 0 8px rgba(16,185,129,.85);
+  box-shadow:0 0 10px rgba(16,185,129,.90);
+  animation:pulse 2s ease-in-out infinite;
 }
 .avatar-svg svg{width:30px;height:30px;stroke-width:1.6}
+
 .profile-name-row{
   display:flex;align-items:center;gap:7px;
   font-size:16px;font-weight:800;color:#fff;letter-spacing:-.015em;
   line-height:1.15;
+  position:relative;z-index:1;
+  min-width:0;
 }
-.profile-email{font-size:12px;color:var(--muted);font-weight:500;margin-top:3px;word-break:break-all}
+.profile-name-row #userName{
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.profile-email{
+  font-size:12px;color:var(--muted);font-weight:500;margin-top:3px;
+  word-break:break-all;
+  position:relative;z-index:1;
+}
 
-/* ============ VERIFIED TICK ============ */
-.vtick{
-  width:16px;height:16px;flex:none;
-  display:inline-flex;align-items:center;justify-content:center;
-  color:#22d3ee;
-  filter:drop-shadow(0 0 5px rgba(34,211,238,.6));
+/* ============================================================
+   MEMBER SINCE BADGE (glowing)
+   ============================================================ */
+.member-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:9px;
+  padding:4px 11px 4px 9px;
+  border-radius:999px;
+  font-size:10.5px;
+  font-weight:700;
+  letter-spacing:.035em;
+  color:#a5f3fc;
+  background:linear-gradient(135deg,rgba(34,211,238,.14),rgba(139,92,246,.10));
+  border:1px solid rgba(34,211,238,.32);
+  box-shadow:
+    0 0 12px rgba(34,211,238,.35),
+    0 0 26px -6px rgba(139,92,246,.45),
+    inset 0 1px 0 rgba(255,255,255,.08);
+  position:relative;
+  z-index:1;
+  animation:memberGlow 2.8s ease-in-out infinite;
+  white-space:nowrap;
 }
-.vtick svg{width:16px;height:16px;stroke-width:2.6;stroke:currentColor;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.vtick-sm{width:13px;height:13px}
-.vtick-sm svg{width:13px;height:13px;stroke-width:2.8}
-.vtick-emerald{color:#10b981;filter:drop-shadow(0 0 5px rgba(16,185,129,.55))}
+.member-badge strong{
+  color:#fff;
+  font-weight:800;
+  letter-spacing:.02em;
+  text-shadow:0 0 8px rgba(34,211,238,.65);
+}
+.member-dot{
+  width:5px;height:5px;border-radius:99px;flex:none;
+  background:#22d3ee;
+  box-shadow:0 0 6px rgba(34,211,238,.95), 0 0 12px rgba(34,211,238,.65);
+  animation:memberDotPulse 1.8s ease-in-out infinite;
+}
+@keyframes memberGlow{
+  0%,100%{
+    box-shadow:
+      0 0 12px rgba(34,211,238,.35),
+      0 0 26px -6px rgba(139,92,246,.45),
+      inset 0 1px 0 rgba(255,255,255,.08);
+    border-color:rgba(34,211,238,.32);
+  }
+  50%{
+    box-shadow:
+      0 0 18px rgba(34,211,238,.65),
+      0 0 40px -6px rgba(139,92,246,.70),
+      inset 0 1px 0 rgba(255,255,255,.12);
+    border-color:rgba(34,211,238,.55);
+  }
+}
+@keyframes memberDotPulse{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.55;transform:scale(.82)}
+}
 
 /* ============ SETTING CARD ============ */
 .settings-grid{display:flex;flex-direction:column;gap:10px}
@@ -118,14 +224,13 @@ body{
 .setting-label{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);font-weight:800}
 .setting-value{
   font-size:15px;font-weight:700;color:var(--text);margin-top:5px;
-  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  display:flex;align-items:center;gap:7px;flex-wrap:wrap;
   line-height:1.25;
   word-break:break-all;
 }
 .setting-value.muted{color:var(--dim);font-weight:600;font-size:13.5px}
 .setting-desc{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.5}
 
-/* Small action buttons */
 .icon-action{
   width:32px;height:32px;border-radius:10px;flex:none;
   display:flex;align-items:center;justify-content:center;
@@ -150,7 +255,6 @@ body{
 .chevron svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .setting-card.open .chevron{transform:rotate(180deg);color:var(--cyan-soft)}
 
-/* Expand area */
 .expand-area{
   overflow:hidden;
   max-height:0;
@@ -207,10 +311,7 @@ body{
 .expand-actions{display:flex;gap:8px;margin-top:10px}
 .expand-actions .btn-action{flex:1}
 
-/* ============ WITHDRAWAL CODE ROW ============ */
-.code-row{
-  display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px;
-}
+.code-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px}
 .code-value{
   display:flex;align-items:center;gap:8px;
   font-family:'Courier New',ui-monospace,monospace;
@@ -227,7 +328,6 @@ body{
 }
 .link-btn:hover{background:rgba(34,211,238,.10);color:#a5f3fc}
 
-/* Bind button styling (unbound state) */
 .bind-pill{
   display:inline-flex;align-items:center;gap:6px;
   padding:8px 14px;border-radius:999px;
@@ -241,7 +341,6 @@ body{
 .bind-pill:hover{background:linear-gradient(135deg,rgba(34,211,238,.24),rgba(99,102,241,.16));transform:translateY(-1px)}
 .bind-pill svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 
-/* Account info rows */
 .info-row{
   display:flex;align-items:center;justify-content:space-between;gap:12px;
   padding:12px 14px;
@@ -256,13 +355,11 @@ body{
 .status-blocked{background:rgba(244,63,94,.10);color:#fda4af;border-color:rgba(244,63,94,.28)}
 .status-pill .dot{width:6px;height:6px;border-radius:99px;background:currentColor;display:inline-block;box-shadow:0 0 6px currentColor}
 
-/* Fade-in */
 .fade-in{animation:fadeIn .45s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .pulse-dot{animation:pulse 1.8s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 
-/* Toast */
 .toast{
   position:fixed;left:50%;bottom:24px;transform:translateX(-50%);
   padding:11px 18px;border-radius:12px;font-size:13px;font-weight:700;
@@ -346,11 +443,17 @@ body{
       <div class="min-w-0 flex-1">
         <div class="profile-name-row">
           <span id="userName" class="truncate">…</span>
-          <span class="vtick" title="Verified">
+          <span class="vbadge" title="Verified account">
             <svg viewBox="0 0 24 24"><path d="M5 12.6l4.4 4.4L19 7.4"/></svg>
           </span>
         </div>
         <div id="userEmail" class="profile-email">Loading…</div>
+
+        <!-- Member Since badge -->
+        <div class="member-badge" id="memberBadge">
+          <span class="member-dot"></span>
+          <span>Member since <strong id="joinedDate">—</strong></span>
+        </div>
       </div>
     </section>
 
@@ -364,9 +467,6 @@ body{
             <span class="setting-label">Full Name</span>
             <span class="setting-value" id="nameValue">
               <span id="nameText">—</span>
-              <span class="vtick vtick-sm" title="Verified">
-                <svg viewBox="0 0 24 24"><path d="M5 12.6l4.4 4.4L19 7.4"/></svg>
-              </span>
             </span>
           </div>
           <button class="icon-action" onclick="toggleNameEdit()" aria-label="Edit name" title="Edit">
@@ -394,7 +494,7 @@ body{
             <!-- Bound state -->
             <span class="setting-value" id="phoneBound" style="display:none">
               <span id="phoneMaskedText" style="font-family:'Courier New',monospace;letter-spacing:.12em">******0000</span>
-              <span class="vtick vtick-sm vtick-emerald" title="Verified">
+              <span class="vbadge phone" title="Verified phone">
                 <svg viewBox="0 0 24 24"><path d="M5 12.6l4.4 4.4L19 7.4"/></svg>
               </span>
             </span>
@@ -459,7 +559,6 @@ body{
           <div class="setting-head">
             <span class="setting-label">Withdrawal Code</span>
 
-            <!-- Bound state: current code + eye + change link -->
             <div class="code-row" id="codeBound" style="display:none">
               <span class="code-value" id="codeDisplay">••••</span>
               <span class="code-actions">
@@ -470,20 +569,17 @@ body{
               </span>
             </div>
 
-            <!-- Unbound state -->
             <span class="setting-value muted" id="codeUnbound" style="display:none">
               No code set — bind one for withdrawals
             </span>
           </div>
 
-          <!-- Bind button (unbound) -->
           <button class="bind-pill" id="codeBindBtn" onclick="toggleCodeEdit()" style="display:none">
             <svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
             Bind
           </button>
         </div>
 
-        <!-- Edit box (both for bind & change) -->
         <div class="expand-area" id="codeExpand">
           <div class="input-wrap">
             <input type="password" id="codeInput" class="input-field with-eye"
@@ -532,7 +628,6 @@ body{
   </main>
 </div>
 
-<!-- Toast -->
 <div id="toast" class="toast">Saved</div>
 
 <script type="module">
@@ -558,7 +653,6 @@ let currentWithdrawalCode = null;
 let currentPhone = null;
 let isCodeVisible = false;
 
-/* ============ EYE ICONS ============ */
 const EYE_OPEN = `<svg viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>`;
 const EYE_OFF  = `<svg viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 5.8A10.5 10.5 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 0 1-3.3 4.1"/><path d="M6.4 6.5A17 17 0 0 0 2.5 12S6 18.5 12 18.5a10 10 0 0 0 3.4-.6"/><path d="M9.5 9.5a3 3 0 0 0 4.2 4.2"/></svg>`;
 
@@ -569,7 +663,6 @@ window.togglePasswordVisibility = function(inputId, btn){
     else { input.type = 'password'; btn.innerHTML = EYE_OPEN; }
 };
 
-/* ============ TOAST ============ */
 function toast(msg, ok=true){
     const t = document.getElementById('toast');
     t.textContent = msg;
@@ -577,7 +670,6 @@ function toast(msg, ok=true){
     setTimeout(() => { t.className = 'toast'; }, 2400);
 }
 
-/* ============ SIDEBAR / LOGOUT ============ */
 window.toggleSidebar = function(){
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
@@ -589,7 +681,6 @@ window.toggleSidebar = function(){
 };
 window.handleLogout = async function(){ await signOut(auth); window.location.href = 'login.html'; };
 
-/* ============ CARD EXPAND HELPERS ============ */
 function closeAllExcept(keepId){
     ['cardName','cardPassword','cardCode'].forEach(id => {
         if (id !== keepId){
@@ -598,17 +689,15 @@ function closeAllExcept(keepId){
         }
     });
     if (keepId !== 'cardPhone'){
-        document.getElementById('phoneExpand').style.maxHeight = '';
-        document.getElementById('cardPhone').classList.remove('open');
+        const cp = document.getElementById('cardPhone');
+        if (cp) cp.classList.remove('open');
     }
 }
 function openCard(id){
     const el = document.getElementById(id);
-    if (!el) return;
-    el.classList.add('open');
+    if (el) el.classList.add('open');
 }
 
-/* ============ 1. NAME ============ */
 window.toggleNameEdit = function(show){
     const card = document.getElementById('cardName');
     const isOpen = card.classList.contains('open');
@@ -637,7 +726,6 @@ window.saveName = async function(){
     } catch (err){ toast(err.message, false); }
 };
 
-/* ============ 2. PHONE ============ */
 function renderPhone(){
     const boundEl = document.getElementById('phoneBound');
     const unboundEl = document.getElementById('phoneUnbound');
@@ -659,11 +747,9 @@ function renderPhone(){
 }
 
 window.togglePhoneBind = function(show){
-    const expand = document.getElementById('phoneExpand');
     const card = document.getElementById('cardPhone');
     const isOpen = card.classList.contains('open');
     const shouldOpen = typeof show === 'boolean' ? show : !isOpen;
-
     if (shouldOpen){
         closeAllExcept('cardPhone');
         document.getElementById('phoneInput').value = '';
@@ -686,7 +772,6 @@ window.savePhone = async function(){
     } catch (err){ toast(err.message, false); }
 };
 
-/* ============ 3. PASSWORD ============ */
 window.togglePasswordEdit = function(){
     const card = document.getElementById('cardPassword');
     const isOpen = card.classList.contains('open');
@@ -711,7 +796,6 @@ window.savePassword = async function(){
     }
 };
 
-/* ============ 4. WITHDRAWAL CODE ============ */
 function renderCode(){
     const boundEl = document.getElementById('codeBound');
     const unboundEl = document.getElementById('codeUnbound');
@@ -749,7 +833,6 @@ window.toggleCodeEdit = function(show){
     const card = document.getElementById('cardCode');
     const isOpen = card.classList.contains('open');
     const shouldOpen = typeof show === 'boolean' ? show : !isOpen;
-
     if (shouldOpen){
         closeAllExcept('cardCode');
         document.getElementById('codeInput').value = '';
@@ -774,7 +857,6 @@ window.saveCode = async function(){
     } catch (err){ toast(err.message, false); }
 };
 
-/* ============ AUTH ============ */
 onAuthStateChanged(auth, async (user) => {
     if (!user){ window.location.href = 'login.html'; return; }
     currentUser = user;
@@ -798,6 +880,23 @@ onAuthStateChanged(auth, async (user) => {
 
         currentWithdrawalCode = data.withdrawalCode || null;
         currentPhone = data.phone || null;
+
+        // Member Since from createdAt
+        const joinedEl = document.getElementById('joinedDate');
+        const badgeEl  = document.getElementById('memberBadge');
+        if (joinedEl && badgeEl){
+            const ts = data.createdAt;
+            let d = null;
+            if (ts && typeof ts.toDate === 'function') d = ts.toDate();
+            else if (ts) { const t = new Date(ts); if (!isNaN(t.getTime())) d = t; }
+
+            if (d){
+                const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                joinedEl.textContent = `${months[d.getMonth()]} ${d.getFullYear()}`;
+            } else {
+                badgeEl.style.display = 'none';
+            }
+        }
     }
 
     renderPhone();
