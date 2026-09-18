@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>WinKom — Car Race</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{--bg:#070b14;--line:rgba(255,255,255,.075);--line-strong:rgba(255,255,255,.13);--text:#eef4fb;--muted:#8b98ad;--dim:#5b6879;--cyan:#22d3ee;--cyan-soft:#67e8f9;--amber:#f59e0b;--emerald:#10b981;--violet:#8b5cf6;--rose:#f43f5e;}
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;min-height:100vh;color:var(--text);font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;background-color:var(--bg);background-image:radial-gradient(680px 420px at 8% -12%, rgba(34,211,238,.10), transparent 62%),radial-gradient(620px 420px at 102% 2%, rgba(244,63,94,.09), transparent 60%),radial-gradient(700px 520px at 50% 112%, rgba(16,185,129,.05), transparent 62%);background-attachment:fixed;}
+::selection{background:rgba(34,211,238,.3)}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:8px}
+.ic{width:20px;height:20px;flex:none;display:block;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ic-sm{width:16px;height:16px}.ic-xs{width:13px;height:13px;stroke-width:2}
+.ic-lg{width:22px;height:22px}
+.glass{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:20px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.sidebar{transition:transform .32s cubic-bezier(.4,0,.2,1)}
+.sidebar-closed{transform:translateX(-100%)}
+.sidebar-open{transform:translateX(0)}
+@media (min-width:768px){.sidebar-closed{transform:translateX(0)}}
+.nav-link{position:relative;display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:14px;font-size:14px;font-weight:600;color:var(--muted);border:1px solid transparent;transition:background .2s ease,color .2s ease,border-color .2s ease}
+.nav-link:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.nav-link.active{background:linear-gradient(90deg,rgba(245,158,11,.16),rgba(245,158,11,.04));border-color:rgba(245,158,11,.24);color:#fbbf24}
+.nav-link .ic{width:18px;height:18px}
+.glass-header{background:rgba(9,13,22,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.wallet-card{background:radial-gradient(520px 220px at 100% 0%, rgba(245,158,11,.10), transparent 62%),linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid rgba(245,158,11,.22);border-radius:22px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.wallet-badge{width:54px;height:54px;border-radius:16px;flex:none;display:flex;align-items:center;justify-content:center;color:#fbbf24;background:rgba(245,158,11,.10);border:1px solid rgba(245,158,11,.22)}
+.wallet-badge .ic{width:26px;height:26px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:14px;font-size:13.5px;font-weight:700;white-space:nowrap;cursor:pointer;border:1px solid transparent;transition:transform .16s ease,box-shadow .22s ease,background .22s ease,border-color .22s ease,color .22s ease;font-family:inherit}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.42;cursor:not-allowed;box-shadow:none!important;transform:none!important}
+.btn-amber{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#2a1c06;box-shadow:0 10px 26px rgba(245,158,11,.28)}
+.btn-amber:hover:not(:disabled){box-shadow:0 14px 34px rgba(245,158,11,.45)}
+.btn-cyan{background:rgba(34,211,238,.14);border-color:rgba(34,211,238,.35);color:var(--cyan-soft)}
+.btn-cyan:hover:not(:disabled){background:rgba(34,211,238,.22)}
+.btn-ghost{background:rgba(255,255,255,.05);border-color:var(--line-strong);color:var(--muted)}
+.btn-ghost:hover:not(:disabled){background:rgba(255,255,255,.09);color:var(--text)}
+.chip{width:42px;height:42px;border-radius:13px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid transparent}
+.chip .ic{width:20px;height:20px}
+.chip-cyan{color:var(--cyan-soft);background:rgba(34,211,238,.10);border-color:rgba(34,211,238,.20)}
+.chip-amber{color:#fbbf24;background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.20)}
+.chip-emerald{color:#34d399;background:rgba(16,185,129,.10);border-color:rgba(16,185,129,.20)}
+.chip-rose{color:#fda4af;background:rgba(244,63,94,.10);border-color:rgba(244,63,94,.20)}
+.field-box{background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.field-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:800}
+.search-input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--text);font-size:13.5px;border-radius:14px;padding:12px 16px;outline:none;transition:border-color .2s ease,background .2s ease;font-family:inherit}
+.search-input::placeholder{color:#5b6879}
+.search-input:focus{border-color:rgba(245,158,11,.45);background:rgba(245,158,11,.05)}
+.icon-btn{width:36px;height:36px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--muted);cursor:pointer;transition:all .2s ease}
+.icon-btn:hover{background:rgba(255,255,255,.10);color:#fff}
+.support-btn{width:40px;height:40px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(34,211,238,.16),rgba(99,102,241,.12));border:1px solid rgba(34,211,238,.32);color:var(--cyan-soft);text-decoration:none;position:relative}
+.promo-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;background:linear-gradient(135deg,rgba(245,158,11,.22),rgba(244,63,94,.16));border:1px solid rgba(245,158,11,.45);color:#fcd34d;font-weight:800;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;box-shadow:0 4px 14px rgba(245,158,11,.22)}
+.promo-badge .bolt{color:#fbbf24}
+
+/* ============ RACE ARENA ============ */
+.race-arena{
+  position:relative;overflow:hidden;border-radius:24px;
+  background:
+    radial-gradient(900px 380px at 50% -30%, rgba(244,63,94,.14), transparent 62%),
+    radial-gradient(700px 300px at 20% 120%, rgba(34,211,238,.10), transparent 60%),
+    linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));
+  border:1px solid rgba(244,63,94,.26);
+  box-shadow:0 30px 80px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05);
+  padding:20px 16px 18px;
+}
+.race-arena::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size:38px 38px;
+  mask-image:radial-gradient(ellipse at center, black 30%, transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse at center, black 30%, transparent 75%);
+  opacity:.5;
+}
+.race-title{position:relative;text-align:center;margin-bottom:12px}
+.race-title .target-label{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#8b98ad;font-weight:800;display:inline-flex;align-items:center;gap:8px}
+.race-title .target-label::before,.race-title .target-label::after{content:'';width:24px;height:1px;background:linear-gradient(90deg,transparent,rgba(244,63,94,.55))}
+.race-title .target-label::after{background:linear-gradient(90deg,rgba(244,63,94,.55),transparent)}
+
+/* Track */
+.track-wrap{
+  position:relative;border-radius:18px;
+  padding:14px 14px 12px;
+  background:linear-gradient(180deg,rgba(0,0,0,.30),rgba(0,0,0,.45));
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:inset 0 2px 12px rgba(0,0,0,.5);
+  overflow:hidden;
+}
+.track-start,.track-finish{
+  position:absolute;top:0;bottom:0;width:16px;
+  background:
+    repeating-linear-gradient(0deg,#e2e8f0 0 10px,#0f172a 10px 20px);
+  opacity:.35;
+  z-index:1;
+}
+.track-start{left:6px}
+.track-finish{right:6px;background:
+  repeating-linear-gradient(0deg,#fff 0 10px,#0f172a 10px 20px);opacity:.5}
+.track-finish::after{
+  content:'🏁';position:absolute;top:-2px;left:50%;transform:translateX(-50%);
+  font-size:14px;
+}
+
+.lane{
+  position:relative;height:56px;
+  border-bottom:1px dashed rgba(255,255,255,.08);
+}
+.lane:last-child{border-bottom:0}
+
+.car{
+  position:absolute;top:50%;left:0;
+  transform:translate(-8px, -50%);
+  font-size:32px;line-height:1;
+  transition:left .04s linear;
+  z-index:3;
+  filter:drop-shadow(0 3px 6px rgba(0,0,0,.7));
+  will-change:left;
+}
+@media (max-width:520px){.car{font-size:26px}}
+
+.lane-label{
+  position:absolute;right:4px;top:50%;transform:translateY(-50%);
+  font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  color:#5b6879;z-index:2;
+}
+
+/* Speed lines effect when racing */
+.race-arena.racing .lane::before{
+  content:'';position:absolute;top:50%;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);
+  opacity:.35;
+  animation:speedLine .3s linear infinite;
+}
+@keyframes speedLine{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+/* Countdown */
+.countdown{
+  position:absolute;inset:0;z-index:10;
+  display:none;align-items:center;justify-content:center;
+  background:rgba(3,6,12,.72);backdrop-filter:blur(6px);
+  border-radius:18px;
+}
+.countdown.show{display:flex}
+.countdown-num{
+  font-size:120px;font-weight:800;letter-spacing:-.06em;
+  background:linear-gradient(135deg,#fbbf24,#f43f5e);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 8px 30px rgba(245,158,11,.5));
+  animation:cdPulse .8s cubic-bezier(.16,1,.3,1);
+}
+@keyframes cdPulse{0%{transform:scale(.4);opacity:0}50%{transform:scale(1.15);opacity:1}100%{transform:scale(1);opacity:1}}
+
+/* Bet picker */
+.race-picks{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+@media (max-width:520px){.race-picks{gap:8px}}
+.race-pick{
+  position:relative;border-radius:18px;padding:14px 8px 12px;
+  cursor:pointer;font-family:inherit;
+  border:1.5px solid rgba(255,255,255,.12);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  transition:all .18s ease;overflow:hidden;
+}
+.race-pick:disabled{cursor:not-allowed;opacity:.55}
+.race-pick:not(:disabled):hover{transform:translateY(-3px);border-color:rgba(255,255,255,.28)}
+.race-pick:not(:disabled):active{transform:scale(.97)}
+.race-pick.red{background:linear-gradient(180deg,rgba(244,63,94,.16),rgba(244,63,94,.03))}
+.race-pick.blue{background:linear-gradient(180deg,rgba(59,130,246,.16),rgba(59,130,246,.03))}
+.race-pick.green{background:linear-gradient(180deg,rgba(16,185,129,.16),rgba(16,185,129,.03))}
+.race-pick.yellow{background:linear-gradient(180deg,rgba(245,158,11,.16),rgba(245,158,11,.03))}
+.race-pick.picked{border-color:rgba(34,211,238,.65);box-shadow:0 0 0 3px rgba(34,211,238,.14),0 14px 34px rgba(34,211,238,.28);transform:translateY(-2px)}
+.race-pick.dim{opacity:.35;filter:saturate(.5)}
+.race-pick.winner{border-color:rgba(16,185,129,.85)!important;animation:rpWinPulse .9s ease;box-shadow:0 0 0 4px rgba(16,185,129,.22),0 18px 44px rgba(16,185,129,.35)!important}
+.race-pick.loser{border-color:rgba(244,63,94,.55)!important;box-shadow:0 0 0 3px rgba(244,63,94,.14)!important;opacity:.55}
+@keyframes rpWinPulse{0%{transform:scale(1)}35%{transform:scale(1.06)}100%{transform:scale(1)}}
+.race-pick .rp-car{font-size:28px;line-height:1}
+.race-pick .rp-label{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.race-pick.red .rp-label{color:#fda4af}
+.race-pick.blue .rp-label{color:#93c5fd}
+.race-pick.green .rp-label{color:#6ee7b7}
+.race-pick.yellow .rp-label{color:#fcd34d}
+.race-pick .rp-mult{font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.10);color:#e8eef7}
+
+.race-status-wrap{padding:14px 0 8px;position:relative}
+.race-status-head{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.timer-bar{height:8px;border-radius:999px;background:rgba(255,255,255,.05);overflow:hidden;position:relative;border:1px solid rgba(255,255,255,.04)}
+.timer-bar > i{display:block;height:100%;border-radius:999px;width:0%;transition:width .2s linear;
+  background:linear-gradient(90deg,#22d3ee 0%,#8b5cf6 45%,#f59e0b 100%);
+  box-shadow:0 0 20px rgba(34,211,238,.4);}
+.timer-bar.racing > i{width:100%!important;
+  background:linear-gradient(90deg,#f43f5e,#fbbf24,#22d3ee,#fbbf24,#f43f5e);
+  background-size:200% 100%;animation:rBar 1.2s linear infinite}
+@keyframes rBar{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+.race-arena.reveal-win::after{content:'';position:absolute;inset:0;pointer-events:none;animation:rFlashGreen 1s ease}
+.race-arena.reveal-loss::after{content:'';position:absolute;inset:0;pointer-events:none;animation:rFlashRed 1s ease}
+@keyframes rFlashGreen{0%{background:radial-gradient(circle at center,rgba(16,185,129,.38),transparent 65%)}100%{background:transparent}}
+@keyframes rFlashRed{0%{background:radial-gradient(circle at center,rgba(244,63,94,.32),transparent 65%)}100%{background:transparent}}
+
+.result-card{margin-top:14px;border-radius:18px;padding:16px 18px;display:flex;align-items:center;gap:14px;border:1px solid transparent;animation:pop .4s cubic-bezier(.16,1,.3,1)}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.result-card.win{background:linear-gradient(135deg,rgba(16,185,129,.16),rgba(16,185,129,.03));border-color:rgba(16,185,129,.4)}
+.result-card.loss{background:linear-gradient(135deg,rgba(244,63,94,.16),rgba(244,63,94,.03));border-color:rgba(244,63,94,.4)}
+.result-emoji{font-size:34px;line-height:1}
+
+.history-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.028);border:1px solid var(--line);transition:border-color .2s ease}
+.history-row:hover{border-color:rgba(255,255,255,.16)}
+.history-dot{width:36px;height:36px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px}
+.history-dot.win{background:rgba(16,185,129,.14);color:#6ee7b7;border:1px solid rgba(16,185,129,.30)}
+.history-dot.loss{background:rgba(244,63,94,.14);color:#fda4af;border:1px solid rgba(244,63,94,.30)}
+
+.fade-in{animation:fadeIn .45s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.pulse-dot{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.hidden{display:none!important}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);padding:11px 18px;border-radius:12px;font-size:13px;font-weight:700;z-index:9999;color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.45);transition:opacity .3s;max-width:90vw;text-align:center}
+.toast.ok{background:rgba(16,185,129,.95)}
+.toast.info{background:rgba(245,158,11,.95)}
+.toast.err{background:rgba(244,63,94,.95)}
+
+.bet-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.bet-chip{padding:6px 12px;border-radius:999px;font-size:11.5px;font-weight:800;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--muted);cursor:pointer;transition:all .18s ease;font-family:inherit}
+.bet-chip:hover{color:#fff;background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.42)}
+.bet-chip:active{transform:scale(.96)}
+</style>
+</head>
+<body>
+
+<aside id="sidebar" class="sidebar sidebar-closed fixed top-0 left-0 h-full w-[264px] bg-[#0a0f1a]/95 backdrop-blur-xl border-r border-white/[.06] z-50 overflow-y-auto">
+  <div class="p-5">
+    <div class="flex items-center justify-between mb-8">
+      <a href="index.html" class="flex items-center gap-3 min-w-0">
+        <img src="logo.png" alt="WinKom" class="w-10 h-10 rounded-xl object-cover" onerror="this.style.display='none'"/>
+        <span class="text-xl font-extrabold text-white tracking-tight truncate">Win<span class="text-cyan-400">Kom</span></span>
+      </a>
+      <button onclick="toggleSidebar()" aria-label="Close menu" class="md:hidden w-9 h-9 rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:text-white flex items-center justify-center transition"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <nav class="space-y-1.5">
+      <a href="index.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8.5 16v-4.5M12.5 16V8M16.5 16v-2.5"/></svg>Dashboard</a>
+      <a href="games.html" class="nav-link active"><svg class="ic" viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="10" rx="4"/><path d="M7 12h2M8 11v2M15.5 11h.01M17.5 13h.01"/></svg>Games</a>
+      <a href="game1.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>Spin Wheel</a>
+      <a href="game2.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>Color Prediction</a>
+      <a href="game3.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.5" fill="currentColor" stroke="none"/></svg>Dice Roll</a>
+      <a href="game4.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M3 9.5 12 4l9 5.5"/><path d="M5 10v8M19 10v8"/></svg>Hi-Lo Card</a>
+      <a href="game5.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M4 18h16"/><path d="M6 18l2-8h8l2 8"/><circle cx="8.5" cy="18.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15.5" cy="18.5" r="1.3" fill="currentColor" stroke="none"/></svg>Car Race</a>
+      <a href="investment.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M3 16.5 9 10.5l4 4 8-8"/><path d="M15 6.5h6v6"/></svg>Investment</a>
+      <a href="deposit.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8 10.5 4 4 4-4"/><path d="M5 19h14"/></svg>Deposit</a>
+      <a href="withdraw.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M12 15V5"/><path d="m8 8.5 4-4 4 4"/><path d="M5 19h14"/></svg>Withdraw</a>
+      <a href="transactions.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M6.5 3.5h8L18.5 7v13.5h-12z"/><path d="M9.5 11h6M9.5 14.5h6M9.5 7.5h2.5"/></svg>My Transactions</a>
+      <a href="settings.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.1"/><path d="M12 2.9v2.3M12 18.8v2.3M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.9 12h2.3M18.8 12h2.3M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>Settings</a>
+      <a href="about.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.2"/><circle cx="12" cy="7.9" r=".9" fill="currentColor" stroke="none"/></svg>About</a>
+      <a href="support.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/><path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/><path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/></svg>Support</a>
+      <div class="pt-3 mt-3 border-t border-white/[.06]">
+        <button onclick="handleLogout()" class="nav-link w-full text-left text-red-400 hover:bg-red-500/10 hover:text-red-300"><svg class="ic" viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="m10 8-4 4 4 4"/><path d="M6 12h9"/></svg>Logout</button>
+      </div>
+    </nav>
+  </div>
+</aside>
+<div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden"></div>
+
+<div class="md:ml-64 relative">
+  <header class="glass-header border-b border-white/[.06] fixed top-0 left-0 right-0 md:left-64 z-40">
+    <div class="max-w-6xl mx-auto px-4 py-3.5">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <button onclick="toggleSidebar()" aria-label="Open menu" class="md:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:text-white flex items-center justify-center transition shrink-0"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+          <div class="min-w-0">
+            <h1 class="text-[15px] sm:text-lg font-extrabold text-white truncate leading-tight">🏎️ Car <span class="text-rose-400">Race</span></h1>
+            <p class="text-[11px] text-slate-500 font-medium truncate">Pick a car · Watch it race · Win real money</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2.5 shrink-0">
+          <span class="promo-badge hidden sm:inline-flex"><span class="bolt">⚡</span> 3.8x Win</span>
+          <a href="support.html" class="support-btn" aria-label="Support"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/><path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/><path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 pt-[90px] sm:pt-[80px] pb-6 fade-in">
+
+    <section class="wallet-card p-4 sm:p-5 mb-4">
+      <div class="flex items-center justify-between gap-3 flex-wrap">
+        <div class="flex items-center gap-3.5 min-w-0">
+          <span class="wallet-badge"><svg class="ic" viewBox="0 0 24 24"><path d="M20 8.6V7a2 2 0 0 0-2-2H5.6A2.6 2.6 0 0 0 3 7.6v8.8A2.6 2.6 0 0 0 5.6 19H18a2 2 0 0 0 2-2v-1.6"/><path d="M21.3 9.6h-4.4a2.4 2.4 0 0 0 0 4.8h4.4a.8.8 0 0 0 .8-.8v-3.2a.8.8 0 0 0-.8-.8Z"/><circle cx="17.1" cy="12" r=".85" fill="currentColor" stroke="none"/></svg></span>
+          <div class="min-w-0">
+            <p class="field-label">Wallet Balance</p>
+            <p class="text-[26px] sm:text-3xl font-extrabold text-white leading-tight mt-1 tracking-tight">₹<span id="walletBalance">0</span></p>
+          </div>
+        </div>
+        <div class="text-right">
+          <p class="field-label">Total Earnings</p>
+          <p class="text-emerald-400 font-extrabold text-2xl mt-1">₹<span id="totalEarnings">0</span></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="glass p-4 sm:p-5 mb-4">
+      <label class="field-label block mb-1.5">Bet Amount (₹)</label>
+      <input type="number" id="betAmount" min="10" max="1000" step="10" placeholder="e.g. 50" class="search-input" />
+      <div class="bet-chips">
+        <button class="bet-chip" onclick="setBet(10)">₹10</button>
+        <button class="bet-chip" onclick="setBet(20)">₹20</button>
+        <button class="bet-chip" onclick="setBet(50)">₹50</button>
+        <button class="bet-chip" onclick="setBet(100)">₹100</button>
+        <button class="bet-chip" onclick="setBet(500)">₹500</button>
+        <button class="bet-chip" onclick="setBet(1000)">₹1000</button>
+      </div>
+      <p class="text-slate-500 text-[10.5px] mt-2">Min ₹10 · Max ₹1000 · Real wallet</p>
+    </section>
+
+    <!-- RACE ARENA -->
+    <section class="race-arena mb-5" id="raceArena">
+      <div class="race-title">
+        <p class="target-label">🏁 Pick Your Car</p>
+      </div>
+
+      <!-- Track -->
+      <div class="track-wrap" id="trackWrap">
+        <div class="track-start"></div>
+        <div class="track-finish"></div>
+        <div class="lane">
+          <span class="car" id="carRed">🚗</span>
+          <span class="lane-label">RED</span>
+        </div>
+        <div class="lane">
+          <span class="car" id="carBlue">🚙</span>
+          <span class="lane-label">BLUE</span>
+        </div>
+        <div class="lane">
+          <span class="car" id="carGreen">🏎️</span>
+          <span class="lane-label">GREEN</span>
+        </div>
+        <div class="lane">
+          <span class="car" id="carYellow">🚕</span>
+          <span class="lane-label">YELLOW</span>
+        </div>
+
+        <!-- Countdown overlay -->
+        <div class="countdown" id="countdownOverlay">
+          <span class="countdown-num" id="countdownNum">3</span>
+        </div>
+      </div>
+
+      <!-- Pick label -->
+      <p style="text-align:center;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#8b98ad;margin-top:8px;margin-bottom:6px" id="pickLabel">No car picked yet</p>
+
+      <!-- Car picker -->
+      <div class="race-picks">
+        <button type="button" id="pickRed" class="race-pick red" onclick="pickCar('red')" disabled>
+          <span class="rp-car">🚗</span>
+          <span class="rp-label">Red</span>
+          <span class="rp-mult">3.8×</span>
+        </button>
+        <button type="button" id="pickBlue" class="race-pick blue" onclick="pickCar('blue')" disabled>
+          <span class="rp-car">🚙</span>
+          <span class="rp-label">Blue</span>
+          <span class="rp-mult">3.8×</span>
+        </button>
+        <button type="button" id="pickGreen" class="race-pick green" onclick="pickCar('green')" disabled>
+          <span class="rp-car">🏎️</span>
+          <span class="rp-label">Green</span>
+          <span class="rp-mult">3.8×</span>
+        </button>
+        <button type="button" id="pickYellow" class="race-pick yellow" onclick="pickCar('yellow')" disabled>
+          <span class="rp-car">🚕</span>
+          <span class="rp-label">Yellow</span>
+          <span class="rp-mult">3.8×</span>
+        </button>
+      </div>
+
+      <!-- Status -->
+      <div class="race-status-wrap">
+        <div class="race-status-head">
+          <span class="text-slate-500">Race Status</span>
+          <span id="roundStatus" class="text-cyan-300">Set bet & pick a car</span>
+        </div>
+        <div class="timer-bar" id="timerBar"><i id="timerFill"></i></div>
+      </div>
+
+      <!-- Start race button -->
+      <button type="button" id="startRaceBtn" class="btn btn-amber w-full h-[54px] mt-3 text-base" onclick="startRace()" disabled>
+        <svg class="ic" viewBox="0 0 24 24"><path d="M6 4.6v14.8L19.4 12z"/></svg>
+        START RACE
+      </button>
+
+      <!-- Result -->
+      <div id="resultWrapper" class="hidden">
+        <div id="resultCard" class="result-card">
+          <span class="result-emoji" id="resultEmoji">🎉</span>
+          <div class="min-w-0 flex-1">
+            <p class="text-white font-extrabold text-lg flex items-center gap-2" id="resultTitle">WIN</p>
+            <p class="text-slate-400 text-[12px] mt-0.5" id="resultSub">—</p>
+          </div>
+          <div class="text-right">
+            <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Net</p>
+            <p id="resultPayout" class="text-lg font-extrabold">₹0</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- History -->
+    <section class="glass p-4 sm:p-5">
+      <div class="flex items-center justify-between gap-3 mb-3">
+        <h3 class="text-white font-extrabold text-[15px] flex items-center gap-2">
+          <span class="chip chip-cyan" style="width:34px;height:34px;border-radius:11px"><svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8"/><path d="M12 7.4V12l3.2 2"/></svg></span>
+          Recent Races
+          <span class="text-slate-500 text-[11px] font-semibold">(last 10)</span>
+        </h3>
+        <button type="button" onclick="refreshHistory()" class="icon-btn" title="Refresh"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button>
+      </div>
+      <div id="historyContainer" class="space-y-2">
+        <p class="text-slate-400 text-center py-8 text-sm">Loading history…</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+  authDomain: "winkom-da4c2.firebaseapp.com",
+  projectId: "winkom-da4c2",
+  storageBucket: "winkom-da4c2.firebasestorage.app",
+  messagingSenderId: "629229462242",
+  appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let currentUserData = null;
+let balance = 0;
+
+/* ============================================================
+   CAR RACE — 4 cars. Each 25%. Payout 3.8x (5% edge).
+   ============================================================ */
+const CARS = ['red', 'blue', 'green', 'yellow'];
+const CAR_EMOJI = { red: '🚗', blue: '🚙', green: '🏎️', yellow: '🚕' };
+const CAR_LABEL = { red: 'RED', blue: 'BLUE', green: 'GREEN', yellow: 'YELLOW' };
+const CAR_ELEMENT = { red: 'carRed', blue: 'carBlue', green: 'carGreen', yellow: 'carYellow' };
+const PICK_BTN = { red: 'pickRed', blue: 'pickBlue', green: 'pickGreen', yellow: 'pickYellow' };
+
+const COUNTDOWN_MS = 3400;   // 3..2..1..GO
+const RACE_MS = 5400;        // Race duration
+const HISTORY_LIMIT = 10;
+const MULT = 3.8;
+
+let racing = false;
+let pickedCar = null;
+let currentBet = 0;
+let raceTickId = null;
+
+const money = n => Number(n || 0).toFixed(2);
+const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+const escapeHtml = s => s == null ? '' : String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+function toast(msg, type = 'ok') {
+  const el = document.createElement('div');
+  el.textContent = msg;
+  el.className = 'toast ' + type;
+  document.body.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; }, 2200);
+  setTimeout(() => { el.remove(); }, 2500);
+}
+
+window.toggleSidebar = function () {
+  const s = document.getElementById('sidebar'), o = document.getElementById('overlay');
+  s.classList.toggle('sidebar-closed'); s.classList.toggle('sidebar-open'); o.classList.toggle('hidden');
+};
+window.handleLogout = async function () { await signOut(auth); window.location.href = 'login.html'; };
+
+window.setBet = function (v) {
+  if (racing) return;
+  const el = document.getElementById('betAmount');
+  if (el) el.value = v;
+};
+
+async function loadUserData() {
+  if (!currentUser) return;
+  const snap = await getDoc(doc(db, 'users', currentUser.uid));
+  if (snap.exists()) {
+    currentUserData = snap.data();
+    balance = Number(currentUserData.balance) || 0;
+    document.getElementById('walletBalance').textContent = money(balance);
+  }
+}
+
+/* Reset car positions */
+function resetCarPositions() {
+  CARS.forEach(c => {
+    const el = document.getElementById(CAR_ELEMENT[c]);
+    if (el) {
+      el.style.left = '0%';
+      el.style.transition = 'none';
+    }
+  });
+  /* Re-enable transition after paint */
+  requestAnimationFrame(() => {
+    CARS.forEach(c => {
+      const el = document.getElementById(CAR_ELEMENT[c]);
+      if (el) el.style.transition = 'left .04s linear';
+    });
+  });
+}
+
+function setCarPosition(car, pos) {
+  const el = document.getElementById(CAR_ELEMENT[car]);
+  if (el) el.style.left = pos + '%';
+}
+
+/* ============================================================
+   PICK CAR
+   ============================================================ */
+window.pickCar = function (car) {
+  if (racing) return;
+  pickedCar = car;
+
+  CARS.forEach(c => {
+    const el = document.getElementById(PICK_BTN[c]);
+    if (!el) return;
+    el.classList.remove('picked','dim');
+    if (c === car) el.classList.add('picked');
+    else el.classList.add('dim');
+  });
+
+  document.getElementById('pickLabel').innerHTML =
+    `You picked <span style="color:#a5f3fc">${CAR_LABEL[car]} ${CAR_EMOJI[car]}</span> · Payout ${MULT}×`;
+
+  document.getElementById('startRaceBtn').disabled = false;
+  const statusEl = document.getElementById('roundStatus');
+  statusEl.textContent = `Ready — ${CAR_LABEL[car]} picked`;
+  statusEl.className = 'text-emerald-400';
+};
+
+/* ============================================================
+   START RACE
+   ============================================================ */
+window.startRace = async function () {
+  if (racing) { toast('Race in progress…', false); return; }
+  if (!currentUser) { toast('Please wait…', false); return; }
+  if (!pickedCar) { toast('Please pick a car first', false); return; }
+
+  const bet = parseFloat(document.getElementById('betAmount').value);
+  if (!bet || isNaN(bet) || bet < 10) { toast('Minimum bet is ₹10', false); return; }
+  if (bet > 1000) { toast('Maximum bet is ₹1000', false); return; }
+  if (bet > balance) { toast(`Insufficient balance. You have ₹${money(balance)}`, false); return; }
+
+  /* Reset visuals */
+  document.getElementById('resultWrapper').classList.add('hidden');
+  const arena = document.getElementById('raceArena');
+  arena.classList.remove('reveal-win','reveal-loss');
+  document.getElementById('startRaceBtn').disabled = true;
+  CARS.forEach(c => {
+    const el = document.getElementById(PICK_BTN[c]);
+    if (el) el.disabled = true;
+    const pick = document.getElementById(PICK_BTN[c]);
+    if (pick) pick.classList.remove('winner','loser','dim','picked');
+  });
+  resetCarPositions();
+
+  /* Debit bet */
+  try {
+    const newBalance = balance - bet;
+    await updateDoc(doc(db, 'users', currentUser.uid), { balance: newBalance });
+    await addDoc(collection(db, 'transactions'), {
+      uid: currentUser.uid,
+      type: 'game_bet',
+      description: `Car Race — bet ₹${money(bet)} on ${CAR_LABEL[pickedCar]}`,
+      amount: -bet,
+      balanceAfter: newBalance,
+      createdAt: serverTimestamp()
+    });
+    balance = newBalance;
+    currentUserData.balance = newBalance;
+    document.getElementById('walletBalance').textContent = money(balance);
+  } catch (e) {
+    toast('Could not place bet: ' + e.message, false);
+    document.getElementById('startRaceBtn').disabled = false;
+    CARS.forEach(c => {
+      const el = document.getElementById(PICK_BTN[c]);
+      if (el) el.disabled = false;
+    });
+    return;
+  }
+
+  racing = true;
+  currentBet = bet;
+
+  /* Fair winner (25% each) */
+  const winnerCar = CARS[randomInt(0, CARS.length - 1)];
+
+  /* Pre-compute final positions: winner=93%, others 55-88% */
+  const finishPos = { [winnerCar]: 93 };
+  const others = CARS.filter(c => c !== winnerCar);
+  const shuffled = [...others].sort(() => Math.random() - 0.5);
+  let pos = 55;
+  shuffled.forEach((c, i) => {
+    const maxPos = 88 - i * 6;
+    const minPos = pos;
+    finishPos[c] = randomInt(minPos, Math.max(minPos + 2, maxPos));
+    pos = finishPos[c] + 3;
+  });
+
+  /* Countdown 3 → 2 → 1 → GO */
+  const cdOverlay = document.getElementById('countdownOverlay');
+  const cdNum = document.getElementById('countdownNum');
+  cdOverlay.classList.add('show');
+  const statusEl = document.getElementById('roundStatus');
+  statusEl.textContent = 'Get ready…';
+  statusEl.className = 'text-amber-300';
+
+  for (let i = 3; i >= 1; i--) {
+    cdNum.textContent = i;
+    cdNum.style.animation = 'none';
+    void cdNum.offsetWidth;
+    cdNum.style.animation = 'cdPulse .8s cubic-bezier(.16,1,.3,1)';
+    await new Promise(r => setTimeout(r, 800));
+  }
+  cdNum.textContent = 'GO!';
+  cdNum.style.animation = 'none';
+  void cdNum.offsetWidth;
+  cdNum.style.animation = 'cdPulse .6s cubic-bezier(.16,1,.3,1)';
+  await new Promise(r => setTimeout(r, 500));
+  cdOverlay.classList.remove('show');
+
+  /* Start race animation */
+  arena.classList.add('racing');
+  const bar = document.getElementById('timerBar');
+  bar.classList.add('racing');
+  statusEl.textContent = 'Racing…';
+  statusEl.className = 'text-cyan-300';
+
+  const startTs = Date.now();
+  const carProgress = { red: 0, blue: 0, green: 0, yellow: 0 };
+  /* Add slight random jitter for realism */
+  const jitter = { red: 0, blue: 0, green: 0, yellow: 0 };
+  CARS.forEach(c => { jitter[c] = Math.random() * 8 - 4; });
+
+  if (raceTickId) clearInterval(raceTickId);
+  raceTickId = setInterval(() => {
+    const elapsed = Date.now() - startTs;
+    let t = Math.min(1, elapsed / RACE_MS);
+
+    /* Ease-out cubic for a smooth "fast then slow" finish */
+    const eased = 1 - Math.pow(1 - t, 2.2);
+
+    CARS.forEach(c => {
+      const target = finishPos[c];
+      /* Add mid-race fluctuation */
+      const fluct = Math.sin(elapsed / 250 + c.charCodeAt(0)) * 1.5;
+      const posNow = Math.max(0, Math.min(target, target * eased + fluct + jitter[c] * eased));
+      setCarPosition(c, posNow);
+    });
+
+    if (t >= 1) {
+      clearInterval(raceTickId);
+      raceTickId = null;
+      /* Snap all to final positions */
+      CARS.forEach(c => setCarPosition(c, finishPos[c]));
+      arena.classList.remove('racing');
+      setTimeout(() => finalizeRace(winnerCar), 400);
+    }
+  }, 40);
+};
+
+/* ============================================================
+   FINALIZE
+   ============================================================ */
+async function finalizeRace(winnerCar) {
+  const won = pickedCar === winnerCar;
+  const credit = won ? currentBet * MULT : 0;
+  const netDelta = credit - currentBet;
+
+  /* Visual winners/losers */
+  CARS.forEach(c => {
+    const pick = document.getElementById(PICK_BTN[c]);
+    if (!pick) return;
+    pick.classList.remove('picked','dim');
+    if (c === winnerCar) pick.classList.add('winner');
+    else pick.classList.add('loser');
+  });
+
+  const arena = document.getElementById('raceArena');
+  arena.classList.remove('reveal-win','reveal-loss');
+  void arena.offsetWidth;
+  arena.classList.add(won ? 'reveal-win' : 'reveal-loss');
+
+  /* Credit wallet if won */
+  try {
+    if (won && credit > 0) {
+      const newBalance = balance + credit;
+      await updateDoc(doc(db, 'users', currentUser.uid), { balance: newBalance });
+      await addDoc(collection(db, 'transactions'), {
+        uid: currentUser.uid,
+        type: 'game_win',
+        description: `Car Race WIN — ${CAR_LABEL[winnerCar]} ${CAR_EMOJI[winnerCar]} × ${MULT}`,
+        amount: credit,
+        balanceAfter: newBalance,
+        createdAt: serverTimestamp()
+      });
+      balance = newBalance;
+      currentUserData.balance = newBalance;
+      document.getElementById('walletBalance').textContent = money(balance);
+    }
+
+    await addDoc(collection(db, 'gameRounds'), {
+      uid: currentUser.uid,
+      userName: currentUserData?.name || 'User',
+      game: 'car-race',
+      pickedCar,
+      winnerCar,
+      betAmount: currentBet,
+      multiplier: won ? MULT : 0,
+      payout: credit,
+      netDelta,
+      result: won ? 'win' : 'loss',
+      createdAt: serverTimestamp()
+    });
+  } catch (e) {
+    console.error('Save round error:', e);
+    toast('Sync issue — result shown locally', false);
+  }
+
+  /* Result card */
+  const wrap = document.getElementById('resultWrapper');
+  const card = document.getElementById('resultCard');
+  card.classList.remove('win','loss');
+  card.classList.add(won ? 'win' : 'loss');
+  document.getElementById('resultEmoji').textContent = won ? '🎉' : '😔';
+  document.getElementById('resultTitle').textContent = won ? 'YOU WIN!' : 'YOU LOST';
+  document.getElementById('resultSub').textContent =
+    `${CAR_EMOJI[winnerCar]} ${CAR_LABEL[winnerCar]} won the race · You picked ${CAR_LABEL[pickedCar]}`;
+  const pEl = document.getElementById('resultPayout');
+  pEl.textContent = (netDelta >= 0 ? '+' : '−') + '₹' + money(Math.abs(netDelta));
+  pEl.className = won ? 'text-lg font-extrabold text-emerald-400' : 'text-lg font-extrabold text-rose-400';
+  wrap.classList.remove('hidden');
+
+  const statusEl = document.getElementById('roundStatus');
+  if (won) {
+    statusEl.textContent = `You won ₹${money(netDelta)}! 🎉`;
+    statusEl.className = 'text-emerald-400';
+  } else {
+    statusEl.textContent = `You lost ₹${money(currentBet)}`;
+    statusEl.className = 'text-rose-400';
+  }
+
+  /* Reset for next round */
+  racing = false;
+  pickedCar = null;
+  document.getElementById('pickLabel').textContent = 'No car picked yet';
+  const bar = document.getElementById('timerBar');
+  bar.classList.remove('racing');
+  document.getElementById('timerFill').style.width = '0%';
+
+  setTimeout(() => {
+    CARS.forEach(c => {
+      const el = document.getElementById(PICK_BTN[c]);
+      if (el) {
+        el.disabled = false;
+        el.classList.remove('winner','loser','dim','picked');
+      }
+    });
+    resetCarPositions();
+    document.getElementById('startRaceBtn').disabled = true;
+    document.getElementById('roundStatus').textContent = 'Set bet & pick a car';
+    document.getElementById('roundStatus').className = 'text-cyan-300';
+  }, 3200);
+
+  await pruneHistory();
+  await loadHistory();
+}
+
+/* ============================================================
+   HISTORY + PRUNE
+   ============================================================ */
+async function pruneHistory() {
+  if (!currentUser) return;
+  try {
+    const q = query(collection(db, 'gameRounds'), where('uid', '==', currentUser.uid), where('game', '==', 'car-race'));
+    const snap = await getDocs(q);
+    const all = [];
+    snap.forEach(d => all.push({ id: d.id, ref: d.ref, _data: d.data() }));
+    if (all.length <= HISTORY_LIMIT) return;
+    all.sort((a, b) => (b._data.createdAt?.toDate?.() || 0) - (a._data.createdAt?.toDate?.() || 0));
+    const toDelete = all.slice(HISTORY_LIMIT);
+    for (const r of toDelete) {
+      try { await deleteDoc(r.ref); } catch (e) { console.error('Prune fail', r.id, e); }
+    }
+  } catch (e) {
+    console.error('pruneHistory error:', e);
+  }
+}
+
+window.refreshHistory = async function () { await pruneHistory(); await loadHistory(); };
+
+async function loadHistory() {
+  const container = document.getElementById('historyContainer');
+  if (!container || !currentUser) return;
+  try {
+    const q = query(collection(db, 'gameRounds'), where('uid', '==', currentUser.uid), where('game', '==', 'car-race'));
+    const snap = await getDocs(q);
+    const rounds = [];
+    snap.forEach(d => rounds.push({ id: d.id, ...d.data() }));
+    rounds.sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
+
+    const earnings = rounds.reduce((sum, r) => {
+      const n = Number(r.netDelta) || 0;
+      return sum + (n > 0 ? n : 0);
+    }, 0);
+    document.getElementById('totalEarnings').textContent = earnings.toFixed(2);
+
+    const recent = rounds.slice(0, HISTORY_LIMIT);
+
+    if (!recent.length) {
+      container.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm">No races yet. Pick a car and start racing! 🏎️</div>`;
+      return;
+    }
+
+    container.innerHTML = recent.map(r => {
+      const dt = r.createdAt?.toDate?.() || new Date();
+      const net = Number(r.netDelta) || 0;
+      const bet = Number(r.betAmount) || 0;
+      const won = r.result === 'win';
+      const time = dt.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+      const date = dt.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+      const wCar = r.winnerCar || 'red';
+      const pCar = r.pickedCar || 'red';
+      return `<div class="history-row">
+        <div class="history-dot ${won ? 'win' : 'loss'}">${CAR_EMOJI[wCar]}</div>
+        <div class="min-w-0 flex-1">
+          <p class="text-white font-bold text-[13px] truncate">${won ? 'Won' : 'Lost'} · <span class="text-slate-400 font-semibold">bet ₹${money(bet)}</span></p>
+          <p class="text-slate-500 text-[11px] mt-0.5">
+            Winner: <span class="font-bold" style="color:#a5f3fc">${CAR_LABEL[wCar]} ${CAR_EMOJI[wCar]}</span> ·
+            You: <span class="font-bold">${CAR_LABEL[pCar]}</span>
+          </p>
+        </div>
+        <div class="text-right shrink-0">
+          <p class="font-extrabold text-[13px] ${won ? 'text-emerald-400' : 'text-rose-400'}">${net >= 0 ? '+' : '−'}₹${money(Math.abs(net))}</p>
+          <p class="text-slate-500 text-[10px] mt-0.5">${date} · ${time}</p>
+        </div>
+      </div>`;
+    }).join('');
+  } catch (e) {
+    console.error('History error:', e);
+    container.innerHTML = `<p class="text-rose-400 text-center py-8 text-sm">Could not load history.</p>`;
+  }
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  currentUser = user;
+  try { resetCarPositions(); } catch(_){}
+  try { await loadUserData(); } catch (e) { console.error(e); }
+  try { await pruneHistory(); } catch (e) { console.error(e); }
+  try { await loadHistory(); } catch (e) { console.error(e); }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') document.getElementById('sidebar')?.classList.add('sidebar-closed');
+});
+</script>
+</body>
+</html>
