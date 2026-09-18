@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>WinKom — Dashboard</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{--bg:#070b14;--line:rgba(255,255,255,.075);--line-strong:rgba(255,255,255,.13);--text:#eef4fb;--muted:#8b98ad;--dim:#5b6879;--cyan:#22d3ee;--cyan-soft:#67e8f9;--amber:#f59e0b;--emerald:#10b981;--violet:#8b5cf6;--rose:#f43f5e;}
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;min-height:100vh;color:var(--text);font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;background-color:var(--bg);background-image:radial-gradient(600px 380px at 8% -12%, rgba(34,211,238,.08), transparent 62%),radial-gradient(560px 380px at 102% 2%, rgba(99,102,241,.07), transparent 60%);}
+::selection{background:rgba(34,211,238,.3)}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:8px}
+.ic{width:20px;height:20px;flex:none;display:block;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ic-sm{width:16px;height:16px}.ic-xs{width:13px;height:13px;stroke-width:2}
+.glass{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:20px}
+.sidebar{transition:transform .25s cubic-bezier(.4,0,.2,1);will-change:transform}
+.sidebar-closed{transform:translateX(-100%)}
+.sidebar-open{transform:translateX(0)}
+@media (min-width:768px){.sidebar-closed{transform:translateX(0)}}
+.nav-link{position:relative;display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:14px;font-size:14px;font-weight:600;color:var(--muted);border:1px solid transparent;transition:background .15s,color .15s,border-color .15s}
+.nav-link:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.nav-link.active{background:linear-gradient(90deg,rgba(34,211,238,.16),rgba(34,211,238,.04));border-color:rgba(34,211,238,.22);color:var(--cyan-soft)}
+.nav-link .ic{width:18px;height:18px}
+.glass-header{background:rgba(9,13,22,.88)}
+.wallet-card{background:radial-gradient(520px 220px at 100% 0%, rgba(34,211,238,.10), transparent 62%),linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid rgba(34,211,238,.20);border-radius:22px}
+.wallet-badge{width:54px;height:54px;border-radius:16px;flex:none;display:flex;align-items:center;justify-content:center;color:var(--cyan-soft);background:rgba(34,211,238,.10);border:1px solid rgba(34,211,238,.22)}
+.wallet-badge .ic{width:26px;height:26px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:14px;font-size:13.5px;font-weight:700;white-space:nowrap;cursor:pointer;border:1px solid transparent;transition:transform .12s,background .15s,border-color .15s,color .15s;text-decoration:none}
+.btn:active{transform:scale(.97)}
+.btn-deposit{background:var(--emerald);color:#04140d}
+.btn-withdraw{background:rgba(255,255,255,.05);border-color:var(--line-strong);color:var(--text)}
+.btn-cyan{background:rgba(34,211,238,.14);border-color:rgba(34,211,238,.35);color:var(--cyan-soft)}
+.btn-green{background:rgba(16,185,129,.14);border-color:rgba(16,185,129,.35);color:#6ee7b7}
+.btn-primary{background:linear-gradient(135deg,#22d3ee,#3b82f6);color:#04121a}
+.btn-ghost{background:rgba(255,255,255,.05);border-color:var(--line-strong);color:var(--muted)}
+.chip{width:42px;height:42px;border-radius:13px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid transparent}
+.chip .ic{width:20px;height:20px}
+.chip-cyan{color:var(--cyan-soft);background:rgba(34,211,238,.10);border-color:rgba(34,211,238,.20)}
+.chip-amber{color:#fbbf24;background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.20)}
+.chip-emerald{color:#34d399;background:rgba(16,185,129,.10);border-color:rgba(16,185,129,.20)}
+.chip-violet{color:#a78bfa;background:rgba(139,92,246,.10);border-color:rgba(139,92,246,.20)}
+.stat-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:16px 10px;border-radius:18px;text-align:center;width:100%;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--line);transition:transform .15s,border-color .15s;cursor:pointer;font-family:inherit}
+.stat-tile:hover{transform:translateY(-2px);border-color:rgba(34,211,238,.26)}
+.stat-value{font-size:19px;font-weight:800;color:#fff;line-height:1.1}
+.stat-label{font-size:11px;color:var(--muted);font-weight:600}
+.referral-details{max-height:0;opacity:0;overflow:hidden;transition:max-height .3s,opacity .25s,padding .25s;padding-top:0;padding-bottom:0}
+.referral-details.open{max-height:820px;opacity:1;padding-bottom:20px}
+#referralChevron{transition:transform .25s;color:var(--cyan-soft)}
+#referralToggle.open #referralChevron{transform:rotate(180deg)}
+.field-box{background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.field-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:800}
+.support-btn{width:40px;height:40px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(34,211,238,.16),rgba(99,102,241,.12));border:1px solid rgba(34,211,238,.32);color:var(--cyan-soft);text-decoration:none;position:relative}
+.support-badge{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:linear-gradient(135deg,#f43f5e,#fb7185);color:#fff;font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid #070b14;line-height:1}
+.cta-card{position:relative;overflow:hidden;border-radius:22px;padding:22px;background:#0d1320;border:1px solid var(--line);transition:transform .18s,border-color .18s;display:flex;flex-direction:column;gap:14px;text-decoration:none;color:inherit}
+.cta-card:hover{transform:translateY(-3px);border-color:rgba(34,211,238,.34)}
+.cta-card.games-cta:hover{border-color:rgba(245,158,11,.34)}
+.cta-card::before{content:'';position:absolute;inset:0;background:radial-gradient(400px 200px at 100% 0%, rgba(34,211,238,.14), transparent 62%);pointer-events:none}
+.cta-card.games-cta::before{background:radial-gradient(400px 200px at 100% 0%, rgba(245,158,11,.14), transparent 62%)}
+.cta-icon{width:56px;height:56px;border-radius:18px;display:flex;align-items:center;justify-content:center;position:relative;z-index:1}
+
+/* GAMES GRID */
+.games-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media (min-width:640px){.games-grid{grid-template-columns:repeat(3,1fr);gap:14px}}
+.game-card{position:relative;overflow:hidden;border-radius:20px;padding:16px 14px 14px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.012));border:1px solid var(--line);text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:10px;transition:transform .18s,border-color .18s;cursor:pointer;min-height:180px}
+.game-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.22)}
+.game-card::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.85}
+.game-card .gc-orb{position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:999px;filter:blur(30px);opacity:.55;pointer-events:none}
+.game-card .gc-icon{width:56px;height:56px;border-radius:16px;flex:none;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.15), 0 6px 16px rgba(0,0,0,.35)}
+.game-card .gc-icon svg{width:30px;height:30px;stroke-width:2;stroke:currentColor;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.game-card .gc-name{font-size:15px;font-weight:800;color:#fff;letter-spacing:-.01em;position:relative;z-index:1}
+.game-card .gc-desc{font-size:11.5px;color:#8b98ad;font-weight:600;line-height:1.35;position:relative;z-index:1;flex:1}
+.game-card .gc-foot{display:flex;align-items:center;justify-content:space-between;gap:6px;position:relative;z-index:1;margin-top:auto}
+.game-card .gc-badge{font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);color:#e8eef7}
+.game-card .gc-play{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:999px;display:inline-flex;align-items:center;gap:4px}
+.game-card .gc-play .ic{width:11px;height:11px;stroke-width:2.4}
+.game-card .gc-hot{position:absolute;top:10px;right:10px;z-index:2;font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:linear-gradient(135deg,#f43f5e,#fb7185);color:#fff}
+
+/* Game-specific themes */
+.game-card.gt-lr .gc-icon{background:linear-gradient(135deg,rgba(34,211,238,.35),rgba(59,130,246,.20));color:#67e8f9;border-color:rgba(34,211,238,.42)}
+.game-card.gt-lr::before{background:radial-gradient(400px 200px at 100% 0%, rgba(34,211,238,.16), transparent 62%)}
+.game-card.gt-lr .gc-orb{background:radial-gradient(circle,#22d3ee,transparent 60%)}
+.game-card.gt-lr .gc-play{background:rgba(34,211,238,.16);color:#a5f3fc;border:1px solid rgba(34,211,238,.42)}
+
+.game-card.gt-sw .gc-icon{background:linear-gradient(135deg,rgba(245,158,11,.35),rgba(244,63,94,.20));color:#fcd34d;border-color:rgba(245,158,11,.42)}
+.game-card.gt-sw::before{background:radial-gradient(400px 200px at 100% 0%, rgba(245,158,11,.16), transparent 62%)}
+.game-card.gt-sw .gc-orb{background:radial-gradient(circle,#f59e0b,transparent 60%)}
+.game-card.gt-sw .gc-play{background:rgba(245,158,11,.16);color:#fcd34d;border:1px solid rgba(245,158,11,.42)}
+
+.game-card.gt-cp .gc-icon{background:linear-gradient(135deg,rgba(139,92,246,.35),rgba(34,211,238,.20));color:#c4b5fd;border-color:rgba(139,92,246,.42)}
+.game-card.gt-cp::before{background:radial-gradient(400px 200px at 100% 0%, rgba(139,92,246,.16), transparent 62%)}
+.game-card.gt-cp .gc-orb{background:radial-gradient(circle,#8b5cf6,transparent 60%)}
+.game-card.gt-cp .gc-play{background:rgba(139,92,246,.16);color:#c4b5fd;border:1px solid rgba(139,92,246,.42)}
+
+.game-card.gt-dr .gc-icon{background:linear-gradient(135deg,rgba(16,185,129,.35),rgba(245,158,11,.20));color:#6ee7b7;border-color:rgba(16,185,129,.42)}
+.game-card.gt-dr::before{background:radial-gradient(400px 200px at 100% 0%, rgba(16,185,129,.16), transparent 62%)}
+.game-card.gt-dr .gc-orb{background:radial-gradient(circle,#10b981,transparent 60%)}
+.game-card.gt-dr .gc-play{background:rgba(16,185,129,.16);color:#6ee7b7;border:1px solid rgba(16,185,129,.42)}
+
+.game-card.gt-hl .gc-icon{background:linear-gradient(135deg,rgba(139,92,246,.35),rgba(245,158,11,.20));color:#c4b5fd;border-color:rgba(139,92,246,.42)}
+.game-card.gt-hl::before{background:radial-gradient(400px 200px at 100% 0%, rgba(139,92,246,.16), transparent 62%)}
+.game-card.gt-hl .gc-orb{background:radial-gradient(circle,#8b5cf6,transparent 60%)}
+.game-card.gt-hl .gc-play{background:rgba(139,92,246,.16);color:#c4b5fd;border:1px solid rgba(139,92,246,.42)}
+
+.game-card.gt-cr .gc-icon{background:linear-gradient(135deg,rgba(139,92,246,.35),rgba(244,63,94,.20));color:#c4b5fd;border-color:rgba(139,92,246,.42)}
+.game-card.gt-cr::before{background:radial-gradient(400px 200px at 100% 0%, rgba(139,92,246,.16), transparent 62%)}
+.game-card.gt-cr .gc-orb{background:radial-gradient(circle,#8b5cf6,transparent 60%)}
+.game-card.gt-cr .gc-play{background:rgba(139,92,246,.16);color:#c4b5fd;border:1px solid rgba(139,92,246,.42)}
+
+/* MODAL */
+.modal{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(3,6,12,.82)}
+.modal.open{display:flex}
+.modal-panel{width:100%;max-width:440px;max-height:88vh;overflow-y:auto;border-radius:22px;padding:20px;background:linear-gradient(180deg,#0e1524,#0a101b);border:1px solid var(--line-strong);animation:modalIn .22s cubic-bezier(.16,1,.3,1)}
+@keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.icon-btn{width:36px;height:36px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--muted);cursor:pointer;transition:all .15s}
+.icon-btn:hover{background:rgba(255,255,255,.10);color:#fff}
+
+/* Referral user rows - simplified */
+.ref-row{display:flex;align-items:center;gap:12px;padding:12px 13px;border-radius:14px;background:rgba(255,255,255,.028);border:1px solid var(--line)}
+.ref-avatar{width:42px;height:42px;border-radius:999px;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#cffafe;background:linear-gradient(135deg,rgba(34,211,238,.22),rgba(59,130,246,.18));border:1px solid rgba(34,211,238,.22)}
+
+.fade-in{animation:fadeIn .35s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.pulse-dot{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.hidden{display:none!important}
+.empty{padding:36px 18px;text-align:center;border-radius:18px;border:1px dashed rgba(255,255,255,.10);background:rgba(255,255,255,.015)}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside id="sidebar" class="sidebar sidebar-closed fixed top-0 left-0 h-full w-[264px] bg-[#0a0f1a]/98 border-r border-white/[.06] z-50 overflow-y-auto">
+  <div class="p-5">
+    <div class="flex items-center justify-between mb-8">
+      <a href="index.html" class="flex items-center gap-3 min-w-0">
+        <img src="logo.png" alt="WinKom" class="w-10 h-10 rounded-xl object-cover" onerror="this.style.display='none'"/>
+        <span class="text-xl font-extrabold text-white tracking-tight truncate">Win<span class="text-cyan-400">Kom</span></span>
+      </a>
+      <button onclick="toggleSidebar()" class="md:hidden w-9 h-9 rounded-xl bg-white/5 border border-white/10 text-gray-400 flex items-center justify-center transition"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <nav class="space-y-1.5">
+      <a href="index.html" class="nav-link active"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8.5 16v-4.5M12.5 16V8M16.5 16v-2.5"/></svg>Dashboard</a>
+      <a href="games.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="10" rx="4"/><path d="M7 12h2M8 11v2M15.5 11h.01M17.5 13h.01"/></svg>Games</a>
+      <a href="https://winkom.site/game1.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>Spin Wheel</a>
+      <a href="https://winkom.site/game2.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>Color Prediction</a>
+      <a href="https://winkom.site/game3.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.5" fill="currentColor" stroke="none"/></svg>Dice Roll</a>
+      <a href="https://winkom.site/game4.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M3 9.5 12 4l9 5.5"/><path d="M5 10v8M19 10v8"/></svg>Hi-Lo Card</a>
+      <a href="https://winkom.site/game5.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9z"/></svg>Crash</a>
+      <a href="https://winkom.site/investment.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M3 16.5 9 10.5l4 4 8-8"/><path d="M15 6.5h6v6"/></svg>Investment</a>
+      <a href="https://winkom.site/deposit.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8 10.5 4 4 4-4"/><path d="M5 19h14"/></svg>Deposit</a>
+      <a href="https://winkom.site/withdraw.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M12 15V5"/><path d="m8 8.5 4-4 4 4"/><path d="M5 19h14"/></svg>Withdraw</a>
+      <a href="https://winkom.site/transactions.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M6.5 3.5h8L18.5 7v13.5h-12z"/><path d="M9.5 11h6M9.5 14.5h6M9.5 7.5h2.5"/></svg>My Transactions</a>
+      <a href="https://winkom.site/settings.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.1"/><path d="M12 2.9v2.3M12 18.8v2.3M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.9 12h2.3M18.8 12h2.3M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>Settings</a>
+      <a href="https://winkom.site/about.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.2"/><circle cx="12" cy="7.9" r=".9" fill="currentColor" stroke="none"/></svg>About</a>
+      <a href="https://winkom.site/support.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/><path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/><path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/></svg>Support</a>
+      <div class="pt-3 mt-3 border-t border-white/[.06]"><button onclick="handleLogout()" class="nav-link w-full text-left text-red-400"><svg class="ic" viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="m10 8-4 4 4 4"/><path d="M6 12h9"/></svg>Logout</button></div>
+    </nav>
+  </div>
+</aside>
+<div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden"></div>
+
+<div class="md:ml-64 relative">
+  <header class="glass-header border-b border-white/[.06] fixed top-0 left-0 right-0 md:left-64 z-40">
+    <div class="max-w-6xl mx-auto px-4 py-3.5">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <button onclick="toggleSidebar()" class="md:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-gray-300 flex items-center justify-center transition shrink-0"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+          <div class="min-w-0"><h1 class="text-[15px] sm:text-lg font-extrabold text-white truncate leading-tight">Welcome, <span id="userName" class="text-cyan-400">Loading…</span></h1><p class="text-[11px] text-slate-500 font-medium truncate">Your investment dashboard</p></div>
+        </div>
+        <div class="flex items-center gap-2.5 shrink-0">
+          <span class="hidden lg:inline-flex items-center gap-1.5 text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 px-3 py-1.5 rounded-full shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></span> LIVE</span>
+          <a href="https://winkom.site/support.html" class="support-btn" id="supportBtn" aria-label="Contact Support"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/><path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/><path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/></svg><span id="supportBadge" class="support-badge hidden">0</span></a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 pt-[100px] sm:pt-[80px] pb-6 fade-in">
+    <!-- Wallet -->
+    <section class="wallet-card p-5 sm:p-6 mb-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+        <div class="flex items-center gap-4 min-w-0">
+          <span class="wallet-badge"><svg class="ic" viewBox="0 0 24 24"><path d="M20 8.6V7a2 2 0 0 0-2-2H5.6A2.6 2.6 0 0 0 3 7.6v8.8A2.6 2.6 0 0 0 5.6 19H18a2 2 0 0 0 2-2v-1.6"/><path d="M21.3 9.6h-4.4a2.4 2.4 0 0 0 0 4.8h4.4a.8.8 0 0 0 .8-.8v-3.2a.8.8 0 0 0-.8-.8Z"/><circle cx="17.1" cy="12" r=".85" fill="currentColor" stroke="none"/></svg></span>
+          <div class="min-w-0"><p class="field-label">Available Balance</p><p class="text-[30px] sm:text-4xl font-extrabold text-white leading-tight mt-1 tracking-tight">₹<span id="totalBalance">0</span></p></div>
+        </div>
+        <div class="grid grid-cols-2 sm:flex gap-3 shrink-0">
+          <a href="https://winkom.site/deposit.html" class="btn btn-deposit"><svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8.4v7.2M8.4 12h7.2"/></svg>Deposit</a>
+          <a href="https://winkom.site/withdraw.html" class="btn btn-withdraw"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M12 15V5"/><path d="m8 8.5 4-4 4 4"/><path d="M5 19h14"/></svg>Withdraw</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="grid grid-cols-3 gap-3 mb-5">
+      <button type="button" class="stat-tile" onclick="location.href='https://winkom.site/investment.html'">
+        <span class="chip chip-violet"><svg class="ic" viewBox="0 0 24 24"><path d="M3 16.5 9 10.5l4 4 8-8"/><path d="M15 6.5h6v6"/></svg></span>
+        <span class="stat-value" id="myInvestmentsCount">0</span>
+        <span class="stat-label">My Investments</span>
+      </button>
+      <div class="stat-tile">
+        <span class="chip chip-amber"><svg class="ic" viewBox="0 0 24 24"><rect x="2.6" y="6.4" width="18.8" height="11.2" rx="2.6"/><circle cx="12" cy="12" r="2.4"/><path d="M6.4 12h.01M17.6 12h.01"/></svg></span>
+        <span class="stat-value">₹<span id="totalEarnings">0</span></span>
+        <span class="stat-label">Total Earnings</span>
+      </div>
+      <button type="button" class="stat-tile" onclick="openMyReferralsModal()">
+        <span class="chip chip-emerald"><svg class="ic" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.1"/><path d="M3.2 19.3c.6-3.2 2.6-4.9 5.8-4.9s5.2 1.7 5.8 4.9"/><circle cx="17.2" cy="9.2" r="2.5"/><path d="M16.1 14.9c2.8-.1 4.6 1.4 5.2 4.5"/></svg></span>
+        <span class="stat-value" id="referralCount">0</span>
+        <span class="stat-label">People Referred</span>
+      </button>
+    </section>
+
+    <!-- Two Big Cards -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <a href="https://winkom.site/investment.html" class="cta-card">
+        <div class="flex items-center gap-3.5 relative z-[1]">
+          <div class="cta-icon chip-violet" style="width:56px;height:56px"><svg class="ic" style="width:26px;height:26px" viewBox="0 0 24 24"><path d="M3 16.5 9 10.5l4 4 8-8"/><path d="M15 6.5h6v6"/></svg></div>
+          <div><h3 class="text-lg font-extrabold text-white">💰 Investment</h3><p class="text-slate-400 text-[12.5px] mt-1">Grow your balance with available investment plans.</p></div>
+        </div>
+        <button type="button" class="btn btn-primary w-full sm:w-auto relative z-[1]" style="align-self:flex-start">View Investments <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></button>
+      </a>
+      <a href="https://winkom.site/games.html" class="cta-card games-cta">
+        <div class="flex items-center gap-3.5 relative z-[1]">
+          <div class="cta-icon chip-amber" style="width:56px;height:56px"><svg class="ic" style="width:26px;height:26px" viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="10" rx="4"/><path d="M7 12h2M8 11v2M15.5 11h.01M17.5 13h.01"/></svg></div>
+          <div><h3 class="text-lg font-extrabold text-white">🎮 Games</h3><p class="text-slate-400 text-[12.5px] mt-1">6 skill-based games · win real money instantly.</p></div>
+        </div>
+        <button type="button" class="btn btn-primary w-full sm:w-auto relative z-[1]" style="align-self:flex-start">Explore Games <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></button>
+      </a>
+    </section>
+
+    <!-- GAMES GRID -->
+    <section class="mb-6">
+      <div class="flex items-center justify-between gap-3 mb-4">
+        <div class="flex items-center gap-3">
+          <span class="chip chip-amber"><svg class="ic" viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="10" rx="4"/><path d="M7 12h2M8 11v2M15.5 11h.01M17.5 13h.01"/></svg></span>
+          <div><h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Play &amp; Win</h2><p class="text-slate-500 text-[11px] font-semibold mt-0.5">All games use real wallet balance</p></div>
+        </div>
+        <a href="https://winkom.site/games.html" class="btn btn-ghost" style="padding:8px 12px;font-size:12px">View All <svg class="ic ic-xs" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="games-grid">
+        <!-- Left or Right -->
+        <a href="https://winkom.site/games.html" class="game-card gt-lr">
+          <span class="gc-orb"></span>
+          <span class="gc-icon">
+            <svg viewBox="0 0 24 24"><path d="M9 18V6l-6 6 6 6Z"/><path d="M15 6v12l6-6-6-6Z"/></svg>
+          </span>
+          <div class="gc-name">Left or Right</div>
+          <div class="gc-desc">Pick a side before the round starts. Closer guess wins 2x.</div>
+          <div class="gc-foot">
+            <span class="gc-badge">2x Payout</span>
+            <span class="gc-play">Play <svg class="ic" viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></span>
+          </div>
+        </a>
+
+        <!-- Spin Wheel -->
+        <a href="https://winkom.site/game1.html" class="game-card gt-sw">
+          <span class="gc-orb"></span>
+          <span class="gc-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M3 12h18"/><path d="M5.6 5.6l12.8 12.8"/><path d="M18.4 5.6 5.6 18.4"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/></svg>
+          </span>
+          <div class="gc-name">Spin Wheel</div>
+          <div class="gc-desc">Spin the lucky wheel and land on up to 3x multiplier.</div>
+          <div class="gc-foot">
+            <span class="gc-badge">Up to 3x</span>
+            <span class="gc-play">Play <svg class="ic" viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></span>
+          </div>
+        </a>
+
+        <!-- Color Prediction -->
+        <a href="https://winkom.site/game2.html" class="game-card gt-cp">
+          <span class="gc-orb"></span>
+          <span class="gc-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2.5a9.5 9.5 0 0 0 0 19c1.4 0 2.4-1 2.4-2.3 0-.6-.2-1.1-.6-1.5-.4-.4-.6-.9-.6-1.5 0-1.3 1-2.3 2.4-2.3h1.6c2.3 0 4.3-1.8 4.3-4.2C21 5.2 17 2.5 12 2.5Z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor" stroke="none"/><circle cx="10" cy="7" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+          </span>
+          <div class="gc-name">Color Prediction</div>
+          <div class="gc-desc">Predict Red, Green or Violet. Win up to 4.8x instantly.</div>
+          <div class="gc-foot">
+            <span class="gc-badge">Up to 4.8x</span>
+            <span class="gc-play">Play <svg class="ic" viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></span>
+          </div>
+        </a>
+
+        <!-- Dice Roll -->
+        <a href="https://winkom.site/game3.html" class="game-card gt-dr">
+          <span class="gc-orb"></span>
+          <span class="gc-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.4" fill="currentColor" stroke="none"/></svg>
+          </span>
+          <div class="gc-name">Dice Roll</div>
+          <div class="gc-desc">Bet Low, Seven or High. Two dice, one big win up to 5.7x.</div>
+          <div class="gc-foot">
+            <span class="gc-badge">Up to 5.7x</span>
+            <span class="gc-play">Play <svg class="ic" viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></span>
+          </div>
+        </a>
+
+        <!-- Hi-Lo Card -->
+        <a href="https://winkom.site/game4.html" class="game-card gt-hl">
+          <span class="gc-orb"></span>
+          <span class="gc-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="5" width="13" height="16" rx="2"/><path d="M8 10.5 9.5 9l1.5 1.5-1.5 1.5L8 10.5Z" fill="currentColor" stroke="none"/><path d="M8 16h5"/><path d="M17 3h4v4"/><path d="m17 7 4-4"/></svg>
+          </span>
+          <div class="gc-name">Hi-Lo Card</div>
+          <div class="gc-desc">Guess if the next card is higher or lower. 1.95x payout.</div>
+          <div class="gc-foot">
+            <span class="gc-badge">1.95x</span>
+            <span class="gc-play">Play <svg class="ic" viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></span>
+          </div>
+        </a>
+
+        <!-- Crash -->
+        <a href="https://winkom.site/game5.html" class="game-card gt-cr">
+          <span class="gc-orb"></span>
+          <span class="gc-hot">🔥 Hot</span>
+          <span class="gc-icon">
+            <svg viewBox="0 0 24 24"><path d="M2 12h4l2-7 3 14 3-11 2 5 4-1"/><path d="M20 12v3"/><circle cx="20" cy="20" r="1.3" fill="currentColor" stroke="none"/></svg>
+          </span>
+          <div class="gc-name">Crash</div>
+          <div class="gc-desc">Cash out before the plane crashes. Win up to 50x.</div>
+          <div class="gc-foot">
+            <span class="gc-badge">Up to 50x</span>
+            <span class="gc-play">Play <svg class="ic" viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Referral -->
+    <section class="glass overflow-hidden mb-6">
+      <button id="referralToggle" type="button" onclick="toggleReferralSection()" class="w-full flex items-center justify-between gap-4 p-5 text-left">
+        <div class="flex items-center gap-3 min-w-0 flex-1">
+          <span class="chip chip-emerald shrink-0"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3.2 14.6 9l6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.7 9.4 9z"/></svg></span>
+          <div class="min-w-0 flex-1"><h3 class="text-[15px] sm:text-lg font-extrabold text-white">Referral Program</h3><p class="text-slate-400 text-[11.5px] sm:text-sm mt-0.5 leading-snug">Earn <span class="text-cyan-300 font-bold">₹39</span> per referral — your friend gets <span class="text-amber-300 font-bold">₹21</span> too</p></div>
+        </div>
+        <svg id="referralChevron" class="ic shrink-0" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <div id="referralDetails" class="referral-details px-5">
+        <p class="text-slate-400 text-[13px] mb-4">Share your link below and get rewarded every time a friend joins.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+          <div class="field-box"><p class="field-label">Your Referral Code</p><p class="text-cyan-300 font-extrabold text-lg tracking-wide mt-1" id="myReferralCode">Loading…</p></div>
+          <div class="field-box min-w-0"><p class="field-label">Your Referral Link</p><p class="text-slate-300 text-[12px] mt-1.5 truncate" id="myReferralLink">Loading…</p></div>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <button type="button" onclick="shareWhatsApp()" class="btn btn-green"><svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="18" cy="5.2" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="18.8" r="2.6"/><path d="m8.4 10.8 7.2-4.1M8.4 13.2l7.2 4.1"/></svg>Share Now</button>
+          <button type="button" onclick="copyReferralLink()" class="btn btn-cyan"><svg class="ic ic-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="11.5" height="11.5" rx="2.4"/><path d="M15 6.2V5.6A2.1 2.1 0 0 0 12.9 3.5H5.6A2.1 2.1 0 0 0 3.5 5.6v7.3A2.1 2.1 0 0 0 5.6 15h.6"/></svg>Copy Link</button>
+          <button type="button" onclick="openMyReferralsModal()" class="btn btn-ghost"><svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.1"/><path d="M3.2 19.3c.6-3.2 2.6-4.9 5.8-4.9s5.2 1.7 5.8 4.9"/><circle cx="17.2" cy="9.2" r="2.5"/><path d="M16.1 14.9c2.8-.1 4.6 1.4 5.2 4.5"/></svg>View Referrals</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- REFERRED USERS MODAL -->
+<div id="referralsModal" class="modal">
+  <div class="modal-panel">
+    <div class="flex items-start justify-between gap-3 mb-4">
+      <div class="min-w-0">
+        <p class="field-label">Your Network</p>
+        <h3 class="text-lg font-extrabold text-white mt-1">My Referrals</h3>
+        <p class="text-slate-500 text-[12px] mt-1" id="refModalSubtitle">Loading…</p>
+      </div>
+      <button onclick="closeMyReferralsModal()" class="icon-btn"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div id="refListContainer" class="space-y-2">
+      <div class="empty"><p class="text-slate-400 text-[13px]">Loading…</p></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, collection, query, where, getDocs, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = { apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY", authDomain: "winkom-da4c2.firebaseapp.com", projectId: "winkom-da4c2", storageBucket: "winkom-da4c2.firebasestorage.app", messagingSenderId: "629229462242", appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb" };
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null, currentUserData = null;
+let allInvestments = [], allGames = [];
+let supportChatUnsub = null, supportMsgsUnsub = null;
+
+const money = n => Number(n || 0).toFixed(2);
+const toDateSafe = v => { if(!v) return null; if(v.toDate) return v.toDate(); const d = new Date(v); return isNaN(d.getTime()) ? null : d; };
+const escapeHtml = s => s == null ? '' : String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+window.toggleSidebar = function () { const s = document.getElementById('sidebar'), o = document.getElementById('overlay'); s.classList.toggle('sidebar-closed'); s.classList.toggle('sidebar-open'); o.classList.toggle('hidden'); };
+window.handleLogout = async function () { await signOut(auth); window.location.href = 'login.html'; };
+window.toggleReferralSection = function () { document.getElementById('referralDetails').classList.toggle('open'); document.getElementById('referralToggle').classList.toggle('open'); };
+window.shareWhatsApp = function () { if (!currentUserData?.referralCode) return; const link = `https://winkom.site/signup.html?ref=${currentUserData.referralCode}`; const msg = `Join WinKom today and get a ₹21 welcome bonus!\nSign up with my referral link and start earning:\n${link}\n\nWinKom — Your Trusted Investment Platform`; window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank'); };
+window.copyReferralLink = function () { if (!currentUserData?.referralCode) return; const link = `https://winkom.site/signup.html?ref=${currentUserData.referralCode}`; navigator.clipboard.writeText(link).then(() => alert('Referral link copied!')).catch(() => prompt('Copy this link:', link)); };
+
+async function loadUserData() {
+  if (!currentUser) return;
+  const snap = await getDoc(doc(db, 'users', currentUser.uid));
+  if (snap.exists()) {
+    currentUserData = snap.data();
+    document.getElementById('userName').textContent = currentUserData.name || 'User';
+    document.getElementById('totalBalance').textContent = money(currentUserData.balance || 0);
+    document.getElementById('referralCount').textContent = currentUserData.referralCount || 0;
+    document.getElementById('myReferralCode').textContent = currentUserData.referralCode || 'N/A';
+    document.getElementById('myReferralLink').textContent = `https://winkom.site/signup.html?ref=${currentUserData.referralCode || ''}`;
+    updateTotalEarnings();
+  }
+}
+
+function updateTotalEarnings() {
+  const el = document.getElementById('totalEarnings'); if (!el) return;
+  let total = Number(currentUserData?.totalReferralEarnings || 0);
+  allInvestments.forEach(inv => {
+    if (inv.status === 'completed') { const m = Number(inv.maturityAmount || 0), a = Number(inv.amount || 0); if (m > a) total += (m - a); }
+  });
+  allGames.forEach(g => { const net = Number(g.netDelta) || 0; if (net > 0) total += net; });
+  el.textContent = total.toFixed(2);
+}
+
+async function loadUserGames() {
+  if (!currentUser) return;
+  try { const q = query(collection(db, 'gameRounds'), where('uid', '==', currentUser.uid)); const snap = await getDocs(q); allGames = []; snap.forEach(d => allGames.push({ id: d.id, ...d.data() })); } catch (e) { allGames = []; }
+  updateTotalEarnings();
+}
+
+async function loadInvestments() {
+  if (!currentUser) return;
+  try { const q = query(collection(db, 'investments'), where('uid', '==', currentUser.uid)); const snap = await getDocs(q); allInvestments = []; snap.forEach(d => allInvestments.push({ id: d.id, ...d.data() })); } catch (e) { allInvestments = []; }
+  document.getElementById('myInvestmentsCount').textContent = allInvestments.length;
+  updateTotalEarnings();
+}
+
+/* ============================================================
+   REFERRED USERS — only name shown, no tap
+   ============================================================ */
+async function fetchMyReferrals() {
+  if (!currentUser || !currentUserData) return [];
+  const seen = new Set();
+  const results = [];
+  const add = (data, id) => { if (!id || seen.has(id)) return; seen.add(id); results.push({ id, name: data.name || 'User' }); };
+
+  const code = (currentUserData.referralCode || '').trim();
+  if (code) {
+    try { const snap = await getDocs(query(collection(db, 'users'), where('referredBy', '==', code))); snap.forEach(d => add(d.data(), d.id)); } catch (e) {}
+    try { const snap2 = await getDocs(query(collection(db, 'users'), where('referrerCode', '==', code))); snap2.forEach(d => add(d.data(), d.id)); } catch (e) {}
+  }
+
+  try {
+    const refSnap = await getDocs(query(collection(db, 'referrals'), where('referrerUid', '==', currentUser.uid)));
+    const pending = [];
+    refSnap.forEach(d => {
+      const data = d.data();
+      const refId = data.referredUid || data.referredUserId;
+      if (refId && !seen.has(refId)) {
+        pending.push(getDoc(doc(db, 'users', refId)).then(snap => { if (snap.exists()) add(snap.data(), snap.id); }).catch(() => {}));
+      }
+    });
+    if (pending.length) await Promise.all(pending);
+  } catch (e) {}
+
+  return results;
+}
+
+window.openMyReferralsModal = async function () {
+  const modal = document.getElementById('referralsModal');
+  const listEl = document.getElementById('refListContainer');
+  const subEl = document.getElementById('refModalSubtitle');
+  modal.classList.add('open');
+  listEl.innerHTML = '<div class="empty"><p class="text-slate-400 text-[13px]">Loading your referrals…</p></div>';
+  subEl.textContent = 'Loading…';
+
+  const refs = await fetchMyReferrals();
+
+  if (!refs.length) {
+    subEl.textContent = 'No referrals yet';
+    listEl.innerHTML = '<div class="empty"><p class="text-white font-bold text-sm mb-1">No referrals yet</p><p class="text-slate-500 text-[12px]">Share your referral link to start earning ₹39 per friend.</p></div>';
+    return;
+  }
+
+  subEl.textContent = `${refs.length} ${refs.length === 1 ? 'referral' : 'referrals'}`;
+  listEl.innerHTML = refs.map(r => {
+    const initials = (r.name || 'U').substring(0, 2).toUpperCase();
+    return `<div class="ref-row">
+      <div class="ref-avatar">${escapeHtml(initials)}</div>
+      <div class="min-w-0 flex-1">
+        <p class="text-white font-bold text-[13.5px] truncate">${escapeHtml(r.name || 'User')}</p>
+      </div>
+    </div>`;
+  }).join('');
+};
+
+window.closeMyReferralsModal = function () { document.getElementById('referralsModal').classList.remove('open'); };
+
+/* Support badge */
+function setSupportBadge(count) { const el = document.getElementById('supportBadge'); if (!el) return; if (count > 0) { el.textContent = count > 9 ? '9+' : String(count); el.classList.remove('hidden'); } else el.classList.add('hidden'); }
+async function refreshSupportBadge() {
+  if (!currentUser) return;
+  try {
+    const chatSnap = await getDoc(doc(db, 'supportChats', currentUser.uid));
+    if (!chatSnap.exists()) { setSupportBadge(0); return; }
+    const cd = chatSnap.data() || {};
+    const userReadAt = toDateSafe(cd.userReadAt) || toDateSafe(cd.userLastSeenAt) || toDateSafe(cd.lastUserSeenAt) || toDateSafe(cd.seenAt);
+    const msgsSnap = await getDocs(query(collection(db, 'supportChats', currentUser.uid, 'messages'), orderBy('createdAt','asc')));
+    let unread = 0;
+    msgsSnap.forEach(m => { const data = m.data(); if (data.sender !== 'admin') return; const t = toDateSafe(data.createdAt); if (!userReadAt || (t && t.getTime() > userReadAt.getTime())) unread++; });
+    setSupportBadge(unread);
+  } catch (e) {}
+}
+function setupSupportListeners() {
+  if (!currentUser) return;
+  if (supportChatUnsub) { supportChatUnsub(); supportChatUnsub = null; }
+  if (supportMsgsUnsub) { supportMsgsUnsub(); supportMsgsUnsub = null; }
+  const chatRef = doc(db, 'supportChats', currentUser.uid);
+  supportChatUnsub = onSnapshot(chatRef, () => { refreshSupportBadge(); }, () => {});
+  supportMsgsUnsub = onSnapshot(query(collection(db, 'supportChats', currentUser.uid, 'messages'), orderBy('createdAt','asc')), () => { refreshSupportBadge(); }, () => {});
+  refreshSupportBadge();
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeMyReferralsModal();
+    document.getElementById('sidebar')?.classList.add('sidebar-closed');
+  }
+});
+document.getElementById('referralsModal')?.addEventListener('click', e => {
+  if (e.target.id === 'referralsModal') closeMyReferralsModal();
+});
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  currentUser = user;
+  try { await loadUserData(); } catch (e) {}
+  try { await loadInvestments(); } catch (e) {}
+  try { await loadUserGames(); } catch (e) {}
+  try { setupSupportNotifications(); } catch (e) {}
+});
+
+function setupSupportNotifications() { setupSupportListeners(); }
+</script>
+</body>
+</html>
