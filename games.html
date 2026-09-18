@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>WinKom — Games</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{--bg:#070b14;--line:rgba(255,255,255,.075);--line-strong:rgba(255,255,255,.13);--text:#eef4fb;--muted:#8b98ad;--dim:#5b6879;--cyan:#22d3ee;--cyan-soft:#67e8f9;--amber:#f59e0b;--emerald:#10b981;--violet:#8b5cf6;--rose:#f43f5e;}
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;min-height:100vh;color:var(--text);font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;background-color:var(--bg);background-image:radial-gradient(680px 420px at 8% -12%, rgba(34,211,238,.10), transparent 62%),radial-gradient(620px 420px at 102% 2%, rgba(245,158,11,.08), transparent 60%),radial-gradient(700px 520px at 50% 112%, rgba(16,185,129,.05), transparent 62%);background-attachment:fixed;}
+::selection{background:rgba(34,211,238,.3)}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:8px}
+.ic{width:20px;height:20px;flex:none;display:block;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ic-sm{width:16px;height:16px}.ic-xs{width:13px;height:13px;stroke-width:2}
+.ic-lg{width:22px;height:22px}
+.glass{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:20px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.sidebar{transition:transform .32s cubic-bezier(.4,0,.2,1)}
+.sidebar-closed{transform:translateX(-100%)}
+.sidebar-open{transform:translateX(0)}
+@media (min-width:768px){.sidebar-closed{transform:translateX(0)}}
+.nav-link{position:relative;display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:14px;font-size:14px;font-weight:600;color:var(--muted);border:1px solid transparent;transition:background .2s ease,color .2s ease,border-color .2s ease}
+.nav-link:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.nav-link.active{background:linear-gradient(90deg,rgba(245,158,11,.16),rgba(245,158,11,.04));border-color:rgba(245,158,11,.24);color:#fbbf24}
+.nav-link .ic{width:18px;height:18px}
+.glass-header{background:rgba(9,13,22,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.wallet-card{background:radial-gradient(520px 220px at 100% 0%, rgba(245,158,11,.10), transparent 62%),linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid rgba(245,158,11,.22);border-radius:22px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.wallet-badge{width:54px;height:54px;border-radius:16px;flex:none;display:flex;align-items:center;justify-content:center;color:#fbbf24;background:rgba(245,158,11,.10);border:1px solid rgba(245,158,11,.22)}
+.wallet-badge .ic{width:26px;height:26px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:14px;font-size:13.5px;font-weight:700;white-space:nowrap;cursor:pointer;border:1px solid transparent;transition:transform .16s ease,box-shadow .22s ease,background .22s ease,border-color .22s ease,color .22s ease}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.42;cursor:not-allowed;box-shadow:none!important;transform:none!important}
+.btn-primary{background:linear-gradient(135deg,#22d3ee,#3b82f6);color:#04121a;box-shadow:0 10px 26px rgba(34,211,238,.22)}
+.btn-primary:hover:not(:disabled){box-shadow:0 14px 34px rgba(34,211,238,.35)}
+.btn-amber{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#2a1c06;box-shadow:0 10px 26px rgba(245,158,11,.22)}
+.btn-amber:hover:not(:disabled){box-shadow:0 14px 34px rgba(245,158,11,.35)}
+.btn-cyan{background:rgba(34,211,238,.14);border-color:rgba(34,211,238,.35);color:var(--cyan-soft)}
+.btn-cyan:hover:not(:disabled){background:rgba(34,211,238,.22)}
+.btn-green{background:rgba(16,185,129,.14);border-color:rgba(16,185,129,.35);color:#6ee7b7}
+.btn-green:hover:not(:disabled){background:rgba(16,185,129,.22)}
+.btn-ghost{background:rgba(255,255,255,.05);border-color:var(--line-strong);color:var(--muted)}
+.btn-ghost:hover:not(:disabled){background:rgba(255,255,255,.09);color:var(--text)}
+.chip{width:42px;height:42px;border-radius:13px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid transparent}
+.chip .ic{width:20px;height:20px}
+.chip-cyan{color:var(--cyan-soft);background:rgba(34,211,238,.10);border-color:rgba(34,211,238,.20)}
+.chip-amber{color:#fbbf24;background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.20)}
+.chip-emerald{color:#34d399;background:rgba(16,185,129,.10);border-color:rgba(16,185,129,.20)}
+.chip-rose{color:#fda4af;background:rgba(244,63,94,.10);border-color:rgba(244,63,94,.20)}
+.field-box{background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.field-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:800}
+.search-input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--text);font-size:13.5px;border-radius:14px;padding:12px 16px;outline:none;transition:border-color .2s ease,background .2s ease;font-family:inherit}
+.search-input::placeholder{color:#5b6879}
+.search-input:focus{border-color:rgba(34,211,238,.45);background:rgba(34,211,238,.05)}
+.icon-btn{width:36px;height:36px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--muted);cursor:pointer;transition:all .2s ease}
+.icon-btn:hover{background:rgba(255,255,255,.10);color:#fff}
+.support-btn{width:40px;height:40px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(34,211,238,.16),rgba(99,102,241,.12));border:1px solid rgba(34,211,238,.32);color:var(--cyan-soft);text-decoration:none;position:relative}
+
+.game-board{background:radial-gradient(720px 320px at 50% -20%, rgba(245,158,11,.12), transparent 60%),linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid rgba(245,158,11,.22);border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,.40);overflow:hidden}
+
+.target-display{position:relative;text-align:center;padding:26px 16px 22px}
+.target-label{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#8b98ad;font-weight:800}
+.target-number{font-size:clamp(56px, 14vw, 96px);font-weight:800;line-height:1;margin-top:10px;letter-spacing:-.04em;background:linear-gradient(135deg,#67e8f9,#fbbf24);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 6px 18px rgba(34,211,238,.28))}
+
+.animator{position:relative;height:104px;margin:0 auto;max-width:340px;border-radius:18px;background:rgba(0,0,0,.32);border:1px solid var(--line-strong);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.animator-numbers{font-size:46px;font-weight:800;letter-spacing:-.02em;color:#e8eef7;font-variant-numeric:tabular-nums}
+.animator.running .animator-numbers{animation:tick .09s steps(1) infinite}
+@keyframes tick{0%{opacity:1}50%{opacity:.55}100%{opacity:1}}
+.animator.win{border-color:rgba(16,185,129,.5);background:rgba(16,185,129,.10)}
+.animator.loss{border-color:rgba(244,63,94,.5);background:rgba(244,63,94,.10)}
+
+.side-btn{position:relative;flex:1;padding:22px 14px;border-radius:18px;border:1.5px solid var(--line-strong);background:rgba(255,255,255,.035);color:#e8eef7;cursor:pointer;transition:all .18s ease;display:flex;flex-direction:column;align-items:center;gap:8px;font-family:inherit}
+.side-btn:hover:not(:disabled){background:rgba(34,211,238,.08);border-color:rgba(34,211,238,.42);transform:translateY(-2px)}
+.side-btn:disabled{opacity:.4;cursor:not-allowed}
+.side-btn.selected{border-color:rgba(34,211,238,.65);background:linear-gradient(135deg,rgba(34,211,238,.22),rgba(34,211,238,.08));box-shadow:0 10px 26px rgba(34,211,238,.24)}
+.side-btn.winning{border-color:rgba(16,185,129,.65);background:linear-gradient(135deg,rgba(16,185,129,.22),rgba(16,185,129,.08));box-shadow:0 10px 26px rgba(16,185,129,.24)}
+.side-btn.losing{border-color:rgba(244,63,94,.65);background:linear-gradient(135deg,rgba(244,63,94,.20),rgba(244,63,94,.06));box-shadow:0 10px 26px rgba(244,63,94,.20)}
+.side-btn .side-label{font-size:15px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.side-btn .side-ico{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:#a5f3fc}
+.side-btn:hover:not(:disabled) .side-ico{color:#67e8f9;border-color:rgba(34,211,238,.42)}
+
+.result-card{border-radius:18px;padding:16px 18px;display:flex;align-items:center;gap:14px;border:1px solid transparent;animation:pop .35s cubic-bezier(.16,1,.3,1)}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.result-card.win{background:linear-gradient(135deg,rgba(16,185,129,.14),rgba(16,185,129,.03));border-color:rgba(16,185,129,.35)}
+.result-card.loss{background:linear-gradient(135deg,rgba(244,63,94,.14),rgba(244,63,94,.03));border-color:rgba(244,63,94,.35)}
+.result-emoji{font-size:34px;line-height:1}
+
+.timer-bar{height:6px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden}
+.timer-bar > i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#22d3ee,#f59e0b);width:100%;transition:width .1s linear}
+
+.history-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.028);border:1px solid var(--line);transition:border-color .2s ease}
+.history-row:hover{border-color:rgba(255,255,255,.16)}
+.history-dot{width:36px;height:36px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800}
+.history-dot.win{background:rgba(16,185,129,.14);color:#6ee7b7;border:1px solid rgba(16,185,129,.30)}
+.history-dot.loss{background:rgba(244,63,94,.14);color:#fda4af;border:1px solid rgba(244,63,94,.30)}
+
+.fade-in{animation:fadeIn .45s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.pulse-dot{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.hidden{display:none!important}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);padding:11px 18px;border-radius:12px;font-size:13px;font-weight:700;z-index:9999;color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.45);transition:opacity .3s;max-width:90vw;text-align:center}
+.toast.ok{background:rgba(16,185,129,.95)}
+.toast.err{background:rgba(244,63,94,.95)}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR (Games active) -->
+<aside id="sidebar" class="sidebar sidebar-closed fixed top-0 left-0 h-full w-[264px] bg-[#0a0f1a]/95 backdrop-blur-xl border-r border-white/[.06] z-50 overflow-y-auto">
+  <div class="p-5">
+    <div class="flex items-center justify-between mb-8">
+      <a href="index.html" class="flex items-center gap-3 min-w-0">
+        <img src="logo.png" alt="WinKom" class="w-10 h-10 rounded-xl object-cover" onerror="this.style.display='none'"/>
+        <span class="text-xl font-extrabold text-white tracking-tight truncate">Win<span class="text-cyan-400">Kom</span></span>
+      </a>
+      <button onclick="toggleSidebar()" aria-label="Close menu" class="md:hidden w-9 h-9 rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:text-white flex items-center justify-center transition"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <nav class="space-y-1.5">
+      <a href="index.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8.5 16v-4.5M12.5 16V8M16.5 16v-2.5"/></svg>Dashboard</a>
+      <a href="games.html" class="nav-link active"><svg class="ic" viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="10" rx="4"/><path d="M7 12h2M8 11v2M15.5 11h.01M17.5 13h.01"/></svg>Games</a>
+      <a href="investment.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M3 16.5 9 10.5l4 4 8-8"/><path d="M15 6.5h6v6"/></svg>Investment</a>
+      <a href="deposit.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8 10.5 4 4 4-4"/><path d="M5 19h14"/></svg>Deposit</a>
+      <a href="withdraw.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M12 15V5"/><path d="m8 8.5 4-4 4 4"/><path d="M5 19h14"/></svg>Withdraw</a>
+      <a href="transactions.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M6.5 3.5h8L18.5 7v13.5h-12z"/><path d="M9.5 11h6M9.5 14.5h6M9.5 7.5h2.5"/></svg>My Transactions</a>
+      <a href="settings.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.1"/><path d="M12 2.9v2.3M12 18.8v2.3M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.9 12h2.3M18.8 12h2.3M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>Settings</a>
+      <a href="about.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.2"/><circle cx="12" cy="7.9" r=".9" fill="currentColor" stroke="none"/></svg>About</a>
+      <a href="support.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/><path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/><path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/></svg>Support</a>
+      <div class="pt-3 mt-3 border-t border-white/[.06]">
+        <button onclick="handleLogout()" class="nav-link w-full text-left text-red-400 hover:bg-red-500/10 hover:text-red-300"><svg class="ic" viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="m10 8-4 4 4 4"/><path d="M6 12h9"/></svg>Logout</button>
+      </div>
+    </nav>
+  </div>
+</aside>
+<div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden"></div>
+
+<div class="md:ml-64 relative">
+  <header class="glass-header border-b border-white/[.06] fixed top-0 left-0 right-0 md:left-64 z-40">
+    <div class="max-w-6xl mx-auto px-4 py-3.5">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <button onclick="toggleSidebar()" aria-label="Open menu" class="md:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:text-white flex items-center justify-center transition shrink-0"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+          <div class="min-w-0">
+            <h1 class="text-[15px] sm:text-lg font-extrabold text-white truncate leading-tight">🎮 Games <span class="text-amber-400">Arena</span></h1>
+            <p class="text-[11px] text-slate-500 font-medium truncate">Left or Right — pick a side, win real rewards</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2.5 shrink-0">
+          <span class="hidden lg:inline-flex items-center gap-1.5 text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 px-3 py-1.5 rounded-full shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></span> LIVE</span>
+          <a href="support.html" class="support-btn" aria-label="Support"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/><path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/><path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 pt-[90px] sm:pt-[80px] pb-6 fade-in">
+
+    <!-- Wallet -->
+    <section class="wallet-card p-4 sm:p-5 mb-4">
+      <div class="flex items-center justify-between gap-3 flex-wrap">
+        <div class="flex items-center gap-3.5 min-w-0">
+          <span class="wallet-badge"><svg class="ic" viewBox="0 0 24 24"><path d="M20 8.6V7a2 2 0 0 0-2-2H5.6A2.6 2.6 0 0 0 3 7.6v8.8A2.6 2.6 0 0 0 5.6 19H18a2 2 0 0 0 2-2v-1.6"/><path d="M21.3 9.6h-4.4a2.4 2.4 0 0 0 0 4.8h4.4a.8.8 0 0 0 .8-.8v-3.2a.8.8 0 0 0-.8-.8Z"/><circle cx="17.1" cy="12" r=".85" fill="currentColor" stroke="none"/></svg></span>
+          <div class="min-w-0">
+            <p class="field-label">Wallet Balance</p>
+            <p class="text-[26px] sm:text-3xl font-extrabold text-white leading-tight mt-1 tracking-tight">₹<span id="walletBalance">0</span></p>
+          </div>
+        </div>
+        <div class="text-right">
+          <p class="field-label">Rounds Played</p>
+          <p class="text-white font-extrabold text-2xl mt-1" id="roundsPlayed">0</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Game Board -->
+    <section class="game-board mb-5">
+      <!-- Target -->
+      <div class="target-display">
+        <p class="target-label">Target Number</p>
+        <p class="target-number" id="targetNumber">—</p>
+      </div>
+
+      <!-- Animator -->
+      <div class="px-5 pb-5">
+        <div class="animator" id="animator">
+          <span class="animator-numbers" id="animatorNumbers">— —</span>
+        </div>
+        <div class="flex items-center justify-between text-[11px] font-bold mt-3">
+          <span class="text-slate-500 uppercase tracking-wider">Status</span>
+          <span id="roundStatus" class="text-cyan-300">Set your bet and start round</span>
+        </div>
+        <div class="timer-bar mt-2"><i id="timerFill" style="width:0%"></i></div>
+      </div>
+
+      <!-- Bet + Start -->
+      <div class="px-5 pb-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+          <div>
+            <label class="field-label block mb-1.5">Bet Amount (₹)</label>
+            <input type="number" id="betAmount" min="10" max="1000" step="10" placeholder="e.g. 50" class="search-input" />
+            <p class="text-slate-500 text-[10.5px] mt-1">Min ₹10 · Max ₹1000 · Real wallet</p>
+          </div>
+          <div class="flex items-end">
+            <button type="button" id="startRoundBtn" class="btn btn-amber w-full h-[46px]" onclick="startRound()">
+              <svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 4.6v14.8L19.4 12z"/></svg>
+              Start Round
+            </button>
+          </div>
+        </div>
+
+        <!-- LEFT / RIGHT -->
+        <div class="flex gap-3">
+          <button type="button" id="leftBtn" class="side-btn" onclick="pickSide('left')" disabled>
+            <span class="side-ico"><svg class="ic ic-lg" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></svg></span>
+            <span class="side-label">Left</span>
+          </button>
+          <button type="button" id="rightBtn" class="side-btn" onclick="pickSide('right')" disabled>
+            <span class="side-ico"><svg class="ic ic-lg" viewBox="0 0 24 24"><path d="m10 6 6 6-6 6"/></svg></span>
+            <span class="side-label">Right</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div id="resultWrapper" class="px-5 pb-5 hidden">
+        <div id="resultCard" class="result-card">
+          <span class="result-emoji" id="resultEmoji">🎉</span>
+          <div class="min-w-0 flex-1">
+            <p class="text-white font-extrabold text-lg" id="resultTitle">WIN</p>
+            <p class="text-slate-400 text-[12px] mt-0.5" id="resultSub">—</p>
+          </div>
+          <div class="text-right">
+            <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Payout</p>
+            <p id="resultPayout" class="text-lg font-extrabold">₹0</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- History -->
+    <section class="glass p-4 sm:p-5">
+      <div class="flex items-center justify-between gap-3 mb-3">
+        <h3 class="text-white font-extrabold text-[15px] flex items-center gap-2">
+          <span class="chip chip-cyan" style="width:34px;height:34px;border-radius:11px"><svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8"/><path d="M12 7.4V12l3.2 2"/></svg></span>
+          Recent Rounds
+        </h3>
+        <button type="button" onclick="refreshHistory()" class="icon-btn" title="Refresh"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button>
+      </div>
+      <div id="historyContainer" class="space-y-2">
+        <p class="text-slate-400 text-center py-8 text-sm">Loading history…</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+  authDomain: "winkom-da4c2.firebaseapp.com",
+  projectId: "winkom-da4c2",
+  storageBucket: "winkom-da4c2.firebasestorage.app",
+  messagingSenderId: "629229462242",
+  appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let currentUserData = null;
+let balance = 0;
+let roundsPlayed = 0;
+
+// Game state
+let roundActive = false;
+let roundAnimating = false;
+let selectedSide = null;
+let targetNumber = null;
+let currentBet = 0;
+let currentRoundId = null;
+let animationInterval = null;
+let roundTimeout = null;
+
+const money = n => Number(n || 0).toFixed(2);
+const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+const escapeHtml = s => s == null ? '' : String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+function toast(msg, ok = true) {
+  const el = document.createElement('div');
+  el.textContent = msg;
+  el.className = 'toast ' + (ok ? 'ok' : 'err');
+  document.body.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; }, 2200);
+  setTimeout(() => { el.remove(); }, 2500);
+}
+
+window.toggleSidebar = function () {
+  const s = document.getElementById('sidebar'), o = document.getElementById('overlay');
+  s.classList.toggle('sidebar-closed'); s.classList.toggle('sidebar-open'); o.classList.toggle('hidden');
+};
+window.handleLogout = async function () { await signOut(auth); window.location.href = 'login.html'; };
+
+async function loadUserData() {
+  if (!currentUser) return;
+  const snap = await getDoc(doc(db, 'users', currentUser.uid));
+  if (snap.exists()) {
+    currentUserData = snap.data();
+    balance = Number(currentUserData.balance) || 0;
+    document.getElementById('walletBalance').textContent = money(balance);
+  }
+}
+
+/* ============================================================
+   GAME: LEFT OR RIGHT (Real Wallet)
+   ------------------------------------------------------------
+   Flow:
+   1. User enters bet, clicks Start Round.
+   2. Bet is debited from wallet + transaction logged.
+   3. Target number shown, LEFT/RIGHT enabled.
+   4. User picks a side (or times out → treated as random).
+   5. Animation runs ~2.5s, then final number revealed.
+   6. Fair 50/50 rule (independent of user pick):
+        - even final  → LEFT wins
+        - odd  final  → RIGHT wins
+   7. Win → wallet credited with 2x bet (net +bet) + transaction logged.
+      Loss → nothing more debited (already deducted at start).
+   8. Result saved to gameRounds collection.
+   ============================================================ */
+
+const ANIM_MS = 2600;
+const PICK_WINDOW_MS = 5000;
+
+window.startRound = async function () {
+  if (roundActive) { toast('A round is already running', false); return; }
+  if (!currentUser) { toast('Please wait, loading…', false); return; }
+
+  const betEl = document.getElementById('betAmount');
+  const bet = parseFloat(betEl.value);
+  if (!bet || isNaN(bet) || bet < 10) { toast('Minimum bet is ₹10', false); return; }
+  if (bet > 1000) { toast('Maximum bet is ₹1000', false); return; }
+  if (bet > balance) { toast(`Insufficient balance. You have ₹${money(balance)}`, false); return; }
+
+  // Reset visual state
+  document.getElementById('resultWrapper').classList.add('hidden');
+  document.getElementById('leftBtn').classList.remove('selected','winning','losing');
+  document.getElementById('rightBtn').classList.remove('selected','winning','losing');
+  document.getElementById('leftBtn').disabled = true;
+  document.getElementById('rightBtn').disabled = true;
+  document.getElementById('startRoundBtn').disabled = true;
+
+  // Deduct bet from wallet immediately
+  try {
+    const newBalance = balance - bet;
+    await updateDoc(doc(db, 'users', currentUser.uid), { balance: newBalance });
+    // Log bet transaction
+    await addDoc(collection(db, 'transactions'), {
+      uid: currentUser.uid,
+      type: 'game_bet',
+      description: `Left/Right bet of ₹${money(bet)}`,
+      amount: -bet,
+      balanceAfter: newBalance,
+      createdAt: serverTimestamp()
+    });
+    balance = newBalance;
+    currentUserData.balance = newBalance;
+    document.getElementById('walletBalance').textContent = money(balance);
+  } catch (e) {
+    toast('Could not place bet: ' + e.message, false);
+    document.getElementById('startRoundBtn').disabled = false;
+    return;
+  }
+
+  // Setup round
+  roundActive = true;
+  roundAnimating = false;
+  selectedSide = null;
+  currentBet = bet;
+  targetNumber = randomInt(10, 99);
+
+  // Show target
+  document.getElementById('targetNumber').textContent = targetNumber;
+  document.getElementById('animatorNumbers').textContent = '— —';
+  const anim = document.getElementById('animator');
+  anim.classList.remove('win', 'loss', 'running');
+
+  document.getElementById('roundStatus').textContent = `Pick LEFT or RIGHT (${PICK_WINDOW_MS / 1000}s)…`;
+  document.getElementById('roundStatus').className = 'text-amber-300';
+
+  // Enable pick buttons
+  document.getElementById('leftBtn').disabled = false;
+  document.getElementById('rightBtn').disabled = false;
+
+  // Countdown timer
+  const startTs = Date.now();
+  const fill = document.getElementById('timerFill');
+  fill.style.width = '100%';
+  const timerTick = setInterval(() => {
+    const elapsed = Date.now() - startTs;
+    const left = Math.max(0, PICK_WINDOW_MS - elapsed);
+    fill.style.width = (left / PICK_WINDOW_MS) * 100 + '%';
+    if (left <= 0) {
+      clearInterval(timerTick);
+      if (!selectedSide) {
+        // timeout → pick random side
+        pickSide(Math.random() < 0.5 ? 'left' : 'right', true);
+      }
+    }
+  }, 80);
+  roundTimeout = timerTick;
+};
+
+window.pickSide = async function (side, wasTimeout = false) {
+  if (!roundActive || roundAnimating) return;
+  if (selectedSide) return;
+
+  selectedSide = side;
+  document.getElementById('leftBtn').disabled = true;
+  document.getElementById('rightBtn').disabled = true;
+  document.getElementById('leftBtn').classList.toggle('selected', side === 'left');
+  document.getElementById('rightBtn').classList.toggle('selected', side === 'right');
+
+  if (roundTimeout) { clearInterval(roundTimeout); roundTimeout = null; }
+  document.getElementById('timerFill').style.width = '0%';
+
+  if (wasTimeout) {
+    document.getElementById('roundStatus').textContent = 'No pick — random side assigned';
+  } else {
+    document.getElementById('roundStatus').textContent = `You picked ${side.toUpperCase()} — resolving…`;
+  }
+  document.getElementById('roundStatus').className = 'text-cyan-300';
+
+  // Run animation
+  roundAnimating = true;
+  const anim = document.getElementById('animator');
+  anim.classList.add('running');
+  const numEl = document.getElementById('animatorNumbers');
+
+  animationInterval = setInterval(() => {
+    numEl.textContent = randomInt(10, 99);
+  }, 70);
+
+  await new Promise(r => setTimeout(r, ANIM_MS));
+  clearInterval(animationInterval);
+  animationInterval = null;
+  anim.classList.remove('running');
+
+  // Fair result: coin flip independent of user pick
+  // Rule: even final number → LEFT wins, odd → RIGHT wins
+  const finalNumber = randomInt(10, 99);
+  const resultSide = finalNumber % 2 === 0 ? 'left' : 'right';
+  const won = selectedSide === resultSide;
+
+  numEl.textContent = finalNumber;
+  anim.classList.add(won ? 'win' : 'loss');
+
+  // Highlight result
+  document.getElementById('leftBtn').classList.remove('selected');
+  document.getElementById('rightBtn').classList.remove('selected');
+  document.getElementById(resultSide + 'Btn').classList.add(won ? 'winning' : 'winning');
+  if (won) {
+    document.getElementById('rightBtn').classList.toggle('losing', false);
+    // losing side gets no special class
+  } else {
+    // losing = user's side
+    document.getElementById(selectedSide + 'Btn').classList.remove('winning');
+    document.getElementById(selectedSide + 'Btn').classList.add('losing');
+    document.getElementById(resultSide + 'Btn').classList.add('winning');
+  }
+
+  // Payout: win 2x bet (net +bet) — already debited the bet
+  const payout = won ? (currentBet * 2) : 0;
+  const netDelta = won ? currentBet : -currentBet;
+
+  try {
+    if (won) {
+      const newBalance = balance + payout;
+      await updateDoc(doc(db, 'users', currentUser.uid), { balance: newBalance });
+      await addDoc(collection(db, 'transactions'), {
+        uid: currentUser.uid,
+        type: 'game_win',
+        description: `Left/Right win — final ${finalNumber}, side ${resultSide.toUpperCase()}`,
+        amount: payout,
+        balanceAfter: newBalance,
+        createdAt: serverTimestamp()
+      });
+      balance = newBalance;
+      currentUserData.balance = newBalance;
+      document.getElementById('walletBalance').textContent = money(balance);
+    }
+    // Save round to gameRounds
+    await addDoc(collection(db, 'gameRounds'), {
+      uid: currentUser.uid,
+      userName: currentUserData?.name || 'User',
+      game: 'left-right',
+      target: targetNumber,
+      finalNumber,
+      selectedSide,
+      resultSide,
+      result: won ? 'win' : 'loss',
+      betAmount: currentBet,
+      payout,
+      netDelta,
+      createdAt: serverTimestamp()
+    });
+  } catch (e) {
+    console.error('Save round error:', e);
+    toast('Result saved locally but sync failed', false);
+  }
+
+  // Show result card
+  const wrap = document.getElementById('resultWrapper');
+  const card = document.getElementById('resultCard');
+  card.classList.remove('win', 'loss');
+  card.classList.add(won ? 'win' : 'loss');
+  document.getElementById('resultEmoji').textContent = won ? '🎉' : '😔';
+  document.getElementById('resultTitle').textContent = won ? 'WIN!' : 'LOSS';
+  document.getElementById('resultSub').textContent =
+    `Target ${targetNumber} · Final ${finalNumber} · You: ${selectedSide.toUpperCase()} · Result: ${resultSide.toUpperCase()}`;
+  const pEl = document.getElementById('resultPayout');
+  pEl.textContent = (won ? '+' : '-') + '₹' + money(won ? currentBet : currentBet);
+  pEl.className = won ? 'text-lg font-extrabold text-emerald-400' : 'text-lg font-extrabold text-rose-400';
+  wrap.classList.remove('hidden');
+
+  // Update status
+  document.getElementById('roundStatus').textContent = won ? 'You won! 🎉' : 'Better luck next time';
+  document.getElementById('roundStatus').className = won ? 'text-emerald-400' : 'text-rose-400';
+
+  // Reset round state
+  roundActive = false;
+  roundAnimating = false;
+  document.getElementById('startRoundBtn').disabled = false;
+
+  // Reload history
+  await loadHistory();
+};
+
+/* ============================================================
+   HISTORY
+   ============================================================ */
+window.refreshHistory = async function () { await loadHistory(); };
+
+async function loadHistory() {
+  const container = document.getElementById('historyContainer');
+  if (!container) return;
+  if (!currentUser) return;
+
+  try {
+    // Fetch last 20 rounds of this user
+    const q = query(collection(db, 'gameRounds'), where('uid', '==', currentUser.uid));
+    const snap = await getDocs(q);
+    const rounds = [];
+    snap.forEach(d => rounds.push({ id: d.id, ...d.data() }));
+
+    // Sort newest first
+    rounds.sort((a, b) => {
+      const ta = a.createdAt?.toDate?.() || new Date(0);
+      const tb = b.createdAt?.toDate?.() || new Date(0);
+      return tb - ta;
+    });
+    const recent = rounds.slice(0, 20);
+
+    // Update rounds count
+    roundsPlayed = rounds.length;
+    document.getElementById('roundsPlayed').textContent = roundsPlayed;
+
+    if (!recent.length) {
+      container.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm">No rounds yet. Play your first round above! 🎯</div>`;
+      return;
+    }
+
+    container.innerHTML = recent.map(r => {
+      const dt = r.createdAt?.toDate?.() || new Date();
+      const won = r.result === 'win';
+      const time = dt.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+      const date = dt.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+      return `
+      <div class="history-row">
+        <div class="history-dot ${won ? 'win' : 'loss'}">${won ? '✓' : '✕'}</div>
+        <div class="min-w-0 flex-1">
+          <p class="text-white font-bold text-[13px] truncate">
+            ${won ? 'Won' : 'Lost'} · <span class="text-slate-400 font-semibold">bet ₹${money(r.betAmount || 0)}</span>
+          </p>
+          <p class="text-slate-500 text-[11px] mt-0.5">
+            Target ${r.target} · Final ${r.finalNumber} · You: ${String(r.selectedSide || '').toUpperCase()}
+          </p>
+        </div>
+        <div class="text-right shrink-0">
+          <p class="font-extrabold text-[13px] ${won ? 'text-emerald-400' : 'text-rose-400'}">${won ? '+' : '-'}₹${money(r.betAmount || 0)}</p>
+          <p class="text-slate-500 text-[10px] mt-0.5">${date} · ${time}</p>
+        </div>
+      </div>`;
+    }).join('');
+  } catch (e) {
+    console.error('History error:', e);
+    container.innerHTML = `<p class="text-rose-400 text-center py-8 text-sm">Could not load history.</p>`;
+  }
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  currentUser = user;
+  try { await loadUserData(); } catch (e) { console.error(e); }
+  try { await loadHistory(); } catch (e) { console.error(e); }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    document.getElementById('sidebar')?.classList.add('sidebar-closed');
+  }
+});
+</script>
+</body>
+</html>
