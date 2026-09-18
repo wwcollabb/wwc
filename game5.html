@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>WinKom — Crash</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{--bg:#070b14;--line:rgba(255,255,255,.075);--line-strong:rgba(255,255,255,.13);--text:#eef4fb;--muted:#8b98ad;--dim:#5b6879;--cyan:#22d3ee;--cyan-soft:#67e8f9;--amber:#f59e0b;--emerald:#10b981;--violet:#8b5cf6;--rose:#f43f5e;}
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;min-height:100vh;color:var(--text);font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;background-color:var(--bg);background-image:radial-gradient(680px 420px at 8% -12%, rgba(34,211,238,.10), transparent 62%),radial-gradient(620px 420px at 102% 2%, rgba(139,92,246,.09), transparent 60%),radial-gradient(700px 520px at 50% 112%, rgba(16,185,129,.05), transparent 62%);background-attachment:fixed;}
+::selection{background:rgba(34,211,238,.3)}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:8px}
+.ic{width:20px;height:20px;flex:none;display:block;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ic-sm{width:16px;height:16px}.ic-xs{width:13px;height:13px;stroke-width:2}
+.ic-lg{width:22px;height:22px}
+.glass{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:20px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.sidebar{transition:transform .32s cubic-bezier(.4,0,.2,1)}
+.sidebar-closed{transform:translateX(-100%)}
+.sidebar-open{transform:translateX(0)}
+@media (min-width:768px){.sidebar-closed{transform:translateX(0)}}
+.nav-link{position:relative;display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:14px;font-size:14px;font-weight:600;color:var(--muted);border:1px solid transparent;transition:background .2s ease,color .2s ease,border-color .2s ease}
+.nav-link:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.nav-link.active{background:linear-gradient(90deg,rgba(245,158,11,.16),rgba(245,158,11,.04));border-color:rgba(245,158,11,.24);color:#fbbf24}
+.nav-link .ic{width:18px;height:18px}
+.glass-header{background:rgba(9,13,22,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.wallet-card{background:radial-gradient(520px 220px at 100% 0%, rgba(245,158,11,.10), transparent 62%),linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid rgba(245,158,11,.22);border-radius:22px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.wallet-badge{width:54px;height:54px;border-radius:16px;flex:none;display:flex;align-items:center;justify-content:center;color:#fbbf24;background:rgba(245,158,11,.10);border:1px solid rgba(245,158,11,.22)}
+.wallet-badge .ic{width:26px;height:26px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:14px;font-size:13.5px;font-weight:700;white-space:nowrap;cursor:pointer;border:1px solid transparent;transition:transform .16s ease,box-shadow .22s ease,background .22s ease,border-color .22s ease,color .22s ease;font-family:inherit}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.42;cursor:not-allowed;box-shadow:none!important;transform:none!important}
+.btn-amber{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#2a1c06;box-shadow:0 10px 26px rgba(245,158,11,.28)}
+.btn-amber:hover:not(:disabled){box-shadow:0 14px 34px rgba(245,158,11,.45)}
+.btn-cyan{background:rgba(34,211,238,.14);border-color:rgba(34,211,238,.35);color:var(--cyan-soft)}
+.btn-ghost{background:rgba(255,255,255,.05);border-color:var(--line-strong);color:var(--muted)}
+.icon-btn{width:36px;height:36px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--muted);cursor:pointer;transition:all .2s ease}
+.icon-btn:hover{background:rgba(255,255,255,.10);color:#fff}
+.support-btn{width:40px;height:40px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(34,211,238,.16),rgba(99,102,241,.12));border:1px solid rgba(34,211,238,.32);color:var(--cyan-soft);text-decoration:none;position:relative}
+.field-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:800}
+.chip{width:42px;height:42px;border-radius:13px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid transparent}
+.chip .ic{width:20px;height:20px}
+.chip-cyan{color:var(--cyan-soft);background:rgba(34,211,238,.10);border-color:rgba(34,211,238,.20)}
+.chip-amber{color:#fbbf24;background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.20)}
+.chip-emerald{color:#34d399;background:rgba(16,185,129,.10);border-color:rgba(16,185,129,.20)}
+.chip-rose{color:#fda4af;background:rgba(244,63,94,.10);border-color:rgba(244,63,94,.20)}
+.search-input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--text);font-size:14px;border-radius:12px;padding:11px 14px;outline:none;transition:border-color .2s ease,background .2s ease;font-family:inherit;font-weight:700}
+.search-input:focus{border-color:rgba(245,158,11,.45);background:rgba(245,158,11,.05)}
+.modal{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(3,6,12,.78);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.modal.open{display:flex}
+.modal-panel{width:100%;max-width:560px;max-height:88vh;overflow-y:auto;border-radius:22px;padding:20px;background:linear-gradient(180deg,#0e1524,#0a101b);border:1px solid var(--line-strong);box-shadow:0 40px 100px rgba(0,0,0,.7);animation:modalIn .28s cubic-bezier(.16,1,.3,1);overscroll-behavior:contain}
+@keyframes modalIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.hidden{display:none!important}
+.fade-in{animation:fadeIn .45s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.pulse-dot{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.toast{position:fixed;bottom:180px;left:50%;transform:translateX(-50%);padding:11px 18px;border-radius:12px;font-size:13px;font-weight:700;z-index:9999;color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.45);transition:opacity .3s;max-width:90vw;text-align:center}
+.toast.ok{background:rgba(16,185,129,.95)}
+.toast.info{background:rgba(245,158,11,.95)}
+.toast.err{background:rgba(244,63,94,.95)}
+
+.crash-wrap{
+  position:relative;
+  border-radius:24px;overflow:hidden;
+  background:
+    radial-gradient(900px 380px at 50% -30%, rgba(139,92,246,.16), transparent 62%),
+    radial-gradient(700px 300px at 20% 120%, rgba(34,211,238,.10), transparent 60%),
+    linear-gradient(180deg,rgba(12,17,28,.85),rgba(8,12,20,.85));
+  border:1px solid rgba(139,92,246,.28);
+  box-shadow:0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+.history-bar{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 12px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  background:rgba(0,0,0,.28);
+  position:relative;
+}
+.history-bar-label{
+  font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:#8b98ad;flex:none;
+}
+.history-scroll{
+  flex:1;display:flex;gap:6px;overflow-x:auto;padding:2px 0;
+  scrollbar-width:none;-ms-overflow-style:none;
+}
+.history-scroll::-webkit-scrollbar{display:none}
+.history-pill{
+  flex:none;
+  font-size:11px;font-weight:800;
+  padding:4px 10px;border-radius:999px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.10);
+  color:#e8eef7;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:.02em;
+}
+.history-pill.low{color:#fda4af;border-color:rgba(244,63,94,.35);background:rgba(244,63,94,.10)}
+.history-pill.mid{color:#fcd34d;border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.10)}
+.history-pill.high{color:#6ee7b7;border-color:rgba(16,185,129,.42);background:rgba(16,185,129,.12)}
+.history-pill.ultra{color:#c4b5fd;border-color:rgba(139,92,246,.55);background:rgba(139,92,246,.16)}
+.history-pill.cashed{position:relative}
+.history-pill.cashed::after{content:'✓';margin-left:4px;color:#6ee7b7;font-weight:900}
+
+.crash-stage{
+  position:relative;
+  height:340px;
+  overflow:hidden;
+}
+@media (min-width:640px){.crash-stage{height:400px}}
+
+.stage-svg{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+
+.plane{
+  position:absolute;
+  font-size:34px;line-height:1;
+  transform:translate(-50%,-50%) rotate(-12deg);
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.65)) drop-shadow(0 0 14px rgba(34,211,238,.55));
+  will-change:left,top;
+  transition:filter .3s ease;
+  z-index:5;
+}
+@media (max-width:520px){.plane{font-size:28px}}
+.crash-wrap.ended .plane{
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.65)) drop-shadow(0 0 20px rgba(244,63,94,.85));
+}
+
+.multiplier-display{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  pointer-events:none;
+  z-index:4;
+}
+.mult-value{
+  font-size:80px;font-weight:800;line-height:1;letter-spacing:-.06em;
+  font-variant-numeric:tabular-nums;
+  background:linear-gradient(180deg,#e8eef7 0%,#a5f3fc 60%,#67e8f9 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 8px 30px rgba(34,211,238,.35));
+  transition:filter .3s ease;
+}
+@media (max-width:520px){.mult-value{font-size:60px}}
+.crash-wrap.winning .mult-value{
+  background:linear-gradient(180deg,#fef3c7 0%,#fcd34d 60%,#fbbf24 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 8px 30px rgba(245,158,11,.5));
+}
+.crash-wrap.ended .mult-value{
+  background:linear-gradient(180deg,#fda4af 0%,#f43f5e 60%,#be123c 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 8px 30px rgba(244,63,94,.55));
+}
+.mult-x{
+  font-size:32px;font-weight:800;
+  color:#8b98ad;margin-left:4px;
+  vertical-align:top;
+}
+.crash-wrap.winning .mult-x{color:#fcd34d}
+.crash-wrap.ended .mult-x{color:#fda4af}
+
+.stage-banner{
+  position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
+  font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+  padding:6px 14px;border-radius:999px;
+  background:rgba(0,0,0,.42);
+  border:1px solid rgba(255,255,255,.10);
+  color:#8b98ad;
+  z-index:6;white-space:nowrap;
+  transition:all .3s ease;
+}
+.stage-banner.winning{color:#fcd34d;border-color:rgba(245,158,11,.45);background:rgba(245,158,11,.14)}
+.stage-banner.ended{color:#fda4af;border-color:rgba(244,63,94,.45);background:rgba(244,63,94,.14)}
+.stage-banner.cashed{color:#6ee7b7;border-color:rgba(16,185,129,.55);background:rgba(16,185,129,.16)}
+
+.history-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.028);border:1px solid var(--line);transition:border-color .2s ease}
+.history-row:hover{border-color:rgba(255,255,255,.16)}
+.history-dot{width:44px;height:44px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12.5px;font-variant-numeric:tabular-nums}
+.history-dot.win{background:rgba(16,185,129,.14);color:#6ee7b7;border:1px solid rgba(16,185,129,.30)}
+.history-dot.loss{background:rgba(244,63,94,.14);color:#fda4af;border:1px solid rgba(244,63,94,.30)}
+
+.bottom-bar{
+  position:fixed;
+  left:0;right:0;bottom:0;
+  z-index:40;
+  padding:10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+  background:linear-gradient(180deg,rgba(7,11,20,.78) 0%,rgba(7,11,20,.98) 40%);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-top:1px solid rgba(255,255,255,.08);
+  box-shadow:0 -12px 40px rgba(0,0,0,.5);
+}
+@media (min-width:768px){
+  .bottom-bar{left:256px}
+}
+.bottom-inner{
+  max-width:760px;margin:0 auto;
+  display:flex;align-items:stretch;gap:8px;
+}
+.balance-block{
+  display:flex;flex-direction:column;justify-content:center;gap:2px;
+  padding:8px 12px;border-radius:14px;flex:none;
+  background:linear-gradient(180deg,rgba(245,158,11,.10),rgba(245,158,11,.03));
+  border:1px solid rgba(245,158,11,.28);
+  min-width:112px;
+}
+@media (max-width:520px){.balance-block{min-width:92px;padding:8px 10px}}
+.balance-block .bb-label{font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#8b98ad}
+.balance-block .bb-value{font-size:16px;font-weight:800;color:#fbbf24;font-variant-numeric:tabular-nums}
+@media (max-width:520px){.balance-block .bb-value{font-size:14px}}
+
+.bet-block{
+  flex:1;min-width:0;
+  display:flex;flex-direction:column;gap:4px;
+  padding:6px 10px;border-radius:14px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--line-strong);
+}
+.bet-block .bb-top-row{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.bet-block .bb-label{font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#8b98ad}
+.bet-chips{display:flex;gap:4px}
+.bet-chips .bet-chip{
+  font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;
+  background:rgba(255,255,255,.05);border:1px solid var(--line);
+  color:#8b98ad;cursor:pointer;font-family:inherit;transition:all .15s ease;
+}
+.bet-chips .bet-chip:hover{color:#fbbf24;border-color:rgba(245,158,11,.42);background:rgba(245,158,11,.10)}
+.bet-block input{
+  width:100%;background:transparent;border:none;outline:none;
+  color:#fff;font-size:18px;font-weight:800;font-family:inherit;
+  font-variant-numeric:tabular-nums;padding:0;
+  letter-spacing:-.01em;
+}
+.bet-block input::placeholder{color:#5b6879;font-weight:700}
+
+.action-btn{
+  flex:none;padding:0 22px;border-radius:14px;border:none;cursor:pointer;
+  font-family:inherit;font-weight:800;font-size:13.5px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  transition:all .18s ease;white-space:nowrap;
+  min-width:130px;letter-spacing:.03em;
+}
+@media (max-width:520px){.action-btn{min-width:108px;padding:0 14px;font-size:12.5px}}
+.action-btn .ab-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.85}
+
+.action-btn.place{
+  background:linear-gradient(135deg,#22d3ee,#3b82f6);color:#04121a;
+  box-shadow:0 10px 26px rgba(34,211,238,.28);
+}
+.action-btn.place:hover:not(:disabled){box-shadow:0 14px 34px rgba(34,211,238,.45)}
+.action-btn.cashout{
+  background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#2a1c06;
+  box-shadow:0 10px 26px rgba(245,158,11,.32);
+  animation:cashoutPulse 1.4s ease-in-out infinite;
+}
+@keyframes cashoutPulse{
+  0%,100%{box-shadow:0 10px 26px rgba(245,158,11,.32);transform:scale(1)}
+  50%{box-shadow:0 14px 40px rgba(245,158,11,.6);transform:scale(1.02)}
+}
+.action-btn.cashout:hover{box-shadow:0 16px 42px rgba(245,158,11,.7)}
+.action-btn.cashed{
+  background:linear-gradient(135deg,#10b981,#34d399);color:#04140d;
+  box-shadow:0 10px 26px rgba(16,185,129,.32);
+}
+.action-btn.waiting{
+  background:rgba(255,255,255,.06);color:#8b98ad;
+  border:1px solid var(--line-strong);
+}
+.action-btn:disabled{opacity:.6;cursor:not-allowed;animation:none;box-shadow:none!important;transform:none!important}
+
+.crash-page-main{padding-bottom:130px!important}
+@media (max-width:520px){.crash-page-main{padding-bottom:120px!important}}
+</style>
+</head>
+<body>
+
+<aside id="sidebar" class="sidebar sidebar-closed fixed top-0 left-0 h-full w-[264px] bg-[#0a0f1a]/95 backdrop-blur-xl border-r border-white/[.06] z-50 overflow-y-auto">
+  <div class="p-5">
+    <div class="flex items-center justify-between mb-8">
+      <a href="index.html" class="flex items-center gap-3 min-w-0">
+        <img src="logo.png" alt="WinKom" class="w-10 h-10 rounded-xl object-cover" onerror="this.style.display='none'"/>
+        <span class="text-xl font-extrabold text-white tracking-tight truncate">Win<span class="text-cyan-400">Kom</span></span>
+      </a>
+      <button onclick="toggleSidebar()" aria-label="Close menu" class="md:hidden w-9 h-9 rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:text-white flex items-center justify-center transition"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <nav class="space-y-1.5">
+      <a href="index.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8.5 16v-4.5M12.5 16V8M16.5 16v-2.5"/></svg>Dashboard</a>
+      <a href="games.html" class="nav-link active"><svg class="ic" viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="10" rx="4"/><path d="M7 12h2M8 11v2M15.5 11h.01M17.5 13h.01"/></svg>Games</a>
+      <a href="game1.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>Spin Wheel</a>
+      <a href="game2.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>Color Prediction</a>
+      <a href="game3.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.5" fill="currentColor" stroke="none"/></svg>Dice Roll</a>
+      <a href="game4.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M3 9.5 12 4l9 5.5"/><path d="M5 10v8M19 10v8"/></svg>Hi-Lo Card</a>
+      <a href="game5.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9z"/></svg>Crash</a>
+      <a href="investment.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M3 16.5 9 10.5l4 4 8-8"/><path d="M15 6.5h6v6"/></svg>Investment</a>
+      <a href="deposit.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8 10.5 4 4 4-4"/><path d="M5 19h14"/></svg>Deposit</a>
+      <a href="withdraw.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M12 15V5"/><path d="m8 8.5 4-4 4 4"/><path d="M5 19h14"/></svg>Withdraw</a>
+      <a href="transactions.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M6.5 3.5h8L18.5 7v13.5h-12z"/><path d="M9.5 11h6M9.5 14.5h6M9.5 7.5h2.5"/></svg>My Transactions</a>
+      <a href="settings.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.1"/><path d="M12 2.9v2.3M12 18.8v2.3M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.9 12h2.3M18.8 12h2.3M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>Settings</a>
+      <a href="about.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.2"/><circle cx="12" cy="7.9" r=".9" fill="currentColor" stroke="none"/></svg>About</a>
+      <a href="support.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/><path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/><path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/></svg>Support</a>
+      <div class="pt-3 mt-3 border-t border-white/[.06]">
+        <button onclick="handleLogout()" class="nav-link w-full text-left text-red-400 hover:bg-red-500/10 hover:text-red-300"><svg class="ic" viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="m10 8-4 4 4 4"/><path d="M6 12h9"/></svg>Logout</button>
+      </div>
+    </nav>
+  </div>
+</aside>
+<div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden"></div>
+
+<div class="md:ml-64 relative">
+  <header class="glass-header border-b border-white/[.06] fixed top-0 left-0 right-0 md:left-64 z-30">
+    <div class="max-w-6xl mx-auto px-4 py-3.5">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <button onclick="toggleSidebar()" aria-label="Open menu" class="md:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:text-white flex items-center justify-center transition shrink-0"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+          <div class="min-w-0">
+            <h1 class="text-[15px] sm:text-lg font-extrabold text-white truncate leading-tight">✈️ <span class="text-violet-400">Crash</span></h1>
+            <p class="text-[11px] text-slate-500 font-medium truncate">Cash out anytime · plane keeps flying until crash</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2.5 shrink-0">
+          <span class="hidden lg:inline-flex items-center gap-1.5 text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 px-3 py-1.5 rounded-full shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></span> LIVE</span>
+          <a href="support.html" class="support-btn" aria-label="Support"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/><path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/><path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 pt-[80px] pb-4 fade-in crash-page-main">
+
+    <section class="crash-wrap" id="crashWrap">
+      <div class="history-bar">
+        <span class="history-bar-label">Last</span>
+        <div class="history-scroll" id="historyScroll">
+          <span class="history-pill">—</span>
+        </div>
+        <button type="button" onclick="openHistoryModal()" class="icon-btn" title="Full history" style="width:32px;height:32px;flex:none">
+          <svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8"/><path d="M12 7.4V12l3.2 2"/></svg>
+        </button>
+      </div>
+
+      <div class="crash-stage" id="crashStage">
+        <svg class="stage-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="trailGrad" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0%" stop-color="rgba(34,211,238,0)"/>
+              <stop offset="55%" stop-color="rgba(34,211,238,.35)"/>
+              <stop offset="100%" stop-color="rgba(103,232,249,.95)"/>
+            </linearGradient>
+            <linearGradient id="trailGradEnd" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0%" stop-color="rgba(244,63,94,0)"/>
+              <stop offset="55%" stop-color="rgba(244,63,94,.35)"/>
+              <stop offset="100%" stop-color="rgba(253,164,175,.95)"/>
+            </linearGradient>
+            <linearGradient id="trailGradWin" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0%" stop-color="rgba(245,158,11,0)"/>
+              <stop offset="55%" stop-color="rgba(245,158,11,.35)"/>
+              <stop offset="100%" stop-color="rgba(252,211,77,.95)"/>
+            </linearGradient>
+          </defs>
+          <line x1="0" y1="92" x2="100" y2="92" stroke="rgba(255,255,255,.06)" stroke-width="0.3"/>
+          <line x1="0" y1="68" x2="100" y2="68" stroke="rgba(255,255,255,.045)" stroke-width="0.25" stroke-dasharray="1.5 2"/>
+          <line x1="0" y1="44" x2="100" y2="44" stroke="rgba(255,255,255,.045)" stroke-width="0.25" stroke-dasharray="1.5 2"/>
+          <line x1="0" y1="20" x2="100" y2="20" stroke="rgba(255,255,255,.045)" stroke-width="0.25" stroke-dasharray="1.5 2"/>
+          <path id="trail" d="" stroke="url(#trailGrad)" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+        </svg>
+
+        <div class="plane" id="plane" style="left:5%;top:92%">✈️</div>
+
+        <div class="multiplier-display">
+          <span class="mult-value" id="multValue">1.00</span><span class="mult-x">x</span>
+        </div>
+
+        <div class="stage-banner" id="stageBanner">Tap "Place Bet" to start</div>
+      </div>
+    </section>
+
+    <p class="text-center text-slate-500 text-[11px] font-semibold mt-3">
+      💸 0.5% fee on cashout · Crash anywhere between <span class="text-rose-400">1.00x</span> → <span class="text-amber-300">50.00x</span>
+    </p>
+  </main>
+</div>
+
+<!-- FIXED BOTTOM BAR -->
+<div class="bottom-bar">
+  <div class="bottom-inner">
+    <div class="balance-block">
+      <span class="bb-label">Wallet</span>
+      <span class="bb-value">₹<span id="walletBalance">0</span></span>
+    </div>
+
+    <div class="bet-block">
+      <div class="bb-top-row">
+        <span class="bb-label">Bet Amount</span>
+        <div class="bet-chips">
+          <button class="bet-chip" onclick="setBet(10)">10</button>
+          <button class="bet-chip" onclick="setBet(50)">50</button>
+          <button class="bet-chip" onclick="setBet(100)">100</button>
+          <button class="bet-chip" onclick="setBet(500)">500</button>
+        </div>
+      </div>
+      <input type="number" id="betAmount" min="10" max="1000" step="10" placeholder="Enter amount" />
+    </div>
+
+    <button type="button" id="actionBtn" class="action-btn place" onclick="handleActionTap()">
+      <span class="ab-label">Ready</span>
+      <span class="ab-main">PLACE BET</span>
+    </button>
+  </div>
+</div>
+
+<!-- HISTORY MODAL -->
+<div id="historyModal" class="modal">
+  <div class="modal-panel">
+    <div class="flex items-start justify-between gap-3 mb-4">
+      <div class="min-w-0">
+        <p class="field-label">Crash History</p>
+        <h3 class="text-lg font-extrabold text-white mt-1">Recent Crashes</h3>
+        <p class="text-slate-500 text-[12px] mt-1">Last 10 crashes · newest first</p>
+      </div>
+      <button onclick="closeHistoryModal()" class="icon-btn"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div id="historyModalList" class="space-y-2"></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY",
+  authDomain: "winkom-da4c2.firebaseapp.com",
+  projectId: "winkom-da4c2",
+  storageBucket: "winkom-da4c2.firebasestorage.app",
+  messagingSenderId: "629229462242",
+  appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let currentUserData = null;
+let balance = 0;
+
+/* ============================================================
+   CRASH — with "cash out, plane keeps flying" behaviour
+   ------------------------------------------------------------
+   Flow:
+   1. Place bet → plane takes off, RAF loop runs until crash point.
+   2. User taps CASH OUT → wallet credited immediately,
+      but RAF loop CONTINUES to run until crashPoint.
+   3. When mult >= crashPoint → plane visually crashes,
+      banner shows "CRASHED @ X.XXx".
+   4. Then reset.
+   ============================================================ */
+const MULT_BASE = 1.06;
+const MULT_RATE = 4.5;
+const MAX_MULT = 50;
+const FEE_RATE = 0.005;
+const HISTORY_LIMIT = 10;
+
+let state = 'idle';            // idle | flying | ended
+let currentBet = 0;
+let currentMult = 1.00;
+let crashPoint = 0;
+let flightStartTs = 0;
+let rafId = null;
+let cachedHistory = [];
+
+/* Cashout tracking (during an active flight) */
+let hasCashedOut = false;
+let cashedOutMult = 0;
+let cashedOutCredit = 0;
+let cashedOutFee = 0;
+let cashedOutNet = 0;
+
+const money = n => Number(n || 0).toFixed(2);
+const escapeHtml = s => s == null ? '' : String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+function toast(msg, type = 'ok') {
+  const el = document.createElement('div');
+  el.textContent = msg;
+  el.className = 'toast ' + type;
+  document.body.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; }, 2200);
+  setTimeout(() => { el.remove(); }, 2500);
+}
+
+window.toggleSidebar = function () {
+  const s = document.getElementById('sidebar'), o = document.getElementById('overlay');
+  s.classList.toggle('sidebar-closed'); s.classList.toggle('sidebar-open'); o.classList.toggle('hidden');
+};
+window.handleLogout = async function () { await signOut(auth); window.location.href = 'login.html'; };
+
+window.setBet = function (v) {
+  if (state !== 'idle') return;
+  const el = document.getElementById('betAmount');
+  if (el) el.value = v;
+};
+
+async function loadUserData() {
+  if (!currentUser) return;
+  const snap = await getDoc(doc(db, 'users', currentUser.uid));
+  if (snap.exists()) {
+    currentUserData = snap.data();
+    balance = Number(currentUserData.balance) || 0;
+    document.getElementById('walletBalance').textContent = money(balance);
+  }
+}
+
+/* ============================================================
+   CRASH POINT — anywhere 1.00x - 50x
+   ============================================================ */
+function generateCrashPoint() {
+  const roll = Math.random();
+  if (roll < 0.02) return 1.00;
+  if (roll < 0.07) return parseFloat((1.01 + Math.random() * 0.29).toFixed(2));
+  const u = Math.random();
+  let crash = 1 / (1 - u);
+  crash = Math.min(MAX_MULT, Math.max(1.01, crash));
+  return parseFloat(crash.toFixed(2));
+}
+
+function multAtElapsedMs(elapsedMs) {
+  const sec = elapsedMs / 1000;
+  const m = Math.pow(MULT_BASE, sec * MULT_RATE);
+  return Math.min(MAX_MULT, m);
+}
+
+function planePosFromMult(mult) {
+  const logMax = Math.log(MAX_MULT);
+  const logNow = Math.log(Math.max(1.0001, mult));
+  const progress = Math.min(1, Math.max(0, logNow / logMax));
+  const x = 5 + 88 * progress;
+  const y = 92 - 78 * progress;
+  return { x, y, progress };
+}
+
+function updateTrail(planeX, planeY) {
+  const trail = document.getElementById('trail');
+  if (!trail) return;
+  const d = `M 5 92 Q ${(planeX * 0.5).toFixed(2)} 92 ${planeX.toFixed(2)} ${planeY.toFixed(2)}`;
+  trail.setAttribute('d', d);
+}
+
+function setTrailColor(colorClass) {
+  const trail = document.getElementById('trail');
+  if (!trail) return;
+  if (colorClass === 'win') trail.setAttribute('stroke', 'url(#trailGradWin)');
+  else if (colorClass === 'end') trail.setAttribute('stroke', 'url(#trailGradEnd)');
+  else trail.setAttribute('stroke', 'url(#trailGrad)');
+}
+
+/* ============================================================
+   ACTION BUTTON
+   ============================================================ */
+function setActionButton(mode, data = {}) {
+  const btn = document.getElementById('actionBtn');
+  if (!btn) return;
+  btn.className = 'action-btn ' + mode;
+  btn.disabled = false;
+
+  const label = btn.querySelector('.ab-label');
+  const main = btn.querySelector('.ab-main');
+
+  if (mode === 'place') {
+    label.textContent = 'Ready';
+    main.textContent = 'PLACE BET';
+  } else if (mode === 'cashout') {
+    label.textContent = 'Tap to cash out';
+    main.textContent = (data.mult || '1.00').toFixed(2) + 'x';
+  } else if (mode === 'cashed') {
+    label.textContent = 'Cashed out';
+    main.textContent = (data.mult || '0.00').toFixed(2) + 'x';
+    btn.disabled = true;
+  } else if (mode === 'waiting') {
+    label.textContent = 'Flying';
+    main.textContent = (data.mult || '1.00').toFixed(2) + 'x';
+    btn.disabled = true;
+  }
+}
+
+window.handleActionTap = async function () {
+  if (state === 'idle') await placeBet();
+  else if (state === 'flying' && !hasCashedOut) await cashOut();
+};
+
+/* ============================================================
+   PLACE BET
+   ============================================================ */
+async function placeBet() {
+  if (!currentUser) { toast('Please wait…', false); return; }
+
+  const bet = parseFloat(document.getElementById('betAmount').value);
+  if (!bet || isNaN(bet) || bet < 10) { toast('Minimum bet is ₹10', false); return; }
+  if (bet > 1000) { toast('Maximum bet is ₹1000', false); return; }
+  if (bet > balance) { toast(`Insufficient balance. You have ₹${money(balance)}`, false); return; }
+
+  try {
+    const newBalance = balance - bet;
+    await updateDoc(doc(db, 'users', currentUser.uid), { balance: newBalance });
+    await addDoc(collection(db, 'transactions'), {
+      uid: currentUser.uid,
+      type: 'game_bet',
+      description: `Crash — bet ₹${money(bet)}`,
+      amount: -bet,
+      balanceAfter: newBalance,
+      createdAt: serverTimestamp()
+    });
+    balance = newBalance;
+    currentUserData.balance = newBalance;
+    document.getElementById('walletBalance').textContent = money(balance);
+  } catch (e) {
+    toast('Could not place bet: ' + e.message, false);
+    return;
+  }
+
+  currentBet = bet;
+  crashPoint = generateCrashPoint();
+  currentMult = 1.00;
+  flightStartTs = performance.now();
+  state = 'flying';
+
+  /* Reset cashout flags for new flight */
+  hasCashedOut = false;
+  cashedOutMult = 0;
+  cashedOutCredit = 0;
+  cashedOutFee = 0;
+  cashedOutNet = 0;
+
+  const wrap = document.getElementById('crashWrap');
+  wrap.classList.remove('ended', 'winning');
+  setTrailColor('cyan');
+  document.getElementById('multValue').textContent = '1.00';
+  setActionButton('waiting', { mult: 1.00 });
+  const banner = document.getElementById('stageBanner');
+  banner.textContent = 'IN FLIGHT';
+  banner.className = 'stage-banner';
+
+  document.getElementById('plane').style.left = '5%';
+  document.getElementById('plane').style.top = '92%';
+  updateTrail(5, 92);
+
+  if (rafId) cancelAnimationFrame(rafId);
+  const loop = () => {
+    if (state !== 'flying') return;
+    const elapsed = performance.now() - flightStartTs;
+    const m = multAtElapsedMs(elapsed);
+    currentMult = m;
+
+    /* Reached crash point → plane crashes & loop stops */
+    if (m >= crashPoint) {
+      finishCrash(crashPoint);
+      return;
+    }
+
+    document.getElementById('multValue').textContent = m.toFixed(2);
+
+    const { x, y } = planePosFromMult(m);
+    const plane = document.getElementById('plane');
+    plane.style.left = x + '%';
+    plane.style.top = y + '%';
+    updateTrail(x, y);
+
+    /* Only show CASH OUT button if user hasn't cashed out */
+    if (!hasCashedOut) {
+      setActionButton('cashout', { mult: m });
+    }
+    /* If already cashed out, keep plane flying silently */
+
+    rafId = requestAnimationFrame(loop);
+  };
+  rafId = requestAnimationFrame(loop);
+}
+
+/* ============================================================
+   CASH OUT — credits wallet BUT keeps plane flying to crash
+   ============================================================ */
+async function cashOut() {
+  if (state !== 'flying' || hasCashedOut) return;
+
+  const mult = currentMult;
+  const gross = currentBet * mult;
+  const fee = gross * FEE_RATE;
+  const credit = gross - fee;
+  const netDelta = credit - currentBet;
+
+  /* Snapshot cashout values so we can use later at crash */
+  hasCashedOut = true;
+  cashedOutMult = mult;
+  cashedOutCredit = credit;
+  cashedOutFee = fee;
+  cashedOutNet = netDelta;
+
+  /* Credit wallet immediately */
+  try {
+    const newBalance = balance + credit;
+    await updateDoc(doc(db, 'users', currentUser.uid), { balance: newBalance });
+    await addDoc(collection(db, 'transactions'), {
+      uid: currentUser.uid,
+      type: 'game_win',
+      description: `Crash WIN — cashed out @ ${mult.toFixed(2)}x (bet ₹${money(currentBet)}, fee ₹${money(fee)})`,
+      amount: credit,
+      balanceAfter: newBalance,
+      createdAt: serverTimestamp()
+    });
+    balance = newBalance;
+    currentUserData.balance = newBalance;
+    document.getElementById('walletBalance').textContent = money(balance);
+  } catch (e) {
+    console.error('Credit failed:', e);
+    toast('Sync issue — balance shown locally', false);
+  }
+
+  /* Save round as WIN now (plane will still crash visually) */
+  try {
+    await addDoc(collection(db, 'gameRounds'), {
+      uid: currentUser.uid,
+      userName: currentUserData?.name || 'User',
+      game: 'crash',
+      betAmount: currentBet,
+      crashPoint: crashPoint,       // stored upfront so history knows the crash
+      cashedOutAt: mult,
+      fee,
+      payout: credit,
+      netDelta,
+      result: 'win',
+      createdAt: serverTimestamp()
+    });
+  } catch (e) { console.error('Save round error:', e); }
+
+  /* Button → "CAShed out @ X.XXx" — disabled, but plane keeps going */
+  setActionButton('cashed', { mult });
+  /* Trail turns amber/green to indicate success */
+  setTrailColor('win');
+  const wrap = document.getElementById('crashWrap');
+  wrap.classList.add('winning');
+  const banner = document.getElementById('stageBanner');
+  banner.textContent = `CASHED OUT @ ${mult.toFixed(2)}x · +₹${money(netDelta)} · plane continues…`;
+  banner.className = 'stage-banner cashed';
+  toast(`Cashed out @ ${mult.toFixed(2)}x · +₹${money(netDelta)}`, 'ok');
+
+  /* Push into local history & refresh UI (but don't stop RAF) */
+  cachedHistory.unshift({ mult, result: 'win', at: new Date(), cashed: true });
+  cachedHistory = cachedHistory.slice(0, HISTORY_LIMIT);
+  renderHistoryBar();
+  /* Firestore prune/load in background — fine to run now */
+  pruneHistory().catch(() => {});
+  loadHistory().catch(() => {});
+}
+
+/* ============================================================
+   CRASH — plane finally ends (this is called by the RAF loop)
+   ============================================================ */
+async function finishCrash(crashMult) {
+  if (rafId) cancelAnimationFrame(rafId);
+  rafId = null;
+  state = 'ended';
+
+  /* Snap plane to crash position */
+  document.getElementById('multValue').textContent = crashMult.toFixed(2);
+  const { x, y } = planePosFromMult(crashMult);
+  document.getElementById('plane').style.left = x + '%';
+  document.getElementById('plane').style.top = y + '%';
+  updateTrail(x, y);
+
+  const wrap = document.getElementById('crashWrap');
+  wrap.classList.add('ended');
+  wrap.classList.remove('winning');
+  setTrailColor('end');
+
+  const banner = document.getElementById('stageBanner');
+
+  /* If user already cashed out → show crash + cashed message.
+     If user didn't cash → show loss message. */
+  if (hasCashedOut) {
+    banner.textContent = `CRASHED @ ${crashMult.toFixed(2)}x · You cashed @ ${cashedOutMult.toFixed(2)}x`;
+    banner.className = 'stage-banner ended';
+    setActionButton('cashed', { mult: cashedOutMult });
+  } else {
+    banner.textContent = `CRASHED @ ${crashMult.toFixed(2)}x · −₹${money(currentBet)}`;
+    banner.className = 'stage-banner ended';
+    setActionButton('waiting', { mult: crashMult });
+
+    /* Save loss round */
+    try {
+      await addDoc(collection(db, 'gameRounds'), {
+        uid: currentUser.uid,
+        userName: currentUserData?.name || 'User',
+        game: 'crash',
+        betAmount: currentBet,
+        crashPoint: crashMult,
+        cashedOutAt: 0,
+        fee: 0,
+        payout: 0,
+        netDelta: -currentBet,
+        result: 'loss',
+        createdAt: serverTimestamp()
+      });
+    } catch (e) { console.error('Save round error:', e); }
+
+    /* History entry for loss */
+    cachedHistory.unshift({ mult: crashMult, result: 'loss', at: new Date(), cashed: false });
+    cachedHistory = cachedHistory.slice(0, HISTORY_LIMIT);
+    renderHistoryBar();
+    await pruneHistory();
+    await loadHistory();
+  }
+
+  /* Reset after short delay */
+  setTimeout(resetRound, 2800);
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+function resetRound() {
+  state = 'idle';
+  currentBet = 0;
+  currentMult = 1.00;
+  crashPoint = 0;
+  hasCashedOut = false;
+  cashedOutMult = 0;
+  cashedOutCredit = 0;
+  cashedOutFee = 0;
+  cashedOutNet = 0;
+
+  const wrap = document.getElementById('crashWrap');
+  wrap.classList.remove('ended', 'winning');
+  setTrailColor('cyan');
+
+  document.getElementById('multValue').textContent = '1.00';
+  document.getElementById('plane').style.left = '5%';
+  document.getElementById('plane').style.top = '92%';
+  updateTrail(5, 92);
+
+  const banner = document.getElementById('stageBanner');
+  banner.textContent = 'Tap "Place Bet" to start';
+  banner.className = 'stage-banner';
+
+  setActionButton('place');
+}
+
+/* ============================================================
+   HISTORY BAR
+   ============================================================ */
+function pillClass(m) {
+  if (m >= 10) return 'ultra';
+  if (m >= 3) return 'high';
+  if (m >= 1.5) return 'mid';
+  return 'low';
+}
+
+function renderHistoryBar() {
+  const scroll = document.getElementById('historyScroll');
+  if (!scroll) return;
+  if (!cachedHistory.length) {
+    scroll.innerHTML = '<span class="history-pill">—</span>';
+    return;
+  }
+  scroll.innerHTML = cachedHistory.slice(0, 10).map(h => {
+    const cls = pillClass(h.mult);
+    const cashedCls = h.cashed ? ' cashed' : '';
+    return `<span class="history-pill ${cls}${cashedCls}">${h.mult.toFixed(2)}x</span>`;
+  }).join('');
+}
+
+window.openHistoryModal = function () {
+  renderHistoryModal();
+  document.getElementById('historyModal').classList.add('open');
+};
+window.closeHistoryModal = function () {
+  document.getElementById('historyModal').classList.remove('open');
+};
+
+function renderHistoryModal() {
+  const list = document.getElementById('historyModalList');
+  if (!list) return;
+  if (!cachedHistory.length) {
+    list.innerHTML = '<div class="text-center py-8 text-slate-400 text-sm">No history yet. Play your first round!</div>';
+    return;
+  }
+  list.innerHTML = cachedHistory.slice(0, HISTORY_LIMIT).map(h => {
+    const cls = pillClass(h.mult);
+    const colorHex = cls === 'ultra' ? '#c4b5fd' : cls === 'high' ? '#6ee7b7' : cls === 'mid' ? '#fcd34d' : '#fda4af';
+    const dt = h.at instanceof Date ? h.at : new Date();
+    const time = dt.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+    const date = dt.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+    const isWin = h.result === 'win';
+    return `<div class="history-row">
+      <div class="history-dot ${isWin ? 'win' : 'loss'}">${h.mult.toFixed(2)}x</div>
+      <div class="min-w-0 flex-1">
+        <p class="text-white font-bold text-[13px] truncate">${isWin ? 'You cashed out' : 'Crashed'}</p>
+        <p class="text-slate-500 text-[11px] mt-0.5"><span style="color:${colorHex};font-weight:800">${h.mult.toFixed(2)}x</span></p>
+      </div>
+      <div class="text-right shrink-0">
+        <p class="text-slate-500 text-[10px] mt-0.5">${date} · ${time}</p>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ============================================================
+   FIRESTORE HISTORY
+   ============================================================ */
+async function pruneHistory() {
+  if (!currentUser) return;
+  try {
+    const q = query(collection(db, 'gameRounds'), where('uid', '==', currentUser.uid), where('game', '==', 'crash'));
+    const snap = await getDocs(q);
+    const all = [];
+    snap.forEach(d => all.push({ id: d.id, ref: d.ref, _data: d.data() }));
+    if (all.length <= HISTORY_LIMIT) return;
+    all.sort((a, b) => (b._data.createdAt?.toDate?.() || 0) - (a._data.createdAt?.toDate?.() || 0));
+    const toDelete = all.slice(HISTORY_LIMIT);
+    for (const r of toDelete) {
+      try { await deleteDoc(r.ref); } catch (e) { console.error('Prune fail', r.id, e); }
+    }
+  } catch (e) { console.error('pruneHistory error:', e); }
+}
+
+async function loadHistory() {
+  if (!currentUser) return;
+  try {
+    const q = query(collection(db, 'gameRounds'), where('uid', '==', currentUser.uid), where('game', '==', 'crash'));
+    const snap = await getDocs(q);
+    const rounds = [];
+    snap.forEach(d => rounds.push({ id: d.id, ...d.data() }));
+    rounds.sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
+
+    cachedHistory = rounds.slice(0, HISTORY_LIMIT).map(r => {
+      const isWin = r.result === 'win';
+      const m = isWin ? Number(r.cashedOutAt) : Number(r.crashPoint);
+      return {
+        mult: m || 1.00,
+        result: isWin ? 'win' : 'loss',
+        at: r.createdAt?.toDate?.() || new Date(),
+        cashed: isWin
+      };
+    });
+    renderHistoryBar();
+  } catch (e) { console.error('History error:', e); }
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  currentUser = user;
+  resetRound();
+  try { await loadUserData(); } catch (e) { console.error(e); }
+  try { await pruneHistory(); } catch (e) { console.error(e); }
+  try { await loadHistory(); } catch (e) { console.error(e); }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    document.getElementById('sidebar')?.classList.add('sidebar-closed');
+    closeHistoryModal();
+  }
+});
+</script>
+</body>
+</html>
