@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>WinKom — Left or Right</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{--bg:#070b14;--line:rgba(255,255,255,.075);--line-strong:rgba(255,255,255,.13);--text:#eef4fb;--muted:#8b98ad;--dim:#5b6879;--cyan:#22d3ee;--cyan-soft:#67e8f9;--amber:#f59e0b;--emerald:#10b981;--violet:#8b5cf6;--rose:#f43f5e;}
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;min-height:100vh;color:var(--text);font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;background-color:var(--bg);background-image:radial-gradient(680px 420px at 8% -12%, rgba(34,211,238,.10), transparent 62%),radial-gradient(620px 420px at 102% 2%, rgba(245,158,11,.08), transparent 60%),radial-gradient(700px 520px at 50% 112%, rgba(16,185,129,.05), transparent 62%);}
+::selection{background:rgba(34,211,238,.3)}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:8px}
+.ic{width:20px;height:20px;flex:none;display:block;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ic-sm{width:16px;height:16px}.ic-xs{width:13px;height:13px;stroke-width:2}
+.ic-lg{width:22px;height:22px}
+.glass{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:20px;backdrop-filter:blur(14px)}
+.sidebar{transition:transform .25s cubic-bezier(.4,0,.2,1);will-change:transform}
+.sidebar-closed{transform:translateX(-100%)}
+.sidebar-open{transform:translateX(0)}
+@media (min-width:768px){.sidebar-closed{transform:translateX(0)}}
+.nav-link{position:relative;display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:14px;font-size:14px;font-weight:600;color:var(--muted);border:1px solid transparent;transition:background .15s,color .15s,border-color .15s}
+.nav-link:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.nav-link.active{background:linear-gradient(90deg,rgba(245,158,11,.16),rgba(245,158,11,.04));border-color:rgba(245,158,11,.24);color:#fbbf24}
+.nav-link .ic{width:18px;height:18px}
+.glass-header{background:rgba(9,13,22,.88)}
+.support-btn{width:40px;height:40px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(34,211,238,.16),rgba(99,102,241,.12));border:1px solid rgba(34,211,238,.32);color:var(--cyan-soft);text-decoration:none;position:relative}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:14px;font-size:13.5px;font-weight:700;white-space:nowrap;cursor:pointer;border:1px solid transparent;transition:all .18s ease;font-family:inherit}
+.btn:disabled{opacity:.42;cursor:not-allowed;box-shadow:none!important}
+.btn-amber{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#2a1c06;box-shadow:0 10px 26px rgba(245,158,11,.28)}
+.chip{width:42px;height:42px;border-radius:13px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid transparent}
+.chip .ic{width:20px;height:20px}
+.chip-cyan{color:var(--cyan-soft);background:rgba(34,211,238,.10);border-color:rgba(34,211,238,.20)}
+.icon-btn{width:36px;height:36px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--muted);cursor:pointer;transition:all .2s ease}
+.icon-btn:hover{background:rgba(255,255,255,.10);color:#fff}
+.promo-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;background:linear-gradient(135deg,rgba(34,211,238,.22),rgba(99,102,241,.16));border:1px solid rgba(34,211,238,.45);color:#a5f3fc;font-weight:800;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase}
+.promo-badge .bolt{color:#67e8f9}
+
+/* ARENA */
+.lr-arena{position:relative;overflow:hidden;border-radius:24px;background:radial-gradient(900px 380px at 50% -30%, rgba(34,211,238,.16), transparent 62%),radial-gradient(700px 300px at 20% 120%, rgba(99,102,241,.10), transparent 60%),linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid rgba(34,211,238,.26);box-shadow:0 30px 80px rgba(0,0,0,.45);padding:20px 16px 18px}
+.lr-title{position:relative;text-align:center;margin-bottom:10px}
+.lr-title .target-label{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#8b98ad;font-weight:800;display:inline-flex;align-items:center;gap:8px}
+.lr-title .target-label::before,.lr-title .target-label::after{content:'';width:24px;height:1px;background:linear-gradient(90deg,transparent,rgba(34,211,238,.55))}
+.lr-title .target-label::after{background:linear-gradient(90deg,rgba(34,211,238,.55),transparent)}
+.target-wrap{position:relative;text-align:center;padding:4px 0 8px}
+.target-number{font-size:clamp(56px, 15vw, 92px);font-weight:800;line-height:.95;letter-spacing:-.05em;background:linear-gradient(135deg,#67e8f9 0%,#a5f3fc 55%,#c4b5fd 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 8px 26px rgba(34,211,238,.32));transition:transform .35s cubic-bezier(.16,1,.3,1)}
+.target-number.pulse{animation:targetPulse .5s ease}
+@keyframes targetPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.target-hint{margin-top:4px;font-size:11px;color:#8b98ad;font-weight:700}
+.target-hint b{color:#67e8f9}
+
+.duel{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:stretch;padding:14px 0 0}
+@media (max-width:520px){.duel{gap:6px}}
+.vs-badge{align-self:center;justify-self:center;width:44px;height:44px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f1626,#0a0f1a);border:1.5px solid rgba(34,211,238,.55);color:#67e8f9;font-weight:800;font-size:13px;letter-spacing:.06em;box-shadow:0 0 0 4px rgba(34,211,238,.06),0 8px 22px rgba(0,0,0,.5);position:relative;z-index:2}
+@media (max-width:520px){.vs-badge{width:36px;height:36px;font-size:11px}}
+.side-box{position:relative;border-radius:20px;padding:34px 12px 14px;border:1.5px solid rgba(255,255,255,.10);background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.012));cursor:pointer;font-family:inherit;text-align:center;transition:all .18s ease;overflow:hidden;min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:space-between}
+.side-box:disabled{cursor:not-allowed}
+.side-box:not(:disabled):hover{transform:translateY(-2px);border-color:rgba(34,211,238,.42);background:linear-gradient(180deg,rgba(34,211,238,.09),rgba(34,211,238,.02));box-shadow:0 12px 30px rgba(34,211,238,.14)}
+.side-box .side-tag{font-size:10.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#8b98ad;display:flex;align-items:center;gap:6px}
+.side-box .side-tag .dot{width:7px;height:7px;border-radius:99px;background:#5b6879;box-shadow:0 0 8px rgba(91,104,121,.6)}
+.side-box .side-tag .dot.on{background:#22d3ee;box-shadow:0 0 12px rgba(34,211,238,.9);animation:pulse 1.2s ease-in-out infinite}
+.side-box .num{font-size:clamp(46px, 12vw, 68px);font-weight:800;line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums;color:#e8eef7;margin:8px 0;transition:all .25s;opacity:.35}
+.side-box.spinning .num{opacity:1}
+.side-box.left.spinning .num,.side-box.left.revealed .num{color:#67e8f9;text-shadow:0 6px 26px rgba(34,211,238,.35);opacity:1}
+.side-box.right.spinning .num,.side-box.right.revealed .num{color:#fbbf24;text-shadow:0 6px 26px rgba(245,158,11,.35);opacity:1}
+.side-box .side-cta{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#5b6879;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03)}
+.side-box:not(:disabled):hover .side-cta{color:#a5f3fc;border-color:rgba(34,211,238,.42);background:rgba(34,211,238,.10)}
+.side-box.picked{border-color:rgba(34,211,238,.65);background:linear-gradient(180deg,rgba(34,211,238,.16),rgba(34,211,238,.03));transform:translateY(-2px)}
+.side-box.picked .side-cta{color:#a5f3fc;border-color:rgba(34,211,238,.55);background:rgba(34,211,238,.16)}
+.side-box.dim{opacity:.42;filter:saturate(.5)}
+.side-box.winner{border-color:rgba(16,185,129,.75)!important;background:linear-gradient(180deg,rgba(16,185,129,.18),rgba(16,185,129,.03))!important;animation:winnerPulse .8s ease}
+.side-box.winner .num{color:#6ee7b7!important;text-shadow:0 0 30px rgba(16,185,129,.85)!important;animation:winnerNumPulse .5s ease;opacity:1!important}
+.side-box.loser{border-color:rgba(244,63,94,.6)!important;background:linear-gradient(180deg,rgba(244,63,94,.14),rgba(244,63,94,.02))!important}
+.side-box.loser .num{color:#fda4af!important;text-shadow:0 0 26px rgba(244,63,94,.65)!important;opacity:1!important}
+@keyframes winnerPulse{0%{transform:scale(1)}35%{transform:scale(1.045)}100%{transform:scale(1)}}
+@keyframes winnerNumPulse{0%{transform:scale(1)}50%{transform:scale(1.10)}100%{transform:scale(1)}}
+.side-box .mult-badge{position:absolute;top:8px;left:50%;transform:translateX(-50%);display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:999px;background:linear-gradient(135deg,rgba(34,211,238,.28),rgba(99,102,241,.18));border:1px solid rgba(34,211,238,.55);color:#a5f3fc;font-weight:800;font-size:10px;letter-spacing:.06em;text-transform:uppercase;z-index:2}
+.side-box .mult-badge .bolt{color:#67e8f9}
+.diff-chip{position:absolute;bottom:8px;right:8px;font-size:10px;font-weight:800;padding:3px 8px;border-radius:999px;background:rgba(0,0,0,.42);border:1px solid var(--line);color:#8b98ad}
+.diff-chip.best{color:#6ee7b7;border-color:rgba(16,185,129,.42);background:rgba(16,185,129,.14);font-weight:900}
+
+.progress-wrap{padding:14px 0 8px}
+.progress-head{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.timer-bar{height:8px;border-radius:999px;background:rgba(255,255,255,.05);overflow:hidden}
+.timer-bar > i{display:block;height:100%;border-radius:999px;width:0%;transition:width .09s linear;background:linear-gradient(90deg,#22d3ee 0%,#8b5cf6 45%,#f59e0b 100%)}
+.timer-bar.warn > i{background:linear-gradient(90deg,#f59e0b,#f43f5e)}
+.timer-bar.spinning > i{width:100%!important;background:linear-gradient(90deg,#f59e0b,#fbbf24,#22d3ee,#fbbf24,#f59e0b);background-size:200% 100%;animation:spinBar 1.2s linear infinite}
+@keyframes spinBar{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.lr-arena.reveal-win::after{content:'';position:absolute;inset:0;pointer-events:none;animation:flashGreen .9s ease}
+.lr-arena.reveal-loss::after{content:'';position:absolute;inset:0;pointer-events:none;animation:flashRed .9s ease}
+@keyframes flashGreen{0%{background:radial-gradient(circle at center,rgba(16,185,129,.35),transparent 65%)}100%{background:transparent}}
+@keyframes flashRed{0%{background:radial-gradient(circle at center,rgba(244,63,94,.30),transparent 65%)}100%{background:transparent}}
+.result-card{margin-top:14px;border-radius:18px;padding:16px 18px;display:flex;align-items:center;gap:14px;animation:pop .4s cubic-bezier(.16,1,.3,1)}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.result-card.win{background:linear-gradient(135deg,rgba(16,185,129,.16),rgba(16,185,129,.03));border:1px solid rgba(16,185,129,.4)}
+.result-card.loss{background:linear-gradient(135deg,rgba(244,63,94,.16),rgba(244,63,94,.03));border:1px solid rgba(244,63,94,.4)}
+.result-emoji{font-size:34px;line-height:1}
+.history-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.028);border:1px solid var(--line)}
+.history-dot{width:36px;height:36px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px}
+.history-dot.win{background:rgba(16,185,129,.14);color:#6ee7b7;border:1px solid rgba(16,185,129,.30)}
+.history-dot.loss{background:rgba(244,63,94,.14);color:#fda4af;border:1px solid rgba(244,63,94,.30)}
+.fade-in{animation:fadeIn .45s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.pulse-dot{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.hidden{display:none!important}
+.toast{position:fixed;bottom:200px;left:50%;transform:translateX(-50%);padding:11px 18px;border-radius:12px;font-size:13px;font-weight:700;z-index:9999;color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.45);transition:opacity .3s;max-width:90vw;text-align:center}
+.toast.ok{background:rgba(16,185,129,.95)}
+.toast.err{background:rgba(244,63,94,.95)}
+
+/* FIXED BOTTOM BAR */
+.bottom-bar{position:fixed;left:0;right:0;bottom:0;z-index:40;padding:10px 12px calc(10px + env(safe-area-inset-bottom, 0px));background:linear-gradient(180deg,rgba(7,11,20,.78) 0%,rgba(7,11,20,.98) 40%);backdrop-filter:blur(18px);border-top:1px solid rgba(255,255,255,.08);box-shadow:0 -12px 40px rgba(0,0,0,.5)}
+@media (min-width:768px){.bottom-bar{left:256px}}
+.bottom-inner{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:8px}
+.quick-bets-row{display:flex;gap:6px;justify-content:center;overflow-x:auto;padding:0 4px;scrollbar-width:none}
+.quick-bets-row::-webkit-scrollbar{display:none}
+.quick-bets-row .bet-chip{flex:1;min-width:0;padding:7px 4px;border-radius:10px;font-size:11.5px;font-weight:800;background:rgba(255,255,255,.05);border:1px solid var(--line);color:#8b98ad;cursor:pointer;font-family:inherit;transition:all .15s ease;text-align:center}
+.quick-bets-row .bet-chip:hover{color:#fbbf24;border-color:rgba(245,158,11,.42);background:rgba(245,158,11,.10)}
+.main-row{display:flex;gap:8px;align-items:stretch}
+.balance-block{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:8px 12px;border-radius:14px;flex:none;background:linear-gradient(180deg,rgba(245,158,11,.10),rgba(245,158,11,.03));border:1px solid rgba(245,158,11,.28);min-width:112px}
+.balance-block .bb-label{font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#8b98ad}
+.balance-block .bb-value{font-size:16px;font-weight:800;color:#fbbf24;font-variant-numeric:tabular-nums}
+.bet-block{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;justify-content:center;padding:6px 12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--line-strong)}
+.bet-block .bb-label{font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#8b98ad}
+.bet-block input{width:100%;background:transparent;border:none;outline:none;color:#fff;font-size:18px;font-weight:800;font-family:inherit;font-variant-numeric:tabular-nums;padding:0}
+.bet-block input::placeholder{color:#5b6879;font-weight:700}
+.action-btn{flex:none;padding:0 22px;border-radius:14px;border:none;cursor:pointer;font-family:inherit;font-weight:800;font-size:13.5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:all .18s ease;white-space:nowrap;min-width:130px;letter-spacing:.03em}
+@media (max-width:520px){.action-btn{min-width:108px;padding:0 14px;font-size:12.5px}}
+.action-btn .ab-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.85}
+.action-btn.place{background:linear-gradient(135deg,#22d3ee,#3b82f6);color:#04121a;box-shadow:0 10px 26px rgba(34,211,238,.28)}
+.action-btn.waiting{background:rgba(255,255,255,.06);color:#8b98ad;border:1px solid var(--line-strong)}
+.action-btn:disabled{opacity:.6;cursor:not-allowed;box-shadow:none!important;transform:none!important}
+.crash-page-main{padding-bottom:150px!important}
+</style>
+</head>
+<body>
+
+<aside id="sidebar" class="sidebar sidebar-closed fixed top-0 left-0 h-full w-[264px] bg-[#0a0f1a]/98 border-r border-white/[.06] z-50 overflow-y-auto">
+  <div class="p-5">
+    <div class="flex items-center justify-between mb-8">
+      <a href="index.html" class="flex items-center gap-3 min-w-0"><img src="logo.png" alt="WinKom" class="w-10 h-10 rounded-xl object-cover" onerror="this.style.display='none'"/><span class="text-xl font-extrabold text-white tracking-tight truncate">Win<span class="text-cyan-400">Kom</span></span></a>
+      <button onclick="toggleSidebar()" class="md:hidden w-9 h-9 rounded-xl bg-white/5 border border-white/10 text-gray-400 flex items-center justify-center transition"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <nav class="space-y-1.5">
+      <a href="index.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8.5 16v-4.5M12.5 16V8M16.5 16v-2.5"/></svg>Dashboard</a>
+      <a href="games.html" class="nav-link active"><svg class="ic" viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="10" rx="4"/><path d="M7 12h2M8 11v2M15.5 11h.01M17.5 13h.01"/></svg>Games</a>
+      <a href="game6.html" class="nav-link" style="padding-left:26px;font-size:13px;background:linear-gradient(90deg,rgba(34,211,238,.16),transparent);border-color:rgba(34,211,238,.20);color:#a5f3fc"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M9 18V6l-6 6 6 6Z"/><path d="M15 6v12l6-6-6-6Z"/></svg>Left or Right</a>
+      <a href="game1.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>Spin Wheel</a>
+      <a href="game2.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>Color Prediction</a>
+      <a href="game3.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.5" fill="currentColor" stroke="none"/></svg>Dice Roll</a>
+      <a href="game4.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M3 9.5 12 4l9 5.5"/><path d="M5 10v8M19 10v8"/></svg>Hi-Lo Card</a>
+      <a href="game5.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9z"/></svg>Crash</a>
+      <a href="investment.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M3 16.5 9 10.5l4 4 8-8"/><path d="M15 6.5h6v6"/></svg>Investment</a>
+      <a href="deposit.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8 10.5 4 4 4-4"/><path d="M5 19h14"/></svg>Deposit</a>
+      <a href="withdraw.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M12 15V5"/><path d="m8 8.5 4-4 4 4"/><path d="M5 19h14"/></svg>Withdraw</a>
+      <a href="transactions.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M6.5 3.5h8L18.5 7v13.5h-12z"/><path d="M9.5 11h6M9.5 14.5h6M9.5 7.5h2.5"/></svg>My Transactions</a>
+      <a href="settings.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.1"/><path d="M12 2.9v2.3M12 18.8v2.3M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.9 12h2.3M18.8 12h2.3M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>Settings</a>
+      <a href="about.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.2"/><circle cx="12" cy="7.9" r=".9" fill="currentColor" stroke="none"/></svg>About</a>
+      <a href="support.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/><path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/><path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/></svg>Support</a>
+      <div class="pt-3 mt-3 border-t border-white/[.06]"><button onclick="handleLogout()" class="nav-link w-full text-left text-red-400"><svg class="ic" viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="m10 8-4 4 4 4"/><path d="M6 12h9"/></svg>Logout</button></div>
+    </nav>
+  </div>
+</aside>
+<div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden"></div>
+
+<div class="md:ml-64 relative">
+  <header class="glass-header border-b border-white/[.06] fixed top-0 left-0 right-0 md:left-64 z-30">
+    <div class="max-w-6xl mx-auto px-4 py-3.5">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <button onclick="toggleSidebar()" class="md:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-gray-300 flex items-center justify-center transition shrink-0"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+          <div class="min-w-0"><h1 class="text-[15px] sm:text-lg font-extrabold text-white truncate leading-tight">🎯 Left or <span class="text-cyan-400">Right</span></h1><p class="text-[11px] text-slate-500 font-medium truncate">Pick a side · closer to target wins 2x</p></div>
+        </div>
+        <div class="flex items-center gap-2.5 shrink-0">
+          <span class="promo-badge hidden sm:inline-flex"><span class="bolt">⚡</span> 2x Win</span>
+          <a href="support.html" class="support-btn"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/><path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/><path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 pt-[80px] pb-4 fade-in crash-page-main">
+    <section class="lr-arena" id="lrArena">
+      <div class="lr-title"><p class="target-label">🎯 Target Number</p></div>
+      <div class="target-wrap">
+        <p class="target-number" id="targetNumber">—</p>
+        <p class="target-hint">Pick a side within <b>15s</b>. Closer final number wins.</p>
+      </div>
+
+      <div class="duel">
+        <button type="button" id="leftBtn" class="side-box left" onclick="pickSide('left')" disabled>
+          <span class="mult-badge"><span class="bolt">⚡</span>2x</span>
+          <span class="side-tag"><span class="dot" id="leftDot"></span>LEFT</span>
+          <span class="num" id="leftNum">— —</span>
+          <span class="side-cta" id="leftCta">Tap to pick</span>
+          <span class="diff-chip hidden" id="leftDiff">—</span>
+        </button>
+        <div class="vs-badge">VS</div>
+        <button type="button" id="rightBtn" class="side-box right" onclick="pickSide('right')" disabled>
+          <span class="mult-badge"><span class="bolt">⚡</span>2x</span>
+          <span class="side-tag"><span class="dot" id="rightDot"></span>RIGHT</span>
+          <span class="num" id="rightNum">— —</span>
+          <span class="side-cta" id="rightCta">Tap to pick</span>
+          <span class="diff-chip hidden" id="rightDiff">—</span>
+        </button>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-head"><span class="text-slate-500">Round Status</span><span id="roundStatus" class="text-cyan-300">Set bet &amp; start round</span></div>
+        <div class="timer-bar" id="timerBar"><i id="timerFill"></i></div>
+      </div>
+
+      <div id="resultWrapper" class="hidden">
+        <div id="resultCard" class="result-card">
+          <span class="result-emoji" id="resultEmoji">🎉</span>
+          <div class="min-w-0 flex-1"><p class="text-white font-extrabold text-lg" id="resultTitle">WIN</p><p class="text-slate-400 text-[12px] mt-0.5" id="resultSub">—</p></div>
+          <div class="text-right"><p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Net</p><p id="resultPayout" class="text-lg font-extrabold">₹0</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="glass p-4 sm:p-5 mt-5">
+      <div class="flex items-center justify-between gap-3 mb-3"><h3 class="text-white font-extrabold text-[15px] flex items-center gap-2"><span class="chip chip-cyan" style="width:34px;height:34px;border-radius:11px"><svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8"/><path d="M12 7.4V12l3.2 2"/></svg></span>Recent Rounds <span class="text-slate-500 text-[11px] font-semibold">(last 10)</span></h3><button type="button" onclick="refreshHistory()" class="icon-btn"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button></div>
+      <div id="historyContainer" class="space-y-2"><p class="text-slate-400 text-center py-8 text-sm">Loading history…</p></div>
+    </section>
+  </main>
+</div>
+
+<div class="bottom-bar">
+  <div class="bottom-inner">
+    <div class="quick-bets-row">
+      <button class="bet-chip" onclick="setBet(10)">₹10</button>
+      <button class="bet-chip" onclick="setBet(50)">₹50</button>
+      <button class="bet-chip" onclick="setBet(100)">₹100</button>
+      <button class="bet-chip" onclick="setBet(500)">₹500</button>
+      <button class="bet-chip" onclick="setBet(1000)">₹1000</button>
+    </div>
+    <div class="main-row">
+      <div class="balance-block"><span class="bb-label">Wallet</span><span class="bb-value">₹<span id="walletBalance">0</span></span></div>
+      <div class="bet-block"><span class="bb-label">Bet Amount</span><input type="number" id="betAmount" min="10" max="1000" step="10" placeholder="Enter amount" /></div>
+      <button type="button" id="actionBtn" class="action-btn place" onclick="startRound()"><span class="ab-label">Ready</span><span class="ab-main">PLACE BET</span></button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = { apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY", authDomain: "winkom-da4c2.firebaseapp.com", projectId: "winkom-da4c2", storageBucket: "winkom-da4c2.firebasestorage.app", messagingSenderId: "629229462242", appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb" };
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null, currentUserData = null, balance = 0;
+
+const PICK_WINDOW_MS = 15000;
+const SPIN_MS = 2500;
+const TICK_FAST = 70;
+const TICK_SLOW = 200;
+const SPIN_SLOWDOWN_MS = 700;
+const PAYOUT_MULTIPLIER = 1.95;
+const HISTORY_LIMIT = 10;
+
+let phase = 'idle';
+let selectedSide = null;
+let betAmount = 0;
+let targetNumber = 0;
+let leftFinal = 0, rightFinal = 0;
+let winnerSide = null;
+let pickStartTs = 0;
+let spinStartTs = 0;
+let pickTimerId = null;
+let spinTimerId = null;
+let lastTick = 0;
+
+const money = n => Number(n || 0).toFixed(2);
+const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+function toast(msg, type = 'ok') { const el = document.createElement('div'); el.textContent = msg; el.className = 'toast ' + type; document.body.appendChild(el); setTimeout(() => { el.style.opacity = '0'; }, 2200); setTimeout(() => { el.remove(); }, 2500); }
+
+window.toggleSidebar = function () { const s = document.getElementById('sidebar'), o = document.getElementById('overlay'); s.classList.toggle('sidebar-closed'); s.classList.toggle('sidebar-open'); o.classList.toggle('hidden'); };
+window.handleLogout = async function () { await signOut(auth); window.location.href = 'login.html'; };
+window.setBet = function (v) { if (phase !== 'idle') return; const el = document.getElementById('betAmount'); if (el) el.value = v; };
+
+async function loadUserData() { if (!currentUser) return; const snap = await getDoc(doc(db, 'users', currentUser.uid)); if (snap.exists()) { currentUserData = snap.data(); balance = Number(currentUserData.balance) || 0; document.getElementById('walletBalance').textContent = money(balance); } }
+
+function setActionButton(mode, data = {}) {
+  const btn = document.getElementById('actionBtn'); if (!btn) return;
+  btn.disabled = false;
+  const label = btn.querySelector('.ab-label'), main = btn.querySelector('.ab-main');
+  if (mode === 'place') { btn.className = 'action-btn place'; label.textContent = 'Ready'; main.textContent = 'PLACE BET'; }
+  else if (mode === 'waiting') { btn.className = 'action-btn waiting'; label.textContent = 'Flying'; main.textContent = data.text || 'WAIT'; btn.disabled = true; }
+}
+
+window.startRound = async function () {
+  if (phase !== 'idle') { toast('Round already running', false); return; }
+  if (!currentUser) { toast('Please wait…', false); return; }
+
+  const bet = parseFloat(document.getElementById('betAmount').value);
+  if (!bet || isNaN(bet) || bet < 10) { toast('Minimum bet is ₹10', false); return; }
+  if (bet > 1000) { toast('Maximum bet is ₹1000', false); return; }
+  if (bet > balance) { toast(`Insufficient balance. You have ₹${money(balance)}`, false); return; }
+
+  document.getElementById('resultWrapper').classList.add('hidden');
+  ['left','right'].forEach(side => {
+    const b = document.getElementById(side + 'Btn');
+    b.classList.remove('picked','winner','loser','dim','spinning','revealed');
+    b.disabled = true;
+    document.getElementById(side + 'Cta').textContent = 'Tap to pick';
+    document.getElementById(side + 'Diff').classList.add('hidden');
+    document.getElementById(side + 'Diff').classList.remove('best');
+    document.getElementById(side + 'Dot').classList.remove('on');
+    document.getElementById(side + 'Num').textContent = '— —';
+  });
+  document.getElementById('lrArena').classList.remove('reveal-win','reveal-loss');
+  document.getElementById('timerBar').classList.remove('warn','spinning');
+
+  try {
+    const nb = balance - bet;
+    await updateDoc(doc(db, 'users', currentUser.uid), { balance: nb });
+    await addDoc(collection(db, 'transactions'), { uid: currentUser.uid, type: 'game_bet', description: `Left/Right — bet ₹${money(bet)}`, amount: -bet, balanceAfter: nb, createdAt: serverTimestamp() });
+    balance = nb; currentUserData.balance = nb; document.getElementById('walletBalance').textContent = money(balance);
+  } catch (e) { toast('Could not place bet: ' + e.message, false); return; }
+
+  phase = 'picking';
+  selectedSide = null;
+  betAmount = bet;
+  targetNumber = randomInt(10, 99);
+  pickStartTs = Date.now();
+
+  const tEl = document.getElementById('targetNumber');
+  tEl.textContent = targetNumber;
+  tEl.classList.remove('pulse'); void tEl.offsetWidth; tEl.classList.add('pulse');
+
+  document.getElementById('leftBtn').disabled = false;
+  document.getElementById('rightBtn').disabled = false;
+  document.getElementById('leftCta').textContent = 'Tap to pick';
+  document.getElementById('rightCta').textContent = 'Tap to pick';
+  document.getElementById('leftDot').classList.add('on');
+  document.getElementById('rightDot').classList.add('on');
+
+  const statusEl = document.getElementById('roundStatus');
+  statusEl.textContent = 'Pick LEFT or RIGHT (15s)';
+  statusEl.className = 'text-amber-300';
+  setActionButton('waiting', { text: 'PICK SIDE' });
+
+  if (pickTimerId) clearInterval(pickTimerId);
+  pickTimerId = setInterval(pickTick, 80);
+};
+
+function pickTick() {
+  const elapsed = Date.now() - pickStartTs;
+  const remaining = Math.max(0, PICK_WINDOW_MS - elapsed);
+  const pct = (remaining / PICK_WINDOW_MS) * 100;
+  document.getElementById('timerFill').style.width = pct + '%';
+  document.getElementById('timerBar').classList.toggle('warn', remaining < 4000);
+
+  const secs = Math.ceil(remaining / 1000);
+  const statusEl = document.getElementById('roundStatus');
+  if (!selectedSide) statusEl.textContent = `Pick a side — ${secs}s left`;
+  else statusEl.textContent = `You picked ${selectedSide.toUpperCase()} — ${secs}s left`;
+
+  if (remaining <= 0) { clearInterval(pickTimerId); pickTimerId = null; startSpinPhase(); }
+}
+
+window.pickSide = function (side) {
+  if (phase !== 'picking' || selectedSide) return;
+  selectedSide = side;
+  if (side === 'left') { document.getElementById('leftBtn').classList.add('picked'); document.getElementById('rightBtn').classList.add('dim'); document.getElementById('leftCta').textContent = 'Picked ✓'; }
+  else { document.getElementById('rightBtn').classList.add('picked'); document.getElementById('leftBtn').classList.add('dim'); document.getElementById('rightCta').textContent = 'Picked ✓'; }
+  const statusEl = document.getElementById('roundStatus');
+  statusEl.textContent = `You picked ${side.toUpperCase()} — waiting…`;
+  statusEl.className = 'text-cyan-300';
+};
+
+function startSpinPhase() {
+  phase = 'spinning';
+  spinStartTs = Date.now(); lastTick = 0;
+  document.getElementById('leftBtn').disabled = true;
+  document.getElementById('rightBtn').disabled = true;
+  if (!selectedSide) {
+    selectedSide = Math.random() < 0.5 ? 'left' : 'right';
+    document.getElementById(selectedSide + 'Btn').classList.add('picked');
+    document.getElementById(selectedSide === 'left' ? 'rightBtn' : 'leftBtn').classList.add('dim');
+    document.getElementById(selectedSide + 'Cta').textContent = 'Auto-picked ✓';
+  }
+  document.getElementById('leftBtn').classList.add('spinning');
+  document.getElementById('rightBtn').classList.add('spinning');
+  document.getElementById('leftDot').classList.remove('on');
+  document.getElementById('rightDot').classList.remove('on');
+  document.getElementById('timerBar').classList.add('spinning');
+  document.getElementById('roundStatus').textContent = 'Spinning…';
+  document.getElementById('roundStatus').className = 'text-cyan-300';
+  setActionButton('waiting', { text: 'SPINNING' });
+  if (spinTimerId) clearInterval(spinTimerId);
+  spinTimerId = setInterval(spinTick, 40);
+}
+
+function spinTick() {
+  const elapsed = Date.now() - spinStartTs;
+  const remaining = SPIN_MS - elapsed;
+  const inSlow = elapsed >= (SPIN_MS - SPIN_SLOWDOWN_MS);
+  const tick = inSlow ? TICK_SLOW : TICK_FAST;
+  if (Date.now() - lastTick >= tick) {
+    document.getElementById('leftNum').textContent = randomInt(10, 99);
+    document.getElementById('rightNum').textContent = randomInt(10, 99);
+    lastTick = Date.now();
+  }
+  if (remaining <= 0) { clearInterval(spinTimerId); spinTimerId = null; revealResult(); }
+}
+
+async function revealResult() {
+  phase = 'revealing';
+  winnerSide = Math.random() < 0.5 ? 'left' : 'right';
+  const loserSide = winnerSide === 'left' ? 'right' : 'left';
+  let loserNum = targetNumber;
+  while (loserNum === targetNumber) loserNum = randomInt(10, 99);
+  if (winnerSide === 'left') { leftFinal = targetNumber; rightFinal = loserNum; }
+  else { leftFinal = loserNum; rightFinal = targetNumber; }
+
+  document.getElementById('leftBtn').classList.remove('spinning');
+  document.getElementById('rightBtn').classList.remove('spinning');
+  document.getElementById('leftBtn').classList.add('revealed');
+  document.getElementById('rightBtn').classList.add('revealed');
+  document.getElementById('leftNum').textContent = leftFinal;
+  document.getElementById('rightNum').textContent = rightFinal;
+  document.getElementById('timerBar').classList.remove('spinning','warn');
+  document.getElementById('timerFill').style.width = '0%';
+
+  const won = selectedSide === winnerSide;
+
+  const ld = document.getElementById('leftDiff'), rd = document.getElementById('rightDiff');
+  if (winnerSide === 'left') { ld.textContent = '✓ EXACT'; ld.classList.add('best'); rd.textContent = '✗ MISS'; rd.classList.remove('best'); }
+  else { rd.textContent = '✓ EXACT'; rd.classList.add('best'); ld.textContent = '✗ MISS'; ld.classList.remove('best'); }
+  ld.classList.remove('hidden'); rd.classList.remove('hidden');
+
+  const winBox = document.getElementById(winnerSide + 'Btn');
+  const loseBox = document.getElementById(loserSide + 'Btn');
+  winBox.classList.remove('picked','dim'); winBox.classList.add('winner');
+  loseBox.classList.remove('picked','dim'); loseBox.classList.add('loser');
+
+  const arena = document.getElementById('lrArena');
+  arena.classList.remove('reveal-win','reveal-loss'); void arena.offsetWidth;
+  arena.classList.add(won ? 'reveal-win' : 'reveal-loss');
+
+  const creditAmount = won ? (betAmount * PAYOUT_MULTIPLIER) : 0;
+  const netDelta = won ? (betAmount * (PAYOUT_MULTIPLIER - 1)) : -betAmount;
+
+  try {
+    if (won) {
+      const nb = balance + creditAmount;
+      await updateDoc(doc(db, 'users', currentUser.uid), { balance: nb });
+      await addDoc(collection(db, 'transactions'), { uid: currentUser.uid, type: 'game_win', description: `Left/Right WIN — exact on ${winnerSide.toUpperCase()}`, amount: creditAmount, balanceAfter: nb, createdAt: serverTimestamp() });
+      balance = nb; currentUserData.balance = nb; document.getElementById('walletBalance').textContent = money(balance);
+    }
+    await addDoc(collection(db, 'gameRounds'), { uid: currentUser.uid, userName: currentUserData?.name || 'User', game: 'left-right', target: targetNumber, leftFinal, rightFinal, exactSide: winnerSide, selectedSide, result: won ? 'win' : 'loss', betAmount, payout: creditAmount, netDelta, createdAt: serverTimestamp() });
+  } catch (e) { console.error(e); }
+
+  const card = document.getElementById('resultCard');
+  card.classList.remove('win','loss'); card.classList.add(won ? 'win' : 'loss');
+  document.getElementById('resultEmoji').textContent = won ? '🎉' : '😔';
+  document.getElementById('resultTitle').textContent = won ? 'YOU WIN!' : 'YOU LOST';
+  document.getElementById('resultSub').textContent = `Target ${targetNumber} · Exact on ${winnerSide.toUpperCase()} · You picked ${selectedSide.toUpperCase()}`;
+  const pEl = document.getElementById('resultPayout');
+  pEl.textContent = (netDelta >= 0 ? '+' : '−') + '₹' + money(Math.abs(netDelta));
+  pEl.className = won ? 'text-lg font-extrabold text-emerald-400' : 'text-lg font-extrabold text-rose-400';
+  document.getElementById('resultWrapper').classList.remove('hidden');
+
+  const statusEl = document.getElementById('roundStatus');
+  if (won) { statusEl.textContent = `You won ₹${money(netDelta)}! 🎉`; statusEl.className = 'text-emerald-400'; }
+  else { statusEl.textContent = `You lost ₹${money(betAmount)}`; statusEl.className = 'text-rose-400'; }
+
+  phase = 'idle';
+  setActionButton('place');
+
+  setTimeout(() => {
+    ['left','right'].forEach(side => {
+      const b = document.getElementById(side + 'Btn');
+      b.classList.remove('picked','winner','loser','dim','spinning','revealed');
+      b.classList.remove('spinning');
+    });
+    document.getElementById('leftNum').textContent = '— —';
+    document.getElementById('rightNum').textContent = '— —';
+    document.getElementById('leftDiff').classList.add('hidden');
+    document.getElementById('rightDiff').classList.add('hidden');
+    document.getElementById('leftDiff').classList.remove('best');
+    document.getElementById('rightDiff').classList.remove('best');
+    document.getElementById('roundStatus').textContent = 'Set bet & start round';
+    document.getElementById('roundStatus').className = 'text-cyan-300';
+  }, 3000);
+
+  await pruneHistory(); await loadHistory();
+}
+
+async function pruneHistory() {
+  if (!currentUser) return;
+  try {
+    const q = query(collection(db, 'gameRounds'), where('uid', '==', currentUser.uid), where('game', '==', 'left-right'));
+    const snap = await getDocs(q); const all = [];
+    snap.forEach(d => all.push({ id: d.id, ref: d.ref, _data: d.data() }));
+    if (all.length <= HISTORY_LIMIT) return;
+    all.sort((a, b) => (b._data.createdAt?.toDate?.() || 0) - (a._data.createdAt?.toDate?.() || 0));
+    for (const r of all.slice(HISTORY_LIMIT)) { try { await deleteDoc(r.ref); } catch (e) {} }
+  } catch (e) {}
+}
+window.refreshHistory = async function () { await pruneHistory(); await loadHistory(); };
+
+async function loadHistory() {
+  const container = document.getElementById('historyContainer'); if (!container || !currentUser) return;
+  try {
+    const q = query(collection(db, 'gameRounds'), where('uid', '==', currentUser.uid), where('game', '==', 'left-right'));
+    const snap = await getDocs(q); const rounds = []; snap.forEach(d => rounds.push({ id: d.id, ...d.data() }));
+    rounds.sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
+    const recent = rounds.slice(0, HISTORY_LIMIT);
+    if (!recent.length) { container.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm">No rounds yet. Try your luck above! 🎯</div>`; return; }
+    container.innerHTML = recent.map(r => {
+      const dt = r.createdAt?.toDate?.() || new Date(); const net = Number(r.netDelta) || 0; const bet = Number(r.betAmount) || 0;
+      const won = r.result === 'win';
+      const time = dt.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }); const date = dt.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+      return `<div class="history-row"><div class="history-dot ${won ? 'win' : 'loss'}">${won ? '✓' : '✕'}</div><div class="min-w-0 flex-1"><p class="text-white font-bold text-[13px] truncate">${won ? 'Won' : 'Lost'} · <span class="text-slate-400">bet ₹${money(bet)}</span></p><p class="text-slate-500 text-[11px] mt-0.5">Target ${r.target} · Exact on ${(r.exactSide || '').toUpperCase()} · You: ${(r.selectedSide || '').toUpperCase()}</p></div><div class="text-right shrink-0"><p class="font-extrabold text-[13px] ${won ? 'text-emerald-400' : 'text-rose-400'}">${net >= 0 ? '+' : '−'}₹${money(Math.abs(net))}</p><p class="text-slate-500 text-[10px] mt-0.5">${date} · ${time}</p></div></div>`;
+    }).join('');
+  } catch (e) {}
+}
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  currentUser = user;
+  try { await loadUserData(); } catch (e) {}
+  try { await pruneHistory(); } catch (e) {}
+  try { await loadHistory(); } catch (e) {}
+});
+
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.getElementById('sidebar')?.classList.add('sidebar-closed'); });
+</script>
+</body>
+</html>
