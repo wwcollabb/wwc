@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>WinKom — Dice Roll</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{--bg:#070b14;--line:rgba(255,255,255,.075);--line-strong:rgba(255,255,255,.13);--text:#eef4fb;--muted:#8b98ad;--dim:#5b6879;--cyan:#22d3ee;--cyan-soft:#67e8f9;--amber:#f59e0b;--emerald:#10b981;--violet:#8b5cf6;--rose:#f43f5e;}
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;min-height:100vh;color:var(--text);font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;background-color:var(--bg);background-image:radial-gradient(680px 420px at 8% -12%, rgba(34,211,238,.10), transparent 62%),radial-gradient(620px 420px at 102% 2%, rgba(245,158,11,.08), transparent 60%),radial-gradient(700px 520px at 50% 112%, rgba(16,185,129,.05), transparent 62%);background-attachment:fixed;}
+::selection{background:rgba(34,211,238,.3)}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:8px}
+.ic{width:20px;height:20px;flex:none;display:block;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ic-sm{width:16px;height:16px}.ic-xs{width:13px;height:13px;stroke-width:2}
+.ic-lg{width:22px;height:22px}
+.glass{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:20px;backdrop-filter:blur(14px)}
+.sidebar{transition:transform .32s cubic-bezier(.4,0,.2,1)}
+.sidebar-closed{transform:translateX(-100%)}
+.sidebar-open{transform:translateX(0)}
+@media (min-width:768px){.sidebar-closed{transform:translateX(0)}}
+.nav-link{position:relative;display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:14px;font-size:14px;font-weight:600;color:var(--muted);border:1px solid transparent;transition:background .2s ease,color .2s ease,border-color .2s ease}
+.nav-link:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.nav-link.active{background:linear-gradient(90deg,rgba(245,158,11,.16),rgba(245,158,11,.04));border-color:rgba(245,158,11,.24);color:#fbbf24}
+.nav-link .ic{width:18px;height:18px}
+.glass-header{background:rgba(9,13,22,.82);backdrop-filter:blur(18px)}
+.support-btn{width:40px;height:40px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(34,211,238,.16),rgba(99,102,241,.12));border:1px solid rgba(34,211,238,.32);color:var(--cyan-soft);text-decoration:none;position:relative}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:14px;font-size:13.5px;font-weight:700;white-space:nowrap;cursor:pointer;border:1px solid transparent;transition:all .18s ease;font-family:inherit}
+.btn:disabled{opacity:.42;cursor:not-allowed;box-shadow:none!important}
+.btn-amber{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#2a1c06;box-shadow:0 10px 26px rgba(245,158,11,.28)}
+.chip{width:42px;height:42px;border-radius:13px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid transparent}
+.chip .ic{width:20px;height:20px}
+.chip-cyan{color:var(--cyan-soft);background:rgba(34,211,238,.10);border-color:rgba(34,211,238,.20)}
+.icon-btn{width:36px;height:36px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--muted);cursor:pointer;transition:all .2s ease}
+.icon-btn:hover{background:rgba(255,255,255,.10);color:#fff}
+.promo-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;background:linear-gradient(135deg,rgba(245,158,11,.22),rgba(244,63,94,.16));border:1px solid rgba(245,158,11,.45);color:#fcd34d;font-weight:800;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase}
+.promo-badge .bolt{color:#fbbf24}
+
+.dice-arena{position:relative;overflow:hidden;border-radius:24px;background:radial-gradient(900px 380px at 50% -30%, rgba(16,185,129,.14), transparent 62%),radial-gradient(700px 300px at 20% 120%, rgba(245,158,11,.10), transparent 60%),linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid rgba(16,185,129,.26);box-shadow:0 30px 80px rgba(0,0,0,.45);padding:20px 16px 18px}
+.dice-title{position:relative;text-align:center;margin-bottom:14px}
+.dice-title .target-label{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#8b98ad;font-weight:800;display:inline-flex;align-items:center;gap:8px}
+.dice-title .target-label::before,.dice-title .target-label::after{content:'';width:24px;height:1px;background:linear-gradient(90deg,transparent,rgba(16,185,129,.55))}
+.dice-title .target-label::after{background:linear-gradient(90deg,rgba(16,185,129,.55),transparent)}
+.dice-stage{display:flex;justify-content:center;gap:22px;padding:8px 0 6px;perspective:900px}
+.dice{width:104px;height:104px;position:relative;border-radius:22px;background:linear-gradient(160deg,#fdfdfd 0%,#e8eef7 55%,#cbd5e1 100%);box-shadow:inset 0 -8px 14px rgba(0,0,0,.10),inset 0 6px 12px rgba(255,255,255,.9),0 20px 40px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.08);transition:transform .25s;transform-style:preserve-3d}
+.dice.rolling{animation:diceRolling .35s cubic-bezier(.4,0,.6,1) infinite}
+@keyframes diceRolling{0%{transform:rotate(-14deg) translateY(-4px) scale(1.02)}50%{transform:rotate(12deg) translateY(2px) scale(.98)}100%{transform:rotate(-14deg) translateY(-4px) scale(1.02)}}
+.dice-landed{animation:diceLand .45s cubic-bezier(.16,1,.3,1)}
+@keyframes diceLand{0%{transform:scale(1.18) rotate(-6deg)}60%{transform:scale(.96) rotate(3deg)}100%{transform:scale(1) rotate(0)}}
+.dice .pip{position:absolute;width:16px;height:16px;border-radius:999px;background:radial-gradient(circle at 30% 30%,#475569,#0f172a);box-shadow:inset 0 -2px 4px rgba(0,0,0,.5),inset 0 2px 3px rgba(255,255,255,.15);transform:translate(-50%,-50%)}
+.pip.tl{top:26%;left:26%}.pip.tr{top:26%;left:74%}.pip.ml{top:50%;left:26%}.pip.mc{top:50%;left:50%}.pip.mr{top:50%;left:74%}.pip.bl{top:74%;left:26%}.pip.br{top:74%;left:74%}
+.dice-sum-wrap{text-align:center;margin-top:14px}
+.dice-sum-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#8b98ad;font-weight:800}
+.dice-sum{font-size:64px;font-weight:800;line-height:1;margin-top:4px;letter-spacing:-.05em;font-variant-numeric:tabular-nums;color:#e8eef7;transition:all .25s ease}
+.dice-sum.spinning{color:#a5f3fc;text-shadow:0 0 30px rgba(34,211,238,.7)}
+.dice-sum.win-low{color:#34d399;text-shadow:0 0 34px rgba(16,185,129,.85)}
+.dice-sum.win-high{color:#fb7185;text-shadow:0 0 34px rgba(244,63,94,.85)}
+.dice-sum.win-seven{color:#fbbf24;text-shadow:0 0 34px rgba(245,158,11,.85)}
+.dice-bets{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:18px}
+.dice-bet{position:relative;border-radius:20px;padding:16px 8px 14px;cursor:pointer;font-family:inherit;border:1.5px solid rgba(255,255,255,.12);display:flex;flex-direction:column;align-items:center;gap:8px;transition:all .18s ease;min-height:130px}
+.dice-bet:not(:disabled):hover{transform:translateY(-3px);border-color:rgba(255,255,255,.28)}
+.dice-bet.low{background:linear-gradient(180deg,rgba(16,185,129,.16),rgba(16,185,129,.03))}
+.dice-bet.seven{background:linear-gradient(180deg,rgba(245,158,11,.16),rgba(245,158,11,.03))}
+.dice-bet.high{background:linear-gradient(180deg,rgba(244,63,94,.16),rgba(244,63,94,.03))}
+.dice-bet.picked{border-color:rgba(34,211,238,.65);box-shadow:0 0 0 3px rgba(34,211,238,.14)}
+.dice-bet.dim{opacity:.35;filter:saturate(.5)}
+.dice-bet.winner{border-color:rgba(16,185,129,.85)!important;animation:dbWinPulse .9s ease}
+.dice-bet.loser{border-color:rgba(244,63,94,.55)!important;opacity:.55}
+@keyframes dbWinPulse{0%{transform:scale(1)}35%{transform:scale(1.06)}100%{transform:scale(1)}}
+.dice-bet .db-icon{width:38px;height:38px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800}
+.dice-bet.low .db-icon{background:rgba(16,185,129,.20);color:#6ee7b7;border:1px solid rgba(16,185,129,.35)}
+.dice-bet.seven .db-icon{background:rgba(245,158,11,.20);color:#fcd34d;border:1px solid rgba(245,158,11,.35)}
+.dice-bet.high .db-icon{background:rgba(244,63,94,.20);color:#fda4af;border:1px solid rgba(244,63,94,.35)}
+.dice-bet .db-label{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.dice-bet.low .db-label{color:#6ee7b7}
+.dice-bet.seven .db-label{color:#fcd34d}
+.dice-bet.high .db-label{color:#fda4af}
+.dice-bet .db-mult{font-size:11px;font-weight:800;padding:2px 10px;border-radius:999px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.10);color:#e8eef7}
+.dice-bet .db-sub{font-size:9.5px;font-weight:700;color:#8b98ad;text-align:center;line-height:1.2}
+.dice-status-wrap{padding:16px 0 8px}
+.dice-status-head{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.timer-bar{height:8px;border-radius:999px;background:rgba(255,255,255,.05);overflow:hidden}
+.timer-bar > i{display:block;height:100%;border-radius:999px;width:0%;transition:width .2s linear;background:linear-gradient(90deg,#22d3ee 0%,#8b5cf6 45%,#f59e0b 100%)}
+.timer-bar.spinning > i{width:100%!important;background:linear-gradient(90deg,#f59e0b,#fbbf24,#43f5e5,#fbbf24,#f59e0b);background-size:200% 100%;animation:dbBar 1.2s linear infinite}
+@keyframes dbBar{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.dice-arena.reveal-win::after{content:'';position:absolute;inset:0;pointer-events:none;animation:dbFlashGreen 1s ease}
+.dice-arena.reveal-loss::after{content:'';position:absolute;inset:0;pointer-events:none;animation:dbFlashRed 1s ease}
+@keyframes dbFlashGreen{0%{background:radial-gradient(circle at center,rgba(16,185,129,.38),transparent 65%)}100%{background:transparent}}
+@keyframes dbFlashRed{0%{background:radial-gradient(circle at center,rgba(244,63,94,.32),transparent 65%)}100%{background:transparent}}
+.result-card{margin-top:14px;border-radius:18px;padding:16px 18px;display:flex;align-items:center;gap:14px;animation:pop .4s cubic-bezier(.16,1,.3,1)}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.result-card.win{background:linear-gradient(135deg,rgba(16,185,129,.16),rgba(16,185,129,.03));border:1px solid rgba(16,185,129,.4)}
+.result-card.loss{background:linear-gradient(135deg,rgba(244,63,94,.16),rgba(244,63,94,.03));border:1px solid rgba(244,63,94,.4)}
+.result-emoji{font-size:34px;line-height:1}
+.history-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.028);border:1px solid var(--line)}
+.history-dot{width:36px;height:36px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px}
+.history-dot.win{background:rgba(16,185,129,.14);color:#6ee7b7;border:1px solid rgba(16,185,129,.30)}
+.history-dot.loss{background:rgba(244,63,94,.14);color:#fda4af;border:1px solid rgba(244,63,94,.30)}
+.fade-in{animation:fadeIn .45s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.pulse-dot{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.hidden{display:none!important}
+.toast{position:fixed;bottom:200px;left:50%;transform:translateX(-50%);padding:11px 18px;border-radius:12px;font-size:13px;font-weight:700;z-index:9999;color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.45);transition:opacity .3s;max-width:90vw;text-align:center}
+.toast.ok{background:rgba(16,185,129,.95)}
+.toast.err{background:rgba(244,63,94,.95)}
+
+.bottom-bar{position:fixed;left:0;right:0;bottom:0;z-index:40;padding:10px 12px calc(10px + env(safe-area-inset-bottom, 0px));background:linear-gradient(180deg,rgba(7,11,20,.78) 0%,rgba(7,11,20,.98) 40%);backdrop-filter:blur(18px);border-top:1px solid rgba(255,255,255,.08);box-shadow:0 -12px 40px rgba(0,0,0,.5)}
+@media (min-width:768px){.bottom-bar{left:256px}}
+.bottom-inner{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:8px}
+.quick-bets-row{display:flex;gap:6px;justify-content:center;overflow-x:auto;padding:0 4px;scrollbar-width:none}
+.quick-bets-row::-webkit-scrollbar{display:none}
+.quick-bets-row .bet-chip{flex:1;min-width:0;padding:7px 4px;border-radius:10px;font-size:11.5px;font-weight:800;background:rgba(255,255,255,.05);border:1px solid var(--line);color:#8b98ad;cursor:pointer;font-family:inherit;transition:all .15s ease;text-align:center}
+.quick-bets-row .bet-chip:hover{color:#fbbf24;border-color:rgba(245,158,11,.42);background:rgba(245,158,11,.10)}
+.main-row{display:flex;gap:8px;align-items:stretch}
+.balance-block{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:8px 12px;border-radius:14px;flex:none;background:linear-gradient(180deg,rgba(245,158,11,.10),rgba(245,158,11,.03));border:1px solid rgba(245,158,11,.28);min-width:112px}
+.balance-block .bb-label{font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#8b98ad}
+.balance-block .bb-value{font-size:16px;font-weight:800;color:#fbbf24;font-variant-numeric:tabular-nums}
+.bet-block{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;justify-content:center;padding:6px 12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--line-strong)}
+.bet-block .bb-label{font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#8b98ad}
+.bet-block input{width:100%;background:transparent;border:none;outline:none;color:#fff;font-size:18px;font-weight:800;font-family:inherit;font-variant-numeric:tabular-nums;padding:0}
+.bet-block input::placeholder{color:#5b6879;font-weight:700}
+.crash-page-main{padding-bottom:150px!important}
+</style>
+</head>
+<body>
+
+<aside id="sidebar" class="sidebar sidebar-closed fixed top-0 left-0 h-full w-[264px] bg-[#0a0f1a]/95 backdrop-blur-xl border-r border-white/[.06] z-50 overflow-y-auto">
+  <div class="p-5">
+    <div class="flex items-center justify-between mb-8">
+      <a href="index.html" class="flex items-center gap-3 min-w-0"><img src="logo.png" alt="WinKom" class="w-10 h-10 rounded-xl object-cover" onerror="this.style.display='none'"/><span class="text-xl font-extrabold text-white tracking-tight truncate">Win<span class="text-cyan-400">Kom</span></span></a>
+      <button onclick="toggleSidebar()" class="md:hidden w-9 h-9 rounded-xl bg-white/5 border border-white/10 text-gray-400 flex items-center justify-center transition"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <nav class="space-y-1.5">
+      <a href="index.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8.5 16v-4.5M12.5 16V8M16.5 16v-2.5"/></svg>Dashboard</a>
+      <a href="games.html" class="nav-link active"><svg class="ic" viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="10" rx="4"/><path d="M7 12h2M8 11v2M15.5 11h.01M17.5 13h.01"/></svg>Games</a>
+      <a href="game1.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>Spin Wheel</a>
+      <a href="game2.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>Color Prediction</a>
+      <a href="game3.html" class="nav-link" style="padding-left:26px;font-size:13px;background:linear-gradient(90deg,rgba(34,211,238,.16),transparent);border-color:rgba(34,211,238,.20);color:#a5f3fc"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.5" fill="currentColor" stroke="none"/></svg>Dice Roll</a>
+      <a href="game4.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M3 9.5 12 4l9 5.5"/><path d="M5 10v8M19 10v8"/></svg>Hi-Lo Card</a>
+      <a href="game5.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9z"/></svg>Crash</a>
+      <a href="investment.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M3 16.5 9 10.5l4 4 8-8"/><path d="M15 6.5h6v6"/></svg>Investment</a>
+      <a href="deposit.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8 10.5 4 4 4-4"/><path d="M5 19h14"/></svg>Deposit</a>
+      <a href="withdraw.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M12 15V5"/><path d="m8 8.5 4-4 4 4"/><path d="M5 19h14"/></svg>Withdraw</a>
+      <a href="transactions.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M6.5 3.5h8L18.5 7v13.5h-12z"/><path d="M9.5 11h6M9.5 14.5h6M9.5 7.5h2.5"/></svg>My Transactions</a>
+      <a href="settings.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.1"/><path d="M12 2.9v2.3M12 18.8v2.3M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.9 12h2.3M18.8 12h2.3M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>Settings</a>
+      <a href="about.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.2"/><circle cx="12" cy="7.9" r=".9" fill="currentColor" stroke="none"/></svg>About</a>
+      <a href="support.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/><path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/><path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/></svg>Support</a>
+      <div class="pt-3 mt-3 border-t border-white/[.06]"><button onclick="handleLogout()" class="nav-link w-full text-left text-red-400"><svg class="ic" viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="m10 8-4 4 4 4"/><path d="M6 12h9"/></svg>Logout</button></div>
+    </nav>
+  </div>
+</aside>
+<div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden"></div>
+
+<div class="md:ml-64 relative">
+  <header class="glass-header border-b border-white/[.06] fixed top-0 left-0 right-0 md:left-64 z-30">
+    <div class="max-w-6xl mx-auto px-4 py-3.5">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <button onclick="toggleSidebar()" class="md:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-gray-300 flex items-center justify-center transition shrink-0"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+          <div class="min-w-0"><h1 class="text-[15px] sm:text-lg font-extrabold text-white truncate leading-tight">🎲 Dice <span class="text-emerald-400">Roll</span></h1><p class="text-[11px] text-slate-500 font-medium truncate">Low · Seven · High — win real money</p></div>
+        </div>
+        <div class="flex items-center gap-2.5 shrink-0">
+          <span class="promo-badge hidden sm:inline-flex"><span class="bolt">⚡</span> Up to 5.7x</span>
+          <a href="support.html" class="support-btn"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/><path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/><path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 pt-[80px] pb-4 fade-in crash-page-main">
+    <section class="dice-arena" id="diceArena">
+      <div class="dice-title"><p class="target-label">🎲 Roll Two Dice</p></div>
+      <div class="dice-stage">
+        <div class="dice" id="die1"></div>
+        <div class="dice" id="die2"></div>
+      </div>
+      <div class="dice-sum-wrap"><p class="dice-sum-label">Sum</p><p class="dice-sum" id="diceSum">—</p></div>
+      <p style="text-align:center;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#8b98ad;margin-top:6px;margin-bottom:8px" id="pickLabel">No bet picked yet</p>
+      <div class="dice-bets">
+        <button type="button" id="betLow" class="dice-bet low" onclick="pickBet('low')"><span class="db-icon">⬇</span><span class="db-label">LOW</span><span class="db-mult">2.3×</span><span class="db-sub">Sum 2-6</span></button>
+        <button type="button" id="betSeven" class="dice-bet seven" onclick="pickBet('seven')"><span class="db-icon">7</span><span class="db-label">SEVEN</span><span class="db-mult">5.7×</span><span class="db-sub">Sum 7</span></button>
+        <button type="button" id="betHigh" class="dice-bet high" onclick="pickBet('high')"><span class="db-icon">⬆</span><span class="db-label">HIGH</span><span class="db-mult">2.3×</span><span class="db-sub">Sum 8-12</span></button>
+      </div>
+      <div class="dice-status-wrap"><div class="dice-status-head"><span class="text-slate-500">Round Status</span><span id="roundStatus" class="text-cyan-300">Set bet &amp; pick option</span></div><div class="timer-bar" id="timerBar"><i id="timerFill"></i></div></div>
+      <button type="button" id="rollBtn" class="btn btn-amber w-full h-[54px] mt-3 text-base" onclick="rollDice()" disabled><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.5" fill="currentColor" stroke="none"/></svg>ROLL DICE</button>
+      <div id="resultWrapper" class="hidden"><div id="resultCard" class="result-card"><span class="result-emoji" id="resultEmoji">🎉</span><div class="min-w-0 flex-1"><p class="text-white font-extrabold text-lg" id="resultTitle">WIN</p><p class="text-slate-400 text-[12px] mt-0.5" id="resultSub">—</p></div><div class="text-right"><p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Net</p><p id="resultPayout" class="text-lg font-extrabold">₹0</p></div></div></div>
+    </section>
+
+    <section class="glass p-4 sm:p-5 mt-5">
+      <div class="flex items-center justify-between gap-3 mb-3"><h3 class="text-white font-extrabold text-[15px] flex items-center gap-2"><span class="chip chip-cyan" style="width:34px;height:34px;border-radius:11px"><svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8"/><path d="M12 7.4V12l3.2 2"/></svg></span>Recent Rolls <span class="text-slate-500 text-[11px] font-semibold">(last 10)</span></h3><button type="button" onclick="refreshHistory()" class="icon-btn"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button></div>
+      <div id="historyContainer" class="space-y-2"><p class="text-slate-400 text-center py-8 text-sm">Loading history…</p></div>
+    </section>
+  </main>
+</div>
+
+<div class="bottom-bar">
+  <div class="bottom-inner">
+    <div class="quick-bets-row">
+      <button class="bet-chip" onclick="setBet(10)">₹10</button>
+      <button class="bet-chip" onclick="setBet(50)">₹50</button>
+      <button class="bet-chip" onclick="setBet(100)">₹100</button>
+      <button class="bet-chip" onclick="setBet(500)">₹500</button>
+      <button class="bet-chip" onclick="setBet(1000)">₹1000</button>
+    </div>
+    <div class="main-row">
+      <div class="balance-block"><span class="bb-label">Wallet</span><span class="bb-value">₹<span id="walletBalance">0</span></span></div>
+      <div class="bet-block"><span class="bb-label">Bet Amount</span><input type="number" id="betAmount" min="10" max="1000" step="10" placeholder="Enter amount" /></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = { apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY", authDomain: "winkom-da4c2.firebaseapp.com", projectId: "winkom-da4c2", storageBucket: "winkom-da4c2.firebasestorage.app", messagingSenderId: "629229462242", appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb" };
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null, currentUserData = null, balance = 0;
+const ROLL_MS = 2400, HISTORY_LIMIT = 10;
+const MULT = { low: 2.3, seven: 5.7, high: 2.3 };
+let rolling = false, picked = null;
+
+const money = n => Number(n || 0).toFixed(2);
+const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+function toast(msg, type = 'ok') { const el = document.createElement('div'); el.textContent = msg; el.className = 'toast ' + type; document.body.appendChild(el); setTimeout(() => { el.style.opacity = '0'; }, 2200); setTimeout(() => { el.remove(); }, 2500); }
+
+window.toggleSidebar = function () { const s = document.getElementById('sidebar'), o = document.getElementById('overlay'); s.classList.toggle('sidebar-closed'); s.classList.toggle('sidebar-open'); o.classList.toggle('hidden'); };
+window.handleLogout = async function () { await signOut(auth); window.location.href = 'login.html'; };
+window.setBet = function (v) { if (rolling) return; const el = document.getElementById('betAmount'); if (el) el.value = v; };
+
+const PIP_LAYOUTS = { 1:['mc'], 2:['tl','br'], 3:['tl','mc','br'], 4:['tl','tr','bl','br'], 5:['tl','tr','mc','bl','br'], 6:['tl','tr','ml','bl','br','mr'] };
+function renderDie(el, value) { if (!el) return; const pips = PIP_LAYOUTS[value] || []; el.innerHTML = pips.map(p => `<span class="pip ${p}"></span>`).join(''); }
+
+async function loadUserData() { if (!currentUser) return; const snap = await getDoc(doc(db, 'users', currentUser.uid)); if (snap.exists()) { currentUserData = snap.data(); balance = Number(currentUserData.balance) || 0; document.getElementById('walletBalance').textContent = money(balance); } }
+
+window.pickBet = function (choice) {
+  if (rolling) return;
+  picked = choice;
+  const ids = { low: 'betLow', seven: 'betSeven', high: 'betHigh' };
+  Object.keys(ids).forEach(c => { const el = document.getElementById(ids[c]); el.classList.remove('picked','dim'); if (c === choice) el.classList.add('picked'); else el.classList.add('dim'); });
+  const labels = { low: 'LOW (2-6)', seven: 'SEVEN (7)', high: 'HIGH (8-12)' };
+  const colors = { low: '#6ee7b7', seven: '#fcd34d', high: '#fda4af' };
+  document.getElementById('pickLabel').innerHTML = `You picked <span style="color:${colors[choice]}">${labels[choice]}</span> · Payout ${MULT[choice]}×`;
+  document.getElementById('rollBtn').disabled = false;
+  const statusEl = document.getElementById('roundStatus'); statusEl.textContent = `Ready — ${labels[choice]}`; statusEl.className = 'text-emerald-400';
+};
+
+window.rollDice = async function () {
+  if (rolling) { toast('Rolling already…', false); return; }
+  if (!currentUser) return;
+  if (!picked) { toast('Please pick an option first', false); return; }
+  const bet = parseFloat(document.getElementById('betAmount').value);
+  if (!bet || isNaN(bet) || bet < 10) { toast('Minimum bet is ₹10', false); return; }
+  if (bet > 1000) { toast('Maximum bet is ₹1000', false); return; }
+  if (bet > balance) { toast(`Insufficient balance. You have ₹${money(balance)}`, false); return; }
+
+  document.getElementById('resultWrapper').classList.add('hidden');
+  const arena = document.getElementById('diceArena'); arena.classList.remove('reveal-win','reveal-loss');
+  document.getElementById('rollBtn').disabled = true;
+  ['betLow','betSeven','betHigh'].forEach(id => document.getElementById(id).disabled = true);
+
+  try {
+    const newBalance = balance - bet;
+    await updateDoc(doc(db, 'users', currentUser.uid), { balance: newBalance });
+    await addDoc(collection(db, 'transactions'), { uid: currentUser.uid, type: 'game_bet', description: `Dice Roll — bet ₹${money(bet)} on ${picked.toUpperCase()}`, amount: -bet, balanceAfter: newBalance, createdAt: serverTimestamp() });
+    balance = newBalance; currentUserData.balance = newBalance; document.getElementById('walletBalance').textContent = money(balance);
+  } catch (e) { toast('Could not place bet: ' + e.message, false); document.getElementById('rollBtn').disabled = false; ['betLow','betSeven','betHigh'].forEach(id => document.getElementById(id).disabled = false); return; }
+
+  rolling = true;
+  const d1 = document.getElementById('die1'), d2 = document.getElementById('die2'), sumEl = document.getElementById('diceSum');
+  d1.classList.remove('dice-landed'); d2.classList.remove('dice-landed');
+  d1.classList.add('rolling'); d2.classList.add('rolling');
+  sumEl.classList.remove('win-low','win-seven','win-high'); sumEl.classList.add('spinning'); sumEl.textContent = '—';
+  document.getElementById('timerBar').classList.add('spinning');
+  const statusEl = document.getElementById('roundStatus'); statusEl.textContent = 'Rolling…'; statusEl.className = 'text-amber-300';
+
+  const animInterval = setInterval(() => { renderDie(d1, randomInt(1, 6)); renderDie(d2, randomInt(1, 6)); }, 90);
+
+  const die1 = randomInt(1, 6), die2 = randomInt(1, 6), total = die1 + die2;
+  await new Promise(r => setTimeout(r, ROLL_MS));
+  clearInterval(animInterval);
+
+  d1.classList.remove('rolling'); d2.classList.remove('rolling');
+  d1.classList.add('dice-landed'); d2.classList.add('dice-landed');
+  renderDie(d1, die1); renderDie(d2, die2);
+  sumEl.classList.remove('spinning'); sumEl.textContent = String(total);
+
+  let resultBucket;
+  if (total >= 2 && total <= 6) resultBucket = 'low';
+  else if (total === 7) resultBucket = 'seven';
+  else resultBucket = 'high';
+  sumEl.classList.add('win-' + resultBucket);
+
+  const ids = { low: 'betLow', seven: 'betSeven', high: 'betHigh' };
+  Object.keys(ids).forEach(c => { const el = document.getElementById(ids[c]); el.disabled = true; el.classList.remove('picked','dim'); if (c === resultBucket) el.classList.add('winner'); else el.classList.add('loser'); });
+
+  const won = picked === resultBucket;
+  const multiplier = won ? MULT[picked] : 0;
+  const credit = bet * multiplier;
+  const netDelta = credit - bet;
+
+  try {
+    if (won && credit > 0) {
+      const newBalance = balance + credit;
+      await updateDoc(doc(db, 'users', currentUser.uid), { balance: newBalance });
+      await addDoc(collection(db, 'transactions'), { uid: currentUser.uid, type: 'game_win', description: `Dice Roll WIN — sum ${total} (${resultBucket.toUpperCase()}) × ${multiplier}`, amount: credit, balanceAfter: newBalance, createdAt: serverTimestamp() });
+      balance = newBalance; currentUserData.balance = newBalance; document.getElementById('walletBalance').textContent = money(balance);
+    }
+    await addDoc(collection(db, 'gameRounds'), { uid: currentUser.uid, userName: currentUserData?.name || 'User', game: 'dice-roll', pickedOption: picked, resultBucket, die1, die2, total, betAmount: bet, multiplier, payout: credit, netDelta, result: won ? 'win' : 'loss', createdAt: serverTimestamp() });
+  } catch (e) { console.error(e); }
+
+  arena.classList.remove('reveal-win','reveal-loss'); void arena.offsetWidth; arena.classList.add(won ? 'reveal-win' : 'reveal-loss');
+  const card = document.getElementById('resultCard'); card.classList.remove('win','loss'); card.classList.add(won ? 'win' : 'loss');
+  document.getElementById('resultEmoji').textContent = won ? '🎉' : '😔';
+  document.getElementById('resultTitle').textContent = won ? 'YOU WIN!' : 'YOU LOST';
+  document.getElementById('resultSub').textContent = `Dice ${die1} + ${die2} = ${total} → ${resultBucket.toUpperCase()} · You picked ${picked.toUpperCase()}`;
+  const pEl = document.getElementById('resultPayout'); pEl.textContent = (netDelta >= 0 ? '+' : '−') + '₹' + money(Math.abs(netDelta)); pEl.className = won ? 'text-lg font-extrabold text-emerald-400' : 'text-lg font-extrabold text-rose-400';
+  document.getElementById('resultWrapper').classList.remove('hidden');
+
+  if (won) { statusEl.textContent = `You won ₹${money(netDelta)}! 🎉`; statusEl.className = 'text-emerald-400'; }
+  else { statusEl.textContent = `You lost ₹${money(bet)}`; statusEl.className = 'text-rose-400'; }
+
+  rolling = false; picked = null;
+  document.getElementById('pickLabel').textContent = 'No bet picked yet';
+  document.getElementById('timerBar').classList.remove('spinning'); document.getElementById('timerFill').style.width = '0%';
+
+  setTimeout(() => {
+    ['betLow','betSeven','betHigh'].forEach(id => { const el = document.getElementById(id); el.disabled = false; el.classList.remove('winner','loser','dim','picked'); });
+    sumEl.classList.remove('win-low','win-seven','win-high'); sumEl.textContent = '—';
+    d1.innerHTML = ''; d2.innerHTML = '';
+    document.getElementById('rollBtn').disabled = true;
+    document.getElementById('roundStatus').textContent = 'Set bet & pick option'; document.getElementById('roundStatus').className = 'text-cyan-300';
+  }, 2400);
+
+  await pruneHistory(); await loadHistory();
+};
+
+async function pruneHistory() { if (!currentUser) return; try { const q = query(collection(db, 'gameRounds'), where('uid', '==', currentUser.uid), where('game', '==', 'dice-roll')); const snap = await getDocs(q); const all = []; snap.forEach(d => all.push({ id: d.id, ref: d.ref, _data: d.data() })); if (all.length <= HISTORY_LIMIT) return; all.sort((a, b) => (b._data.createdAt?.toDate?.() || 0) - (a._data.createdAt?.toDate?.() || 0)); for (const r of all.slice(HISTORY_LIMIT)) { try { await deleteDoc(r.ref); } catch (e) {} } } catch (e) {} }
+window.refreshHistory = async function () { await pruneHistory(); await loadHistory(); };
+
+async function loadHistory() {
+  const container = document.getElementById('historyContainer'); if (!container || !currentUser) return;
+  try {
+    const q = query(collection(db, 'gameRounds'), where('uid', '==', currentUser.uid), where('game', '==', 'dice-roll'));
+    const snap = await getDocs(q); const rounds = []; snap.forEach(d => rounds.push({ id: d.id, ...d.data() }));
+    rounds.sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
+    const recent = rounds.slice(0, HISTORY_LIMIT);
+    if (!recent.length) { container.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm">No rolls yet. Roll the dice above! 🎲</div>`; return; }
+    container.innerHTML = recent.map(r => {
+      const dt = r.createdAt?.toDate?.() || new Date(); const net = Number(r.netDelta) || 0; const bet = Number(r.betAmount) || 0;
+      const won = r.result === 'win';
+      const time = dt.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }); const date = dt.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+      const bucket = r.resultBucket || '?';
+      const bucketHex = bucket === 'low' ? '#6ee7b7' : bucket === 'seven' ? '#fcd34d' : '#fda4af';
+      return `<div class="history-row"><div class="history-dot ${won ? 'win' : 'loss'}">${won ? '✓' : '✕'}</div><div class="min-w-0 flex-1"><p class="text-white font-bold text-[13px] truncate">${won ? 'Won' : 'Lost'} · <span class="text-slate-400">bet ₹${money(bet)}</span></p><p class="text-slate-500 text-[11px] mt-0.5">${r.die1 ?? '?'} + ${r.die2 ?? '?'} = <span class="font-mono font-bold">${r.total ?? '?'}</span> → <span style="color:${bucketHex};font-weight:800">${bucket.toUpperCase()}</span> · You: ${(r.pickedOption || '').toUpperCase()}</p></div><div class="text-right shrink-0"><p class="font-extrabold text-[13px] ${won ? 'text-emerald-400' : 'text-rose-400'}">${net >= 0 ? '+' : '−'}₹${money(Math.abs(net))}</p><p class="text-slate-500 text-[10px] mt-0.5">${date} · ${time}</p></div></div>`;
+    }).join('');
+  } catch (e) {}
+}
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  currentUser = user;
+  try { renderDie(document.getElementById('die1'), 1); renderDie(document.getElementById('die2'), 1); } catch (_) {}
+  try { await loadUserData(); } catch (e) {}
+  try { await pruneHistory(); } catch (e) {}
+  try { await loadHistory(); } catch (e) {}
+});
+
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.getElementById('sidebar')?.classList.add('sidebar-closed'); });
+</script>
+</body>
+</html>

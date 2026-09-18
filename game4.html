@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>WinKom — Hi-Lo Card</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{--bg:#070b14;--line:rgba(255,255,255,.075);--line-strong:rgba(255,255,255,.13);--text:#eef4fb;--muted:#8b98ad;--dim:#5b6879;--cyan:#22d3ee;--cyan-soft:#67e8f9;--amber:#f59e0b;--emerald:#10b981;--violet:#8b5cf6;--rose:#f43f5e;}
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;min-height:100vh;color:var(--text);font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;background-color:var(--bg);background-image:radial-gradient(680px 420px at 8% -12%, rgba(34,211,238,.10), transparent 62%),radial-gradient(620px 420px at 102% 2%, rgba(139,92,246,.09), transparent 60%),radial-gradient(700px 520px at 50% 112%, rgba(16,185,129,.05), transparent 62%);background-attachment:fixed;}
+::selection{background:rgba(34,211,238,.3)}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:8px}
+.ic{width:20px;height:20px;flex:none;display:block;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ic-sm{width:16px;height:16px}.ic-xs{width:13px;height:13px;stroke-width:2}
+.ic-lg{width:22px;height:22px}
+.glass{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:20px;backdrop-filter:blur(14px)}
+.sidebar{transition:transform .32s cubic-bezier(.4,0,.2,1)}
+.sidebar-closed{transform:translateX(-100%)}
+.sidebar-open{transform:translateX(0)}
+@media (min-width:768px){.sidebar-closed{transform:translateX(0)}}
+.nav-link{position:relative;display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:14px;font-size:14px;font-weight:600;color:var(--muted);border:1px solid transparent;transition:background .2s ease,color .2s ease,border-color .2s ease}
+.nav-link:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.nav-link.active{background:linear-gradient(90deg,rgba(245,158,11,.16),rgba(245,158,11,.04));border-color:rgba(245,158,11,.24);color:#fbbf24}
+.nav-link .ic{width:18px;height:18px}
+.glass-header{background:rgba(9,13,22,.82);backdrop-filter:blur(18px)}
+.support-btn{width:40px;height:40px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(34,211,238,.16),rgba(99,102,241,.12));border:1px solid rgba(34,211,238,.32);color:var(--cyan-soft);text-decoration:none;position:relative}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:14px;font-size:13.5px;font-weight:700;white-space:nowrap;cursor:pointer;border:1px solid transparent;transition:all .18s ease;font-family:inherit}
+.btn:disabled{opacity:.42;cursor:not-allowed;box-shadow:none!important}
+.btn-amber{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#2a1c06;box-shadow:0 10px 26px rgba(245,158,11,.28)}
+.chip{width:42px;height:42px;border-radius:13px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid transparent}
+.chip .ic{width:20px;height:20px}
+.chip-cyan{color:var(--cyan-soft);background:rgba(34,211,238,.10);border-color:rgba(34,211,238,.20)}
+.icon-btn{width:36px;height:36px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--muted);cursor:pointer;transition:all .2s ease}
+.icon-btn:hover{background:rgba(255,255,255,.10);color:#fff}
+.promo-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;background:linear-gradient(135deg,rgba(245,158,11,.22),rgba(244,63,94,.16));border:1px solid rgba(245,158,11,.45);color:#fcd34d;font-weight:800;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase}
+.promo-badge .bolt{color:#fbbf24}
+
+.hilo-arena{position:relative;overflow:hidden;border-radius:24px;background:radial-gradient(900px 380px at 50% -30%, rgba(139,92,246,.14), transparent 62%),radial-gradient(700px 300px at 20% 120%, rgba(34,211,238,.10), transparent 60%),linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid rgba(139,92,246,.28);box-shadow:0 30px 80px rgba(0,0,0,.45);padding:20px 16px 18px}
+.hilo-title{position:relative;text-align:center;margin-bottom:8px}
+.hilo-title .target-label{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#8b98ad;font-weight:800;display:inline-flex;align-items:center;gap:8px}
+.hilo-title .target-label::before,.hilo-title .target-label::after{content:'';width:24px;height:1px;background:linear-gradient(90deg,transparent,rgba(139,92,246,.55))}
+.hilo-title .target-label::after{background:linear-gradient(90deg,rgba(139,92,246,.55),transparent)}
+.card-stage{display:flex;justify-content:center;gap:20px;padding:14px 0 8px;perspective:900px}
+.playing-card{width:130px;height:180px;border-radius:16px;position:relative;background:linear-gradient(160deg,#fdfdfd 0%,#e8eef7 55%,#cbd5e1 100%);box-shadow:0 24px 50px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.10),inset 0 -6px 12px rgba(0,0,0,.10),inset 0 4px 10px rgba(255,255,255,.8);transition:transform .3s;transform-style:preserve-3d;display:flex;align-items:center;justify-content:center}
+@media (max-width:520px){.playing-card{width:110px;height:154px}}
+.playing-card.flipping{animation:cardFlip .55s ease}
+@keyframes cardFlip{0%{transform:rotateY(0) scale(1)}50%{transform:rotateY(90deg) scale(1.05)}100%{transform:rotateY(0) scale(1)}}
+.playing-card.landed{animation:cardLand .55s cubic-bezier(.16,1,.3,1)}
+@keyframes cardLand{0%{transform:scale(1.15) rotate(-4deg)}60%{transform:scale(.97) rotate(2deg)}100%{transform:scale(1) rotate(0)}}
+.playing-card.winner{border:2px solid rgba(16,185,129,.65);box-shadow:0 0 0 4px rgba(16,185,129,.22),0 24px 50px rgba(16,185,129,.30)}
+.playing-card.loser{border:2px solid rgba(244,63,94,.55);box-shadow:0 0 0 4px rgba(244,63,94,.16),0 24px 50px rgba(244,63,94,.22);opacity:.85}
+.card-value{font-size:64px;font-weight:800;line-height:1;letter-spacing:-.06em}
+@media (max-width:520px){.card-value{font-size:52px}}
+.card-value.red{color:#dc2626}.card-value.black{color:#0f172a}
+.card-suit{position:absolute;font-size:22px;font-weight:800}
+.card-suit.tl{top:8px;left:10px}.card-suit.br{bottom:8px;right:10px;transform:rotate(180deg)}
+.card-suit.red{color:#dc2626}.card-suit.black{color:#0f172a}
+.card-label{position:absolute;bottom:-26px;left:50%;transform:translateX(-50%);font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#8b98ad;white-space:nowrap}
+.playing-card.face-down{background:linear-gradient(135deg,#1e293b,#0f172a)}
+.playing-card.face-down::before{content:'';position:absolute;inset:8px;border-radius:10px;background:repeating-linear-gradient(45deg,rgba(34,211,238,.20) 0 6px,transparent 6px 12px),repeating-linear-gradient(-45deg,rgba(139,92,246,.20) 0 6px,transparent 6px 12px);border:1px solid rgba(255,255,255,.08)}
+.playing-card.face-down::after{content:'?';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:52px;font-weight:800;color:rgba(255,255,255,.20);z-index:2}
+.vs-line{align-self:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.vs-badge{width:44px;height:44px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f1626,#0a0f1a);border:1.5px solid rgba(139,92,246,.55);color:#a78bfa;font-weight:800;font-size:12px;letter-spacing:.06em}
+@media (max-width:520px){.vs-badge{width:36px;height:36px;font-size:10px}}
+.hilo-info{margin-top:30px;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,rgba(139,92,246,.08),rgba(34,211,238,.05));border:1px solid rgba(139,92,246,.22);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.hilo-info-item{display:flex;flex-direction:column;gap:2px}
+.hilo-info-label{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#8b98ad}
+.hilo-info-value{font-size:14px;font-weight:800;color:#fff}
+.hilo-info-value.up{color:#6ee7b7}.hilo-info-value.down{color:#fda4af}.hilo-info-value.tie{color:#a78bfa}
+.hilo-choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.hilo-choice{position:relative;border-radius:20px;padding:20px 14px;cursor:pointer;font-family:inherit;border:1.5px solid rgba(255,255,255,.12);display:flex;flex-direction:column;align-items:center;gap:8px;transition:all .18s ease;justify-content:center;min-height:120px}
+.hilo-choice:not(:disabled):hover{transform:translateY(-3px);border-color:rgba(255,255,255,.28)}
+.hilo-choice.higher{background:linear-gradient(180deg,rgba(16,185,129,.16),rgba(16,185,129,.03))}
+.hilo-choice.lower{background:linear-gradient(180deg,rgba(244,63,94,.16),rgba(244,63,94,.03))}
+.hilo-choice.picked{border-color:rgba(34,211,238,.65);box-shadow:0 0 0 3px rgba(34,211,238,.14)}
+.hilo-choice.dim{opacity:.35;filter:saturate(.5)}
+.hilo-choice.winner{border-color:rgba(16,185,129,.85)!important;animation:hlWinPulse .9s ease}
+.hilo-choice.loser{border-color:rgba(244,63,94,.55)!important;opacity:.55}
+@keyframes hlWinPulse{0%{transform:scale(1)}35%{transform:scale(1.06)}100%{transform:scale(1)}}
+.hilo-choice .hc-icon{width:44px;height:44px;border-radius:14px;flex:none;display:flex;align-items:center;justify-content:center}
+.hilo-choice.higher .hc-icon{background:rgba(16,185,129,.20);color:#6ee7b7;border:1px solid rgba(16,185,129,.35)}
+.hilo-choice.lower .hc-icon{background:rgba(244,63,94,.20);color:#fda4af;border:1px solid rgba(244,63,94,.35)}
+.hilo-choice .hc-label{font-size:15px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+.hilo-choice.higher .hc-label{color:#6ee7b7}
+.hilo-choice.lower .hc-label{color:#fda4af}
+.hilo-choice .hc-mult{font-size:11px;font-weight:800;padding:2px 10px;border-radius:999px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.10);color:#e8eef7}
+.hilo-status-wrap{padding:16px 0 8px}
+.hilo-status-head{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.timer-bar{height:8px;border-radius:999px;background:rgba(255,255,255,.05);overflow:hidden}
+.timer-bar > i{display:block;height:100%;border-radius:999px;width:0%;transition:width .2s linear;background:linear-gradient(90deg,#22d3ee 0%,#8b5cf6 45%,#f59e0b 100%)}
+.timer-bar.spinning > i{width:100%!important;background:linear-gradient(90deg,#f59e0b,#fbbf24,#a78bfa,#fbbf24,#f59e0b);background-size:200% 100%;animation:hlBar 1.2s linear infinite}
+@keyframes hlBar{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.hilo-arena.reveal-win::after{content:'';position:absolute;inset:0;pointer-events:none;animation:hlFlashGreen 1s ease}
+.hilo-arena.reveal-loss::after{content:'';position:absolute;inset:0;pointer-events:none;animation:hlFlashRed 1s ease}
+.hilo-arena.reveal-push::after{content:'';position:absolute;inset:0;pointer-events:none;animation:hlFlashViolet 1s ease}
+@keyframes hlFlashGreen{0%{background:radial-gradient(circle at center,rgba(16,185,129,.38),transparent 65%)}100%{background:transparent}}
+@keyframes hlFlashRed{0%{background:radial-gradient(circle at center,rgba(244,63,94,.32),transparent 65%)}100%{background:transparent}}
+@keyframes hlFlashViolet{0%{background:radial-gradient(circle at center,rgba(139,92,246,.32),transparent 65%)}100%{background:transparent}}
+.result-card{margin-top:14px;border-radius:18px;padding:16px 18px;display:flex;align-items:center;gap:14px;animation:pop .4s cubic-bezier(.16,1,.3,1)}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.result-card.win{background:linear-gradient(135deg,rgba(16,185,129,.16),rgba(16,185,129,.03));border:1px solid rgba(16,185,129,.4)}
+.result-card.loss{background:linear-gradient(135deg,rgba(244,63,94,.16),rgba(244,63,94,.03));border:1px solid rgba(244,63,94,.4)}
+.result-card.push{background:linear-gradient(135deg,rgba(139,92,246,.16),rgba(139,92,246,.03));border:1px solid rgba(139,92,246,.4)}
+.result-emoji{font-size:34px;line-height:1}
+.history-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.028);border:1px solid var(--line)}
+.history-dot{width:36px;height:36px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px}
+.history-dot.win{background:rgba(16,185,129,.14);color:#6ee7b7;border:1px solid rgba(16,185,129,.30)}
+.history-dot.loss{background:rgba(244,63,94,.14);color:#fda4af;border:1px solid rgba(244,63,94,.30)}
+.history-dot.push{background:rgba(139,92,246,.14);color:#c4b5fd;border:1px solid rgba(139,92,246,.30)}
+.fade-in{animation:fadeIn .45s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.pulse-dot{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.hidden{display:none!important}
+.toast{position:fixed;bottom:200px;left:50%;transform:translateX(-50%);padding:11px 18px;border-radius:12px;font-size:13px;font-weight:700;z-index:9999;color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.45);transition:opacity .3s;max-width:90vw;text-align:center}
+.toast.ok{background:rgba(16,185,129,.95)}
+.toast.err{background:rgba(244,63,94,.95)}
+
+.bottom-bar{position:fixed;left:0;right:0;bottom:0;z-index:40;padding:10px 12px calc(10px + env(safe-area-inset-bottom, 0px));background:linear-gradient(180deg,rgba(7,11,20,.78) 0%,rgba(7,11,20,.98) 40%);backdrop-filter:blur(18px);border-top:1px solid rgba(255,255,255,.08);box-shadow:0 -12px 40px rgba(0,0,0,.5)}
+@media (min-width:768px){.bottom-bar{left:256px}}
+.bottom-inner{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:8px}
+.quick-bets-row{display:flex;gap:6px;justify-content:center;overflow-x:auto;padding:0 4px;scrollbar-width:none}
+.quick-bets-row::-webkit-scrollbar{display:none}
+.quick-bets-row .bet-chip{flex:1;min-width:0;padding:7px 4px;border-radius:10px;font-size:11.5px;font-weight:800;background:rgba(255,255,255,.05);border:1px solid var(--line);color:#8b98ad;cursor:pointer;font-family:inherit;transition:all .15s ease;text-align:center}
+.quick-bets-row .bet-chip:hover{color:#fbbf24;border-color:rgba(245,158,11,.42);background:rgba(245,158,11,.10)}
+.main-row{display:flex;gap:8px;align-items:stretch}
+.balance-block{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:8px 12px;border-radius:14px;flex:none;background:linear-gradient(180deg,rgba(245,158,11,.10),rgba(245,158,11,.03));border:1px solid rgba(245,158,11,.28);min-width:112px}
+.balance-block .bb-label{font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#8b98ad}
+.balance-block .bb-value{font-size:16px;font-weight:800;color:#fbbf24;font-variant-numeric:tabular-nums}
+.bet-block{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;justify-content:center;padding:6px 12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--line-strong)}
+.bet-block .bb-label{font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#8b98ad}
+.bet-block input{width:100%;background:transparent;border:none;outline:none;color:#fff;font-size:18px;font-weight:800;font-family:inherit;font-variant-numeric:tabular-nums;padding:0}
+.bet-block input::placeholder{color:#5b6879;font-weight:700}
+.crash-page-main{padding-bottom:150px!important}
+</style>
+</head>
+<body>
+
+<aside id="sidebar" class="sidebar sidebar-closed fixed top-0 left-0 h-full w-[264px] bg-[#0a0f1a]/95 backdrop-blur-xl border-r border-white/[.06] z-50 overflow-y-auto">
+  <div class="p-5">
+    <div class="flex items-center justify-between mb-8">
+      <a href="index.html" class="flex items-center gap-3 min-w-0"><img src="logo.png" alt="WinKom" class="w-10 h-10 rounded-xl object-cover" onerror="this.style.display='none'"/><span class="text-xl font-extrabold text-white tracking-tight truncate">Win<span class="text-cyan-400">Kom</span></span></a>
+      <button onclick="toggleSidebar()" class="md:hidden w-9 h-9 rounded-xl bg-white/5 border border-white/10 text-gray-400 flex items-center justify-center transition"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <nav class="space-y-1.5">
+      <a href="index.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8.5 16v-4.5M12.5 16V8M16.5 16v-2.5"/></svg>Dashboard</a>
+      <a href="games.html" class="nav-link active"><svg class="ic" viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="10" rx="4"/><path d="M7 12h2M8 11v2M15.5 11h.01M17.5 13h.01"/></svg>Games</a>
+      <a href="game1.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>Spin Wheel</a>
+      <a href="game2.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>Color Prediction</a>
+      <a href="game3.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.5" fill="currentColor" stroke="none"/></svg>Dice Roll</a>
+      <a href="game4.html" class="nav-link" style="padding-left:26px;font-size:13px;background:linear-gradient(90deg,rgba(34,211,238,.16),transparent);border-color:rgba(34,211,238,.20);color:#a5f3fc"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M3 9.5 12 4l9 5.5"/><path d="M5 10v8M19 10v8"/></svg>Hi-Lo Card</a>
+      <a href="game5.html" class="nav-link" style="padding-left:26px;font-size:13px"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9z"/></svg>Crash</a>
+      <a href="investment.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M3 16.5 9 10.5l4 4 8-8"/><path d="M15 6.5h6v6"/></svg>Investment</a>
+      <a href="deposit.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8 10.5 4 4 4-4"/><path d="M5 19h14"/></svg>Deposit</a>
+      <a href="withdraw.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M12 15V5"/><path d="m8 8.5 4-4 4 4"/><path d="M5 19h14"/></svg>Withdraw</a>
+      <a href="transactions.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M6.5 3.5h8L18.5 7v13.5h-12z"/><path d="M9.5 11h6M9.5 14.5h6M9.5 7.5h2.5"/></svg>My Transactions</a>
+      <a href="settings.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.1"/><path d="M12 2.9v2.3M12 18.8v2.3M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.9 12h2.3M18.8 12h2.3M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>Settings</a>
+      <a href="about.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.2"/><circle cx="12" cy="7.9" r=".9" fill="currentColor" stroke="none"/></svg>About</a>
+      <a href="support.html" class="nav-link"><svg class="ic" viewBox="0 0 24 24"><path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/><path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/><path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/></svg>Support</a>
+      <div class="pt-3 mt-3 border-t border-white/[.06]"><button onclick="handleLogout()" class="nav-link w-full text-left text-red-400"><svg class="ic" viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="m10 8-4 4 4 4"/><path d="M6 12h9"/></svg>Logout</button></div>
+    </nav>
+  </div>
+</aside>
+<div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden"></div>
+
+<div class="md:ml-64 relative">
+  <header class="glass-header border-b border-white/[.06] fixed top-0 left-0 right-0 md:left-64 z-30">
+    <div class="max-w-6xl mx-auto px-4 py-3.5">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <button onclick="toggleSidebar()" class="md:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-gray-300 flex items-center justify-center transition shrink-0"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+          <div class="min-w-0"><h1 class="text-[15px] sm:text-lg font-extrabold text-white truncate leading-tight">🃏 Hi-Lo <span class="text-violet-400">Card</span></h1><p class="text-[11px] text-slate-500 font-medium truncate">Higher or Lower — win real money</p></div>
+        </div>
+        <div class="flex items-center gap-2.5 shrink-0">
+          <span class="promo-badge hidden sm:inline-flex"><span class="bolt">⚡</span> 1.95x</span>
+          <a href="support.html" class="support-btn"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M4.2 13.2v-1.4a7.8 7.8 0 0 1 15.6 0v1.4"/><path d="M4.2 13.2h1.9a1 1 0 0 1 1 1v3.6a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1z"/><path d="M19.8 13.2h-1.9a1 1 0 0 0-1 1v3.6a1 1 0 0 0 1 1h.9a1 1 0 0 0 1-1z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 pt-[80px] pb-4 fade-in crash-page-main">
+    <section class="hilo-arena" id="hiloArena">
+      <div class="hilo-title"><p class="target-label">🃏 Higher or Lower</p></div>
+      <div class="card-stage">
+        <div class="playing-card" id="card1"><span class="card-label">Current Card</span></div>
+        <div class="vs-line"><div class="vs-badge">VS</div></div>
+        <div class="playing-card face-down" id="card2"><span class="card-label">Next Card</span></div>
+      </div>
+      <div class="hilo-info">
+        <div class="hilo-info-item"><span class="hilo-info-label">Current</span><span class="hilo-info-value" id="currentValue">—</span></div>
+        <div class="hilo-info-item" style="align-items:center"><span class="hilo-info-label">Payout</span><span class="hilo-info-value" style="color:#a78bfa">1.95x</span></div>
+        <div class="hilo-info-item" style="align-items:flex-end"><span class="hilo-info-label">Next</span><span class="hilo-info-value" id="nextValue">—</span></div>
+      </div>
+      <div class="hilo-choices">
+        <button type="button" id="higherBtn" class="hilo-choice higher" onclick="pickChoice('higher')" disabled><span class="hc-icon"><svg class="ic ic-lg" viewBox="0 0 24 24"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></span><span class="hc-label">HIGHER</span><span class="hc-mult">1.95×</span></button>
+        <button type="button" id="lowerBtn" class="hilo-choice lower" onclick="pickChoice('lower')" disabled><span class="hc-icon"><svg class="ic ic-lg" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></span><span class="hc-label">LOWER</span><span class="hc-mult">1.95×</span></button>
+      </div>
+      <div class="hilo-status-wrap"><div class="hilo-status-head"><span class="text-slate-500">Round Status</span><span id="roundStatus" class="text-cyan-300">Tap "Draw Card" to begin</span></div><div class="timer-bar" id="timerBar"><i id="timerFill"></i></div></div>
+      <button type="button" id="drawBtn" class="btn btn-amber w-full h-[54px] mt-3 text-base" onclick="drawCard()"><svg class="ic" viewBox="0 0 24 24"><path d="M3 9.5 12 4l9 5.5"/><path d="M5 10v8M19 10v8"/><path d="M3 20h18"/></svg>DRAW CARD</button>
+      <div id="resultWrapper" class="hidden"><div id="resultCard" class="result-card"><span class="result-emoji" id="resultEmoji">🎉</span><div class="min-w-0 flex-1"><p class="text-white font-extrabold text-lg" id="resultTitle">WIN</p><p class="text-slate-400 text-[12px] mt-0.5" id="resultSub">—</p></div><div class="text-right"><p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Net</p><p id="resultPayout" class="text-lg font-extrabold">₹0</p></div></div></div>
+    </section>
+
+    <section class="glass p-4 sm:p-5 mt-5">
+      <div class="flex items-center justify-between gap-3 mb-3"><h3 class="text-white font-extrabold text-[15px] flex items-center gap-2"><span class="chip chip-cyan" style="width:34px;height:34px;border-radius:11px"><svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8"/><path d="M12 7.4V12l3.2 2"/></svg></span>Recent Hands <span class="text-slate-500 text-[11px] font-semibold">(last 10)</span></h3><button type="button" onclick="refreshHistory()" class="icon-btn"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button></div>
+      <div id="historyContainer" class="space-y-2"><p class="text-slate-400 text-center py-8 text-sm">Loading history…</p></div>
+    </section>
+  </main>
+</div>
+
+<div class="bottom-bar">
+  <div class="bottom-inner">
+    <div class="quick-bets-row">
+      <button class="bet-chip" onclick="setBet(10)">₹10</button>
+      <button class="bet-chip" onclick="setBet(50)">₹50</button>
+      <button class="bet-chip" onclick="setBet(100)">₹100</button>
+      <button class="bet-chip" onclick="setBet(500)">₹500</button>
+      <button class="bet-chip" onclick="setBet(1000)">₹1000</button>
+    </div>
+    <div class="main-row">
+      <div class="balance-block"><span class="bb-label">Wallet</span><span class="bb-value">₹<span id="walletBalance">0</span></span></div>
+      <div class="bet-block"><span class="bb-label">Bet Amount</span><input type="number" id="betAmount" min="10" max="1000" step="10" placeholder="Enter amount" /></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = { apiKey: "AIzaSyCFfM5dHaVdt8q0bhGnswFYfeeYzyJ61GY", authDomain: "winkom-da4c2.firebaseapp.com", projectId: "winkom-da4c2", storageBucket: "winkom-da4c2.firebasestorage.app", messagingSenderId: "629229462242", appId: "1:629229462242:web:5ca49b09a8a5aadf92f4bb" };
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null, currentUserData = null, balance = 0;
+const FLIP_MS = 1400, HISTORY_LIMIT = 10, MULT = 1.95;
+let dealing = false, currentCard = null, picked = null, betPlaced = false, currentBet = 0;
+
+const money = n => Number(n || 0).toFixed(2);
+const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+function toast(msg, type = 'ok') { const el = document.createElement('div'); el.textContent = msg; el.className = 'toast ' + type; document.body.appendChild(el); setTimeout(() => { el.style.opacity = '0'; }, 2200); setTimeout(() => { el.remove(); }, 2500); }
+
+window.toggleSidebar = function () { const s = document.getElementById('sidebar'), o = document.getElementById('overlay'); s.classList.toggle('sidebar-closed'); s.classList.toggle('sidebar-open'); o.classList.toggle('hidden'); };
+window.handleLogout = async function () { await signOut(auth); window.location.href = 'login.html'; };
+window.setBet = function (v) { if (dealing) return; const el = document.getElementById('betAmount'); if (el) el.value = v; };
+
+function randomCard() { const suits = ['♠','♥','♦','♣']; return { suit: suits[randomInt(0, 3)], value: randomInt(2, 14) }; }
+function isRedSuit(suit) { return suit === '♥' || suit === '♦'; }
+function labelForValue(v) { if (v === 11) return 'J'; if (v === 12) return 'Q'; if (v === 13) return 'K'; if (v === 14) return 'A'; return String(v); }
+
+function renderCardFace(el, card) {
+  if (!el) return;
+  const colorClass = isRedSuit(card.suit) ? 'red' : 'black';
+  const label = el.id === 'card1' ? 'Current Card' : 'Next Card';
+  el.className = 'playing-card';
+  el.innerHTML = `<span class="card-suit tl ${colorClass}">${card.suit}</span><span class="card-value ${colorClass}">${labelForValue(card.value)}</span><span class="card-suit br ${colorClass}">${card.suit}</span><span class="card-label">${label}</span>`;
+}
+function renderCardBack(el) {
+  if (!el) return;
+  const label = el.id === 'card1' ? 'Current Card' : 'Next Card';
+  el.className = 'playing-card face-down';
+  el.innerHTML = `<span class="card-label">${label}</span>`;
+}
+
+async function loadUserData() { if (!currentUser) return; const snap = await getDoc(doc(db, 'users', currentUser.uid)); if (snap.exists()) { currentUserData = snap.data(); balance = Number(currentUserData.balance) || 0; document.getElementById('walletBalance').textContent = money(balance); } }
+
+window.drawCard = async function () {
+  if (dealing) { toast('Please wait…', false); return; }
+  if (!currentUser) return;
+
+  if (!betPlaced) {
+    const bet = parseFloat(document.getElementById('betAmount').value);
+    if (!bet || isNaN(bet) || bet < 10) { toast('Minimum bet is ₹10', false); return; }
+    if (bet > 1000) { toast('Maximum bet is ₹1000', false); return; }
+    if (bet > balance) { toast(`Insufficient balance. You have ₹${money(balance)}`, false); return; }
+
+    document.getElementById('resultWrapper').classList.add('hidden');
+    const arena = document.getElementById('hiloArena'); arena.classList.remove('reveal-win','reveal-loss','reveal-push');
+    ['higherBtn','lowerBtn'].forEach(id => { const el = document.getElementById(id); el.classList.remove('picked','dim','winner','loser'); el.disabled = true; });
+    const card1 = document.getElementById('card1'), card2 = document.getElementById('card2');
+    card1.classList.remove('winner','loser','landed');
+    card2.classList.remove('winner','loser','landed','face-down');
+    renderCardBack(card2);
+
+    try {
+      const newBalance = balance - bet;
+      await updateDoc(doc(db, 'users', currentUser.uid), { balance: newBalance });
+      await addDoc(collection(db, 'transactions'), { uid: currentUser.uid, type: 'game_bet', description: `Hi-Lo Card — bet ₹${money(bet)}`, amount: -bet, balanceAfter: newBalance, createdAt: serverTimestamp() });
+      balance = newBalance; currentUserData.balance = newBalance; document.getElementById('walletBalance').textContent = money(balance);
+    } catch (e) { toast('Could not place bet: ' + e.message, false); return; }
+
+    dealing = true; betPlaced = true; currentBet = bet; currentCard = randomCard(); picked = null;
+    card1.classList.add('flipping');
+    setTimeout(() => { card1.classList.remove('flipping'); renderCardFace(card1, currentCard); card1.classList.add('landed'); document.getElementById('currentValue').textContent = labelForValue(currentCard.value); document.getElementById('nextValue').textContent = '—'; }, 280);
+
+    document.getElementById('timerBar').classList.add('spinning');
+    const statusEl = document.getElementById('roundStatus'); statusEl.textContent = 'Pick HIGHER or LOWER'; statusEl.className = 'text-amber-300';
+
+    setTimeout(() => { dealing = false; document.getElementById('higherBtn').disabled = false; document.getElementById('lowerBtn').disabled = false; document.getElementById('drawBtn').disabled = true; }, 700);
+    return;
+  }
+
+  if (!picked) { toast('Pick HIGHER or LOWER first', false); return; }
+  dealing = true;
+  const card2 = document.getElementById('card2'), card1 = document.getElementById('card1');
+  card2.classList.remove('face-down','winner','loser'); card2.classList.add('flipping');
+
+  document.getElementById('timerBar').classList.add('spinning');
+  document.getElementById('roundStatus').textContent = 'Revealing next card…';
+  document.getElementById('roundStatus').className = 'text-cyan-300';
+
+  const flickerInterval = setInterval(() => { const temp = randomCard(); renderCardFace(card2, temp); }, 90);
+  const nextCard = randomCard();
+  const tied = nextCard.value === currentCard.value;
+
+  await new Promise(r => setTimeout(r, FLIP_MS));
+  clearInterval(flickerInterval);
+
+  renderCardFace(card2, nextCard);
+  card2.classList.remove('flipping'); card2.classList.add('landed');
+
+  document.getElementById('nextValue').textContent = labelForValue(nextCard.value);
+  const nextEl = document.getElementById('nextValue');
+  if (nextCard.value > currentCard.value) nextEl.className = 'hilo-info-value up';
+  else if (nextCard.value < currentCard.value) nextEl.className = 'hilo-info-value down';
+  else nextEl.className = 'hilo-info-value tie';
+
+  let outcome;
+  if (tied) outcome = 'push';
+  else if (picked === 'higher' && nextCard.value > currentCard.value) outcome = 'win';
+  else if (picked === 'lower' && nextCard.value < currentCard.value) outcome = 'win';
+  else outcome = 'loss';
+  const won = outcome === 'win', push = outcome === 'push';
+
+  ['higherBtn','lowerBtn'].forEach(id => {
+    const el = document.getElementById(id);
+    el.disabled = true; el.classList.remove('picked','dim');
+    const idKey = id === 'higherBtn' ? 'higher' : 'lower';
+    if (push) {} else if (won && idKey === picked) el.classList.add('winner');
+    else if (!won && idKey === picked) el.classList.add('loser');
+    else el.classList.add('dim');
+  });
+
+  if (push) { card1.classList.add('winner'); card2.classList.add('winner'); }
+  else if (won) { card2.classList.add('winner'); card1.classList.add('loser'); }
+  else { card2.classList.add('loser'); card1.classList.add('winner'); }
+
+  const credit = won ? currentBet * MULT : (push ? currentBet : 0);
+  const netDelta = credit - currentBet;
+
+  try {
+    if (credit > 0) {
+      const newBalance = balance + credit;
+      await updateDoc(doc(db, 'users', currentUser.uid), { balance: newBalance });
+      await addDoc(collection(db, 'transactions'), { uid: currentUser.uid, type: won ? 'game_win' : 'game_refund', description: won ? `Hi-Lo WIN — ${labelForValue(currentCard.value)} → ${labelForValue(nextCard.value)} (${picked.toUpperCase()})` : `Hi-Lo PUSH — ${labelForValue(currentCard.value)} = ${labelForValue(nextCard.value)}`, amount: credit, balanceAfter: newBalance, createdAt: serverTimestamp() });
+      balance = newBalance; currentUserData.balance = newBalance; document.getElementById('walletBalance').textContent = money(balance);
+    }
+    await addDoc(collection(db, 'gameRounds'), { uid: currentUser.uid, userName: currentUserData?.name || 'User', game: 'hilo-card', currentCard: currentCard.value, nextCard: nextCard.value, pickedOption: picked, betAmount: currentBet, multiplier: won ? MULT : 0, payout: credit, netDelta, result: won ? 'win' : (push ? 'push' : 'loss'), createdAt: serverTimestamp() });
+  } catch (e) { console.error(e); }
+
+  const arena = document.getElementById('hiloArena');
+  arena.classList.remove('reveal-win','reveal-loss','reveal-push'); void arena.offsetWidth;
+  if (won) arena.classList.add('reveal-win'); else if (push) arena.classList.add('reveal-push'); else arena.classList.add('reveal-loss');
+
+  const card = document.getElementById('resultCard'); card.classList.remove('win','loss','push'); card.classList.add(won ? 'win' : (push ? 'push' : 'loss'));
+  document.getElementById('resultEmoji').textContent = won ? '🎉' : (push ? '🤝' : '😔');
+  document.getElementById('resultTitle').textContent = won ? 'YOU WIN!' : (push ? 'PUSH — BET RETURNED' : 'YOU LOST');
+  document.getElementById('resultSub').textContent = `${labelForValue(currentCard.value)}${currentCard.suit} → ${labelForValue(nextCard.value)}${nextCard.suit} · You picked ${picked.toUpperCase()}`;
+  const pEl = document.getElementById('resultPayout'); pEl.textContent = (netDelta >= 0 ? '+' : '−') + '₹' + money(Math.abs(netDelta)); pEl.className = won ? 'text-lg font-extrabold text-emerald-400' : (push ? 'text-lg font-extrabold text-violet-400' : 'text-lg font-extrabold text-rose-400');
+  document.getElementById('resultWrapper').classList.remove('hidden');
+
+  const statusEl = document.getElementById('roundStatus');
+  if (won) { statusEl.textContent = `You won ₹${money(netDelta)}! 🎉`; statusEl.className = 'text-emerald-400'; }
+  else if (push) { statusEl.textContent = `Tie — ₹${money(currentBet)} returned`; statusEl.className = 'text-violet-400'; }
+  else { statusEl.textContent = `You lost ₹${money(currentBet)}`; statusEl.className = 'text-rose-400'; }
+
+  dealing = false; betPlaced = false; picked = null;
+  document.getElementById('timerBar').classList.remove('spinning'); document.getElementById('timerFill').style.width = '0%';
+  setTimeout(() => {
+    document.getElementById('drawBtn').disabled = false;
+    document.getElementById('higherBtn').disabled = true;
+    document.getElementById('lowerBtn').disabled = true;
+    ['higherBtn','lowerBtn'].forEach(id => document.getElementById(id).classList.remove('winner','loser','dim','picked'));
+    document.getElementById('roundStatus').textContent = 'Tap "Draw Card" to begin'; document.getElementById('roundStatus').className = 'text-cyan-300';
+  }, 2800);
+
+  await pruneHistory(); await loadHistory();
+};
+
+window.pickChoice = function (choice) {
+  if (dealing || !betPlaced || picked) return;
+  picked = choice;
+  const ids = { higher: 'higherBtn', lower: 'lowerBtn' };
+  Object.keys(ids).forEach(c => { const el = document.getElementById(ids[c]); el.classList.remove('picked','dim'); if (c === choice) el.classList.add('picked'); else el.classList.add('dim'); });
+  document.getElementById('roundStatus').textContent = `You picked ${choice.toUpperCase()} — tap "Draw Card"`; document.getElementById('roundStatus').className = 'text-emerald-400';
+  document.getElementById('drawBtn').disabled = false;
+};
+
+async function pruneHistory() { if (!currentUser) return; try { const q = query(collection(db, 'gameRounds'), where('uid', '==', currentUser.uid), where('game', '==', 'hilo-card')); const snap = await getDocs(q); const all = []; snap.forEach(d => all.push({ id: d.id, ref: d.ref, _data: d.data() })); if (all.length <= HISTORY_LIMIT) return; all.sort((a, b) => (b._data.createdAt?.toDate?.() || 0) - (a._data.createdAt?.toDate?.() || 0)); for (const r of all.slice(HISTORY_LIMIT)) { try { await deleteDoc(r.ref); } catch (e) {} } } catch (e) {} }
+window.refreshHistory = async function () { await pruneHistory(); await loadHistory(); };
+
+async function loadHistory() {
+  const container = document.getElementById('historyContainer'); if (!container || !currentUser) return;
+  try {
+    const q = query(collection(db, 'gameRounds'), where('uid', '==', currentUser.uid), where('game', '==', 'hilo-card'));
+    const snap = await getDocs(q); const rounds = []; snap.forEach(d => rounds.push({ id: d.id, ...d.data() }));
+    rounds.sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
+    const recent = rounds.slice(0, HISTORY_LIMIT);
+    if (!recent.length) { container.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm">No hands yet. Draw a card above! 🃏</div>`; return; }
+    container.innerHTML = recent.map(r => {
+      const dt = r.createdAt?.toDate?.() || new Date(); const net = Number(r.netDelta) || 0; const bet = Number(r.betAmount) || 0;
+      const won = r.result === 'win', push = r.result === 'push';
+      const dotCls = won ? 'win' : (push ? 'push' : 'loss');
+      const dotChar = won ? '✓' : (push ? '=' : '✕');
+      const netCls = won ? 'text-emerald-400' : (push ? 'text-violet-400' : 'text-rose-400');
+      const time = dt.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }); const date = dt.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+      const statusText = won ? 'Won' : (push ? 'Push' : 'Lost');
+      return `<div class="history-row"><div class="history-dot ${dotCls}">${dotChar}</div><div class="min-w-0 flex-1"><p class="text-white font-bold text-[13px] truncate">${statusText} · <span class="text-slate-400">bet ₹${money(bet)}</span></p><p class="text-slate-500 text-[11px] mt-0.5">${labelForValue(r.currentCard || 0)} → ${labelForValue(r.nextCard || 0)} · You: ${(r.pickedOption || '').toUpperCase()}</p></div><div class="text-right shrink-0"><p class="font-extrabold text-[13px] ${netCls}">${net >= 0 ? '+' : '−'}₹${money(Math.abs(net))}</p><p class="text-slate-500 text-[10px] mt-0.5">${date} · ${time}</p></div></div>`;
+    }).join('');
+  } catch (e) {}
+}
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  currentUser = user;
+  try { renderCardBack(document.getElementById('card1')); renderCardBack(document.getElementById('card2')); } catch (_) {}
+  try { await loadUserData(); } catch (e) {}
+  try { await pruneHistory(); } catch (e) {}
+  try { await loadHistory(); } catch (e) {}
+});
+
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.getElementById('sidebar')?.classList.add('sidebar-closed'); });
+</script>
+</body>
+</html>
